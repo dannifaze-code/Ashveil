@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Ashveil — The Broken Veil</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(255,170,50,.3)}50%{box-shadow:0 0 16px rgba(255,170,50,.6)}}
+@keyframes dungeonPulse{0%,100%{border-color:rgba(123,104,238,.3)}50%{border-color:rgba(123,104,238,.7)}}
+:root{--bg:#08090d;--panel:#0e1117;--panel2:#151a24;--panel3:#1a2030;--line:#2a3347;--line2:#1e2738;--text:#d4dae8;--muted:#7a8ba8;--bright:#f0f4ff;--fire:#ff6b35;--fire2:#ff9f1a;--ember:#cc4a1a;--veil:#7b68ee;--veil2:#9b8afb;--veil3:#5b4ecc;--nature:#3ddc84;--nature2:#2ebd6b;--water:#4fc3f7;--water2:#0891b2;--blood:#dc2626;--blood2:#ef4444;--gold:#f59e0b;--gold2:#fbbf24;--ash:#9ca3af;--scholar:#4fc3f7;--ashen:#ff6b35}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Crimson Text',Georgia,serif}
+#app{display:grid;grid-template-columns:1fr 400px;width:100vw;height:100vh}
+#gameWrap{position:relative;overflow:hidden;background:radial-gradient(ellipse at 30% 20%,rgba(123,104,238,.06),transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(255,107,53,.04),transparent 50%),linear-gradient(180deg,#0a0c14,#060810)}
+#game{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;cursor:crosshair}
+#hud{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:6px;z-index:2;pointer-events:none}
+.hud-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(8,9,13,.88);border:1px solid rgba(42,51,71,.6);border-radius:8px;backdrop-filter:blur(8px);font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
+.hud-bar .icon{font-size:14px}.hud-bar .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}.hud-bar .value{color:var(--bright);font-weight:600}
+.hp-fill{height:6px;border-radius:3px;transition:width .3s}
+#minimap{position:absolute;right:14px;top:14px;width:160px;height:120px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(8,9,13,.85);backdrop-filter:blur(8px);z-index:2}
+#minimapCanvas{width:100%;height:100%;image-rendering:pixelated}
+#actionBar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:6px;z-index:3;flex-wrap:wrap;justify-content:center;max-width:95%}
+.action-btn{appearance:none;border:1px solid var(--line);background:rgba(14,17,23,.92);color:var(--text);border-radius:10px;padding:10px 16px;font-size:13px;font-family:'Crimson Text',serif;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s;display:flex;align-items:center;gap:6px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.action-btn:hover{border-color:var(--fire);background:rgba(255,107,53,.1);transform:translateY(-2px)}
+.action-btn .key{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;background:rgba(255,255,255,.08);border-radius:4px;color:var(--muted)}
+.action-btn.dungeon-btn{border-color:rgba(123,104,238,.4);animation:dungeonPulse 2s infinite}
+#side{display:flex;flex-direction:column;border-left:1px solid var(--line2);background:linear-gradient(180deg,#0c0e16,#080a10);overflow:hidden}
+#sideHeader{padding:14px 16px 10px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(123,104,238,.06),transparent)}
+#sideHeader h1{font-family:'Cinzel',serif;font-size:16px;color:var(--veil2);letter-spacing:2px;text-transform:uppercase;text-shadow:0 0 20px rgba(123,104,238,.3)}
+#sideHeader .subtitle{font-size:12px;color:var(--muted);margin-top:2px;font-style:italic}
+#tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-bottom:1px solid var(--line2)}
+.tabBtn{appearance:none;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:6px;padding:6px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+.tabBtn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tabBtn.active{color:var(--fire2);border-color:rgba(255,159,26,.3);background:rgba(255,107,53,.08)}
+.panel{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;gap:10px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.panel.active{display:flex;flex-direction:column;animation:fadeIn .3s ease}
+.card{background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));border:1px solid var(--line2);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(123,104,238,.2),transparent)}
+.card h3{font-family:'Cinzel',serif;font-size:14px;color:var(--veil2);margin-bottom:8px;letter-spacing:1px}
+.card h4{font-size:13px;color:var(--fire2);margin-bottom:4px}.card p{font-size:13px;color:var(--muted);line-height:1.5}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:10px;background:rgba(255,255,255,.015);transition:all .2s}
+.item:hover{border-color:rgba(123,104,238,.2);background:rgba(123,104,238,.04)}
+.item-btn{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;white-space:nowrap}
+.item-btn:hover{border-color:var(--fire);color:var(--fire2)}.item-btn:disabled{opacity:.3;cursor:default}
+.meter{width:100%;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;position:relative}
+.meter-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.meter-hp{background:linear-gradient(90deg,var(--blood),var(--blood2))}
+.meter-xp{background:linear-gradient(90deg,var(--veil3),var(--veil2))}
+.meter-skill{background:linear-gradient(90deg,var(--nature2),var(--nature))}
+.meter-corruption{background:linear-gradient(90deg,#6b21a8,#a855f7)}
+.meter-stability{background:linear-gradient(90deg,var(--water2),var(--water))}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+.tiny{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.muted{color:var(--muted)}.bright{color:var(--bright)}.fire{color:var(--fire2)}.veil{color:var(--veil2)}.nature{color:var(--nature)}.gold{color:var(--gold2)}
+.equipGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.slot{min-height:80px;border-radius:8px;border:1px dashed rgba(255,255,255,.1);padding:10px;background:rgba(255,255,255,.015);text-align:center;transition:all .2s;position:relative}
+.slot:hover{border-color:rgba(123,104,238,.3)}
+.slot .slot-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.slot .slot-item{font-size:12px;color:var(--bright)}
+.rarity-common{color:#9ca3af}.rarity-uncommon{color:#3ddc84}.rarity-rare{color:#4fc3f7}.rarity-epic{color:#a78bfa}.rarity-legendary{color:#f59e0b}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.badge-quest{background:rgba(123,104,238,.15);color:var(--veil2);border:1px solid rgba(123,104,238,.3)}
+.badge-done{background:rgba(61,220,132,.1);color:var(--nature);border:1px solid rgba(61,220,132,.2)}
+.badge-bounty{background:rgba(255,107,53,.1);color:var(--fire);border:1px solid rgba(255,107,53,.2)}
+.badge-event{background:rgba(245,158,11,.1);color:var(--gold2);border:1px solid rgba(245,158,11,.2)}
+.badge-achievement{background:rgba(79,195,247,.1);color:var(--water);border:1px solid rgba(79,195,247,.2)}
+.badge-chapter{background:rgba(155,138,251,.12);color:var(--veil2);border:1px solid rgba(155,138,251,.3)}
+.faction-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.faction-card{border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);text-align:center}
+.faction-card.highlight{border-color:rgba(123,104,238,.4);background:rgba(123,104,238,.06)}
+#dialogue{position:absolute;left:14px;right:14px;bottom:80px;display:none;z-index:4;animation:slideUp .3s ease}
+#dialogueBox{max-width:760px;margin:0 auto;background:rgba(8,9,13,.96);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(123,104,238,.08)}
+#dialogueBox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--veil),transparent)}
+#dialogueSpeaker{font-family:'Cinzel',serif;font-size:13px;color:var(--fire2);letter-spacing:1px;margin-bottom:6px}
+#dialogueText{font-size:15px;line-height:1.6;color:var(--bright)}
+#dialogueChoices{display:grid;gap:6px;margin-top:12px}
+#dialogueChoices button{appearance:none;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Crimson Text',serif;cursor:pointer;transition:all .15s}
+#dialogueChoices button:hover{border-color:var(--veil);background:rgba(123,104,238,.08);color:var(--bright)}
+#toastWrap{position:absolute;right:14px;bottom:80px;display:flex;flex-direction:column-reverse;gap:6px;z-index:5;pointer-events:none;max-height:300px;overflow:hidden}
+.toast{max-width:300px;padding:10px 14px;font-size:12px;line-height:1.4;border-radius:8px;animation:slideUp .3s ease;font-family:'JetBrains Mono',monospace}
+.toast-info{background:rgba(8,9,13,.92);border:1px solid var(--line);border-left:3px solid var(--veil);color:var(--text)}
+.toast-combat{background:rgba(8,9,13,.92);border:1px solid rgba(220,38,38,.3);border-left:3px solid var(--blood);color:var(--blood2)}
+.toast-loot{background:rgba(8,9,13,.92);border:1px solid rgba(61,220,132,.3);border-left:3px solid var(--nature);color:var(--nature)}
+.toast-quest{background:rgba(8,9,13,.92);border:1px solid rgba(123,104,238,.3);border-left:3px solid var(--veil);color:var(--veil2)}
+.toast-event{background:rgba(8,9,13,.92);border:1px solid rgba(245,158,11,.3);border-left:3px solid var(--gold);color:var(--gold2)}
+.toast-achievement{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.4);border-left:3px solid var(--water);color:var(--water)}
+.toast-story{background:rgba(155,138,251,.12);border:1px solid rgba(155,138,251,.4);border-left:3px solid var(--veil2);color:var(--veil2)}
+.toast-dungeon{background:rgba(123,104,238,.12);border:1px solid rgba(123,104,238,.4);border-left:3px solid var(--veil);color:var(--veil2)}
+#eventBanner{position:absolute;top:50px;left:50%;transform:translateX(-50%);z-index:6;display:none;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(255,107,53,.1));border:1px solid rgba(245,158,11,.4);font-family:'Cinzel',serif;font-size:14px;color:var(--gold2);text-align:center;text-shadow:0 0 10px rgba(245,158,11,.3);animation:fadeIn .5s ease;pointer-events:none;max-width:90%}
+#touchControls{position:absolute;inset:0;pointer-events:none;z-index:6}
+#joystickZone{position:absolute;left:18px;bottom:80px;width:120px;height:120px;pointer-events:auto}
+#joystickBase,#joystickThumb{position:absolute;border-radius:50%}
+#joystickBase{width:90px;height:90px;left:15px;top:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+#joystickThumb{width:44px;height:44px;left:38px;top:38px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+#touchButtons{position:absolute;right:18px;bottom:80px;display:flex;gap:8px;pointer-events:auto}
+#touchButtons button{width:56px;height:56px;border-radius:50%;font-size:20px}
+@media(min-width:921px){#touchControls{display:none}}
+@media(max-width:920px){#app{grid-template-columns:1fr;grid-template-rows:55vh 45vh}#side{border-left:0;border-top:1px solid var(--line2)}#minimap{width:120px;height:90px}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="gameWrap">
+<canvas id="game"></canvas>
+<div id="hud"></div>
+<div id="minimap"><canvas id="minimapCanvas" width="160" height="120"></canvas></div>
+<div id="eventBanner"></div>
+<div id="toastWrap"></div>
+<div id="dialogue"><div id="dialogueBox"><div id="dialogueSpeaker"></div><h3 id="dialogueText"></h3><div id="dialogueChoices"></div></div></div>
+<div id="actionBar">
+<button class="action-btn" id="btnAttack">⚔ Attack <span class="key">SPACE</span></button>
+<button class="action-btn" id="btnLoot">✦ Gather <span class="key">F</span></button>
+<button class="action-btn" id="btnTalk">◈ Interact <span class="key">E</span></button>
+<button class="action-btn dungeon-btn" id="btnDungeon" style="display:none">⬡ Enter Dungeon <span class="key">R</span></button>
+<button class="action-btn" id="btnSave">Save</button>
+<button class="action-btn" id="btnLoad">Load</button>
+</div>
+<div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
+</div>
+<aside id="side">
+<div id="sideHeader"><h1>⬥ Ashveil</h1><div class="subtitle">The Veils are weakening...</div></div>
+<div id="tabs">
+<button class="tabBtn active" data-tab="journal">Journal</button>
+<button class="tabBtn" data-tab="story">Story</button>
+<button class="tabBtn" data-tab="inventory">Items</button>
+<button class="tabBtn" data-tab="equip">Equip</button>
+<button class="tabBtn" data-tab="skills">Skills</button>
+<button class="tabBtn" data-tab="crafting">Craft</button>
+<button class="tabBtn" data-tab="bounty">Bounty</button>
+<button class="tabBtn" data-tab="factions">Factions</button>
+<button class="tabBtn" data-tab="world">World</button>
+<button class="tabBtn" data-tab="dungeon">Dungeon</button>
+<button class="tabBtn" data-tab="achieve">Feats</button>
+</div>
+<section class="panel active" id="panel-journal"></section>
+<section class="panel" id="panel-story"></section>
+<section class="panel" id="panel-inventory"></section>
+<section class="panel" id="panel-equip"></section>
+<section class="panel" id="panel-skills"></section>
+<section class="panel" id="panel-crafting"></section>
+<section class="panel" id="panel-bounty"></section>
+<section class="panel" id="panel-factions"></section>
+<section class="panel" id="panel-world"></section>
+<section class="panel" id="panel-dungeon"></section>
+<section class="panel" id="panel-achieve"></section>
+</aside>
+</div>
+<script>
+(()=>{
+'use strict';
+const SAVE_KEY='ashveil_v5_save';
+const T=16,MW=120,MH=80,SCALE=3;
+const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const sample=a=>a[Math.floor(Math.random()*a.length)],cap=s=>s[0].toUpperCase()+s.slice(1);
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+
+const canvas=qs('#game'),ctx=canvas.getContext('2d'),hud=qs('#hud'),toastWrap=qs('#toastWrap');
+const dialogueEl=qs('#dialogue'),dialogueSpeaker=qs('#dialogueSpeaker'),dialogueText=qs('#dialogueText'),dialogueChoices=qs('#dialogueChoices');
+const eventBanner=qs('#eventBanner'),joystickZone=qs('#joystickZone'),joystickThumb=qs('#joystickThumb');
+const mmCanvas=qs('#minimap canvas'),mmCtx=mmCanvas?mmCanvas.getContext('2d'):null;
+const btnDungeon=qs('#btnDungeon');
+const panels={};qsa('.panel').forEach(p=>{panels[p.id.replace('panel-','')]=p});
+
+// ═══ SPRITE SYSTEM ═══
+function createSprite(data,w=16,h=16){const c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');for(let i=0;i<data.length;i++){if(data[i]){cx.fillStyle=data[i];cx.fillRect(i%w,Math.floor(i/w),1,1)}}return c}
+const C={skin:'#e8b89d',skinS:'#c4916e',hair:'#4a3728',hairL:'#6b5040',cloth:'#3a5068',clothL:'#4a6a88',clothD:'#2a3a4d',metal:'#8899aa',metalL:'#aabbcc',metalD:'#667788',leather:'#7a5533',leatherL:'#9a7553',leatherD:'#5a3513',wood:'#8b6914',woodL:'#ab8934',woodD:'#6b4904',fire:'#ff6b35',fire2:'#ff9f1a',fire3:'#ffcc44',veil:'#7b68ee',veil2:'#9b8afb',red:'#dc2626',green:'#3ddc84',blue:'#4fc3f7',gold:'#f59e0b',white:'#f0f4ff',gray:'#9ca3af',dark:'#2a3347',grass1:'#2d5a1e',grass2:'#3a6e2a',grass3:'#4a8038',grass4:'#1e4a12',dirt1:'#6b5233',dirt2:'#7a6243',dirt3:'#8a7253',stone1:'#555f6e',stone2:'#667080',stone3:'#778090',water1:'#1a4a6e',water2:'#2a5a7e',water3:'#3a6a8e',sand1:'#c4a86e',sand2:'#b49858',marsh1:'#2a4a1e',marsh2:'#3a5a28',marsh3:'#1a3a12',ruins1:'#3a3850',ruins2:'#4a4860',ruins3:'#5a5870',tree1:'#1a4a0a',tree2:'#2a5a1a',tree3:'#0a3a00',trunk:'#5a3a1a',trunkD:'#4a2a0a',roof1:'#8b3a2a',roof2:'#6b2a1a',wall1:'#9a8a6a',wall2:'#8a7a5a',corrupt1:'#3a1a3a',corrupt2:'#4a1a4a',corrupt3:'#2a0a2a',dungeon1:'#1a1a2a',dungeon2:'#2a2a3a',dungeon3:'#3a3a4a'};
+
+function makePlayerSprite(f=0){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};p(7,2,C.hair);p(8,2,C.hair);p(6,3,C.hair);p(7,3,C.skin);p(8,3,C.skin);p(9,3,C.hair);p(6,4,C.hair);p(7,4,C.skin);p(8,4,C.skin);p(9,4,C.hair);p(7,5,C.skinS);p(8,5,C.skinS);for(let y=6;y<=9;y++){p(6,y,C.cloth);p(7,y,C.clothL);p(8,y,C.clothL);p(9,y,C.cloth)}p(5,7,C.skin);p(10,7,C.skin);p(5,8,C.skin);p(10,8,C.skin);p(6,9,C.leatherD);p(7,9,C.leather);p(8,9,C.leather);p(9,9,C.leatherD);const lo=f===1?1:(f===3?-1:0);p(7,10,C.leather);p(8,10,C.leather);p(7,11,C.leather);p(8,11,C.leather);p(7,12,C.leatherD);p(8,12,C.leatherD);p(6+Math.max(0,lo),13,C.leatherD);p(7,13,C.leatherD);p(8,13,C.leatherD);p(9+Math.min(0,-lo),13,C.leatherD);return createSprite(s)}
+function makeNPCSprite(rc,ac,hood=false){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(hood){p(6,1,rc);p(7,1,rc);p(8,1,rc);p(9,1,rc)}p(7,2,C.skin);p(8,2,C.skin);p(6,3,hood?rc:C.hairL);p(7,3,C.skin);p(8,3,C.skin);p(9,3,hood?rc:C.hairL);p(7,4,C.skin);p(8,4,C.skin);p(7,5,C.skinS);p(8,5,C.skinS);for(let y=6;y<=11;y++){p(6,y,rc);p(7,y,ac);p(8,y,ac);p(9,y,rc)}p(5,7,rc);p(10,7,rc);p(5,8,rc);p(10,8,rc);p(6,12,rc);p(7,12,rc);p(8,12,rc);p(9,12,rc);p(7,13,rc);p(8,13,rc);return createSprite(s)}
+function makeEnemySprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+if(type==='wolf'){for(let x=4;x<=12;x++){p(x,8,'#6b3a2a');p(x,9,'#7a4a3a')}for(let x=5;x<=11;x++)p(x,7,'#7a4a3a');p(3,7,'#8a5a4a');p(3,8,'#7a4a3a');p(2,6,'#8a5a4a');p(3,6,'#8a5a4a');p(4,6,'#7a4a3a');p(2,5,'#6b3a2a');p(3,5,'#6b3a2a');p(2,7,'#aa6a5a');p(1,7,'#dc2626');p(5,10,'#5a2a1a');p(6,10,'#5a2a1a');p(10,10,'#5a2a1a');p(11,10,'#5a2a1a');p(5,11,'#5a2a1a');p(6,11,'#5a2a1a');p(10,11,'#5a2a1a');p(11,11,'#5a2a1a');p(13,7,'#6b3a2a');p(14,6,'#5a2a1a')}
+else if(type==='bogling'){for(let x=5;x<=10;x++){p(x,5,'#3a6628');p(x,6,'#4a7a38');p(x,7,'#4a7a38');p(x,8,'#3a6628')}p(4,6,'#3a6628');p(11,6,'#3a6628');p(4,7,'#3a6628');p(11,7,'#3a6628');p(6,4,'#3a6628');p(7,4,'#4a7a38');p(8,4,'#4a7a38');p(9,4,'#3a6628');p(6,5,'#ffcc44');p(9,5,'#ffcc44');p(7,7,'#2a4a18');p(8,7,'#2a4a18');p(6,9,'#2a5618');p(7,9,'#2a5618');p(8,9,'#2a5618');p(9,9,'#2a5618');p(5,10,'#2a5618');p(10,10,'#2a5618');p(5,11,'#1a4a08');p(10,11,'#1a4a08');p(4,8,'#5a9a48');p(11,8,'#5a9a48');p(3,9,'#4a8a38');p(12,9,'#4a8a38')}
+else if(type==='sentinel'){for(let x=6;x<=9;x++){p(x,3,'#8a6aee');p(x,4,'#7a5ade');p(x,5,'#6a4ace')}for(let x=5;x<=10;x++){p(x,6,'#7a5ade');p(x,7,'#8a6aee');p(x,8,'#7a5ade');p(x,9,'#6a4ace')}p(6,4,'#ccaaff');p(9,4,'#ccaaff');for(let x=6;x<=9;x++)p(x,10,'#5a3abe');p(6,11,'#4a2aae');p(9,11,'#4a2aae');p(6,12,'#3a1a9e');p(9,12,'#3a1a9e');p(7,2,'#bbaaff');p(8,2,'#bbaaff');p(7,1,'#ccbbff');p(8,1,'#ccbbff');p(4,5,'#aa8aff');p(11,5,'#aa8aff')}
+else if(type==='bandit'){p(7,2,C.hair);p(8,2,C.hair);p(6,3,C.dark);p(7,3,C.skin);p(8,3,C.skin);p(9,3,C.dark);p(7,4,C.skin);p(8,4,C.skin);p(7,5,'#dc2626');for(let y=6;y<=9;y++){p(6,y,'#3a2a1a');p(7,y,'#4a3a2a');p(8,y,'#4a3a2a');p(9,y,'#3a2a1a')}p(5,7,'#3a2a1a');p(10,7,C.metal);p(5,8,'#3a2a1a');p(10,8,C.metalL);p(10,9,C.metalL);p(10,10,C.metal);p(7,10,'#2a1a0a');p(8,10,'#2a1a0a');p(7,11,'#2a1a0a');p(8,11,'#2a1a0a');p(6,12,'#1a0a00');p(9,12,'#1a0a00')}
+else if(type==='ashDrake'){for(let x=3;x<=12;x++){p(x,6,'#8b2a1a');p(x,7,'#9b3a2a');p(x,8,'#8b2a1a')}for(let x=4;x<=11;x++){p(x,5,'#7b1a0a');p(x,9,'#7b1a0a')}p(2,4,'#ab3a2a');p(3,4,'#9b3a2a');p(4,4,'#8b2a1a');p(2,5,'#ab3a2a');p(3,5,'#9b3a2a');p(1,4,'#ffcc44');p(1,5,'#dc2626');p(0,5,'#ff6b35');p(5,3,'#6b1a0a');p(6,2,'#6b1a0a');p(7,1,'#5b0a00');p(10,3,'#6b1a0a');p(11,2,'#6b1a0a');p(12,1,'#5b0a00');p(13,7,'#7b1a0a');p(14,8,'#6b1a0a');p(15,8,'#ff6b35');p(5,10,'#5b0a00');p(6,10,'#5b0a00');p(10,10,'#5b0a00');p(11,10,'#5b0a00');p(5,11,'#4b0000');p(11,11,'#4b0000')}
+else if(type==='veilWraith'){for(let x=5;x<=10;x++){p(x,3,'#7b68ee');p(x,4,'#9b8afb')}for(let x=4;x<=11;x++){p(x,5,'#7b68ee');p(x,6,'#9b8afb');p(x,7,'#7b68ee')}p(6,4,'#ffffff');p(9,4,'#ffffff');for(let x=5;x<=10;x++){p(x,8,'#5b4ecc');p(x,9,'#3a2e8a')}p(3,6,'#9b8afb');p(12,6,'#9b8afb')}
+else if(type==='corruptWolf'){for(let x=4;x<=12;x++){p(x,8,'#4a1a3a');p(x,9,'#5a2a4a')}for(let x=5;x<=11;x++)p(x,7,'#5a2a4a');p(3,7,'#6a3a5a');p(3,8,'#5a2a4a');p(2,6,'#6a3a5a');p(3,6,'#6a3a5a');p(2,5,'#4a1a3a');p(3,5,'#4a1a3a');p(2,7,'#8a4a6a');p(1,7,'#ff44aa');p(5,10,'#3a0a2a');p(6,10,'#3a0a2a');p(10,10,'#3a0a2a');p(11,10,'#3a0a2a');p(5,11,'#3a0a2a');p(11,11,'#3a0a2a');p(13,7,'#4a1a3a');p(14,6,'#3a0a2a');p(4,5,'#aa44aa');p(11,5,'#aa44aa')}
+else if(type==='voidSentinel'){for(let x=5;x<=10;x++){p(x,3,'#1a1a4a');p(x,4,'#2a2a5a');p(x,5,'#1a1a4a');p(x,6,'#2a2a5a');p(x,7,'#3a3a6a');p(x,8,'#2a2a5a');p(x,9,'#1a1a4a')}p(6,4,'#ff4444');p(9,4,'#ff4444');p(7,1,'#4a4a8a');p(8,1,'#4a4a8a');p(7,2,'#3a3a7a');p(8,2,'#3a3a7a');p(4,6,'#5a5aaa');p(11,6,'#5a5aaa');for(let x=6;x<=9;x++){p(x,10,'#1a1a3a');p(x,11,'#0a0a2a')}}
+else if(type==='dungeonGuardian'){for(let x=4;x<=11;x++){p(x,3,'#4a3a2a');p(x,4,'#5a4a3a');p(x,5,'#4a3a2a');p(x,6,'#5a4a3a');p(x,7,'#6a5a4a');p(x,8,'#5a4a3a');p(x,9,'#4a3a2a');p(x,10,'#3a2a1a')}p(5,3,'#8899aa');p(10,3,'#8899aa');p(6,4,'#ffcc44');p(9,4,'#ffcc44');p(3,6,C.metalL);p(12,6,C.metalL);p(3,7,C.metal);p(12,7,C.metal);p(2,7,C.metalL);p(13,7,C.metalL);p(5,11,'#3a2a1a');p(10,11,'#3a2a1a');p(5,12,'#2a1a0a');p(10,12,'#2a1a0a')}
+return createSprite(s)}
+
+const sprites={player:[0,1,2,3].map(f=>makePlayerSprite(f)),npcs:{elder:makeNPCSprite('#c4a86e','#f59e0b',true),quartermaster:makeNPCSprite('#8b3a2a','#cc4a1a',false),herbalist:makeNPCSprite('#2a5a1e','#3ddc84',true),smuggler:makeNPCSprite('#2a2a3a','#555f6e',false),bountyMaster:makeNPCSprite('#5a1a1a','#dc2626',false),scholarLynn:makeNPCSprite('#1a3a6a','#4fc3f7',true),commanderVoss:makeNPCSprite('#4a2a0a','#ff6b35',false)},enemies:{},tiles:{},objects:{}};
+['wolf','bogling','sentinel','bandit','ashDrake','veilWraith','corruptWolf','voidSentinel','dungeonGuardian'].forEach(t=>{sprites.enemies[t]=makeEnemySprite(t)});
+
+function makeTile(bc,v=[]){const s=new Array(256).fill(bc);v.forEach(vv=>{s[rand(0,255)]=vv});return createSprite(s)}
+function makeTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=9;y<=15;y++){p(7,y,C.trunk);p(8,y,C.trunkD)}const g=[C.tree1,C.tree2,C.tree3];for(let y=1;y<=9;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-5)<4.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
+function makeRockTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const co=[C.stone1,C.stone2,C.stone3];for(let y=4;y<=12;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-8)<4.5+Math.random()*1.5)p(x,y,sample(co))}return createSprite(s)}
+function makeBushTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const g=['#2a5a1e','#3a6a2e','#4a7a38','#2a6628'];for(let y=6;y<=12;y++)for(let x=4;x<=11;x++){if(Math.hypot(x-7.5,y-9)<3.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
+function makeFlowerTile(fc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};p(8,8,fc);p(7,9,fc);p(9,9,fc);p(8,10,fc);p(8,9,'#ffcc44');p(8,11,'#3a6628');p(8,12,'#3a6628');p(8,13,'#2a5618');return createSprite(s)}
+function makeHouseTile(wc,rc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=1;y<=4;y++)for(let x=2;x<=13;x++)p(x,y,rc);for(let x=3;x<=12;x++)p(x,0,rc);for(let y=5;y<=12;y++)for(let x=3;x<=12;x++)p(x,y,wc);p(7,9,C.wood);p(8,9,C.wood);p(7,10,C.woodD);p(8,10,C.woodD);p(7,11,C.wood);p(8,11,C.wood);p(7,12,C.woodD);p(8,12,C.woodD);p(5,7,'#4fc3f7');p(10,7,'#4fc3f7');p(5,8,'#2a5a7e');p(10,8,'#2a5a7e');return createSprite(s)}
+function makeWaterTile(f=0){const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.water3:w>0.5?C.water2:C.water1}return createSprite(s)}
+function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}return createSprite(s)}
+
+sprites.tiles.grass=[0,1,2,3].map(()=>makeTile(C.grass2,[C.grass1,C.grass3,C.grass4,C.grass1,C.grass3]));
+sprites.tiles.dirt=[0,1].map(()=>makeTile(C.dirt1,[C.dirt2,C.dirt3,C.dirt2]));
+sprites.tiles.stone=[0,1].map(()=>makeTile(C.stone1,[C.stone2,C.stone3]));
+sprites.tiles.marsh=[0,1,2].map(()=>makeTile(C.marsh1,[C.marsh2,C.marsh3,C.marsh2,'#1a2a0a']));
+sprites.tiles.ruins=[0,1].map(()=>makeTile(C.ruins1,[C.ruins2,C.ruins3,'#2a2840']));
+sprites.tiles.sand=[0,1].map(()=>makeTile(C.sand1,[C.sand2,C.sand1]));
+sprites.tiles.water=[0,1,2,3].map(f=>makeWaterTile(f));
+sprites.tiles.corrupt=[0,1,2].map(()=>makeTile(C.corrupt1,[C.corrupt2,C.corrupt3,'#2a0a3a']));
+sprites.tiles.dungeon=[0,1].map(()=>makeTile(C.dungeon1,[C.dungeon2,C.dungeon3]));
+sprites.tiles.dungeonWall=[0].map(()=>makeTile('#0a0a1a',['#151528','#0f0f22']));
+sprites.objects.tree=[makeTreeTile(),makeTreeTile(),makeTreeTile()];
+sprites.objects.rock=[makeRockTile(),makeRockTile()];
+sprites.objects.bush=[makeBushTile(),makeBushTile()];
+sprites.objects.flower=[makeFlowerTile('#dc2626'),makeFlowerTile('#a855f7'),makeFlowerTile('#4fc3f7'),makeFlowerTile('#f59e0b')];
+sprites.objects.house=[makeHouseTile(C.wall1,C.roof1),makeHouseTile(C.wall2,C.roof2),makeHouseTile('#8a8a7a','#4a5a6a')];
+const resourceSprites={};
+['branch','herb','ore','fiber','scrap','hide','relicShard'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
+
+// ═══ WORLD MAP ═══
+const zoneMap={town:{x1:40,y1:28,x2:60,y2:44,name:'Cindergate',danger:0},forest:{x1:8,y1:5,x2:38,y2:35,name:'Emberwood',danger:1},marsh:{x1:20,y1:45,x2:55,y2:72,name:'Mirefen',danger:2},ruins:{x1:62,y1:10,x2:95,y2:45,name:'Glass Ruins',danger:3}};
+const terrain=new Uint8Array(MW*MH),terrainVariant=new Uint8Array(MW*MH),corruptionMap=new Float32Array(MW*MH);
+const decorations=[],buildings=[];
+// Dungeon entrance locations
+const dungeonEntrances=[{x:78,y:25,name:'Shattered Reliquary',zone:'ruins',minLevel:3,floors:3},{x:25,y:50,name:'Sunken Hollow',zone:'marsh',minLevel:5,floors:4},{x:15,y:20,name:'The Deep Root',zone:'forest',minLevel:7,floors:5}];
+
+function generateWorld(){
+for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;terrainVariant[i]=rand(0,3);corruptionMap[i]=0;terrain[i]=0;
+if(x>=40&&x<=60&&y>=28&&y<=44)terrain[i]=Math.random()>0.4?1:2;
+else if(x>=8&&x<=38&&y>=5&&y<=35)terrain[i]=0;
+else if(x>=20&&x<=55&&y>=45&&y<=72)terrain[i]=Math.random()>0.3?4:(Math.random()>0.5?3:4);
+else if(x>=62&&x<=95&&y>=10&&y<=45)terrain[i]=Math.random()>0.4?5:2;
+if(x<4||x>MW-5||y<3||y>MH-4)terrain[i]=3;
+const rX=39+Math.sin(y*0.15)*3;if(Math.abs(x-rX)<2&&y>20&&y<50)terrain[i]=3;
+const rY=44+Math.sin(x*0.12)*2;if(Math.abs(y-rY)<1.5&&x>30&&x<65)terrain[i]=3;
+if(Math.abs(y-27)<1&&x>35&&x<42)terrain[i]=1;
+if(Math.abs(x-55)<1&&y>35&&y<48)terrain[i]=1;
+if(Math.abs(y-30)<1&&x>58&&x<65)terrain[i]=1;
+}
+for(let i=0;i<180;i++){const x=rand(9,37),y=rand(6,34);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'tree',variant:rand(0,2)})}
+for(let i=0;i<40;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==3)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+for(let i=0;i<60;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===0||terrain[y*MW+x]===4)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
+for(let i=0;i<50;i++){const x=rand(10,36),y=rand(6,33);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
+[{x:44,y:32},{x:48,y:31},{x:52,y:32},{x:56,y:33},{x:45,y:36},{x:50,y:37},{x:55,y:36},{x:47,y:40},{x:53,y:40}].forEach((b,i)=>buildings.push({x:b.x,y:b.y,variant:i%3}));
+for(let i=0;i<15;i++){const x=rand(65,92),y=rand(13,42);decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+decorations.sort((a,b)=>a.y-b.y);
+}
+generateWorld();
+
+// ═══ ITEM DEFINITIONS ═══
+const itemDefs={
+branch:{name:'Branch',type:'material',rarity:'common',desc:'Rough wood.'},fiber:{name:'Fiber',type:'material',rarity:'common',desc:'Plant fibers.'},herb:{name:'Herb',type:'material',rarity:'common',desc:'Restorative herb.'},scrap:{name:'Scrap Metal',type:'material',rarity:'common',desc:'Ruin salvage.'},hide:{name:'Hide',type:'material',rarity:'common',desc:'Tough beast hide.'},ore:{name:'Veil Ore',type:'material',rarity:'uncommon',desc:'Crystallized veil energy.'},ashCore:{name:'Ash Core',type:'material',rarity:'rare',desc:'Smolders with ancient heat.'},wraithEssence:{name:'Wraith Essence',type:'material',rarity:'epic',desc:'Condensed veil energy.'},drakeScale:{name:'Drake Scale',type:'material',rarity:'rare',desc:'Nearly indestructible.'},relicShard:{name:'Relic Shard',type:'material',rarity:'rare',desc:'Fragment of an ancient relic. Scholars covet these.'},voidFragment:{name:'Void Fragment',type:'material',rarity:'epic',desc:'A piece of nothingness. It hums.'},corruptedHeart:{name:'Corrupted Heart',type:'material',rarity:'epic',desc:'Pulses with dark energy.'},
+woodblade:{name:'Woodblade',type:'weapon',slot:'weapon',atk:3,rarity:'common',desc:'Simple blade.'},ironblade:{name:'Iron Blade',type:'weapon',slot:'weapon',atk:6,rarity:'uncommon',desc:'Proper steel.'},veilEdge:{name:'Veil Edge',type:'weapon',slot:'weapon',atk:10,rarity:'rare',desc:'Hums with energy.'},ashfangBlade:{name:'Ashfang Blade',type:'weapon',slot:'weapon',atk:16,rarity:'epic',desc:'Forged from drake fang. Evolves with kills.',evolves:true,kills:0},wraithTouch:{name:'Wraith Touch',type:'weapon',slot:'weapon',atk:12,rarity:'epic',desc:'Phases through armor.',critBonus:15},relicBlade:{name:'Relic Blade',type:'weapon',slot:'weapon',atk:20,rarity:'legendary',desc:'An ancient weapon reformed from dungeon shards.'},voidreaper:{name:'Voidreaper',type:'weapon',slot:'weapon',atk:24,rarity:'legendary',desc:'Carved from pure void. Enemies flee.'},
+wanderercoat:{name:'Wanderer Coat',type:'armor',slot:'body',def:2,rarity:'common',desc:'Basic protection.'},marshwraps:{name:'Marsh Wraps',type:'armor',slot:'body',def:4,rarity:'uncommon',desc:'Toxin resistant.'},veilcloak:{name:'Veilcloak',type:'armor',slot:'body',def:7,rarity:'rare',desc:'Shimmers at edges.'},drakemail:{name:'Drake Mail',type:'armor',slot:'body',def:12,rarity:'epic',desc:'Impossible toughness.'},relicArmor:{name:'Relic Plate',type:'armor',slot:'body',def:16,rarity:'legendary',desc:'Ancient protection reforged.'},
+charm:{name:'Veil Charm',type:'trinket',slot:'trinket',def:1,atk:1,rarity:'uncommon',desc:'Ward against beyond.'},huntersBadge:{name:"Hunter's Badge",type:'trinket',slot:'trinket',atk:3,rarity:'uncommon',desc:'Proven hunter.'},corruptionWard:{name:'Corruption Ward',type:'trinket',slot:'trinket',def:3,rarity:'rare',desc:'Shields the mind.'},scholarsPendant:{name:"Scholar's Pendant",type:'trinket',slot:'trinket',atk:2,def:2,rarity:'rare',desc:'Veil Scholars granted this.'},ashenSignet:{name:'Ashen Signet',type:'trinket',slot:'trinket',atk:4,def:1,rarity:'rare',desc:'Mark of the Ashen Order.'},
+tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},
+};
+
+const recipes=[
+{id:'woodblade',name:'Woodblade',needs:{branch:3,fiber:2},makes:'woodblade'},
+{id:'ironblade',name:'Iron Blade',needs:{woodblade:1,ore:3,scrap:2},makes:'ironblade'},
+{id:'veilEdge',name:'Veil Edge',needs:{ironblade:1,ore:5,wraithEssence:1},makes:'veilEdge'},
+{id:'wanderercoat',name:'Wanderer Coat',needs:{hide:2,fiber:2},makes:'wanderercoat'},
+{id:'marshwraps',name:'Marsh Wraps',needs:{hide:3,herb:2,scrap:1},makes:'marshwraps'},
+{id:'veilcloak',name:'Veilcloak',needs:{marshwraps:1,ore:3,wraithEssence:1},makes:'veilcloak'},
+{id:'drakemail',name:'Drake Mail',needs:{drakeScale:3,ore:5,scrap:4},makes:'drakemail'},
+{id:'charm',name:'Veil Charm',needs:{herb:2,scrap:2,ore:1},makes:'charm'},
+{id:'huntersBadge',name:"Hunter's Badge",needs:{hide:4,scrap:2},makes:'huntersBadge'},
+{id:'corruptionWard',name:'Corruption Ward',needs:{ore:4,wraithEssence:1,herb:3},makes:'corruptionWard'},
+{id:'tonic',name:'Field Tonic',needs:{herb:3,fiber:1},makes:'tonic',count:2},
+{id:'veilElixir',name:'Veil Elixir',needs:{herb:5,ore:2},makes:'veilElixir'},
+{id:'strengthDraft',name:'Strength Draft',needs:{herb:3,ashCore:1},makes:'strengthDraft'},
+{id:'ashfangBlade',name:'Ashfang Blade',needs:{ironblade:1,drakeScale:2,ashCore:2},makes:'ashfangBlade'},
+{id:'relicBlade',name:'Relic Blade',needs:{veilEdge:1,relicShard:5,voidFragment:2},makes:'relicBlade'},
+{id:'relicArmor',name:'Relic Plate',needs:{veilcloak:1,relicShard:5,voidFragment:2},makes:'relicArmor'},
+{id:'scholarsPendant',name:"Scholar's Pendant",needs:{ore:3,relicShard:2},makes:'scholarsPendant'},
+{id:'ashenSignet',name:'Ashen Signet',needs:{ashCore:1,scrap:4,hide:3},makes:'ashenSignet'},
+{id:'voidreaper',name:'Voidreaper',needs:{relicBlade:1,voidFragment:5,corruptedHeart:2},makes:'voidreaper'},
+];
+
+const enemyDefs={
+wolf:{name:'Ash Wolf',hp:22,atk:4,exp:10,gold:3,drops:['hide','branch'],rarity:'common'},
+bogling:{name:'Bogling',hp:30,atk:6,exp:14,gold:4,drops:['herb','hide','fiber'],rarity:'common'},
+sentinel:{name:'Glass Sentinel',hp:40,atk:8,exp:20,gold:6,drops:['scrap','ore'],rarity:'common'},
+bandit:{name:'Bandit',hp:32,atk:7,exp:16,gold:8,drops:['scrap','fiber','hide'],rarity:'common'},
+ashDrake:{name:'Ash Drake',hp:120,atk:16,exp:80,gold:30,drops:['ashCore','drakeScale','drakeScale'],rarity:'rare'},
+veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,drops:['wraithEssence','ore','wraithEssence'],rarity:'rare'},
+corruptWolf:{name:'Corrupt Wolf',hp:45,atk:10,exp:25,gold:8,drops:['corruptedHeart','hide'],rarity:'uncommon'},
+voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,drops:['voidFragment','scrap','relicShard'],rarity:'uncommon'},
+dungeonGuardian:{name:'Dungeon Guardian',hp:200,atk:22,exp:120,gold:50,drops:['relicShard','voidFragment','relicShard'],rarity:'rare'},
+};
+
+// ═══ FACTION SYSTEM (4 FACTIONS) ═══
+const factionDefs={
+cindergate:{name:'Cindergate',color:'var(--fire2)',desc:'The frontier town. Values survival, community, and strength.',icon:'🏠',tiers:['Stranger','Known','Trusted','Champion','Pillar'],perks:['','Shop prices -10%','Settlement discount','Unique recipes','+5 ATK/DEF in town']},
+roadwardens:{name:'Roadwardens',color:'var(--nature)',desc:'Patrol the wilds. Pragmatic, tough, and mercenary.',icon:'🗡',tiers:['Outsider','Runner','Warden','Captain','Commander'],perks:['','Bounty rewards +20%','Free tonics weekly','Rare bounties','Escort quest chain']},
+veilScholars:{name:'Veil Scholars',color:'var(--scholar)',desc:'Study the Veils. Seekers of forbidden knowledge.',icon:'📖',tiers:['Unknown','Initiate','Archivist','Sage','High Scholar'],perks:['','Dungeon info revealed','Relic crafting unlocked','Veilsense +50% XP','Relic dungeons reveal secrets']},
+ashenOrder:{name:'Ashen Order',color:'var(--ashen)',desc:'Militant zealots who believe the Veils must be burned away.',icon:'🔥',tiers:['Heretic','Ember','Torch','Flame','Ashbringer'],perks:['','+2 ATK vs corrupted','Purification ability','Corruption resistance','The Burning Path quest']},
+};
+
+function getFactionTier(standing){if(standing>=80)return 4;if(standing>=50)return 3;if(standing>=25)return 2;if(standing>=10)return 1;return 0}
+
+// ═══ STORY CHAPTERS ═══
+const storyChapters=[
+{id:'ch1',name:'Chapter I: The Walker Wakes',stages:[
+{id:'ch1_start',name:'Awakening',desc:'You arrived in Cindergate with no memory of the crossing. The Elder says you walked through a Veil tear—and survived. Few do.',trigger:s=>true,complete:false},
+{id:'ch1_explore',name:'Beyond the Gate',desc:'Explore Emberwood and survive your first encounters. The wilds are harsher than the stories.',trigger:s=>s.stats.zonesVisited.size>=2&&s.stats.kills>=3,complete:false},
+{id:'ch1_choice',name:'The First Faction',desc:'The town needs you. The Roadwardens want you. The Scholars watch you. The Ashen Order calls. Who do you trust?',trigger:s=>(s.faction.cindergate>=10||s.faction.roadwardens>=10||s.faction.veilScholars>=10||s.faction.ashenOrder>=10),complete:false},
+{id:'ch1_dungeon',name:'Into the Dark',desc:'A relic dungeon has been discovered. The Scholars want its knowledge. The Order wants it purged. Enter and decide.',trigger:s=>s.stats.dungeonsEntered>=1,complete:false},
+{id:'ch1_end',name:'The Veil Speaks',desc:'Deep in the dungeon, you heard a voice through the Veil. It knew your name. It said: "You were chosen. Not saved."',trigger:s=>s.stats.dungeonsCleared>=1,complete:false},
+]},
+{id:'ch2',name:'Chapter II: Fracture Lines',stages:[
+{id:'ch2_start',name:'Rising Tensions',desc:'The factions are splitting. Cindergate blames the Scholars for attracting Veil beasts. The Order wants to purge the ruins. The Roadwardens smell profit in the chaos.',trigger:s=>s.player.level>=5&&s.stats.kills>=15,complete:false},
+{id:'ch2_corruption',name:'The Spreading Dark',desc:'Corruption is surging. Zones are mutating—familiar terrain turning hostile. Creatures are evolving into corrupted forms.',trigger:s=>s.world.regionState.corruption>=35,complete:false},
+{id:'ch2_scholar',name:"The Scholar's Request",desc:'Scholar Lynn asks you to recover a specific relic from the Sunken Hollow. She says it might explain why the Veils are failing.',trigger:s=>s.faction.veilScholars>=15&&s.stats.dungeonsEntered>=2,complete:false},
+{id:'ch2_ashen',name:'The Burning Path',desc:'Commander Voss of the Ashen Order demands you help purge a corrupted zone. Refuse, and you become their enemy.',trigger:s=>s.faction.ashenOrder>=15||s.stats.kills>=30,complete:false},
+{id:'ch2_truth',name:'The Fracture',desc:'You discover that someone is deliberately feeding corruption into the Veils. The evidence points in two directions: the Scholars, or something beneath the ruins.',trigger:s=>s.stats.dungeonsCleared>=2&&s.player.level>=8,complete:false},
+]},
+{id:'ch3',name:'Chapter III: The Broken Veil',stages:[
+{id:'ch3_start',name:'Convergence',desc:'All paths lead to the deepest dungeon—The Deep Root beneath Emberwood. Every faction has a different reason to send you there.',trigger:s=>s.player.level>=10&&s.stats.dungeonsCleared>=3,complete:false},
+{id:'ch3_betrayal',name:'A Betrayal',desc:'One of your allies has been compromised by the Veil. The corruption has a will, and it has been watching you.',trigger:s=>s.world.regionState.corruption>=60||s.player.level>=12,complete:false},
+{id:'ch3_choice',name:'The Final Choice',desc:'At the heart of the Deep Root, you find the source: a living Veil, conscious and dying. It offers you a choice—heal it and keep the old world, or let it die and face what comes.',trigger:s=>s.stats.dungeonsCleared>=4&&s.player.level>=14,complete:false},
+{id:'ch3_end',name:'Ashveil',desc:'Whatever you chose, the world has changed forever. Cindergate stands or falls. The Veils hold or shatter. Your name becomes legend—or warning.',trigger:s=>s.player.level>=16,complete:false},
+]},
+];
+
+// ═══ ACHIEVEMENTS ═══
+const achievementDefs=[
+{id:'first_blood',name:'First Blood',desc:'Defeat your first enemy.',icon:'⚔',check:s=>s.stats.kills>=1},
+{id:'wolf_hunter',name:'Wolf Hunter',desc:'Defeat 10 wolves.',icon:'🐺',check:s=>s.stats.wolfKills>=10},
+{id:'gatherer',name:'Gatherer Supreme',desc:'Gather 50 resources.',icon:'✦',check:s=>s.stats.gathers>=50},
+{id:'crafter',name:'Artisan',desc:'Craft 10 items.',icon:'⚒',check:s=>s.stats.crafts>=10},
+{id:'explorer',name:'Trailblazer',desc:'Visit all 4 zones.',icon:'🗺',check:s=>s.stats.zonesVisited.size>=4},
+{id:'wealthy',name:'Coin Hoarder',desc:'Accumulate 200 gold.',icon:'💰',check:s=>s.player.gold>=200},
+{id:'drake_slayer',name:'Drake Slayer',desc:'Defeat an Ash Drake.',icon:'🔥',check:s=>s.stats.drakeKills>=1},
+{id:'wraith_banisher',name:'Wraith Banisher',desc:'Defeat a Veil Wraith.',icon:'👻',check:s=>s.stats.wraithKills>=1},
+{id:'level10',name:'Seasoned Walker',desc:'Reach level 10.',icon:'⭐',check:s=>s.player.level>=10},
+{id:'dungeon_diver',name:'Dungeon Diver',desc:'Clear a relic dungeon.',icon:'⬡',check:s=>s.stats.dungeonsCleared>=1},
+{id:'faction_devoted',name:'Faction Devoted',desc:'Reach max tier with any faction.',icon:'⚜',check:s=>Object.values(s.faction).some(v=>v>=80)},
+{id:'bounty_hunter',name:'Bounty Hunter',desc:'Complete 5 bounties.',icon:'📜',check:s=>s.stats.bountiesCompleted>=5},
+{id:'corruption_fighter',name:'Corruption Fighter',desc:'Reduce corruption below 10.',icon:'🛡',check:s=>s.world.regionState.corruption<10},
+{id:'master_skill',name:'Skill Master',desc:'Get any skill to level 10.',icon:'📖',check:s=>Object.values(s.player.skills).some(v=>v>=10)},
+{id:'chapter_complete',name:'Story Seeker',desc:'Complete Chapter I.',icon:'📜',check:s=>storyChapters[0].stages.every(st=>st.complete||st.trigger(s))},
+{id:'void_touched',name:'Void Touched',desc:'Collect 3 Void Fragments.',icon:'🕳',check:s=>(s.player.inventory.voidFragment||0)>=3},
+{id:'relic_master',name:'Relic Master',desc:'Craft a legendary relic weapon.',icon:'⚡',check:s=>s.player.equipment.weapon==='relicBlade'||s.player.equipment.weapon==='voidreaper'},
+{id:'world_shaper',name:'World Shaper',desc:'Trigger 5 world mutations.',icon:'🌀',check:s=>s.stats.mutationCount>=5},
+];
+
+const bountyTemplates=[
+{name:'Wolf Menace',desc:'Thin the wolf packs.',target:'wolf',count:5,reward:{gold:25,exp:20},zone:'forest'},
+{name:'Bogling Infestation',desc:'Clear boglings.',target:'bogling',count:4,reward:{gold:30,exp:25},zone:'marsh'},
+{name:'Sentinel Shutdown',desc:'Disable Sentinels.',target:'sentinel',count:3,reward:{gold:40,exp:35},zone:'ruins'},
+{name:'Bandit Cleanup',desc:'Route the bandits.',target:'bandit',count:4,reward:{gold:35,exp:30},zone:'forest'},
+{name:'Herb Collection',desc:'Gather herbs.',target:'herb',count:8,reward:{gold:20,exp:15},zone:'marsh',gather:true},
+{name:'Ore Prospecting',desc:'Bring back Ore.',target:'ore',count:5,reward:{gold:30,exp:20},zone:'ruins',gather:true},
+{name:'Drake Hunt',desc:'Slay the Ash Drake.',target:'ashDrake',count:1,reward:{gold:80,exp:60,item:'ashCore'},zone:'forest'},
+{name:'Wraith Purge',desc:'Banish a Veil Wraith.',target:'veilWraith',count:1,reward:{gold:70,exp:55,item:'wraithEssence'},zone:'ruins'},
+{name:'Corruption Purge',desc:'Slay corrupted creatures.',target:'corruptWolf',count:3,reward:{gold:50,exp:40,item:'corruptedHeart'},zone:'forest'},
+{name:'Relic Recovery',desc:'Gather Relic Shards.',target:'relicShard',count:3,reward:{gold:60,exp:45},zone:'ruins',gather:true},
+];
+
+const eventTemplates=[
+{id:'wolf_migration',name:'Wolf Migration',desc:'A surge of wolves floods Emberwood!',duration:120,effect:'spawnExtra',target:'wolf',zone:'forest',count:6},
+{id:'veil_storm',name:'Veil Storm',desc:'Veil energy surges through the ruins!',duration:90,effect:'buffEnemies',zone:'ruins',buffAmt:1.5},
+{id:'merchant_caravan',name:'Merchant Caravan',desc:'Merchants arrive in Cindergate!',duration:150,effect:'shopDiscount',zone:'town'},
+{id:'corruption_spike',name:'Corruption Spike',desc:'Darkness surges—corruption rising!',duration:100,effect:'corruption',corruptRate:2},
+{id:'bloom_season',name:'Bloom Season',desc:'Herbs bloom across the marshes!',duration:120,effect:'extraResources',zone:'marsh',target:'herb'},
+{id:'rare_sighting',name:'Rare Monster Sighting',desc:'A powerful creature spotted!',duration:180,effect:'spawnRare',zone:null},
+{id:'veil_rift',name:'Veil Rift',desc:'A rift opens! Corrupted creatures pour through!',duration:100,effect:'spawnCorrupt',count:4},
+{id:'scholars_expedition',name:"Scholar's Expedition",desc:'Veil Scholars offer double XP for dungeon runs!',duration:180,effect:'doubleXP'},
+{id:'ashen_purge',name:'Ashen Purge',desc:'The Ashen Order is burning corruption zones! Stability rises.',duration:120,effect:'purge'},
+{id:'faction_clash',name:'Faction Clash',desc:'Two factions clash! Choose a side or stay neutral.',duration:90,effect:'factionClash'},
+];
+
+const settlementLevels=[
+{level:1,name:'Camp',desc:'A few tents and a fire.',benefits:'Basic crafting.'},
+{level:2,name:'Outpost',desc:'Wooden walls, a forge.',benefits:'+2 DEF in town.',cost:{gold:50,branch:10,scrap:5}},
+{level:3,name:'Hamlet',desc:'Stone foundations.',benefits:'+5 max HP.',cost:{gold:120,ore:8,hide:6,scrap:8}},
+{level:4,name:'Stronghold',desc:'Full fortification.',benefits:'+3 ATK/DEF.',cost:{gold:250,ore:15,scrap:12,hide:10}},
+{level:5,name:'Veil Bastion',desc:'Beacon against darkness.',benefits:'Corruption halved.',cost:{gold:500,ore:20,wraithEssence:3,ashCore:2}},
+];
+
+// ═══ DIALOGUE (expanded with new factions) ═══
+const dialogueDefs={
+elder:{start:{speaker:'Elder Maelin',text:'The Veil stirs, Walker. Every day it grows thinner. Four powers now compete for Cindergate\'s future. Which burden will you carry?',choices:[{text:'I stand with Cindergate.',next:'town'},{text:'I follow coin—the Roadwardens.',next:'merc'},{text:'Tell me about the Veils.',next:'lore'},{text:'Who are the Scholars and the Order?',next:'factions'}]},town:{speaker:'Elder Maelin',text:'Then let the frontier remember your name. The wilds will test you.',effect:s=>{s.faction.cindergate+=5;setQuestStage('first_steps',1)},choices:[{text:'I understand.',close:true}]},merc:{speaker:'Elder Maelin',text:'The Roadwardens pay well, but their hands are not always clean.',effect:s=>{s.faction.roadwardens+=5},choices:[{text:'Noted.',close:true}]},lore:{speaker:'Elder Maelin',text:'Living barriers called Veils once separated civilization from ancient forces. Now they weaken. Someone—or something—is training our world to live without them.',choices:[{text:'Who is causing this?',next:'cause'},{text:'I should go.',close:true}]},cause:{speaker:'Elder Maelin',text:'The Scholars say natural decay. The Ashen Order says divine will. I say: someone is deliberately tearing them down. Find the truth in the dungeons.',choices:[{text:'I will.',close:true}]},factions:{speaker:'Elder Maelin',text:'The Veil Scholars study the old barriers—seekers of forbidden knowledge. The Ashen Order believes the Veils are chains that must be burned away. Both are dangerous. Both might be right.',choices:[{text:'I\'ll judge for myself.',close:true}]}},
+quartermaster:{start:{speaker:'Quartermaster Sen',text:'Walker. What do you need?',choices:[{text:'Got work?',next:'work'},{text:'Settlement upgrades?',next:'settlement'},{text:'Show me the map.',next:'map'},{text:'Later.',close:true}]},work:{speaker:'Quartermaster Sen',text:'Gather from Emberwood, survive a hunt. The bounty board has standing contracts.',effect:s=>{if(getQuest('first_steps').stage===0)setQuestStage('first_steps',1)},choices:[{text:'On it.',close:true}]},settlement:{speaker:'Quartermaster Sen',text:'Cindergate grows with investment. Bring materials and gold for upgrades. A stronger settlement means better gear.',choices:[{text:'I\'ll contribute.',close:true}]},map:{speaker:'Quartermaster Sen',text:'West: Emberwood. South: Mirefen. East: Glass Ruins. Dungeon entrances have been found in each. None want you there.',choices:[{text:'Understood.',close:true}]}},
+herbalist:{start:{speaker:'Herbalist Yara',text:'A Walker with all their fingers still. I deal in remedies and awakenings.',choices:[{text:'Awakenings?',next:'awaken'},{text:'What do you sell?',next:'shop'},{text:'Not now.',close:true}]},awaken:{speaker:'Herbalist Yara',text:'Every Walker has a latent class shaped by how they fight, gather, and decide. At level 5, your dominant skill crystallizes. Combat→Warden. Foraging/Crafting→Artificer. Influence→Veilwalker.',choices:[{text:'I\'ll be ready.',close:true}]},shop:{speaker:'Herbalist Yara',text:'Three herbs and a fiber for two tonics. Five herbs and ore for a Veil Elixir.',choices:[{text:'Thanks.',close:true}]}},
+smuggler:{start:{speaker:'Kael the Smuggler',text:'*leans in* Laws are flexible. The Roadwardens and I have an arrangement. Want in?',choices:[{text:'What arrangement?',next:'deal'},{text:'I\'m loyal to Cindergate.',next:'refuse'},{text:'Not interested.',close:true}]},deal:{speaker:'Kael the Smuggler',text:'Bring me ruin materials—scrap, ore—I pay triple. Weakens Cindergate\'s supply chain. Gold is gold, right?',effect:s=>{s.faction.roadwardens+=3},choices:[{text:'I\'ll think about it.',close:true}]},refuse:{speaker:'Kael the Smuggler',text:'*shrugs* Loyalty is a luxury. When the Veil cracks and Cindergate starves, remember who offered an alternative.',effect:s=>{s.faction.cindergate+=3},choices:[{text:'We\'ll see.',close:true}]}},
+bountyMaster:{start:{speaker:'Bounty Master Rhett',text:'Board\'s full, Walker. Pick a contract, get it done, get paid.',choices:[{text:'Show me bounties.',next:'board'},{text:'Any rare targets?',next:'rare'},{text:'Later.',close:true}]},board:{speaker:'Bounty Master Rhett',text:'Check the Bounty tab. Active contracts listed there.',choices:[{text:'Got it.',close:true}]},rare:{speaker:'Bounty Master Rhett',text:'Ash Drakes, Veil Wraiths, and now Corrupted beasts—creatures warped by the failing Veils. Unique materials. Worth the risk.',choices:[{text:'I don\'t run.',close:true}]}},
+scholarLynn:{start:{speaker:'Scholar Lynn',text:'Ah, the Walker everyone is whispering about. I am Lynn of the Veil Scholars. We study the barriers between worlds. I suspect you have more connection to them than you realize.',choices:[{text:'What do you study?',next:'study'},{text:'What do you want from me?',next:'want'},{text:'I\'ve heard you attract Veil beasts.',next:'accusation'},{text:'Not now.',close:true}]},study:{speaker:'Scholar Lynn',text:'The Veils are organic—alive, in a sense. They breathe, flex, and communicate. When a dungeon forms, it\'s the Veil trying to... express something. We need those relics to understand the language.',effect:s=>{s.faction.veilScholars+=3},choices:[{text:'That\'s fascinating.',close:true}]},want:{speaker:'Scholar Lynn',text:'Relic Shards. The dungeons produce them—fragments of the Veil\'s memory. Bring them to me and I\'ll teach you to read the patterns. The rewards are... considerable. Both in knowledge and in power.',effect:s=>{s.faction.veilScholars+=5;if(!getQuest('scholar_quest'))state.quests.push({id:'scholar_quest',name:'The Scholar\'s Collection',stage:0,done:false,desc:'Bring 5 Relic Shards to Scholar Lynn.'})},choices:[{text:'I\'ll bring what I find.',close:true}]},accusation:{speaker:'Scholar Lynn',text:'*pauses* The beasts are not drawn to us. They are drawn to the knowledge we uncover. There is a difference. A subtle one, I grant you. But the Ashen Order\'s answer—burning everything—is no answer at all.',choices:[{text:'Fair point.',close:true},{text:'I\'m not sure I believe you.',close:true}]}},
+commanderVoss:{start:{speaker:'Commander Voss',text:'You. Walker. The Veils are a disease and the old world is dying of it. We are the cure. The Ashen Order burns what must be burned so something stronger can grow. Are you strong enough?',choices:[{text:'What does the Order believe?',next:'belief'},{text:'That sounds extreme.',next:'pushback'},{text:'I want to join.',next:'join'},{text:'Not interested.',close:true}]},belief:{speaker:'Commander Voss',text:'The Veils were cages. They kept humanity weak—dependent on barriers instead of strength. The ancient forces beyond? We should face them. Not hide behind crumbling walls. The Scholars want to rebuild the cage. We want to break it forever.',choices:[{text:'There\'s logic in that.',next:'join'},{text:'Or it destroys everything.',close:true}]},pushback:{speaker:'Commander Voss',text:'Extreme? Look around you. The Veil is failing regardless. We can burn it on our terms, prepared and armed. Or we can let it collapse on us while the Scholars argue about theories. Which is extreme?',effect:s=>{s.faction.ashenOrder+=2},choices:[{text:'You make a point.',close:true}]},join:{speaker:'Commander Voss',text:'Good. Prove yourself. Kill corrupted creatures—the mutants spawned by the failing Veils. Every one you destroy pushes back the tide. Do this and the Order remembers.',effect:s=>{s.faction.ashenOrder+=5;if(!getQuest('ashen_quest'))state.quests.push({id:'ashen_quest',name:'The Burning Path',stage:0,done:false,desc:'Destroy 5 corrupted creatures for Commander Voss.'})},choices:[{text:'It will be done.',close:true}]}},
+};
+
+// ═══ GAME STATE ═══
+let state;
+function createNewState(){return{
+time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
+logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
+world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
+faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:180,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,attackCooldown:0,invincible:0},
+quests:[
+{id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
+{id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
+{id:'roads_or_roots',name:'Roads or Roots',stage:0,done:false,desc:'Choose a faction to support.'},
+],
+npcs:[
+{id:'elder',x:48*T*SCALE,y:33*T*SCALE,name:'Elder Maelin',zone:'town'},
+{id:'quartermaster',x:53*T*SCALE,y:35*T*SCALE,name:'Quartermaster Sen',zone:'town'},
+{id:'herbalist',x:45*T*SCALE,y:37*T*SCALE,name:'Herbalist Yara',zone:'town'},
+{id:'smuggler',x:57*T*SCALE,y:40*T*SCALE,name:'Kael the Smuggler',zone:'town'},
+{id:'bountyMaster',x:51*T*SCALE,y:31*T*SCALE,name:'Bounty Master Rhett',zone:'town'},
+{id:'scholarLynn',x:43*T*SCALE,y:32*T*SCALE,name:'Scholar Lynn',zone:'town'},
+{id:'commanderVoss',x:58*T*SCALE,y:32*T*SCALE,name:'Commander Voss',zone:'town'},
+],
+nodes:buildNodes(),enemies:buildEnemies(),currentDialogue:null,
+flags:{tutorialShown:false},
+settlement:{level:1},
+bounties:generateBounties(),activeBounty:null,
+events:[],activeEvent:null,
+achievements:[],
+dungeon:{active:false,floor:0,rooms:[],currentRoom:0,enemies:[],loot:[],cleared:false,entrance:null},
+stats:{kills:0,wolfKills:0,drakeKills:0,wraithKills:0,gathers:0,crafts:0,deaths:0,zonesVisited:new Set(['town']),pacifistStreak:0,bountiesCompleted:0,nightsSurvived:0,totalDamageDealt:0,totalDamageReceived:0,dungeonsEntered:0,dungeonsCleared:0,mutationCount:0,corruptKills:0},
+particles:[],
+}}
+
+function buildNodes(){const out=[],push=(tx,ty,zone,type)=>out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,ready:true,respawn:0});
+for(let i=0;i<18;i++)push(rand(10,36),rand(7,33),'forest',sample(['branch','fiber','hide','branch','fiber']));
+for(let i=0;i<16;i++)push(rand(22,53),rand(47,70),'marsh',sample(['herb','fiber','hide','herb','herb']));
+for(let i=0;i<14;i++)push(rand(64,93),rand(12,43),'ruins',sample(['scrap','ore','scrap','ore','herb']));
+for(let i=0;i<8;i++)push(rand(41,59),rand(29,43),'town',sample(['branch','fiber','herb']));
+// Relic shard nodes near dungeon entrances
+dungeonEntrances.forEach(de=>{for(let i=0;i<3;i++)push(de.x+rand(-3,3),de.y+rand(-3,3),de.zone,'relicShard')});
+return out}
+
+function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2})};
+for(let i=0;i<8;i++)push(rand(10,36),rand(7,33),'forest',sample(['wolf','wolf','wolf','bandit']));
+for(let i=0;i<7;i++)push(rand(22,53),rand(47,70),'marsh',sample(['bogling','bogling','wolf']));
+for(let i=0;i<6;i++)push(rand(64,93),rand(12,43),'ruins',sample(['sentinel','sentinel','bandit']));
+push(rand(15,30),rand(12,28),'forest','ashDrake');
+push(rand(70,90),rand(18,38),'ruins','veilWraith');
+return out}
+
+function generateBounties(){return[...bountyTemplates].sort(()=>Math.random()-0.5).slice(0,5).map(t=>({...t,progress:0,active:false,completed:false}))}
+
+state=createNewState();
+
+// ═══ HELPERS ═══
+function addItem(id,n=1){state.player.inventory[id]=(state.player.inventory[id]||0)+n}
+function removeItem(id,n=1){state.player.inventory[id]-=n;if(state.player.inventory[id]<=0)delete state.player.inventory[id]}
+function itemCount(id){return state.player.inventory[id]||0}
+function totalAtk(){let n=state.player.atkBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;return n}
+function totalDef(){let n=state.player.defBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;return n}
+function getQuest(id){return state.quests.find(q=>q.id===id)}
+function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
+function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
+function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);checkClassAwakening()}}
+function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
+function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
+function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
+function toast(msg,type='info'){const el=document.createElement('div');el.className=`toast toast-${type}`;el.textContent=msg;toastWrap.appendChild(el);setTimeout(()=>el.remove(),4000)}
+function spawnParticle(x,y,color,count=5,speed=50){for(let i=0;i<count;i++)state.particles.push({x,y,vx:(Math.random()-0.5)*speed,vy:(Math.random()-0.5)*speed-20,life:0.5+Math.random()*0.5,maxLife:0.5+Math.random()*0.5,color,size:2+Math.random()*3})}
+function spawnDamageNumber(x,y,text,color='#ff6b35'){state.particles.push({x,y,vx:0,vy:-40,life:1.2,maxLife:1.2,color,size:0,text,isText:true})}
+
+// ═══ CLASS AWAKENING ═══
+function checkClassAwakening(){if(state.player.class||state.player.level<5)return;const sk=state.player.skills;if(sk.combat>=sk.foraging&&sk.combat>=sk.influence){state.player.class='warden';toast('⚔ AWAKENING: Warden! +3 ATK','achievement');addLog('🔥 Awakened as a Warden.')}else if(sk.foraging>=sk.combat&&sk.foraging>=sk.influence){state.player.class='artificer';toast('⚒ AWAKENING: Artificer! +2 DEF','achievement');addLog('⚒ Awakened as an Artificer.')}else{state.player.class='veilwalker';toast('◈ AWAKENING: Veilwalker! +crit','achievement');addLog('◈ Awakened as a Veilwalker.');state.player.critChance+=10}}
+
+// ═══ WORLD MUTATION SYSTEM ═══
+function updateWorldMutation(dt){
+  const r=state.world.regionState;
+  // Corruption spreads terrain changes
+  if(r.corruption>30){
+    const chance=dt*0.005*(r.corruption/100);
+    if(Math.random()<chance){
+      // Corrupt a random tile in a random zone
+      const zones=['forest','marsh','ruins'];
+      const z=zoneMap[sample(zones)];
+      const tx=rand(z.x1,z.x2),ty=rand(z.y1,z.y2);
+      const i=ty*MW+tx;
+      if(terrain[i]!==3&&terrain[i]!==7){// not water or already corrupt
+        corruptionMap[i]=Math.min(1,corruptionMap[i]+0.3);
+        if(corruptionMap[i]>0.7)terrain[i]=7;// 7=corrupt terrain type
+      }
+    }
+  }
+  // Spawn corrupted creatures based on corruption level
+  if(r.corruption>40&&Math.random()<dt*0.001){
+    const z=zoneMap[sample(['forest','marsh','ruins'])];
+    const type=r.corruption>70?'voidSentinel':'corruptWolf';
+    const def=enemyDefs[type];
+    state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2});
+    state.stats.mutationCount++;
+  }
+  // Ecology affects spawn rates (handled in enemy respawn)
+  // Passive drift
+  if(Math.random()<dt*0.01){r.corruption=clamp(r.corruption+0.1,0,100);r.stability=clamp(r.stability-0.05,0,100)}
+  // Purification from Ashen Order standing
+  if(getFactionTier(state.faction.ashenOrder)>=2&&Math.random()<dt*0.005)r.corruption=Math.max(0,r.corruption-0.1);
+}
+
+function updateRegionState(zone,cd,sd){const r=state.world.regionState;r.corruption=clamp(r.corruption+cd+(zone==='ruins'?0.5:0),0,100);r.stability=clamp(r.stability+sd,0,100);if(state.settlement.level>=5)r.corruption=Math.max(0,r.corruption-0.5);const f=state.faction;r.favoredFaction=Object.entries(f).sort((a,b)=>b[1]-a[1])[0][0];r.favoredFaction=factionDefs[r.favoredFaction]?.name||'None'}
+
+// ═══ RELIC DUNGEON SYSTEM ═══
+function generateDungeon(entrance){
+  const floors=entrance.floors;const rooms=[];
+  for(let f=0;f<floors;f++){
+    const roomCount=3+f;const floorRooms=[];
+    for(let r=0;r<roomCount;r++){
+      const isBoss=f===floors-1&&r===roomCount-1;
+      const enemyCount=isBoss?1:(2+f+rand(0,2));
+      const enemies=[];
+      for(let e=0;e<enemyCount;e++){
+        let type;
+        if(isBoss)type='dungeonGuardian';
+        else if(f>=floors-2)type=sample(['voidSentinel','sentinel','voidSentinel']);
+        else type=sample(['sentinel','bandit','corruptWolf','sentinel']);
+        const def=enemyDefs[type];
+        const scale=1+f*0.2;// enemies get stronger per floor
+        enemies.push({type,hp:Math.floor(def.hp*scale),hpMax:Math.floor(def.hp*scale),alive:true,x:0,y:0});
+      }
+      const loot=[];
+      if(isBoss){loot.push(sample(['voidFragment','relicShard','relicShard','voidFragment']));loot.push(sample(['voidFragment','corruptedHeart','relicShard']))}
+      else if(Math.random()>0.5){loot.push(sample(['ore','scrap','relicShard','herb']))}
+      floorRooms.push({floor:f,index:r,enemies,loot,cleared:false,isBoss,name:isBoss?'Guardian Chamber':`Room ${r+1}`});
+    }
+    rooms.push(...floorRooms);
+  }
+  return rooms;
+}
+
+function enterDungeon(entranceIdx){
+  const entrance=dungeonEntrances[entranceIdx];
+  if(!entrance)return;
+  if(state.player.level<entrance.minLevel)return toast(`Need level ${entrance.minLevel} to enter ${entrance.name}.`);
+  state.dungeon={active:true,floor:0,rooms:generateDungeon(entrance),currentRoom:0,enemies:[],loot:[],cleared:false,entrance:entranceIdx,name:entrance.name};
+  // Position dungeon enemies
+  const room=state.dungeon.rooms[0];
+  room.enemies.forEach((e,i)=>{e.x=state.player.x+rand(-80,80)*SCALE;e.y=state.player.y+rand(-60,60)*SCALE;e.alive=true});
+  state.dungeon.enemies=room.enemies;
+  state.stats.dungeonsEntered++;
+  toast(`⬡ Entered ${entrance.name} — Floor 1`,'dungeon');
+  addLog(`⬡ Descended into ${entrance.name}.`);
+  gainSkill('veilsense',5);
+  renderPanels();
+}
+
+function advanceDungeonRoom(){
+  const d=state.dungeon;if(!d.active)return;
+  const room=d.rooms[d.currentRoom];
+  // Collect loot
+  room.loot.forEach(l=>{addItem(l,1);toast(`Found ${itemDefs[l]?.name||l}!`,'loot')});
+  room.cleared=true;
+  d.currentRoom++;
+  if(d.currentRoom>=d.rooms.length){
+    // Dungeon cleared!
+    d.cleared=true;d.active=false;
+    state.stats.dungeonsCleared++;
+    const bonusGold=30+d.rooms.length*10;
+    state.player.gold+=bonusGold;
+    gainExp(50+d.rooms.length*15);
+    toast(`⬡ ${d.name} CLEARED! +${bonusGold}g`,'dungeon');
+    addLog(`⬡ Cleared ${d.name}! The relic's power flows through you.`);
+    gainSkill('veilsense',15);
+    // Scholar quest progress
+    if(getQuest('scholar_quest')&&!getQuest('scholar_quest').done&&itemCount('relicShard')>=5){completeQuest('scholar_quest',{gold:50,exp:40,item:'scholarsPendant'});state.faction.veilScholars+=15}
+  }else{
+    const nextRoom=d.rooms[d.currentRoom];
+    nextRoom.enemies.forEach((e,i)=>{e.x=state.player.x+rand(-80,80)*SCALE;e.y=state.player.y+rand(-60,60)*SCALE;e.alive=true});
+    d.enemies=nextRoom.enemies;
+    toast(`Advancing to ${nextRoom.isBoss?'★ BOSS: ':''} ${nextRoom.name}`,'dungeon');
+  }
+  renderPanels();
+}
+
+function exitDungeon(){
+  state.dungeon.active=false;
+  toast('Escaped the dungeon.','info');
+  renderPanels();
+}
+
+// ═══ SETTLEMENT ═══
+function canUpgradeSettlement(){const next=settlementLevels[state.settlement.level];if(!next||!next.cost)return false;if(state.player.gold<next.cost.gold)return false;for(const[item,count]of Object.entries(next.cost))if(item!=='gold'&&itemCount(item)<count)return false;return true}
+function upgradeSettlement(){const next=settlementLevels[state.settlement.level];if(!next||!canUpgradeSettlement())return;state.player.gold-=next.cost.gold;for(const[item,count]of Object.entries(next.cost))if(item!=='gold')removeItem(item,count);state.settlement.level++;const lvl=settlementLevels[state.settlement.level-1];toast(`Settlement → ${lvl.name}!`,'event');addLog(`🏠 Cindergate: ${lvl.name}.`);if(state.settlement.level>=3)state.player.hpMax+=5;if(state.settlement.level>=4){state.player.atkBase+=3;state.player.defBase+=3}renderPanels()}
+
+// ═══ COMBAT ═══
+function attackNearest(){
+const p=state.player;if(p.attackCooldown>0)return;
+// In dungeon, attack dungeon enemies
+let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
+if(!enemy||dist(p,enemy)>60*SCALE)return toast('No enemy in range.');
+p.attackCooldown=0.4;const eDef=enemyDefs[enemy.type];
+const crit=Math.random()*100<p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0);
+let dmg=Math.max(1,totalAtk()+rand(0,3)-1);if(crit)dmg=Math.floor(dmg*1.8);
+// Ashen Order bonus vs corrupted
+if(getFactionTier(state.faction.ashenOrder)>=1&&(enemy.type==='corruptWolf'||enemy.type==='voidSentinel'))dmg+=3;
+enemy.hp-=dmg;gainSkill('combat',4);state.stats.totalDamageDealt+=dmg;state.stats.pacifistStreak=0;
+spawnParticle(enemy.x,enemy.y,crit?'#ffcc44':'#ff6b35',crit?8:5);
+spawnDamageNumber(enemy.x,enemy.y-20,crit?`CRIT ${dmg}`:`${dmg}`,crit?'#ffcc44':'#ff6b35');
+if(enemy.hp<=0){
+  enemy.alive=false;state.stats.kills++;
+  if(enemy.type==='wolf')state.stats.wolfKills++;
+  if(enemy.type==='ashDrake')state.stats.drakeKills++;
+  if(enemy.type==='veilWraith')state.stats.wraithKills++;
+  if(enemy.type==='corruptWolf'||enemy.type==='voidSentinel')state.stats.corruptKills++;
+  gainExp(eDef.exp);const goldDrop=eDef.gold+rand(0,3);state.player.gold+=goldDrop;
+  const drop=sample(eDef.drops);addItem(drop,1);
+  spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);
+  toast(`${eDef.name} defeated! +${goldDrop}g +${itemDefs[drop]?.name||drop}`,'combat');
+  addLog(`⚔ Defeated ${eDef.name}.`);
+  // Bounty
+  if(state.activeBounty&&!state.activeBounty.completed&&state.activeBounty.target===enemy.type&&!state.activeBounty.gather){state.activeBounty.progress++;if(state.activeBounty.progress>=state.activeBounty.count)completeBounty()}
+  // Ashen quest
+  const aq=getQuest('ashen_quest');if(aq&&!aq.done&&(enemy.type==='corruptWolf'||enemy.type==='voidSentinel')){aq.stage++;if(aq.stage>=5){completeQuest('ashen_quest',{gold:60,exp:50,item:'ashenSignet'});state.faction.ashenOrder+=15}}
+  // Quest progress
+  const zone=currentZoneAt(p.x,p.y);
+  if(zone==='forest'&&getQuest('wild_proof')?.stage<2)setQuestStage('wild_proof',2);
+  if(getQuest('wild_proof')?.stage>=2&&!getQuest('wild_proof')?.done)completeQuest('wild_proof',{gold:18,exp:20});
+  // Ecology
+  if(enemy.type==='wolf')state.world.ecology.wolfPop=Math.max(0.3,state.world.ecology.wolfPop-0.02);
+  if(enemy.type==='bogling')state.world.ecology.boglingPop=Math.max(0.3,state.world.ecology.boglingPop-0.02);
+  if(!state.dungeon.active)updateRegionState(zone,-2,+2);
+  enemy.respawn=state.time+12+Math.random()*15;
+  // Dungeon: check if room cleared
+  if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive)){advanceDungeonRoom()}
+}else{
+  const ret=Math.max(1,eDef.atk-totalDef()+rand(0,2));
+  if(p.invincible<=0){p.hp-=ret;state.stats.totalDamageReceived+=ret;spawnDamageNumber(p.x,p.y-20,`${ret}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3)}
+  if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('💀 Fell.')}
+}renderAll()}
+
+function gatherNearest(){const p=state.player;const node=state.nodes.filter(n=>n.ready&&dist(p,n)<50*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];
+if(!node)return toast('No resource nearby.');
+addItem(node.type,1);node.ready=false;node.respawn=state.time+8+Math.random()*10;gainSkill('foraging',4);state.stats.gathers++;state.stats.pacifistStreak++;
+spawnParticle(node.x,node.y,'#3ddc84',6,40);toast(`Gathered ${itemDefs[node.type]?.name||node.type}`,'loot');addLog(`✦ Gathered ${itemDefs[node.type]?.name||node.type}.`);
+if(state.activeBounty&&!state.activeBounty.completed&&state.activeBounty.gather&&state.activeBounty.target===node.type){state.activeBounty.progress++;if(state.activeBounty.progress>=state.activeBounty.count)completeBounty()}
+const zone=currentZoneAt(p.x,p.y);
+if(zone==='forest'&&getQuest('first_steps')?.stage<2)setQuestStage('first_steps',2);
+if((itemCount('branch')+itemCount('fiber')+itemCount('hide'))>=6&&getQuest('wild_proof')?.stage<1)setQuestStage('wild_proof',1);
+// Scholar quest
+if(node.type==='relicShard')state.faction.veilScholars+=1;
+renderPanels()}
+
+function interactNearest(){if(state.currentDialogue)return;const p=state.player;const npc=state.npcs.filter(n=>dist(p,n)<60*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];if(npc)return openDialogue(npc.id,'start');
+// Check dungeon entrances
+const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCALE-p.y)<60*SCALE);
+if(de){const idx=dungeonEntrances.indexOf(de);enterDungeon(idx);return}
+toast('Nothing nearby.')}
+
+function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
+function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none'}
+
+function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe||!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
+function canCraft(r){return Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n)}
+function equipItem(id){const def=itemDefs[id];if(!def||!def.slot)return;const prev=state.player.equipment[def.slot];if(prev)addItem(prev,1);state.player.equipment[def.slot]=id;removeItem(id,1);toast(`Equipped ${def.name}`);renderPanels()}
+function unequip(slot){const id=state.player.equipment[slot];if(!id)return;addItem(id,1);state.player.equipment[slot]=null;renderPanels()}
+function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal)state.player.hp=clamp(state.player.hp+def.heal,0,state.player.hpMax);if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
+
+function chooseFaction(side){state.faction[side]+=10;gainSkill('influence',6);toast(`+10 ${factionDefs[side]?.name||side} standing`,'quest');addLog(`Supported ${factionDefs[side]?.name||side}.`);renderPanels()}
+
+function acceptBounty(idx){if(state.activeBounty&&!state.activeBounty.completed)return toast('Complete current bounty first.');const b=state.bounties[idx];if(!b||b.completed)return;b.active=true;b.progress=0;state.activeBounty=b;toast(`Bounty: ${b.name}`,'event');addLog(`📜 Bounty: ${b.name}`);renderPanels()}
+function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=true;let goldReward=b.reward.gold;if(getFactionTier(state.faction.roadwardens)>=1)goldReward=Math.floor(goldReward*1.2);state.player.gold+=goldReward;if(b.reward.exp)gainExp(b.reward.exp);if(b.reward.item)addItem(b.reward.item,1);state.stats.bountiesCompleted++;state.faction.roadwardens+=3;toast(`Bounty done: ${b.name}! +${goldReward}g`,'quest');addLog(`✦ Bounty: ${b.name}`);state.activeBounty=null;if(state.bounties.every(b=>b.completed)){state.bounties=generateBounties();toast('New bounties!','event')}renderPanels()}
+
+// ═══ EVENTS ═══
+function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
+if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
+if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}
+if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
+if(t.effect==='purge'){state.world.regionState.corruption=Math.max(0,state.world.regionState.corruption-10);state.world.regionState.stability=Math.min(100,state.world.regionState.stability+5)}}
+function updateEvent(dt){if(!state.activeEvent)return;state.activeEvent.timeLeft-=dt;if(state.activeEvent.timeLeft<=0){toast(`Event ended: ${state.activeEvent.name}`,'event');state.activeEvent=null}}
+
+// ═══ STORY PROGRESS ═══
+function checkStoryProgress(){
+  if(!(state.stats.zonesVisited instanceof Set))state.stats.zonesVisited=new Set(state.stats.zonesVisited);
+  storyChapters.forEach(ch=>{ch.stages.forEach(st=>{if(!st.complete&&st.trigger(state)){st.complete=true;toast(`📖 ${st.name}`,'story');addLog(`📖 Story: ${st.name} — ${st.desc}`)}})});
+}
+
+// ═══ ACHIEVEMENTS ═══
+function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state.stats.zonesVisited=new Set(state.stats.zonesVisited);achievementDefs.forEach(a=>{if(state.achievements.includes(a.id))return;if(a.check(state)){state.achievements.push(a.id);toast(`🏆 ${a.name}`,'achievement');addLog(`🏆 ${a.name}`)}})}
+
+// ═══ SAVE/LOAD ═══
+function saveGame(){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];localStorage.setItem(SAVE_KEY,JSON.stringify(sd));toast('Saved.','info')}
+function loadGame(){const raw=localStorage.getItem(SAVE_KEY);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);closeDialogue();renderAll();toast('Loaded.','info')}
+
+// ═══ UPDATE LOOP ═══
+function update(dt){
+state.time+=dt;state.dayTime+=dt;
+if(state.dayTime>=240){state.dayTime=0;state.day++;state.stats.nightsSurvived++;state.world.ecology.wolfPop=Math.min(1.5,state.world.ecology.wolfPop+0.01);state.world.ecology.boglingPop=Math.min(1.5,state.world.ecology.boglingPop+0.01)}
+const p=state.player;p.attackCooldown=Math.max(0,p.attackCooldown-dt);p.invincible=Math.max(0,p.invincible-dt);
+p.buffs=p.buffs.filter(b=>{b.remaining-=dt;return b.remaining>0});
+if(!state.currentDialogue){
+const kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
+const ky=(state.input.KeyS||state.input.ArrowDown?1:0)-(state.input.KeyW||state.input.ArrowUp?1:0);
+const mx=clamp(kx+state.touchMove.x,-1,1),my=clamp(ky+state.touchMove.y,-1,1);
+if(mx||my){const len=Math.hypot(mx,my)||1;p.x+=(mx/len)*p.speed*dt*SCALE;p.y+=(my/len)*p.speed*dt*SCALE;if(Math.abs(mx)>Math.abs(my))p.facing=mx>0?'right':'left';else p.facing=my>0?'down':'up';p.animTimer+=dt;if(p.animTimer>0.15){p.animTimer=0;p.animFrame=(p.animFrame+1)%4}}}
+p.x=clamp(p.x,T*SCALE*4,MW*T*SCALE-T*SCALE*4);p.y=clamp(p.y,T*SCALE*3,MH*T*SCALE-T*SCALE*4);
+const prevZone=state.world.activeZone;state.world.activeZone=currentZoneAt(p.x,p.y);
+if(state.world.activeZone!==prevZone){state.stats.zonesVisited.add(state.world.activeZone);gainSkill('survival',3)}
+// Dungeon button visibility
+const nearDungeon=dungeonEntrances.some(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCALE-p.y)<60*SCALE);
+btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
+// Nodes
+state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
+// Enemy AI (overworld)
+if(!state.dungeon.active){
+state.enemies.forEach(e=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax}if(!e.alive)return;if(e.zone===state.world.activeZone){const d=dist(e,p);if(d<180*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(25+(zoneMap[e.zone]?.danger||0)*8)*SCALE;e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt;if(d<20*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;toast('Fell.','combat');addLog('💀 Fell.')}}}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
+}else{
+// Dungeon enemy AI
+state.dungeon.enemies.forEach(e=>{if(!e.alive)return;const d=dist(e,p);if(d<200*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;e.x+=(dx/len)*35*SCALE*dt;e.y+=(dy/len)*35*SCALE*dt;if(d<20*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}})
+}
+// Particles
+state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=80*dt;pt.life-=dt;return pt.life>0});
+// Quest auto
+if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQuest('first_steps',{gold:12,exp:14});setQuestStage('wild_proof',1)}
+if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('WASD move. SPACE attack. F gather. E interact. R enter dungeons.','info')}
+const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
+state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
+trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);
+if(Math.floor(state.time*2)!==Math.floor((state.time-dt)*2)){checkAchievements();checkStoryProgress()}
+}
+
+// ═══ RENDERING ═══
+const waterFrame={current:0,timer:0};
+function drawMap(){
+const cssW=canvas.clientWidth||canvas.width,cssH=canvas.clientHeight||canvas.height;
+ctx.clearRect(0,0,cssW,cssH);ctx.save();ctx.translate(-state.camera.x,-state.camera.y);
+const dayPhase=state.dayTime/240,nightAmount=Math.max(0,Math.sin(dayPhase*Math.PI*2-Math.PI*0.5)*0.3);
+const stx=Math.max(0,Math.floor(state.camera.x/(T*SCALE))-1),sty=Math.max(0,Math.floor(state.camera.y/(T*SCALE))-1);
+const etx=Math.min(MW-1,Math.ceil((state.camera.x+cssW)/(T*SCALE))+1),ety=Math.min(MH-1,Math.ceil((state.camera.y+cssH)/(T*SCALE))+1);
+waterFrame.timer+=0.016;if(waterFrame.timer>0.4){waterFrame.timer=0;waterFrame.current=(waterFrame.current+1)%4}
+const tSpr=[sprites.tiles.grass,sprites.tiles.dirt,sprites.tiles.stone,sprites.tiles.water,sprites.tiles.marsh,sprites.tiles.ruins,sprites.tiles.sand,sprites.tiles.corrupt];
+for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=tt===3?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
+// Corruption overlay
+const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==7){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
+// Buildings
+buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE;if(bx>state.camera.x-T*SCALE*2&&bx<state.camera.x+cssW+T*SCALE*2&&by>state.camera.y-T*SCALE*2&&by<state.camera.y+cssH+T*SCALE*2)ctx.drawImage(sprites.objects.house[b.variant],bx,by,T*SCALE*2,T*SCALE*2)});
+const drawables=[];
+// Decorations
+decorations.forEach(d=>{const dx=d.x*T*SCALE,dy=d.y*T*SCALE;if(dx>state.camera.x-T*SCALE*2&&dx<state.camera.x+cssW+T*SCALE*2&&dy>state.camera.y-T*SCALE*2&&dy<state.camera.y+cssH+T*SCALE*2){const sa=sprites.objects[d.type];if(sa){const sp=sa[d.variant%sa.length];const sz=d.type==='tree'?T*SCALE*2:(d.type==='rock'?T*SCALE*1.5:T*SCALE);drawables.push({y:dy+sz,draw:()=>ctx.drawImage(sp,dx,dy,sz,sz)})}}});
+// Zone labels
+const lb=(name,x,y)=>drawables.push({y:y-100,draw:()=>{ctx.font=`bold ${14*SCALE}px Cinzel,serif`;ctx.textAlign='center';ctx.fillStyle='rgba(123,104,238,.4)';ctx.fillText(name,x,y);ctx.textAlign='left'}});
+lb('Cindergate',50*T*SCALE,30*T*SCALE);lb('Emberwood',22*T*SCALE,12*T*SCALE);lb('Mirefen',38*T*SCALE,55*T*SCALE);lb('Glass Ruins',78*T*SCALE,18*T*SCALE);
+// Dungeon entrances
+dungeonEntrances.forEach(de=>{const dx=de.x*T*SCALE,dy=de.y*T*SCALE;drawables.push({y:dy,draw:()=>{ctx.globalAlpha=0.5+Math.sin(state.time*3)*0.2;ctx.fillStyle='#7b68ee';ctx.beginPath();ctx.arc(dx,dy,T*SCALE*0.8,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#ccbbff';ctx.beginPath();ctx.arc(dx,dy,T*SCALE*0.3,0,Math.PI*2);ctx.fill();ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='#9b8afb';ctx.fillText(`⬡ ${de.name}`,dx,dy-T*SCALE);ctx.textAlign='left'}})});
+// Resource nodes
+state.nodes.forEach(n=>{if(!n.ready)return;const spr=resourceSprites[n.type];if(!spr)return;if(Math.abs(n.x-state.camera.x-cssW/2)>cssW&&Math.abs(n.y-state.camera.y-cssH/2)>cssH)return;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.globalAlpha=0.3+Math.sin(state.time*3+n.x)*0.15;ctx.drawImage(spr,n.x-T*SCALE*0.6,n.y-T*SCALE*0.6,T*SCALE*1.2,T*SCALE*1.2);ctx.globalAlpha=1;ctx.drawImage(spr,n.x-T*SCALE*0.5,n.y-T*SCALE*0.5,T*SCALE,T*SCALE)}})});
+// NPCs
+state.npcs.forEach(n=>{const spr=sprites.npcs[n.id];if(!spr)return;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.drawImage(spr,n.x-T*SCALE*0.5,n.y-T*SCALE*0.75,T*SCALE,T*SCALE*1.2);ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(8,9,13,.8)';const tw=ctx.measureText(n.name).width;ctx.fillRect(n.x-tw/2-4,n.y-T*SCALE*0.85-2,tw+8,14);ctx.fillStyle='#f59e0b';ctx.fillText(n.name,n.x,n.y-T*SCALE*0.75);ctx.textAlign='left'}})});
+// Enemies (overworld or dungeon)
+const visEnemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,state.player)<500*SCALE));
+visEnemies.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const eDef=enemyDefs[e.type];const isR=eDef.rarity==='rare'||eDef.rarity==='uncommon';const sz=eDef.rarity==='rare'?T*SCALE*2:T*SCALE*1.2;
+drawables.push({y:e.y+sz/2,draw:()=>{if(isR){ctx.globalAlpha=0.15+Math.sin(state.time*4)*0.1;ctx.fillStyle=e.type.includes('corrupt')||e.type.includes('void')?'#aa44aa':(e.type==='ashDrake'?'#ff6b35':'#7b68ee');ctx.beginPath();ctx.arc(e.x,e.y,sz*0.7,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}ctx.drawImage(spr,e.x-sz/2,e.y-sz/2,sz,sz);const bw=sz*0.8,bh=4,bx=e.x-bw/2,by=e.y-sz/2-8;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by,bw,bh);ctx.fillStyle=isR?'#f59e0b':'#dc2626';ctx.fillRect(bx,by,bw*(e.hp/e.hpMax),bh);if(isR||eDef.rarity==='rare'){ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='#f59e0b';ctx.fillText(`★ ${eDef.name}`,e.x,by-4);ctx.textAlign='left'}}})});
+// Player
+const p=state.player,pSpr=sprites.player[p.animFrame%4];
+drawables.push({y:p.y+T*SCALE*0.6,draw:()=>{ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+T*SCALE*0.55,T*SCALE*0.4,T*SCALE*0.15,0,0,Math.PI*2);ctx.fill();if(p.invincible>0&&Math.floor(p.invincible*10)%2)ctx.globalAlpha=0.5;const flip=p.facing==='left';if(flip){ctx.save();ctx.translate(p.x,0);ctx.scale(-1,1);ctx.drawImage(pSpr,-T*SCALE*0.5,p.y-T*SCALE*0.7,T*SCALE,T*SCALE*1.3);ctx.restore()}else ctx.drawImage(pSpr,p.x-T*SCALE*0.5,p.y-T*SCALE*0.7,T*SCALE,T*SCALE*1.3);ctx.globalAlpha=1;const bw=T*SCALE*0.9,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw,bh);ctx.fillStyle=p.hp/p.hpMax>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw*(p.hp/p.hpMax),bh)}});
+drawables.sort((a,b)=>a.y-b.y);drawables.forEach(d=>d.draw());
+// Particles
+state.particles.forEach(pt=>{ctx.globalAlpha=pt.life/pt.maxLife;if(pt.isText){ctx.font='bold 12px "JetBrains Mono",monospace';ctx.fillStyle=pt.color;ctx.textAlign='center';ctx.fillText(pt.text,pt.x,pt.y);ctx.textAlign='left'}else{ctx.fillStyle=pt.color;ctx.fillRect(pt.x-pt.size/2,pt.y-pt.size/2,pt.size,pt.size)}ctx.globalAlpha=1});
+// Night overlay
+if(nightAmount>0.01){ctx.fillStyle=`rgba(5,5,20,${nightAmount})`;ctx.fillRect(state.camera.x,state.camera.y,cssW,cssH);const grd=ctx.createRadialGradient(p.x,p.y,10,p.x,p.y,200*SCALE);grd.addColorStop(0,`rgba(255,170,80,${nightAmount*0.15})`);grd.addColorStop(1,'transparent');ctx.fillStyle=grd;ctx.fillRect(p.x-200*SCALE,p.y-200*SCALE,400*SCALE,400*SCALE)}
+// Corruption/Dungeon overlay
+if(state.world.regionState.corruption>40){ctx.fillStyle=`rgba(100,30,150,${(state.world.regionState.corruption-40)/60*0.08})`;ctx.fillRect(state.camera.x,state.camera.y,cssW,cssH)}
+if(state.dungeon.active){ctx.fillStyle='rgba(5,0,20,0.15)';ctx.fillRect(state.camera.x,state.camera.y,cssW,cssH);
+// Dungeon veil particles
+for(let i=0;i<3;i++){const px=state.camera.x+Math.random()*cssW,py=state.camera.y+Math.random()*cssH;ctx.globalAlpha=0.1+Math.random()*0.1;ctx.fillStyle='#7b68ee';ctx.fillRect(px,py,2,2);ctx.globalAlpha=1}}
+ctx.restore()}
+
+// Minimap
+function drawMinimap(){if(!mmCtx)return;const mw=mmCanvas.width,mh=mmCanvas.height;mmCtx.fillStyle='#08090d';mmCtx.fillRect(0,0,mw,mh);const sx=mw/MW,sy=mh/MH;
+for(let y=0;y<MH;y+=2)for(let x=0;x<MW;x+=2){const t=terrain[y*MW+x];mmCtx.fillStyle=['#2d5a1e','#6b5233','#555f6e','#1a4a6e','#2a4a1e','#3a3850','#c4a86e','#3a1a3a'][t]||'#18202a';mmCtx.fillRect(x*sx,y*sy,sx*2+1,sy*2+1)}
+const px=(state.player.x/(MW*T*SCALE))*mw,py=(state.player.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#fff';mmCtx.fillRect(px-2,py-2,4,4);
+state.enemies.forEach(e=>{if(!e.alive)return;const ex=(e.x/(MW*T*SCALE))*mw,ey=(e.y/(MH*T*SCALE))*mh;mmCtx.fillStyle=enemyDefs[e.type]?.rarity==='rare'?'#f59e0b':'#dc2626';mmCtx.fillRect(ex-1,ey-1,2,2)});
+dungeonEntrances.forEach(de=>{const dx=(de.x/MW)*mw,dy=(de.y/MH)*mh;mmCtx.fillStyle='#7b68ee';mmCtx.fillRect(dx-2,dy-2,4,4)});
+state.npcs.forEach(n=>{const nx=(n.x/(MW*T*SCALE))*mw,ny=(n.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#f59e0b';mmCtx.fillRect(nx-1,ny-1,3,3)})}
+
+// ═══ HUD ═══
+function renderHud(){const p=state.player,zone=zoneMap[state.world.activeZone]||{name:'Unknown'},ti=state.dayTime<120?'☀':'☾',cls=p.class?` • ${cap(p.class)}`:'';
+hud.innerHTML=`<div class="hud-bar"><span class="icon">♥</span><span class="label">HP</span><div style="width:100px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div class="hp-fill" style="width:${(p.hp/p.hpMax)*100}%;background:${p.hp/p.hpMax>0.3?'linear-gradient(90deg,#3b82f6,#60a5fa)':'linear-gradient(90deg,#dc2626,#ef4444)'}"></div></div><span class="value">${p.hp}/${p.hpMax}</span></div>
+<div class="hud-bar"><span class="icon">⬥</span><span class="label">Lv</span><span class="value">${p.level}${cls}</span></div>
+<div class="hud-bar"><span class="icon">${ti}</span><span class="label">${zone.name}</span><span class="value">Day ${state.day}</span></div>
+<div class="hud-bar"><span class="icon">⚔</span><span class="value">${totalAtk()}</span><span class="icon" style="margin-left:6px">🛡</span><span class="value">${totalDef()}</span><span class="icon" style="margin-left:6px">💰</span><span class="value">${p.gold}</span></div>
+${state.dungeon.active?`<div class="hud-bar" style="border-color:rgba(123,104,238,.4);color:#9b8afb"><span class="icon">⬡</span><span class="value">DUNGEON: ${state.dungeon.name} Room ${state.dungeon.currentRoom+1}/${state.dungeon.rooms.length}</span></div>`:''}
+${state.activeEvent?`<div class="hud-bar" style="border-color:rgba(245,158,11,.4);color:#fbbf24"><span class="icon">⚡</span><span class="value">${state.activeEvent.name} (${Math.ceil(state.activeEvent.timeLeft)}s)</span></div>`:''}
+${state.activeBounty&&!state.activeBounty.completed?`<div class="hud-bar" style="border-color:rgba(255,107,53,.3)"><span class="icon">📜</span><span class="tiny">${state.activeBounty.name}: ${state.activeBounty.progress}/${state.activeBounty.count}</span></div>`:''}`}
+
+// ═══ PANELS ═══
+function renderPanels(){
+const p=state.player;
+
+// Journal
+panels.journal.innerHTML=`<div class="card"><h3>⬥ Walker's Journal</h3><p>The Veils weaken. You are a Walker.${p.class?` Awakened as <strong class="fire">${cap(p.class)}</strong>.`:' Awakening at Lv 5.'}</p></div>
+<div class="card"><h3>Active Quests</h3><div class="list">${state.quests.map(q=>`<div class="item"><div><strong>${q.name}</strong> <span class="badge ${q.done?'badge-done':'badge-quest'}">${q.done?'Done':'Stage '+q.stage}</span><div class="tiny">${q.desc}</div></div></div>`).join('')}</div></div>
+<div class="card"><h3>Recent Log</h3><div class="list">${state.logs.slice(0,8).map(l=>`<div class="item"><div class="tiny">${l}</div></div>`).join('')}</div></div>`;
+
+// Story
+const storyHTML=storyChapters.map(ch=>{const stages=ch.stages.map(st=>{const done=st.complete;return`<div class="item" style="${done?'border-color:rgba(155,138,251,.3);background:rgba(155,138,251,.04)':'opacity:.6'}"><div><strong>${st.name}</strong>${done?' <span class="badge badge-chapter">Done</span>':''}<div class="tiny">${st.desc}</div></div></div>`}).join('');return`<div class="card"><h3>${ch.name}</h3><div class="list">${stages}</div></div>`}).join('');
+panels.story.innerHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="tiny">Your choices shape the narrative. Story progresses through exploration, combat, faction loyalty, and dungeon delving.</p></div>${storyHTML}`;
+
+// Inventory
+const inv=Object.entries(p.inventory);
+panels.inventory.innerHTML=`<div class="card"><h3>⬥ Inventory</h3><p class="tiny">${inv.length} types</p></div><div class="card"><div class="list">${inv.length?inv.map(([id,cnt])=>{const it=itemDefs[id];if(!it)return'';const rc='rarity-'+(it.rarity||'common');const act=it.type==='consumable'?`<button class="item-btn" onclick="W.useItem('${id}')">Use</button>`:it.slot?`<button class="item-btn" onclick="W.equipItem('${id}')">Equip</button>`:'';return`<div class="item"><div><strong class="${rc}">${it.name}</strong><div class="tiny">x${cnt} • ${cap(it.type)}</div></div>${act}</div>`}).join(''):'<div class="item"><div class="tiny">Empty.</div></div>'}</div></div>`;
+
+// Equipment
+panels.equip.innerHTML=`<div class="card"><h3>⬥ Equipment</h3></div><div class="card"><div class="equipGrid">${['weapon','body','trinket'].map(s=>{const id=p.equipment[s],it=id?itemDefs[id]:null,rc=it?'rarity-'+(it.rarity||'common'):'';return`<div class="slot"><div class="slot-label">${cap(s)}</div><div class="slot-item ${rc}">${it?it.name:'—'}</div>${it?`<div class="tiny" style="margin-top:4px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div><button class="item-btn" style="margin-top:4px" onclick="W.unequip('${s}')">Remove</button>`:''}</div>`}).join('')}</div></div><div class="card"><div class="row"><span>Attack</span><strong class="fire">${totalAtk()}</strong></div><div class="row"><span>Defense</span><strong class="veil">${totalDef()}</strong></div><div class="row"><span>Crit</span><strong class="gold">${p.critChance}%</strong></div></div>`;
+
+// Skills
+panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}</div>${Object.entries(p.skills).map(([sk,lv])=>{const xp=p.skillXp[sk],need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
+
+// Crafting
+panels.crafting.innerHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
+
+// Bounty
+panels.bounty.innerHTML=`<div class="card"><h3>⬥ Bounty Board</h3></div>${state.activeBounty&&!state.activeBounty.completed?`<div class="card" style="border-color:rgba(255,107,53,.3)"><h4>Active: ${state.activeBounty.name}</h4><p class="tiny">${state.activeBounty.desc}</p><div class="meter" style="margin-top:6px"><div class="meter-fill" style="width:${(state.activeBounty.progress/state.activeBounty.count)*100}%;background:linear-gradient(90deg,#ff6b35,#ff9f1a)"></div></div><div class="tiny">${state.activeBounty.progress}/${state.activeBounty.count}</div></div>`:''}<div class="card"><div class="list">${state.bounties.map((b,i)=>`<div class="item"><div><strong>${b.name}</strong> <span class="badge ${b.completed?'badge-done':b.active?'badge-bounty':'badge-event'}">${b.completed?'Done':b.active?'Active':'Open'}</span><div class="tiny">${b.desc}</div><div class="tiny gold">${b.reward.gold}g ${b.reward.exp}xp${b.reward.item?' +'+itemDefs[b.reward.item]?.name:''}</div></div>${!b.active&&!b.completed?`<button class="item-btn" onclick="W.acceptBounty(${i})">Accept</button>`:''}</div>`).join('')}</div></div>`;
+
+// Factions (4 factions!)
+panels.factions.innerHTML=`<div class="card"><h3>⬥ Factions</h3><p class="tiny">Four powers compete. Your standing shapes the world.</p></div><div class="faction-grid">${Object.entries(factionDefs).map(([id,f])=>{const standing=state.faction[id]||0;const tier=getFactionTier(standing);const tierName=f.tiers[tier];return`<div class="faction-card${tier>=2?' highlight':''}"><div style="font-size:20px">${f.icon}</div><strong style="color:${f.color}">${f.name}</strong><div class="tiny">${tierName} (${standing})</div><div class="meter" style="margin:4px 0"><div class="meter-fill" style="width:${Math.min(100,standing)}%;background:${f.color}"></div></div><div class="tiny">${f.perks[tier]||''}</div><button class="item-btn" style="margin-top:4px" onclick="W.chooseFaction('${id}')">Support</button></div>`}).join('')}</div><div class="card"><p class="tiny">${factionDefs[Object.entries(state.faction).sort((a,b)=>b[1]-a[1])[0]?.[0]]?.desc||''}</p></div>`;
+
+// World
+const r=state.world.regionState,sl=settlementLevels[state.settlement.level-1],nsl=settlementLevels[state.settlement.level];
+panels.world.innerHTML=`<div class="card"><h3>⬥ World State</h3></div><div class="card"><h4>Corruption</h4><div class="meter"><div class="meter-fill meter-corruption" style="width:${r.corruption}%"></div></div><div class="tiny">${Math.floor(r.corruption)}% — ${r.corruption>60?'World darkens.':r.corruption>30?'Shadows creep.':'Stable.'}</div></div><div class="card"><h4>Stability</h4><div class="meter"><div class="meter-fill meter-stability" style="width:${r.stability}%"></div></div><div class="tiny">${Math.floor(r.stability)}% — Favored: ${r.favoredFaction}</div></div>
+<div class="card"><h4>Ecology</h4><div class="row"><span>Wolf Pop</span><span class="tiny">${(state.world.ecology.wolfPop*100).toFixed(0)}%</span></div><div class="row"><span>Bogling Pop</span><span class="tiny">${(state.world.ecology.boglingPop*100).toFixed(0)}%</span></div><div class="tiny" style="margin-top:4px">Overhunting reduces populations. They recover over time. High corruption spawns mutants.</div></div>
+<div class="card"><h4>Settlement: ${sl.name} (Lv ${state.settlement.level})</h4><p class="tiny">${sl.desc}</p><p class="tiny nature">${sl.benefits}</p>${nsl?`<div style="margin-top:8px"><h4>Next: ${nsl.name}</h4><div class="tiny">${Object.entries(nsl.cost).map(([k,v])=>`${cap(k)}: ${k==='gold'?state.player.gold:itemCount(k)}/${v}`).join(', ')}</div><button class="item-btn" style="margin-top:6px" ${canUpgradeSettlement()?'':'disabled'} onclick="W.upgradeSettlement()">Upgrade</button></div>`:'<div class="tiny gold" style="margin-top:4px">Max level!</div>'}</div>`;
+
+// Dungeon
+const d=state.dungeon;
+panels.dungeon.innerHTML=`<div class="card"><h3>⬥ Relic Dungeons</h3><p class="tiny">Ancient structures formed by failing Veils. Dangerous but rich with relics.</p></div>
+${d.active?`<div class="card" style="border-color:rgba(123,104,238,.4)"><h4>⬡ Active: ${d.name}</h4><div class="tiny">Room ${d.currentRoom+1}/${d.rooms.length} — Enemies: ${d.enemies.filter(e=>e.alive).length} alive</div><button class="item-btn" style="margin-top:6px" onclick="W.exitDungeon()">Flee Dungeon</button></div>`:''}
+<div class="card"><h3>Dungeon Entrances</h3><div class="list">${dungeonEntrances.map((de,i)=>`<div class="item"><div><strong class="veil">${de.name}</strong><div class="tiny">Zone: ${de.zone} • Min Lv ${de.minLevel} • ${de.floors} floors</div></div>${!d.active?`<button class="item-btn" onclick="W.enterDungeon(${i})">Enter</button>`:''}</div>`).join('')}</div></div>
+<div class="card"><h4>Dungeon Stats</h4><div class="row"><span>Entered</span><span class="tiny">${state.stats.dungeonsEntered}</span></div><div class="row"><span>Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div></div>`;
+
+// Achievements
+panels.achieve.innerHTML=`<div class="card"><h3>⬥ Achievements</h3><p class="tiny">${state.achievements.length}/${achievementDefs.length}</p></div><div class="card"><div class="list">${achievementDefs.map(a=>{const u=state.achievements.includes(a.id);return`<div class="item" style="${u?'border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.04)':'opacity:.5'}"><div><strong>${a.icon} ${a.name}</strong>${u?' <span class="badge badge-achievement">✓</span>':''}<div class="tiny">${a.desc}</div></div></div>`}).join('')}</div></div>
+<div class="card"><h3>Stats</h3><div class="row"><span>Kills</span><span class="tiny">${state.stats.kills}</span></div><div class="row"><span>Gathers</span><span class="tiny">${state.stats.gathers}</span></div><div class="row"><span>Crafts</span><span class="tiny">${state.stats.crafts}</span></div><div class="row"><span>Deaths</span><span class="tiny">${state.stats.deaths}</span></div><div class="row"><span>Bounties</span><span class="tiny">${state.stats.bountiesCompleted}</span></div><div class="row"><span>Dungeons Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div><div class="row"><span>Corrupt Kills</span><span class="tiny">${state.stats.corruptKills}</span></div><div class="row"><span>Mutations</span><span class="tiny">${state.stats.mutationCount}</span></div><div class="row"><span>Damage Dealt</span><span class="tiny">${state.stats.totalDamageDealt}</span></div><div class="row"><span>Zones Found</span><span class="tiny">${state.stats.zonesVisited.size}/4</span></div></div>`;
+}
+
+function renderAll(){renderHud();renderPanels()}
+
+// ═══ RESIZE ═══
+function resize(){const rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;canvas.width=Math.floor(rect.width*ratio);canvas.height=Math.floor(rect.height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);ctx.imageSmoothingEnabled=false}
+
+// ═══ INPUT ═══
+let joystickActive=false;
+function updateJV(x,y){joystickThumb.style.transform=`translate(${x}px,${y}px)`}
+function resetJ(){state.touchMove.x=0;state.touchMove.y=0;joystickActive=false;updateJV(0,0)}
+function handleJ(cx,cy){const rect=joystickZone.getBoundingClientRect(),dx=cx-(rect.left+rect.width/2),dy=cy-(rect.top+rect.height/2),max=36,len=Math.hypot(dx,dy)||1,c=Math.min(len,max),nx=(dx/len)*c,ny=(dy/len)*c;state.touchMove.x=nx/max;state.touchMove.y=ny/max;updateJV(nx,ny)}
+joystickZone?.addEventListener('pointerdown',e=>{joystickActive=true;joystickZone.setPointerCapture(e.pointerId);handleJ(e.clientX,e.clientY)});
+joystickZone?.addEventListener('pointermove',e=>{if(joystickActive)handleJ(e.clientX,e.clientY)});
+joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
+qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue()});
+window.addEventListener('keyup',e=>state.input[e.code]=false);
+qs('#btnAttack').onclick=attackNearest;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=saveGame;qs('#btnLoad').onclick=loadGame;
+qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
+qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
+window.addEventListener('resize',()=>{resize();renderAll()});
+
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon};
+
+// ═══ GAME LOOP ═══
+let last=performance.now();
+function loop(now){const dt=Math.min(0.033,(now-last)/1000);last=now;update(dt);drawMap();renderHud();if(Math.floor(state.time)%2===0&&Math.floor(state.time)!==Math.floor(state.time-dt))drawMinimap();requestAnimationFrame(loop)}
+resize();renderAll();drawMinimap();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
