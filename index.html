@@ -92,14 +92,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .toast-dungeon{background:rgba(123,104,238,.12);border:1px solid rgba(123,104,238,.4);border-left:3px solid var(--veil);color:var(--veil2)}
 #eventBanner{position:absolute;top:50px;left:50%;transform:translateX(-50%);z-index:6;display:none;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(255,107,53,.1));border:1px solid rgba(245,158,11,.4);font-family:'Cinzel',serif;font-size:14px;color:var(--gold2);text-align:center;text-shadow:0 0 10px rgba(245,158,11,.3);animation:fadeIn .5s ease;pointer-events:none;max-width:90%}
 #touchControls{position:absolute;inset:0;pointer-events:none;z-index:6}
-#joystickZone{position:absolute;left:18px;bottom:80px;width:120px;height:120px;pointer-events:auto}
+#joystickZone{position:absolute;left:18px;bottom:80px;width:160px;height:160px;pointer-events:auto;touch-action:none}
 #joystickBase,#joystickThumb{position:absolute;border-radius:50%}
-#joystickBase{width:90px;height:90px;left:15px;top:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-#joystickThumb{width:44px;height:44px;left:38px;top:38px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
-#touchButtons{position:absolute;right:18px;bottom:80px;display:flex;gap:8px;pointer-events:auto}
-#touchButtons button{width:56px;height:56px;border-radius:50%;font-size:20px}
+#joystickBase{width:120px;height:120px;left:20px;top:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
+#joystickThumb{width:56px;height:56px;left:52px;top:52px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25)}
+#touchButtons{position:absolute;right:18px;bottom:80px;display:flex;gap:10px;pointer-events:auto;touch-action:none}
+#touchButtons button{width:64px;height:64px;border-radius:50%;font-size:22px}
 @media(min-width:921px){#touchControls{display:none}}
-@media(max-width:920px){#app{grid-template-columns:1fr;grid-template-rows:55vh 45vh}#side{border-left:0;border-top:1px solid var(--line2)}#minimap{width:120px;height:90px}}
+#mobileToggle{display:none;position:fixed;right:14px;top:112px;z-index:201;appearance:none;border:1px solid var(--line);background:rgba(14,17,23,.92);color:var(--gold2);border-radius:10px;width:44px;height:44px;font-size:20px;font-family:'Cinzel',serif;cursor:pointer;backdrop-filter:blur(8px);align-items:center;justify-content:center;text-shadow:0 1px 2px rgba(0,0,0,.5);transition:all .2s}
+#mobileToggle:hover{border-color:var(--veil);background:rgba(123,104,238,.12)}
+#mobileBackdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;backdrop-filter:blur(2px)}
+@media(max-width:920px){#app{grid-template-columns:1fr;grid-template-rows:1fr}#gameWrap{height:100vh}#side{position:fixed;right:0;top:0;bottom:0;width:340px;max-width:80vw;z-index:200;transform:translateX(100%);transition:transform .3s ease;border-left:1px solid var(--line2);border-top:0;box-shadow:-4px 0 20px rgba(0,0,0,.5)}#side.mobile-open{transform:translateX(0)}#minimap{width:120px;height:90px}#mobileToggle{display:flex}#mobileBackdrop.active{display:block}#tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#tabs::-webkit-scrollbar{display:none}.tabBtn{white-space:nowrap;flex-shrink:0}#actionBar{display:none}#dialogue{left:0;right:0;top:0;bottom:0}#dialogueBox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:760px}#sideHeader{padding:10px 12px 6px}#sideHeader h1{font-size:14px}#joystickZone{bottom:24px;left:20px}#touchButtons{bottom:24px;right:20px}}
 #portraitOverlay{display:none;position:fixed;inset:0;z-index:9999;background:#0d0d12;color:var(--gold2);flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Cinzel',serif;gap:16px}
 #portraitOverlay .rotate-icon{font-size:64px;animation:rotateHint 2s ease-in-out infinite}
 #portraitOverlay h2{font-size:22px;margin:0;letter-spacing:2px}
@@ -132,7 +135,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <button class="action-btn" id="btnFullscreen">Fullscreen</button>
 </div>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
+<button id="mobileToggle">☰</button>
 </div>
+<div id="mobileBackdrop"></div>
 <aside id="side">
 <div id="sideHeader"><h1>⬥ Ashveil</h1><div class="subtitle">The Veils are weakening...</div></div>
 <div id="tabs">
@@ -864,9 +869,9 @@ try{screen.orientation.lock('landscape').catch(function(){});}catch(e){}
 let joystickActive=false;
 function updateJV(x,y){joystickThumb.style.transform=`translate(${x}px,${y}px)`}
 function resetJ(){state.touchMove.x=0;state.touchMove.y=0;joystickActive=false;updateJV(0,0)}
-function handleJ(cx,cy){const rect=joystickZone.getBoundingClientRect(),dx=cx-(rect.left+rect.width/2),dy=cy-(rect.top+rect.height/2),max=36,len=Math.hypot(dx,dy)||1,c=Math.min(len,max),nx=(dx/len)*c,ny=(dy/len)*c;state.touchMove.x=nx/max;state.touchMove.y=ny/max;updateJV(nx,ny)}
-joystickZone?.addEventListener('pointerdown',e=>{joystickActive=true;joystickZone.setPointerCapture(e.pointerId);handleJ(e.clientX,e.clientY)});
-joystickZone?.addEventListener('pointermove',e=>{if(joystickActive)handleJ(e.clientX,e.clientY)});
+function handleJ(cx,cy){const rect=joystickZone.getBoundingClientRect(),dx=cx-(rect.left+rect.width/2),dy=cy-(rect.top+rect.height/2),max=50,len=Math.hypot(dx,dy)||1,c=Math.min(len,max),nx=(dx/len)*c,ny=(dy/len)*c;state.touchMove.x=nx/max;state.touchMove.y=ny/max;updateJV(nx,ny)}
+joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActive=true;joystickZone.setPointerCapture(e.pointerId);handleJ(e.clientX,e.clientY)});
+joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
 window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue()});
@@ -875,6 +880,8 @@ qs('#btnAttack').onclick=attackNearest;qs('#btnLoot').onclick=gatherNearest;qs('
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
 qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
+// ═══ MOBILE MENU TOGGLE ═══
+(function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
 window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon};
