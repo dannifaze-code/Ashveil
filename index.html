@@ -129,6 +129,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <button class="action-btn dungeon-btn" id="btnDungeon" style="display:none">⬡ Enter Dungeon <span class="key">R</span></button>
 <button class="action-btn" id="btnSave">Save</button>
 <button class="action-btn" id="btnLoad">Load</button>
+<button class="action-btn" id="btnFullscreen">Fullscreen</button>
 </div>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 </div>
@@ -871,6 +872,7 @@ qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchLoot')?.ad
 window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue()});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=saveGame;qs('#btnLoad').onclick=loadGame;
+qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
 qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
 window.addEventListener('resize',()=>{resize();renderAll()});
