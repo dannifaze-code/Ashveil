@@ -254,7 +254,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .skill-class-info h4{font-family:'Cinzel',serif;font-size:14px;color:#9b8afb;margin-bottom:6px;letter-spacing:1px}
 .skill-class-info p{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5}
 .skill-class-locked{text-align:center;padding:24px;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px;border:1px dashed rgba(90,60,20,.3);border-radius:10px;margin-top:12px}
-@media(max-width:920px){#skillsBox{width:95vw;height:92vh;max-height:none}.skills-body{flex-direction:column}.skills-nav{flex-direction:row;min-width:auto;overflow-x:auto;border-right:none;border-bottom:2px solid rgba(90,60,20,.3);padding:8px}.skill-nav-btn{min-width:120px;padding:8px 12px;font-size:10px;justify-content:center}.skills-content{padding:12px}.skill-tree-grid{grid-template-columns:1fr}#skillsBtn{right:188px;bottom:72px;width:44px;height:44px}}
+@media(max-width:920px){#skillsBox{width:95vw;height:92vh;max-height:none}.skills-body{flex-direction:column}.skills-nav{flex-direction:row;min-width:auto;overflow-x:auto;border-right:none;border-bottom:2px solid rgba(90,60,20,.3);padding:8px}.skill-nav-btn{min-width:120px;padding:8px 12px;font-size:10px;justify-content:center}.skills-content{padding:12px}.skill-tree-grid{grid-template-columns:1fr}#skillsBtn{right:66px;bottom:72px;width:44px;height:44px}}
 #inventoryOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
 #inventoryOverlay.open{display:flex}
 #inventoryBox{width:460px;max-width:95vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:16px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
@@ -532,7 +532,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <!-- Journal Overlay Button -->
 <button id="journalBtn" title="Journal (J)">📜</button>
 <button id="inventoryBtn" title="Inventory (I)">🎒</button>
-<button id="skillsBtn" title="Skills (K)">⚔</button>
+<button id="skillsBtn" title="Skills (K)" aria-label="Open Skills Menu">⚔</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -1662,7 +1662,7 @@ function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consum
 function chooseFaction(side){state.faction[side]+=10;gainSkill('influence',6);toast(`+10 ${factionDefs[side]?.name||side} standing`,'quest');addLog(`Supported ${factionDefs[side]?.name||side}.`);renderPanels()}
 
 function acceptBounty(idx){if(state.activeBounty&&!state.activeBounty.completed)return toast('Complete current bounty first.');const b=state.bounties[idx];if(!b||b.completed)return;b.active=true;b.progress=0;state.activeBounty=b;toast(`Bounty: ${b.name}`,'event');addLog(`📜 Bounty: ${b.name}`);renderPanels()}
-function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=true;let goldReward=b.reward.gold;if(getFactionTier(state.faction.roadwardens)>=1)goldReward=Math.floor(goldReward*1.2);state.player.gold+=goldReward;if(b.reward.exp)gainExp(b.reward.exp);if(b.reward.item)addItem(b.reward.item,1);state.stats.bountiesCompleted++;state.faction.roadwardens+=3;if(b.reward.gold>=50){state.player.skillPoints+=1;toast('+1 Skill Point!','quest')}toast(`Bounty done: ${b.name}! +${goldReward}g`,'quest');addLog(`✦ Bounty: ${b.name}`);state.activeBounty=null;if(state.bounties.every(b=>b.completed)){state.bounties=generateBounties();toast('New bounties!','event')}renderPanels()}
+function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=true;let goldReward=b.reward.gold;if(getFactionTier(state.faction.roadwardens)>=1)goldReward=Math.floor(goldReward*1.2);state.player.gold+=goldReward;if(b.reward.exp)gainExp(b.reward.exp);if(b.reward.item)addItem(b.reward.item,1);state.stats.bountiesCompleted++;state.faction.roadwardens+=3;if(goldReward>=50){state.player.skillPoints+=1;toast('+1 Skill Point!','quest')}toast(`Bounty done: ${b.name}! +${goldReward}g`,'quest');addLog(`✦ Bounty: ${b.name}`);state.activeBounty=null;if(state.bounties.every(b=>b.completed)){state.bounties=generateBounties();toast('New bounties!','event')}renderPanels()}
 
 // ═══ EVENTS ═══
 function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
