@@ -1686,7 +1686,7 @@ let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>60*SCALE)return toast('No enemy in range.');
 p.attackCooldown=0.4;const wv=weaponVisuals[p.equipment.weapon];if(wv)p.swingTimer=wv.swing;const eDef=enemyDefs[enemy.type];
-const crit=Math.random()*100<p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0);
+const crit=Math.random()*100<p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0)+(itemDefs[p.equipment.ring]?.critBonus||0);
 let dmg=Math.max(1,totalAtk()+rand(0,3)-1);if(crit)dmg=Math.floor(dmg*1.8);
 // Ashen Order bonus vs corrupted
 if(getFactionTier(state.faction.ashenOrder)>=1&&(enemy.type==='corruptWolf'||enemy.type==='voidSentinel'))dmg+=3;
@@ -2397,14 +2397,14 @@ return`<div class="char-slot" style="${spanStyle}">
 <div class="slot-icon">${s.icon}</div>
 <div class="slot-label">${s.label}</div>
 <div class="slot-item ${rc}">${it?it.name:'—'}</div>
-${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div>`:''}
+${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}${it.critBonus?'+'+it.critBonus+'% Crit ':''}</div>`:''}
 ${it?`<button class="item-btn" style="margin-top:4px;font-size:9px;padding:3px 6px" onclick="W.unequip('${s.key}');W.renderCharPanel()">Remove</button>`:''}
 </div>`}).join('');
 qs('#charStats').innerHTML=`
 <div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${p.hpMax}</span></div>
 <div class="char-stat"><span class="stat-label">Attack</span><span class="stat-value">${totalAtk()}</span></div>
 <div class="char-stat"><span class="stat-label">Defense</span><span class="stat-value">${totalDef()}</span></div>
-<div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${p.critChance}%</span></div>
+<div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0)+(itemDefs[p.equipment.ring]?.critBonus||0)}%</span></div>
 <div class="char-stat"><span class="stat-label">Level</span><span class="stat-value">${p.level}</span></div>
 <div class="char-stat"><span class="stat-label">Gold</span><span class="stat-value">${p.gold}</span></div>
 `}
