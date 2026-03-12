@@ -486,7 +486,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button id="gameMenuBtn" title="Menu (ESC)">☰</button>
 <!-- Journal Overlay Button -->
 <button id="journalBtn" title="Journal (J)">📜</button>
-<button id="inventoryBtn" title="Inventory (I)" aria-label="Inventory">🎒</button>
+<button id="inventoryBtn" title="Inventory (I)">🎒</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -581,7 +581,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.rando
 const sample=a=>a[Math.floor(Math.random()*a.length)],cap=s=>s[0].toUpperCase()+s.slice(1);
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
-const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE;
+const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE,LOOT_DROP_CHANCE=0.7,LOOT_DESPAWN_TIME=60;
 function separateEnemies(arr,dt){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const a=arr[i],b=arr[j],sd=dist(a,b);if(sd<ENEMY_SEP&&sd>0.1){const sx=(b.x-a.x)/sd,sy=(b.y-a.y)/sd,push=(ENEMY_SEP-sd)*5*dt;a.x-=sx*push;a.y-=sy*push;b.x+=sx*push;b.y+=sy*push}}}}
 
 const canvas=qs('#game'),ctx=canvas.getContext('2d'),hud=qs('#hud'),toastWrap=qs('#toastWrap');
@@ -1545,9 +1545,9 @@ if(enemy.hp<=0){
   if(enemy.type==='veilWraith')state.stats.wraithKills++;
   if(enemy.type==='corruptWolf'||enemy.type==='voidSentinel')state.stats.corruptKills++;
   gainExp(eDef.exp);const goldDrop=eDef.gold+rand(0,3);state.player.gold+=goldDrop;
-  const loot=[];eDef.drops.forEach(d=>{if(Math.random()<0.7||loot.length===0)loot.push(d)});
+  const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE||loot.length===0)loot.push(d)});
   if(loot.length===0)loot.push(sample(eDef.drops));
-  enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+60;
+  enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
   spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);
   toast(`${eDef.name} defeated! +${goldDrop}g — loot available`,'combat');
   addLog(`⚔ Defeated ${eDef.name}.`);
@@ -1623,7 +1623,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1865,6 +1865,8 @@ if(journalPanels.dungeon)journalPanels.dungeon.innerHTML=dungeonHTML;
 const achieveHTML=`<div class="card"><h3>⬥ Achievements</h3><p class="tiny">${state.achievements.length}/${achievementDefs.length}</p></div><div class="card"><div class="list">${achievementDefs.map(a=>{const u=state.achievements.includes(a.id);return`<div class="item" style="${u?'border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.04)':'opacity:.5'}"><div><strong>${a.icon} ${a.name}</strong>${u?' <span class="badge badge-achievement">✓</span>':''}<div class="tiny">${a.desc}</div></div></div>`}).join('')}</div></div>
 <div class="card"><h3>Stats</h3><div class="row"><span>Kills</span><span class="tiny">${state.stats.kills}</span></div><div class="row"><span>Gathers</span><span class="tiny">${state.stats.gathers}</span></div><div class="row"><span>Crafts</span><span class="tiny">${state.stats.crafts}</span></div><div class="row"><span>Deaths</span><span class="tiny">${state.stats.deaths}</span></div><div class="row"><span>Bounties</span><span class="tiny">${state.stats.bountiesCompleted}</span></div><div class="row"><span>Dungeons Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div><div class="row"><span>Corrupt Kills</span><span class="tiny">${state.stats.corruptKills}</span></div><div class="row"><span>Mutations</span><span class="tiny">${state.stats.mutationCount}</span></div><div class="row"><span>Damage Dealt</span><span class="tiny">${state.stats.totalDamageDealt}</span></div><div class="row"><span>Zones Found</span><span class="tiny">${state.stats.zonesVisited.size}/4</span></div></div>`;
 if(journalPanels.achieve)journalPanels.achieve.innerHTML=achieveHTML;
+// Update inventory overlay if open
+if(qs('#inventoryOverlay').classList.contains('open'))renderInventoryGrid();
 }
 
 function renderAll(){renderHud();renderPanels()}
@@ -1925,7 +1927,8 @@ if(enemy.loot.length===0){enemy.lootable=false;closeLootUI()}
 else openLootUI(enemy)}
 function lootAll(enemy){
 if(!enemy||!enemy.loot)return;
-enemy.loot.forEach(id=>{addItem(id,1);toast(`Picked up ${itemDefs[id]?.name||id}`,'loot')});
+const names=[];enemy.loot.forEach(id=>{addItem(id,1);names.push(itemDefs[id]?.name||id)});
+toast(`Looted: ${names.join(', ')}`,'loot');
 enemy.loot=[];enemy.lootable=false;closeLootUI()}
 // ═══ INVENTORY OVERLAY ═══
 function renderInventoryGrid(){
@@ -1960,13 +1963,14 @@ const allEnemies=state.dungeon.active?state.dungeon.enemies:state.enemies;
 const lootable=allEnemies.filter(en=>en.lootable&&en.loot&&en.loot.length>0);
 const clicked=lootable.find(en=>Math.hypot(en.x-wx,en.y-wy)<LOOT_HITBOX);
 if(clicked)openLootUI(clicked)});
+let lastCursorCheck=0;
 canvas.addEventListener('mousemove',e=>{
+const now=performance.now();if(now-lastCursorCheck<100)return;lastCursorCheck=now;
 const rect=canvas.getBoundingClientRect();
 const mx=(e.clientX-rect.left),my=(e.clientY-rect.top);
 const wx=mx+state.camera.x,wy=my+state.camera.y;
 const allEnemies=state.dungeon.active?state.dungeon.enemies:state.enemies;
-const lootable=allEnemies.filter(en=>en.lootable&&en.loot&&en.loot.length>0);
-const hover=lootable.find(en=>Math.hypot(en.x-wx,en.y-wy)<LOOT_HITBOX);
+const hover=allEnemies.find(en=>en.lootable&&en.loot&&en.loot.length>0&&Math.hypot(en.x-wx,en.y-wy)<LOOT_HITBOX);
 canvas.style.cursor=hover?'pointer':'crosshair'});
 // ═══ JOURNAL OVERLAY ═══
 (function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
