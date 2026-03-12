@@ -131,11 +131,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <button class="action-btn" id="btnAttack">⚔ Attack <span class="key">SPACE</span></button>
 <button class="action-btn" id="btnLoot">✦ Gather <span class="key">F</span></button>
 <button class="action-btn" id="btnTalk">◈ Interact <span class="key">E</span></button>
+<button class="action-btn" id="btnDash">⟐ Dash <span class="key">SHIFT</span></button>
 <button class="action-btn dungeon-btn" id="btnDungeon" style="display:none">⬡ Enter Dungeon <span class="key">R</span></button>
 <button class="action-btn" id="btnSave">Save</button>
+<button class="action-btn" id="btnSave2">Save 2</button>
+<button class="action-btn" id="btnSave3">Save 3</button>
 <button class="action-btn" id="btnLoad">Load</button>
+<button class="action-btn" id="btnLoad2">Load 2</button>
+<button class="action-btn" id="btnLoad3">Load 3</button>
 </div>
-<div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
+<div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
 <div id="mobileBackdrop"></div>
@@ -420,7 +425,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,regenTimer:0,lastCombatTime:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -476,13 +481,25 @@ function totalDef(){let n=state.player.defBase;for(const s of Object.values(stat
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);checkClassAwakening()}}
+function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening()}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
 function toast(msg,type='info'){const el=document.createElement('div');el.className=`toast toast-${type}`;el.textContent=msg;toastWrap.appendChild(el);setTimeout(()=>el.remove(),4000)}
 function spawnParticle(x,y,color,count=5,speed=50){for(let i=0;i<count;i++)state.particles.push({x,y,vx:(Math.random()-0.5)*speed,vy:(Math.random()-0.5)*speed-20,life:0.5+Math.random()*0.5,maxLife:0.5+Math.random()*0.5,color,size:2+Math.random()*3})}
 function spawnDamageNumber(x,y,text,color='#ff6b35'){state.particles.push({x,y,vx:0,vy:-40,life:1.2,maxLife:1.2,color,size:0,text,isText:true})}
+
+// ═══ SCREEN SHAKE ═══
+let screenShake={x:0,y:0,intensity:0,duration:0};
+function triggerShake(intensity=6,duration=0.15){screenShake.intensity=intensity;screenShake.duration=duration}
+function updateShake(dt){if(screenShake.duration>0){screenShake.duration-=dt;screenShake.x=(Math.random()-0.5)*2*screenShake.intensity;screenShake.y=(Math.random()-0.5)*2*screenShake.intensity;screenShake.intensity*=0.9}else{screenShake.x=0;screenShake.y=0}}
+
+// ═══ DASH / DODGE ROLL ═══
+function performDash(){const p=state.player;if(p.dashCooldown>0||p.isDashing||state.currentDialogue)return;const dirX=p.facing==='right'?1:p.facing==='left'?-1:0;const dirY=p.facing==='down'?1:p.facing==='up'?-1:0;if(dirX===0&&dirY===0)return;p.isDashing=true;p.dashTimer=0.15;p.dashCooldown=1.2;p.invincible=Math.max(p.invincible,0.2);p.vx=dirX*p.speed*4;p.vy=dirY*p.speed*4;spawnParticle(p.x,p.y,'rgba(123,104,238,0.6)',6,30);toast('Dash!','info')}
+
+// ═══ DUST TRAIL PARTICLES ═══
+let dustTimer=0;
+function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
 
 // ═══ CLASS AWAKENING ═══
 function checkClassAwakening(){if(state.player.class||state.player.level<5)return;const sk=state.player.skills;if(sk.combat>=sk.foraging&&sk.combat>=sk.influence){state.player.class='warden';toast('⚔ AWAKENING: Warden! +3 ATK','achievement');addLog('🔥 Awakened as a Warden.')}else if(sk.foraging>=sk.combat&&sk.foraging>=sk.influence){state.player.class='artificer';toast('⚒ AWAKENING: Artificer! +2 DEF','achievement');addLog('⚒ Awakened as an Artificer.')}else{state.player.class='veilwalker';toast('◈ AWAKENING: Veilwalker! +crit','achievement');addLog('◈ Awakened as a Veilwalker.');state.player.critChance+=10}}
@@ -619,6 +636,7 @@ if(getFactionTier(state.faction.ashenOrder)>=1&&(enemy.type==='corruptWolf'||ene
 enemy.hp-=dmg;gainSkill('combat',4);state.stats.totalDamageDealt+=dmg;state.stats.pacifistStreak=0;
 spawnParticle(enemy.x,enemy.y,crit?'#ffcc44':'#ff6b35',crit?8:5);
 spawnDamageNumber(enemy.x,enemy.y-20,crit?`CRIT ${dmg}`:`${dmg}`,crit?'#ffcc44':'#ff6b35');
+triggerShake(crit?10:4,crit?0.2:0.1);p.lastCombatTime=state.time;
 if(enemy.hp<=0){
   enemy.alive=false;state.stats.kills++;
   if(enemy.type==='wolf')state.stats.wolfKills++;
@@ -647,7 +665,7 @@ if(enemy.hp<=0){
   if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive)){advanceDungeonRoom()}
 }else{
   const ret=Math.max(1,eDef.atk-totalDef()+rand(0,2));
-  if(p.invincible<=0){p.hp-=ret;state.stats.totalDamageReceived+=ret;spawnDamageNumber(p.x,p.y-20,`${ret}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3)}
+  if(p.invincible<=0){p.hp-=ret;state.stats.totalDamageReceived+=ret;spawnDamageNumber(p.x,p.y-20,`${ret}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);triggerShake(6,0.15);p.lastCombatTime=state.time}
   if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('💀 Fell.')}
 }renderAll()}
 
@@ -701,21 +719,27 @@ function checkStoryProgress(){
 function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state.stats.zonesVisited=new Set(state.stats.zonesVisited);achievementDefs.forEach(a=>{if(state.achievements.includes(a.id))return;if(a.check(state)){state.achievements.push(a.id);toast(`🏆 ${a.name}`,'achievement');addLog(`🏆 ${a.name}`)}})}
 
 // ═══ SAVE/LOAD ═══
-function saveGame(){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];localStorage.setItem(SAVE_KEY,JSON.stringify(sd));toast('Saved.','info')}
-function loadGame(){const raw=localStorage.getItem(SAVE_KEY);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);closeDialogue();renderAll();toast('Loaded.','info')}
+function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);closeDialogue();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+let autoSaveTimer=0;
+function autoSave(dt){autoSaveTimer+=dt;if(autoSaveTimer>=60){autoSaveTimer=0;saveGame(0,true)}}
 
 // ═══ UPDATE LOOP ═══
 function update(dt){
 state.time+=dt;state.dayTime+=dt;
 if(state.dayTime>=240){state.dayTime=0;state.day++;state.stats.nightsSurvived++;state.world.ecology.wolfPop=Math.min(1.5,state.world.ecology.wolfPop+0.01);state.world.ecology.boglingPop=Math.min(1.5,state.world.ecology.boglingPop+0.01)}
 const p=state.player;p.attackCooldown=Math.max(0,p.attackCooldown-dt);p.invincible=Math.max(0,p.invincible-dt);
+p.dashCooldown=Math.max(0,p.dashCooldown-dt);if(p.isDashing){p.dashTimer-=dt;if(p.dashTimer<=0){p.isDashing=false;p.vx*=0.3;p.vy*=0.3}}
 p.buffs=p.buffs.filter(b=>{b.remaining-=dt;return b.remaining>0});
-if(!state.currentDialogue){
+updateShake(dt);spawnDustTrail(dt);
+if(!state.currentDialogue&&!p.isDashing){
 const kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
 const ky=(state.input.KeyS||state.input.ArrowDown?1:0)-(state.input.KeyW||state.input.ArrowUp?1:0);
 const mx=clamp(kx+state.touchMove.x,-1,1),my=clamp(ky+state.touchMove.y,-1,1);
 const maxSpd=p.speed;if(mx||my){const len=Math.hypot(mx,my)||1;const dx=mx/len,dy=my/len;const tVx=dx*maxSpd,tVy=dy*maxSpd;const lerp=Math.min(1,12*dt);p.vx+=(tVx-p.vx)*lerp;p.vy+=(tVy-p.vy)*lerp;if(Math.abs(mx)>Math.abs(my))p.facing=mx>0?'right':'left';else p.facing=my>0?'down':'up';p.isMoving=true}else{const spd=Math.hypot(p.vx,p.vy);if(spd>1){const f=Math.max(0,1-10*dt);p.vx*=f;p.vy*=f}else{p.vx=0;p.vy=0}p.isMoving=Math.hypot(p.vx,p.vy)>5}p.x+=p.vx*dt*SCALE;p.y+=p.vy*dt*SCALE;if(p.isMoving){p.animTimer+=dt*(Math.hypot(p.vx,p.vy)/maxSpd+0.5);if(p.animTimer>0.12){p.animTimer=0;p.animFrame=(p.animFrame+1)%4}}else{p.animTimer+=dt;if(p.animTimer>0.8){p.animTimer=0;p.animFrame=(p.animFrame+1)%2}}}
 p.x=clamp(p.x,T*SCALE*4,MW*T*SCALE-T*SCALE*4);p.y=clamp(p.y,T*SCALE*3,MH*T*SCALE-T*SCALE*4);
+// Passive HP regen: 1 HP/2s out of combat (5s delay), 1 HP/s in town
+const timeSinceCombat=state.time-p.lastCombatTime;if(timeSinceCombat>5&&p.hp<p.hpMax){p.regenTimer+=dt;const regenRate=state.world.activeZone==='town'?1:2;if(p.regenTimer>=regenRate){p.regenTimer=0;p.hp=Math.min(p.hpMax,p.hp+1);if(p.hp%10===0&&p.hp<p.hpMax)spawnParticle(p.x,p.y-10,'#3ddc84',2,15)}}else{p.regenTimer=0}
 const prevZone=state.world.activeZone;state.world.activeZone=currentZoneAt(p.x,p.y);
 if(state.world.activeZone!==prevZone){state.stats.zonesVisited.add(state.world.activeZone);gainSkill('survival',3)}
 // Dungeon button visibility
@@ -725,11 +749,11 @@ btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
 state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
 // Enemy AI (overworld)
 if(!state.dungeon.active){
-state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax}if(!e.alive)return;if(e.zone===state.world.activeZone){const d=dist(e,p);if(d<180*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;toast('Fell.','combat');addLog('💀 Fell.')}}}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
+state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax}if(!e.alive)return;if(e.zone===state.world.activeZone){const d=dist(e,p);if(d<180*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);triggerShake(6,0.15);p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;toast('Fell.','combat');addLog('💀 Fell.')}}}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
 separateEnemies(state.enemies.filter(e=>e.alive&&e.zone===state.world.activeZone),dt);
 }else{
 // Dungeon enemy AI
-state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);if(d<200*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}});
+state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);if(d<200*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);triggerShake(6,0.15);p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}});
 separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
 // Particles
@@ -739,7 +763,7 @@ if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQ
 if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joystick + buttons. PC: WASD move, SPACE attack, F gather, E interact, R dungeon.','info')}
 const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
 state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
-trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);
+trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);
 if(Math.floor(state.time*2)!==Math.floor((state.time-dt)*2)){checkAchievements();checkStoryProgress()}
 }
 
@@ -747,7 +771,7 @@ if(Math.floor(state.time*2)!==Math.floor((state.time-dt)*2)){checkAchievements()
 const waterFrame={current:0,timer:0};
 function drawMap(){
 const cssW=canvas.clientWidth||canvas.width,cssH=canvas.clientHeight||canvas.height;
-ctx.clearRect(0,0,cssW,cssH);ctx.save();ctx.translate(-state.camera.x,-state.camera.y);
+ctx.clearRect(0,0,cssW,cssH);ctx.save();ctx.translate(-state.camera.x+screenShake.x,-state.camera.y+screenShake.y);
 const dayPhase=state.dayTime/240,nightAmount=Math.max(0,Math.sin(dayPhase*Math.PI*2-Math.PI*0.5)*0.3);
 const stx=Math.max(0,Math.floor(state.camera.x/(T*SCALE))-1),sty=Math.max(0,Math.floor(state.camera.y/(T*SCALE))-1);
 const etx=Math.min(MW-1,Math.ceil((state.camera.x+cssW)/(T*SCALE))+1),ety=Math.min(MH-1,Math.ceil((state.camera.y+cssH)/(T*SCALE))+1);
@@ -777,7 +801,7 @@ drawables.push({y:e.y+sz/2,draw:()=>{if(isR){ctx.globalAlpha=0.15+Math.sin(state
 // Player
 const p=state.player,pDir=p.facing==='left'?'right':p.facing,pSpr=p.isMoving?sprites.player.walk[pDir][p.animFrame%4]:sprites.player.idle[pDir][p.animFrame%2];
 const pBob=p.isMoving?Math.sin(state.time*12)*1.5:Math.sin(state.time*2)*0.5;
-drawables.push({y:p.y+T*SCALE*0.6,draw:()=>{ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+T*SCALE*0.55,T*SCALE*0.4,T*SCALE*0.15,0,0,Math.PI*2);ctx.fill();if(p.invincible>0&&Math.floor(p.invincible*10)%2)ctx.globalAlpha=0.5;const flip=p.facing==='left';if(flip){ctx.save();ctx.translate(p.x,0);ctx.scale(-1,1);ctx.drawImage(pSpr,-T*SCALE*0.5,p.y-T*SCALE*0.7+pBob,T*SCALE,T*SCALE*1.3);ctx.restore()}else ctx.drawImage(pSpr,p.x-T*SCALE*0.5,p.y-T*SCALE*0.7+pBob,T*SCALE,T*SCALE*1.3);ctx.globalAlpha=1;const bw=T*SCALE*0.9,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw,bh);ctx.fillStyle=p.hp/p.hpMax>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw*(p.hp/p.hpMax),bh)}});
+drawables.push({y:p.y+T*SCALE*0.6,draw:()=>{ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+T*SCALE*0.55,T*SCALE*0.4,T*SCALE*0.15,0,0,Math.PI*2);ctx.fill();const hitFlash=p.invincible>0.3;if(p.invincible>0&&Math.floor(p.invincible*10)%2)ctx.globalAlpha=0.5;const flip=p.facing==='left';if(flip){ctx.save();ctx.translate(p.x,0);ctx.scale(-1,1);ctx.drawImage(pSpr,-T*SCALE*0.5,p.y-T*SCALE*0.7+pBob,T*SCALE,T*SCALE*1.3);if(hitFlash){ctx.globalCompositeOperation='source-atop';ctx.fillStyle='rgba(220,38,38,0.5)';ctx.fillRect(-T*SCALE*0.5,p.y-T*SCALE*0.7+pBob,T*SCALE,T*SCALE*1.3);ctx.globalCompositeOperation='source-over'}ctx.restore()}else{ctx.drawImage(pSpr,p.x-T*SCALE*0.5,p.y-T*SCALE*0.7+pBob,T*SCALE,T*SCALE*1.3);if(hitFlash){ctx.globalAlpha=0.4;ctx.fillStyle='#dc2626';ctx.fillRect(p.x-T*SCALE*0.4,p.y-T*SCALE*0.6+pBob,T*SCALE*0.8,T*SCALE*1.1);ctx.globalAlpha=1}}ctx.globalAlpha=1;const bw=T*SCALE*0.9,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw,bh);ctx.fillStyle=p.hp/p.hpMax>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.8,bw*(p.hp/p.hpMax),bh)}});
 drawables.sort((a,b)=>a.y-b.y);drawables.forEach(d=>d.draw());
 // Particles
 state.particles.forEach(pt=>{ctx.globalAlpha=pt.life/pt.maxLife;if(pt.isText){ctx.font='bold 12px "JetBrains Mono",monospace';ctx.fillStyle=pt.color;ctx.textAlign='center';ctx.fillText(pt.text,pt.x,pt.y);ctx.textAlign='left'}else{ctx.fillStyle=pt.color;ctx.fillRect(pt.x-pt.size/2,pt.y-pt.size/2,pt.size,pt.size)}ctx.globalAlpha=1});
@@ -801,7 +825,7 @@ state.npcs.forEach(n=>{const nx=(n.x/(MW*T*SCALE))*mw,ny=(n.y/(MH*T*SCALE))*mh;m
 // ═══ HUD ═══
 function renderHud(){const p=state.player,zone=zoneMap[state.world.activeZone]||{name:'Unknown'},ti=state.dayTime<120?'☀':'☾',cls=p.class?` • ${cap(p.class)}`:'';
 hud.innerHTML=`<div class="hud-bar"><span class="icon">♥</span><span class="label">HP</span><div style="width:100px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div class="hp-fill" style="width:${(p.hp/p.hpMax)*100}%;background:${p.hp/p.hpMax>0.3?'linear-gradient(90deg,#3b82f6,#60a5fa)':'linear-gradient(90deg,#dc2626,#ef4444)'}"></div></div><span class="value">${p.hp}/${p.hpMax}</span></div>
-<div class="hud-bar"><span class="icon">⬥</span><span class="label">Lv</span><span class="value">${p.level}${cls}</span></div>
+<div class="hud-bar"><span class="icon">⬥</span><span class="label">Lv</span><span class="value">${p.level}${cls}</span><div style="width:60px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-left:6px"><div style="width:${(p.exp/p.expNext)*100}%;height:100%;border-radius:2px;background:linear-gradient(90deg,#5b4ecc,#9b8afb);transition:width .3s"></div></div><span class="tiny" style="margin-left:4px">${p.exp}/${p.expNext}</span></div>${p.dashCooldown>0?`<div class="hud-bar" style="opacity:.6"><span class="icon">⟐</span><span class="label">Dash</span><span class="tiny">${p.dashCooldown.toFixed(1)}s</span></div>`:''}
 <div class="hud-bar"><span class="icon">${ti}</span><span class="label">${zone.name}</span><span class="value">Day ${state.day}</span></div>
 <div class="hud-bar"><span class="icon">⚔</span><span class="value">${totalAtk()}</span><span class="icon" style="margin-left:6px">🛡</span><span class="value">${totalDef()}</span><span class="icon" style="margin-left:6px">💰</span><span class="value">${p.gold}</span></div>
 ${state.dungeon.active?`<div class="hud-bar" style="border-color:rgba(123,104,238,.4);color:#9b8afb"><span class="icon">⬡</span><span class="value">DUNGEON: ${state.dungeon.name} Room ${state.dungeon.currentRoom+1}/${state.dungeon.rooms.length}</span></div>`:''}
@@ -878,10 +902,10 @@ function handleJ(cx,cy){const rect=joystickZone.getBoundingClientRect(),dx=cx-(r
 joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActive=true;joystickZone.setPointerCapture(e.pointerId);handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
-qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
-window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue()});
+qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue();if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash()});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
-qs('#btnAttack').onclick=attackNearest;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=saveGame;qs('#btnLoad').onclick=loadGame;
+qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
 qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
@@ -889,7 +913,7 @@ qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classLi
 (function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame};
 
 // ═══ GAME LOOP ═══
 let last=performance.now();
