@@ -16,7 +16,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #app{display:grid;grid-template-columns:1fr 400px;width:100vw;height:100vh}
 #gameWrap{position:relative;overflow:hidden;background:radial-gradient(ellipse at 30% 20%,rgba(123,104,238,.06),transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(255,107,53,.04),transparent 50%),linear-gradient(180deg,#0a0c14,#060810)}
 #game{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;cursor:crosshair}
-#hud{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:6px;z-index:2;pointer-events:none}
+#hud{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:6px;z-index:2;pointer-events:none;opacity:0;height:0;overflow:hidden}
 .hud-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(8,9,13,.88);border:1px solid rgba(42,51,71,.6);border-radius:8px;backdrop-filter:blur(8px);font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
 .hud-bar .icon{font-size:14px}.hud-bar .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}.hud-bar .value{color:var(--bright);font-weight:600}
 .hp-fill{height:6px;border-radius:3px;transition:width .3s}
@@ -138,6 +138,126 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .setting-row input[type=range]{width:100px;accent-color:var(--veil)}
 .settings-close{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);border-radius:8px;padding:10px 20px;font-family:'Cinzel',serif;font-size:13px;cursor:pointer;margin-top:16px;width:100%;transition:all .2s}
 .settings-close:hover{border-color:var(--veil);background:rgba(123,104,238,.1)}
+
+/* ═══ GAME MENU ═══ */
+@keyframes menuSlideIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+#gameMenuBtn{position:absolute;right:14px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(139,106,20,.6);background:linear-gradient(180deg,rgba(90,58,10,.95),rgba(60,38,5,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,200,100,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
+#gameMenuBtn:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(110,78,20,.95),rgba(80,48,10,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,200,100,.3)}
+#gameMenuOverlay{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)}
+#gameMenuOverlay.open{display:flex}
+#gameMenuBox{width:340px;max-width:90vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(90,60,20,.6);border-radius:16px;padding:0;overflow:hidden;animation:menuSlideIn .25s ease;box-shadow:0 20px 80px rgba(0,0,0,.7),0 0 40px rgba(90,60,20,.15)}
+#gameMenuBox::before{content:'';display:block;height:3px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.8),rgba(139,106,20,.6),transparent)}
+.gm-header{text-align:center;padding:18px 20px 14px;font-family:'Cinzel',serif;font-size:18px;color:#d4a84a;letter-spacing:3px;text-transform:uppercase;text-shadow:0 2px 8px rgba(200,160,32,.3);border-bottom:1px solid rgba(90,60,20,.3)}
+.gm-body{padding:16px 24px 24px;display:flex;flex-direction:column;gap:10px}
+.gm-btn{appearance:none;width:100%;padding:14px 20px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#d4dae8;cursor:pointer;border-radius:8px;transition:all .2s;position:relative;overflow:hidden;
+border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,65,15,.7),rgba(70,45,10,.8));text-shadow:0 1px 3px rgba(0,0,0,.6);box-shadow:inset 0 1px 0 rgba(255,200,100,.15),inset 0 -2px 4px rgba(0,0,0,.3)}
+.gm-btn:hover{border-color:rgba(200,160,32,.7);background:linear-gradient(180deg,rgba(130,85,20,.8),rgba(90,55,15,.9));color:#f0f4ff;transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,200,100,.25),0 4px 12px rgba(0,0,0,.4)}
+.gm-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(200,160,32,.08),transparent);transition:left .4s}
+.gm-btn:hover::before{left:100%}
+.gm-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(90,60,20,.4),transparent);margin:4px 0}
+/* Corner ornaments */
+.gm-corner{position:absolute;width:24px;height:24px;pointer-events:none}
+.gm-corner-tl{top:8px;left:8px;border-top:2px solid rgba(139,106,20,.4);border-left:2px solid rgba(139,106,20,.4)}
+.gm-corner-tr{top:8px;right:8px;border-top:2px solid rgba(139,106,20,.4);border-right:2px solid rgba(139,106,20,.4)}
+.gm-corner-bl{bottom:8px;left:8px;border-bottom:2px solid rgba(139,106,20,.4);border-left:2px solid rgba(139,106,20,.4)}
+.gm-corner-br{bottom:8px;right:8px;border-bottom:2px solid rgba(139,106,20,.4);border-right:2px solid rgba(139,106,20,.4)}
+
+/* ═══ OPTIONS PANEL ═══ */
+#optionsOverlay{display:none;position:fixed;inset:0;z-index:10001;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)}
+#optionsOverlay.open{display:flex}
+#optionsBox{width:480px;max-width:92vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(90,60,20,.6);border-radius:16px;overflow:hidden;animation:menuSlideIn .25s ease;box-shadow:0 20px 80px rgba(0,0,0,.7)}
+#optionsBox::before{content:'';display:block;height:3px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.8),rgba(139,106,20,.6),transparent)}
+.opt-header{text-align:center;padding:16px 20px 12px;font-family:'Cinzel',serif;font-size:16px;color:#d4a84a;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid rgba(90,60,20,.3)}
+.opt-body{display:flex;padding:16px;gap:12px}
+.opt-tabs{display:flex;flex-direction:column;gap:8px;min-width:100px}
+.opt-tab{appearance:none;padding:10px 16px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#8a7a5a;cursor:pointer;border:1px solid rgba(90,60,20,.3);background:rgba(60,40,10,.4);border-radius:6px;transition:all .2s;text-align:left}
+.opt-tab:hover,.opt-tab.active{color:#d4a84a;border-color:rgba(200,160,32,.5);background:linear-gradient(180deg,rgba(100,65,15,.6),rgba(70,45,10,.7))}
+.opt-content{flex:1;min-width:0}
+.opt-section{display:none;flex-direction:column;gap:10px}
+.opt-section.active{display:flex}
+.opt-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.opt-row label{font-size:12px;color:#b0a890;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.opt-toggle{position:relative;width:44px;height:24px;cursor:pointer}
+.opt-toggle input{display:none}
+.opt-toggle .toggle-track{position:absolute;inset:0;border-radius:12px;border:1px solid rgba(90,60,20,.5);background:rgba(40,30,10,.6);transition:all .2s}
+.opt-toggle input:checked+.toggle-track{border-color:rgba(200,160,32,.7);background:linear-gradient(90deg,rgba(139,106,20,.7),rgba(200,160,32,.6))}
+.opt-toggle .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#d4a84a;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.opt-toggle input:checked~.toggle-thumb{left:23px}
+.opt-select{background:rgba(40,30,10,.6);border:1px solid rgba(90,60,20,.5);color:#d4a84a;border-radius:6px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.opt-footer{padding:12px 16px;border-top:1px solid rgba(90,60,20,.3);text-align:right}
+
+/* ═══ CHAT BOX ═══ */
+#chatBox{position:absolute;left:14px;bottom:80px;width:280px;max-height:180px;z-index:3;pointer-events:auto;display:flex;flex-direction:column;border:1px solid rgba(90,60,20,.4);border-radius:10px;overflow:hidden;background:rgba(8,9,13,.85);backdrop-filter:blur(6px)}
+#chatBox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.4),transparent)}
+#chatHeader{display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(40,30,10,.4);border-bottom:1px solid rgba(90,60,20,.25);font-family:'Cinzel',serif;font-size:11px;color:#8a7a5a;letter-spacing:1px;text-transform:uppercase;cursor:pointer;user-select:none}
+#chatHeader .chat-icon{color:#d4a84a;font-size:13px}
+#chatMessages{flex:1;overflow-y:auto;padding:6px 10px;display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:rgba(90,60,20,.3) transparent;min-height:0;max-height:140px}
+.chat-msg{font-size:11px;font-family:'JetBrains Mono',monospace;line-height:1.4;padding:1px 0}
+.chat-msg .chat-tag{color:var(--fire2);font-weight:600}
+.chat-msg .chat-text{color:#b0a890}
+.chat-msg.chat-system{color:var(--veil2);font-style:italic}
+.chat-msg.chat-combat{color:var(--blood2)}
+.chat-msg.chat-loot{color:var(--nature)}
+.chat-msg.chat-quest .chat-tag{color:var(--veil2)}
+.chat-msg.chat-event .chat-tag{color:var(--gold2)}
+
+/* ═══ CHARACTER PANEL ═══ */
+#charPanel{display:none;position:fixed;right:420px;top:50%;transform:translateY(-50%);z-index:8;width:360px;max-height:85vh;overflow-y:auto;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(90,60,20,.5);border-radius:16px;animation:menuSlideIn .2s ease;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+#charPanel.open{display:block}
+#charPanel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.5),rgba(200,160,32,.7),rgba(139,106,20,.5),transparent);border-radius:16px 16px 0 0}
+.char-header{text-align:center;padding:16px 16px 10px;border-bottom:1px solid rgba(90,60,20,.25)}
+.char-name{font-family:'Cinzel',serif;font-size:16px;color:#f0f4ff;letter-spacing:2px}
+.char-subtitle{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.char-body{display:flex;padding:12px;gap:12px}
+.char-silhouette{position:relative;width:120px;min-height:200px;background:rgba(20,15,30,.6);border:1px solid rgba(90,60,20,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.char-silhouette-img{width:80px;height:160px;background:linear-gradient(180deg,rgba(100,80,140,.15),rgba(60,40,80,.1));border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(155,138,251,.2);font-size:60px}
+.char-slots{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.char-slot{min-height:52px;border:1px dashed rgba(90,60,20,.3);border-radius:8px;padding:8px;background:rgba(30,20,10,.3);text-align:center;transition:all .2s;cursor:default;position:relative}
+.char-slot:hover{border-color:rgba(200,160,32,.4);background:rgba(50,35,15,.4)}
+.char-slot .slot-label{font-size:9px;color:#6a5a3a;text-transform:uppercase;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
+.char-slot .slot-item{font-size:11px;margin-top:3px;font-family:'Crimson Text',serif}
+.char-slot .slot-icon{font-size:18px;color:rgba(139,106,20,.3);margin-bottom:2px}
+.char-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;padding:12px;border-top:1px solid rgba(90,60,20,.25)}
+.char-stat{display:flex;justify-content:space-between;font-size:11px;font-family:'JetBrains Mono',monospace;padding:2px 0}
+.char-stat .stat-label{color:#8a7a5a}.char-stat .stat-value{color:#d4a84a;font-weight:600}
+.char-close{position:absolute;top:10px;right:12px;appearance:none;border:none;background:none;color:#6a5a3a;font-size:18px;cursor:pointer;transition:color .2s;font-family:sans-serif}
+.char-close:hover{color:#d4a84a}
+
+/* ═══ SPELL / ACTION BAR ═══ */
+#spellBar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:7;display:flex;align-items:flex-end;gap:0}
+.spell-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.spell-slots{display:flex;gap:3px;padding:4px 6px;background:rgba(14,12,20,.94);border:1px solid rgba(90,60,20,.5);border-radius:10px;backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(139,106,20,.1)}
+.spell-slot{width:46px;height:46px;border:1px solid rgba(90,60,20,.4);border-radius:8px;background:linear-gradient(180deg,rgba(50,35,15,.6),rgba(30,20,10,.8));display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .15s;overflow:hidden}
+.spell-slot:hover{border-color:rgba(200,160,32,.6);background:linear-gradient(180deg,rgba(70,50,20,.7),rgba(45,30,12,.9))}
+.spell-slot.active{border-color:rgba(200,160,32,.8);box-shadow:0 0 8px rgba(200,160,32,.3)}
+.spell-slot .slot-key{position:absolute;top:2px;left:4px;font-size:8px;color:#6a5a3a;font-family:'JetBrains Mono',monospace;font-weight:600}
+.spell-slot .slot-icon{font-size:20px;opacity:.9}
+.spell-slot.empty .slot-icon{opacity:.15;font-size:16px;color:#4a3a2a}
+.spell-slot .slot-cooldown{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;font-size:12px;color:#d4a84a;font-family:'JetBrains Mono',monospace}
+.spell-divider{width:2px;height:36px;background:rgba(90,60,20,.3);margin:0 4px;align-self:center}
+.potion-slot{width:40px;height:40px;border:1px solid rgba(220,38,38,.4);border-radius:8px;background:linear-gradient(180deg,rgba(60,15,15,.6),rgba(40,10,10,.8));display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .15s}
+.potion-slot:hover{border-color:rgba(220,38,38,.7)}
+.potion-slot .potion-count{position:absolute;bottom:1px;right:3px;font-size:9px;color:#ef4444;font-family:'JetBrains Mono',monospace;font-weight:600}
+#xpBarWrap{width:100%;height:6px;background:rgba(0,0,0,.5);border-radius:3px;overflow:hidden;border:1px solid rgba(90,60,20,.3);margin-top:2px}
+#xpBarFill{height:100%;border-radius:2px;background:linear-gradient(90deg,#5b4ecc,#9b8afb);transition:width .4s ease}
+
+/* ═══ PLAYER NAMEPLATE (HUD) ═══ */
+#playerPlate{position:absolute;left:14px;top:14px;z-index:5;display:flex;align-items:flex-start;gap:8px;pointer-events:none}
+.plate-portrait{width:48px;height:48px;border-radius:50%;border:2px solid rgba(90,60,20,.6);background:radial-gradient(circle at 40% 40%,rgba(40,30,50,.9),rgba(15,10,25,.95));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.plate-portrait .plate-level{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;color:#d4a84a;background:rgba(14,10,20,.9);border:1px solid rgba(90,60,20,.5);border-radius:4px;padding:0 4px;line-height:14px}
+.plate-portrait .portrait-icon{font-size:22px;color:rgba(155,138,251,.4)}
+.plate-info{display:flex;flex-direction:column;gap:3px;min-width:160px}
+.plate-name{font-family:'Cinzel',serif;font-size:12px;color:#f0f4ff;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.plate-bar{width:100%;height:8px;border-radius:4px;overflow:hidden;position:relative;background:rgba(0,0,0,.5);border:1px solid rgba(90,60,20,.3)}
+.plate-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.plate-bar-hp{background:linear-gradient(90deg,#8b1a1a,#dc2626)}
+.plate-bar-mp{background:linear-gradient(90deg,#1a3a8b,#4fc3f7)}
+.plate-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.7);text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.plate-buffs{display:flex;gap:3px;margin-top:1px}
+.plate-buff{width:18px;height:18px;border-radius:4px;border:1px solid rgba(90,60,20,.4);background:rgba(40,30,10,.6);display:flex;align-items:center;justify-content:center;font-size:10px}
+.plate-stats-row{display:flex;gap:10px;font-size:10px;font-family:'JetBrains Mono',monospace;color:#8a7a5a;margin-top:2px}
+.plate-stats-row span{color:#d4a84a}
+@media(max-width:920px){#chatBox{width:200px;max-height:120px;bottom:60px;left:8px}#spellBar{bottom:8px}#charPanel{right:10px;top:10px;transform:none;width:300px;max-height:80vh}#playerPlate{left:8px;top:8px}}
 </style>
 </head>
 <body>
@@ -172,6 +292,95 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <button class="settings-close" id="btnCloseSettings">Close</button>
 </div>
 </div>
+<!-- ═══ GAME MENU OVERLAY ═══ -->
+<div id="gameMenuOverlay">
+<div id="gameMenuBox" style="position:relative">
+<div class="gm-corner gm-corner-tl"></div><div class="gm-corner gm-corner-tr"></div>
+<div class="gm-corner gm-corner-bl"></div><div class="gm-corner gm-corner-br"></div>
+<div class="gm-header">Game Menu</div>
+<div class="gm-body">
+<button class="gm-btn" id="gmContinue">Continue</button>
+<button class="gm-btn" id="gmOptions">Options</button>
+<button class="gm-btn" id="gmControls">Controls</button>
+<div class="gm-divider"></div>
+<button class="gm-btn" id="gmExit">Exit Game</button>
+</div>
+</div>
+</div>
+<!-- ═══ OPTIONS OVERLAY ═══ -->
+<div id="optionsOverlay">
+<div id="optionsBox">
+<div class="opt-header">Options</div>
+<div class="opt-body">
+<div class="opt-tabs">
+<button class="opt-tab active" data-opt="video">Video</button>
+<button class="opt-tab" data-opt="sound">Sound</button>
+<button class="opt-tab" data-opt="mods">Mods</button>
+<button class="opt-tab" data-opt="save">Save</button>
+</div>
+<div class="opt-content">
+<div class="opt-section active" id="opt-video">
+<div class="opt-row"><label>Screen Shake</label><label class="opt-toggle"><input type="checkbox" id="optShake" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+<div class="opt-row"><label>Dust Particles</label><label class="opt-toggle"><input type="checkbox" id="optDust" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+<div class="opt-row"><label>HP Regen</label><label class="opt-toggle"><input type="checkbox" id="optRegen" checked><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+<div class="opt-row"><label>Auto-Save</label><select class="opt-select" id="optAutoSave"><option value="60">Every 60s</option><option value="30">Every 30s</option><option value="120">Every 120s</option><option value="0">Disabled</option></select></div>
+</div>
+<div class="opt-section" id="opt-sound">
+<div style="padding:20px 0;text-align:center;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px">Sound system coming soon.<br><span style="font-size:11px;color:#4a3a2a">The Veil's silence persists... for now.</span></div>
+</div>
+<div class="opt-section" id="opt-mods">
+<div style="padding:20px 0;text-align:center;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px">Mod support coming soon.<br><span style="font-size:11px;color:#4a3a2a">Ancient relics may unlock this power.</span></div>
+</div>
+<div class="opt-section" id="opt-save">
+<div style="display:flex;flex-direction:column;gap:8px">
+<button class="gm-btn" id="optSave1" style="font-size:12px;padding:10px">Save — Slot 1</button>
+<button class="gm-btn" id="optSave2" style="font-size:12px;padding:10px">Save — Slot 2</button>
+<button class="gm-btn" id="optSave3" style="font-size:12px;padding:10px">Save — Slot 3</button>
+<div class="gm-divider"></div>
+<button class="gm-btn" id="optLoad1" style="font-size:12px;padding:10px">Load — Slot 1</button>
+<button class="gm-btn" id="optLoad2" style="font-size:12px;padding:10px">Load — Slot 2</button>
+<button class="gm-btn" id="optLoad3" style="font-size:12px;padding:10px">Load — Slot 3</button>
+</div>
+</div>
+</div>
+</div>
+<div class="opt-footer"><button class="gm-btn" id="optBack" style="width:auto;padding:8px 24px;font-size:12px">Back</button></div>
+</div>
+</div>
+<!-- ═══ CHARACTER PANEL ═══ -->
+<div id="charPanel">
+<button class="char-close" id="charClose">✕</button>
+<div class="char-header">
+<div class="char-name" id="charName">Walker</div>
+<div class="char-subtitle" id="charSubtitle">Level 1</div>
+</div>
+<div class="char-body">
+<div class="char-silhouette">
+<div class="char-silhouette-img">⛨</div>
+</div>
+<div class="char-slots" id="charSlots"></div>
+</div>
+<div class="char-stats" id="charStats"></div>
+</div>
+<!-- ═══ CONTROLS OVERLAY ═══ -->
+<div id="controlsOverlay" style="display:none;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)">
+<div style="width:400px;max-width:90vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(90,60,20,.6);border-radius:16px;overflow:hidden;animation:menuSlideIn .25s ease;box-shadow:0 20px 80px rgba(0,0,0,.7)">
+<div style="height:3px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.8),rgba(139,106,20,.6),transparent)"></div>
+<div class="gm-header">Controls</div>
+<div style="padding:16px 24px;display:flex;flex-direction:column;gap:6px">
+<div class="opt-row"><label>Move</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">WASD / Arrow Keys</span></div>
+<div class="opt-row"><label>Attack</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">SPACE</span></div>
+<div class="opt-row"><label>Gather</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">F</span></div>
+<div class="opt-row"><label>Interact</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">E</span></div>
+<div class="opt-row"><label>Dash</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">SHIFT</span></div>
+<div class="opt-row"><label>Dungeon</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">R</span></div>
+<div class="opt-row"><label>Use Potion</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">5</span></div>
+<div class="opt-row"><label>Character</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">C</span></div>
+<div class="opt-row"><label>Menu</label><span style="color:#d4a84a;font-family:'JetBrains Mono',monospace;font-size:11px">ESC</span></div>
+</div>
+<div class="opt-footer"><button class="gm-btn" id="controlsBack" style="width:auto;padding:8px 24px;font-size:12px">Back</button></div>
+</div>
+</div>
 <div id="app" style="display:none">
 <div id="gameWrap">
 <canvas id="game"></canvas>
@@ -181,7 +390,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div id="eventBanner"></div>
 <div id="toastWrap"></div>
 <div id="dialogue"><div id="dialogueBox"><div id="dialogueSpeaker"></div><h3 id="dialogueText"></h3><div id="dialogueChoices"></div></div></div>
-<div id="actionBar">
+<!-- Old action bar hidden, replaced by spell bar -->
+<div id="actionBar" style="display:none">
 <button class="action-btn" id="btnAttack">⚔ Attack <span class="key">SPACE</span></button>
 <button class="action-btn" id="btnLoot">✦ Gather <span class="key">F</span></button>
 <button class="action-btn" id="btnTalk">◈ Interact <span class="key">E</span></button>
@@ -194,6 +404,35 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <button class="action-btn" id="btnLoad2">Load 2</button>
 <button class="action-btn" id="btnLoad3">Load 3</button>
 </div>
+<!-- Player Nameplate -->
+<div id="playerPlate"></div>
+<!-- Chat Box -->
+<div id="chatBox">
+<div id="chatHeader"><span class="chat-icon">⬥</span> Chronicle</div>
+<div id="chatMessages"></div>
+</div>
+<!-- Spell / Action Bar -->
+<div id="spellBar">
+<div class="spell-bar-wrap">
+<div class="spell-slots">
+<div class="spell-slot active" id="slot-attack" title="Attack (SPACE)"><span class="slot-key">SPC</span><span class="slot-icon">⚔</span></div>
+<div class="spell-slot active" id="slot-gather" title="Gather (F)"><span class="slot-key">F</span><span class="slot-icon">✦</span></div>
+<div class="spell-slot active" id="slot-interact" title="Interact (E)"><span class="slot-key">E</span><span class="slot-icon">◈</span></div>
+<div class="spell-slot active" id="slot-dash" title="Dash (SHIFT)"><span class="slot-key">⇧</span><span class="slot-icon">⟐</span></div>
+<div class="spell-divider"></div>
+<div class="spell-slot empty" id="slot-spell1" title="Spell 1 (1)"><span class="slot-key">1</span><span class="slot-icon">◇</span></div>
+<div class="spell-slot empty" id="slot-spell2" title="Spell 2 (2)"><span class="slot-key">2</span><span class="slot-icon">◇</span></div>
+<div class="spell-slot empty" id="slot-spell3" title="Spell 3 (3)"><span class="slot-key">3</span><span class="slot-icon">◇</span></div>
+<div class="spell-slot empty" id="slot-spell4" title="Spell 4 (4)"><span class="slot-key">4</span><span class="slot-icon">◇</span></div>
+<div class="spell-divider"></div>
+<div class="potion-slot" id="slot-potion" title="Use Potion (5)"><span class="slot-key" style="color:#8b2a1a">5</span><span class="slot-icon" style="font-size:16px;color:#ef4444">♥</span><span class="potion-count" id="potionCount">0</span></div>
+<div class="spell-slot" id="slot-charPanel" title="Character (C)" style="margin-left:4px"><span class="slot-key">C</span><span class="slot-icon" style="font-size:16px;color:#d4a84a">⛨</span></div>
+</div>
+<div id="xpBarWrap"><div id="xpBarFill" style="width:0%"></div></div>
+</div>
+</div>
+<!-- Game Menu Button -->
+<button id="gameMenuBtn" title="Menu (ESC)">☰</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -236,6 +475,7 @@ const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const sample=a=>a[Math.floor(Math.random()*a.length)],cap=s=>s[0].toUpperCase()+s.slice(1);
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
 const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE;
 function separateEnemies(arr,dt){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const a=arr[i],b=arr[j],sd=dist(a,b);if(sd<ENEMY_SEP&&sd>0.1){const sx=(b.x-a.x)/sd,sy=(b.y-a.y)/sd,push=(ENEMY_SEP-sd)*5*dt;a.x-=sx*push;a.y-=sy*push;b.x+=sx*push;b.y+=sy*push}}}}
 
@@ -1326,8 +1566,66 @@ state.nodes.forEach(n=>{if(!n.ready)return;const spr=resourceSprites[n.type];if(
 state.npcs.forEach(n=>{const spr=sprites.npcs[n.id];if(!spr)return;const nBob=Math.sin(state.time*1.5+n.x*0.01)*1.5;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.drawImage(spr,n.x-T*SCALE*0.6,n.y-T*SCALE*0.85+nBob,T*SCALE*1.2,T*SCALE*1.55);ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(8,9,13,.8)';const tw=ctx.measureText(n.name).width;ctx.fillRect(n.x-tw/2-4,n.y-T*SCALE*0.95-2+nBob,tw+8,14);ctx.fillStyle='#f59e0b';ctx.fillText(n.name,n.x,n.y-T*SCALE*0.85+nBob);ctx.textAlign='left'}})});
 // Enemies (overworld or dungeon)
 const visEnemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,state.player)<500*SCALE));
-visEnemies.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const eDef=enemyDefs[e.type];const isR=eDef.rarity==='rare'||eDef.rarity==='uncommon';const sz=eDef.rarity==='rare'?T*SCALE*2.3:T*SCALE*1.4;const eBob=Math.sin(state.time*2.5+e.x*0.02)*2;
-drawables.push({y:e.y+sz/2,draw:()=>{if(isR){ctx.globalAlpha=0.15+Math.sin(state.time*4)*0.1;ctx.fillStyle=e.type.includes('corrupt')||e.type.includes('void')?'#aa44aa':(e.type==='ashDrake'?'#ff6b35':'#7b68ee');ctx.beginPath();ctx.arc(e.x,e.y+eBob,sz*0.7,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}ctx.drawImage(spr,e.x-sz/2,e.y-sz/2+eBob,sz,sz);const bw=sz*0.8,bh=4,bx=e.x-bw/2,by=e.y-sz/2-8+eBob;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by,bw,bh);ctx.fillStyle=isR?'#f59e0b':'#dc2626';ctx.fillRect(bx,by,bw*(e.hp/e.hpMax),bh);if(isR||eDef.rarity==='rare'){ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='#f59e0b';ctx.fillText(`★ ${eDef.name}`,e.x,by-4);ctx.textAlign='left'}}})});
+visEnemies.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const eDef=enemyDefs[e.type];const isR=eDef.rarity==='rare'||eDef.rarity==='uncommon';const isElite=eDef.rarity==='rare';const sz=isElite?T*SCALE*2.3:T*SCALE*1.4;const eBob=Math.sin(state.time*2.5+e.x*0.02)*2;
+drawables.push({y:e.y+sz/2,draw:()=>{
+// Aura for rare/elite
+if(isR){ctx.globalAlpha=0.15+Math.sin(state.time*4)*0.1;ctx.fillStyle=e.type.includes('corrupt')||e.type.includes('void')?'#aa44aa':(e.type==='ashDrake'?'#ff6b35':'#7b68ee');ctx.beginPath();ctx.arc(e.x,e.y+eBob,sz*0.7,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+// Sprite
+ctx.drawImage(spr,e.x-sz/2,e.y-sz/2+eBob,sz,sz);
+// ═══ ENHANCED NAMEPLATE ═══
+const hpPct=e.hp/e.hpMax;
+if(isElite){
+// Elite boss nameplate - wide ornate bar
+const bw=sz*1.8,bh=10,bx=e.x-bw/2,by=e.y-sz/2-24+eBob;
+// Nameplate bg frame
+ctx.fillStyle='rgba(14,10,20,.92)';const fr=4;
+roundRect(ctx,bx-fr,by-16,bw+fr*2,bh+20,6);ctx.fill();
+// Gold border
+ctx.strokeStyle='rgba(139,106,20,.7)';ctx.lineWidth=1.5;
+roundRect(ctx,bx-fr,by-16,bw+fr*2,bh+20,6);ctx.stroke();
+// Top accent line
+ctx.fillStyle='rgba(200,160,32,.6)';ctx.fillRect(bx-fr+8,by-16,bw+fr*2-16,1.5);
+// Name
+ctx.font=`bold ${10*SCALE/3}px "Cinzel",serif`;ctx.textAlign='center';
+ctx.fillStyle='#d4a84a';ctx.fillText(`${eDef.name} (elite)`,e.x,by-5);
+// HP bar bg
+ctx.fillStyle='rgba(0,0,0,.7)';roundRect(ctx,bx,by,bw,bh,3);ctx.fill();
+// HP bar border
+ctx.strokeStyle='rgba(90,60,20,.5)';ctx.lineWidth=1;roundRect(ctx,bx,by,bw,bh,3);ctx.stroke();
+// HP fill - gradient
+const hpGrad=ctx.createLinearGradient(bx,by,bx+bw*hpPct,by);
+hpGrad.addColorStop(0,'#8b1a1a');hpGrad.addColorStop(0.5,'#dc2626');hpGrad.addColorStop(1,'#ef4444');
+ctx.fillStyle=hpGrad;roundRect(ctx,bx+1,by+1,Math.max(0,(bw-2)*hpPct),bh-2,2);ctx.fill();
+// HP text
+ctx.font='8px "JetBrains Mono",monospace';ctx.fillStyle='rgba(255,255,255,.8)';
+ctx.fillText(`${e.hp}/${e.hpMax}`,e.x,by+bh-1.5);
+// Portrait circle
+ctx.fillStyle='rgba(14,10,20,.9)';ctx.strokeStyle='rgba(200,160,32,.7)';ctx.lineWidth=2;
+ctx.beginPath();ctx.arc(bx-fr-14,by-4,12,0,Math.PI*2);ctx.fill();ctx.stroke();
+ctx.fillStyle='rgba(200,160,32,.3)';ctx.font='12px serif';ctx.fillText('⛨',bx-fr-14,by);
+ctx.textAlign='left'
+}else if(isR){
+// Rare enemy nameplate
+const bw=sz*1.4,bh=7,bx=e.x-bw/2,by=e.y-sz/2-18+eBob;
+ctx.fillStyle='rgba(14,10,20,.88)';roundRect(ctx,bx-2,by-12,bw+4,bh+16,4);ctx.fill();
+ctx.strokeStyle='rgba(123,104,238,.4)';ctx.lineWidth=1;roundRect(ctx,bx-2,by-12,bw+4,bh+16,4);ctx.stroke();
+ctx.font='9px "Cinzel",serif';ctx.textAlign='center';
+ctx.fillStyle='#9b8afb';ctx.fillText(`★ ${eDef.name} (rare)`,e.x,by-2);
+ctx.fillStyle='rgba(0,0,0,.6)';roundRect(ctx,bx,by,bw,bh,2);ctx.fill();
+const hpGrad=ctx.createLinearGradient(bx,by,bx+bw*hpPct,by);
+hpGrad.addColorStop(0,'#8b1a1a');hpGrad.addColorStop(1,'#dc2626');
+ctx.fillStyle=hpGrad;roundRect(ctx,bx+1,by+1,Math.max(0,(bw-2)*hpPct),bh-2,1.5);ctx.fill();
+ctx.textAlign='left'
+}else{
+// Normal enemy - simple but clean nameplate
+const bw=sz*1.0,bh=5,bx=e.x-bw/2,by=e.y-sz/2-10+eBob;
+ctx.fillStyle='rgba(0,0,0,.6)';roundRect(ctx,bx,by,bw,bh,2);ctx.fill();
+ctx.strokeStyle='rgba(60,40,20,.4)';ctx.lineWidth=0.5;roundRect(ctx,bx,by,bw,bh,2);ctx.stroke();
+const hpGrad=ctx.createLinearGradient(bx,by,bx+bw*hpPct,by);
+hpGrad.addColorStop(0,'#6b1a1a');hpGrad.addColorStop(1,'#dc2626');
+ctx.fillStyle=hpGrad;roundRect(ctx,bx+0.5,by+0.5,Math.max(0,(bw-1)*hpPct),bh-1,1.5);ctx.fill();
+}
+}})});
 // Player
 const p=state.player,pDir=p.facing==='left'?'right':p.facing,pSpr=p.isMoving?sprites.player.walk[pDir][p.animFrame%4]:sprites.player.idle[pDir][p.animFrame%2];
 const pBob=p.isMoving?Math.sin(state.time*12)*1.5:Math.sin(state.time*2)*0.5;
@@ -1353,14 +1651,10 @@ dungeonEntrances.forEach(de=>{const dx=(de.x/MW)*mw,dy=(de.y/MH)*mh;mmCtx.fillSt
 state.npcs.forEach(n=>{const nx=(n.x/(MW*T*SCALE))*mw,ny=(n.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#f59e0b';mmCtx.fillRect(nx-1,ny-1,3,3)})}
 
 // ═══ HUD ═══
-function renderHud(){const p=state.player,zone=zoneMap[state.world.activeZone]||{name:'Unknown'},ti=state.dayTime<120?'☀':'☾',cls=p.class?` • ${cap(p.class)}`:'';
-hud.innerHTML=`<div class="hud-bar"><span class="icon">♥</span><span class="label">HP</span><div style="width:100px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div class="hp-fill" style="width:${(p.hp/p.hpMax)*100}%;background:${p.hp/p.hpMax>0.3?'linear-gradient(90deg,#3b82f6,#60a5fa)':'linear-gradient(90deg,#dc2626,#ef4444)'}"></div></div><span class="value">${p.hp}/${p.hpMax}</span></div>
-<div class="hud-bar"><span class="icon">⬥</span><span class="label">Lv</span><span class="value">${p.level}${cls}</span><div style="width:60px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-left:6px"><div style="width:${(p.exp/p.expNext)*100}%;height:100%;border-radius:2px;background:linear-gradient(90deg,#5b4ecc,#9b8afb);transition:width .3s"></div></div><span class="tiny" style="margin-left:4px">${p.exp}/${p.expNext}</span></div>${p.dashCooldown>0?`<div class="hud-bar" style="opacity:.6"><span class="icon">⟐</span><span class="label">Dash</span><span class="tiny">${p.dashCooldown.toFixed(1)}s</span></div>`:''}
-<div class="hud-bar"><span class="icon">${ti}</span><span class="label">${zone.name}</span><span class="value">Day ${state.day}</span></div>
-<div class="hud-bar"><span class="icon">⚔</span><span class="value">${totalAtk()}</span><span class="icon" style="margin-left:6px">🛡</span><span class="value">${totalDef()}</span><span class="icon" style="margin-left:6px">💰</span><span class="value">${p.gold}</span></div>
-${state.dungeon.active?`<div class="hud-bar" style="border-color:rgba(123,104,238,.4);color:#9b8afb"><span class="icon">⬡</span><span class="value">DUNGEON: ${state.dungeon.name} Room ${state.dungeon.currentRoom+1}/${state.dungeon.rooms.length}</span></div>`:''}
-${state.activeEvent?`<div class="hud-bar" style="border-color:rgba(245,158,11,.4);color:#fbbf24"><span class="icon">⚡</span><span class="value">${state.activeEvent.name} (${Math.ceil(state.activeEvent.timeLeft)}s)</span></div>`:''}
-${state.activeBounty&&!state.activeBounty.completed?`<div class="hud-bar" style="border-color:rgba(255,107,53,.3)"><span class="icon">📜</span><span class="tiny">${state.activeBounty.name}: ${state.activeBounty.progress}/${state.activeBounty.count}</span></div>`:''}`}
+function renderHud(){
+renderPlayerPlate();
+updateSpellBar();
+renderChatBox()}
 
 // ═══ PANELS ═══
 function renderPanels(){
@@ -1457,6 +1751,144 @@ spawnDustTrail=function(dt){if(gameSettings.dustEnabled)_origSpawnDust(dt)};
 qs('#btnCloseSettings').onclick=()=>{saveSettings();qs('#settingsModal').classList.remove('open')};
 qs('#btnSettings').onclick=()=>qs('#settingsModal').classList.add('open');
 loadSettings();
+
+// ═══ GAME MENU SYSTEM ═══
+let gameMenuOpen=false;
+function openGameMenu(){gameMenuOpen=true;qs('#gameMenuOverlay').classList.add('open')}
+function closeGameMenu(){gameMenuOpen=false;qs('#gameMenuOverlay').classList.remove('open');qs('#optionsOverlay').classList.remove('open');qs('#controlsOverlay').style.display='none'}
+qs('#gameMenuBtn').onclick=openGameMenu;
+qs('#gmContinue').onclick=closeGameMenu;
+qs('#gmExit').onclick=()=>{closeGameMenu();qs('#app').style.display='none';qs('#titleScreen').style.display='flex';titleActive=true;initTitleParticles();titleLast=performance.now();requestAnimationFrame(titleLoop)};
+qs('#gmOptions').onclick=()=>{qs('#gameMenuOverlay').classList.remove('open');qs('#optionsOverlay').classList.add('open');syncOptUI()};
+qs('#gmControls').onclick=()=>{qs('#gameMenuOverlay').classList.remove('open');qs('#controlsOverlay').style.display='flex'};
+qs('#optBack').onclick=()=>{saveOptSettings();qs('#optionsOverlay').classList.remove('open');qs('#gameMenuOverlay').classList.add('open')};
+qs('#controlsBack').onclick=()=>{qs('#controlsOverlay').style.display='none';qs('#gameMenuOverlay').classList.add('open')};
+// Options tab switching
+qsa('.opt-tab').forEach(btn=>btn.onclick=()=>{qsa('.opt-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');qsa('.opt-section').forEach(s=>s.classList.remove('active'));qs('#opt-'+btn.dataset.opt).classList.add('active')});
+// Options save/load buttons
+qs('#optSave1').onclick=()=>{saveGame(0);closeGameMenu()};
+qs('#optSave2').onclick=()=>{saveGame(1);closeGameMenu()};
+qs('#optSave3').onclick=()=>{saveGame(2);closeGameMenu()};
+qs('#optLoad1').onclick=()=>{loadGame(0);closeGameMenu()};
+qs('#optLoad2').onclick=()=>{loadGame(1);closeGameMenu()};
+qs('#optLoad3').onclick=()=>{loadGame(2);closeGameMenu()};
+function syncOptUI(){qs('#optShake').checked=gameSettings.shakeEnabled!==false;qs('#optDust').checked=gameSettings.dustEnabled!==false;qs('#optRegen').checked=gameSettings.regenEnabled!==false;qs('#optAutoSave').value=gameSettings.autoSaveInterval??60}
+function saveOptSettings(){gameSettings.shakeEnabled=qs('#optShake').checked;gameSettings.dustEnabled=qs('#optDust').checked;gameSettings.regenEnabled=qs('#optRegen').checked;gameSettings.autoSaveInterval=parseInt(qs('#optAutoSave').value);localStorage.setItem('ashveil_settings',JSON.stringify(gameSettings));
+// Sync old settings UI too
+qs('#setShake').value=gameSettings.shakeEnabled?'1':'0';qs('#setDust').value=gameSettings.dustEnabled?'1':'0';qs('#setRegen').value=gameSettings.regenEnabled?'1':'0';qs('#setAutoSave').value=gameSettings.autoSaveInterval}
+// ESC key for game menu
+window.addEventListener('keydown',e=>{if(e.code==='Escape'){e.preventDefault();if(qs('#controlsOverlay').style.display==='flex'){qs('#controlsBack').click()}else if(qs('#optionsOverlay').classList.contains('open')){qs('#optBack').click()}else if(gameMenuOpen){closeGameMenu()}else if(qs('#charPanel').classList.contains('open')){qs('#charPanel').classList.remove('open')}else{openGameMenu()}}
+// C key for character panel
+if(e.code==='KeyC'&&!gameMenuOpen){qs('#charPanel').classList.toggle('open');if(qs('#charPanel').classList.contains('open'))renderCharPanel()}
+// 5 key for potion
+if(e.code==='Digit5'&&!gameMenuOpen){usePotionFromBar()}
+});
+
+// ═══ CHAT BOX ═══
+const chatEl=qs('#chatMessages');
+let chatCollapsed=false;
+qs('#chatHeader').onclick=()=>{chatCollapsed=!chatCollapsed;chatEl.style.display=chatCollapsed?'none':'flex'};
+let lastChatCount=0;
+function renderChatBox(){
+if(!state||!state.logs)return;
+const logs=state.logs.slice(0,20);
+if(logs.length===lastChatCount)return;
+lastChatCount=logs.length;
+chatEl.innerHTML=logs.slice().reverse().map(l=>{
+let cls='chat-msg',tag='Log',text=l;
+if(l.includes('💀')||l.includes('dmg')||l.includes('Fell')){cls+=' chat-combat';tag='Combat'}
+else if(l.includes('Found')||l.includes('+')||l.includes('Gathered')){cls+=' chat-loot';tag='Loot'}
+else if(l.includes('Quest')||l.includes('🏠')){cls+=' chat-quest';tag='Event'}
+else if(l.includes('⚡')||l.includes('Event')){cls+=' chat-event';tag='World'}
+else{cls+=' chat-system'}
+return`<div class="${cls}"><span class="chat-tag">${tag}:</span> <span class="chat-text">${text}</span></div>`
+}).join('');
+chatEl.scrollTop=chatEl.scrollHeight}
+
+// Override addLog to also update chat
+const _origAddLog=addLog;
+addLog=function(msg){_origAddLog(msg);renderChatBox()};
+
+// ═══ CHARACTER PANEL ═══
+qs('#charClose').onclick=()=>qs('#charPanel').classList.remove('open');
+qs('#slot-charPanel').onclick=()=>{qs('#charPanel').classList.toggle('open');if(qs('#charPanel').classList.contains('open'))renderCharPanel()};
+function renderCharPanel(){
+const p=state.player;
+qs('#charName').textContent='Walker';
+qs('#charSubtitle').textContent=`Level ${p.level}${p.class?', '+cap(p.class):''}`;
+const slotDefs=[
+{key:'weapon',label:'Weapon',icon:'⚔',span:2},
+{key:'body',label:'Armor',icon:'🛡',span:2},
+{key:'trinket',label:'Trinket',icon:'◈',span:1},
+{key:'helm',label:'Helm',icon:'⛑',span:1,future:true},
+{key:'boots',label:'Boots',icon:'👢',span:1,future:true},
+{key:'ring',label:'Ring',icon:'💍',span:1,future:true},
+];
+qs('#charSlots').innerHTML=slotDefs.map(s=>{
+const id=s.future?null:p.equipment[s.key];
+const it=id?itemDefs[id]:null;
+const rc=it?'rarity-'+(it.rarity||'common'):'';
+const spanStyle=s.span===2?'grid-column:span 2;':'';
+return`<div class="char-slot" style="${spanStyle}">
+<div class="slot-icon">${s.icon}</div>
+<div class="slot-label">${s.label}</div>
+<div class="slot-item ${rc}">${it?it.name:s.future?'Locked':'—'}</div>
+${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div>`:''}
+${it?`<button class="item-btn" style="margin-top:4px;font-size:9px;padding:3px 6px" onclick="W.unequip('${s.key}');W.renderCharPanel()">Remove</button>`:''}
+</div>`}).join('');
+qs('#charStats').innerHTML=`
+<div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${p.hpMax}</span></div>
+<div class="char-stat"><span class="stat-label">Attack</span><span class="stat-value">${totalAtk()}</span></div>
+<div class="char-stat"><span class="stat-label">Defense</span><span class="stat-value">${totalDef()}</span></div>
+<div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${p.critChance}%</span></div>
+<div class="char-stat"><span class="stat-label">Level</span><span class="stat-value">${p.level}</span></div>
+<div class="char-stat"><span class="stat-label">Gold</span><span class="stat-value">${p.gold}</span></div>
+`}
+window.W.renderCharPanel=renderCharPanel;
+
+// ═══ SPELL BAR ACTIONS ═══
+qs('#slot-attack').onclick=attackNearest;
+qs('#slot-gather').onclick=gatherNearest;
+qs('#slot-interact').onclick=interactNearest;
+qs('#slot-dash').onclick=performDash;
+qs('#slot-potion').onclick=()=>usePotionFromBar();
+function usePotionFromBar(){
+const p=state.player;
+if(p.hp>=p.hpMax)return toast('Already at full health.','info');
+if(itemCount('tonic')>0){useItem('tonic')}
+else if(itemCount('veilElixir')>0){useItem('veilElixir')}
+else{toast('No potions available.','info')}
+}
+// Update potion count and XP bar
+function updateSpellBar(){
+if(!state)return;
+const p=state.player;
+const pots=itemCount('tonic')+itemCount('veilElixir');
+const potEl=qs('#potionCount');if(potEl)potEl.textContent=pots;
+const xpEl=qs('#xpBarFill');if(xpEl)xpEl.style.width=(p.exp/p.expNext*100)+'%';
+// Update dash cooldown visual
+const dashSlot=qs('#slot-dash');
+if(dashSlot){if(p.dashCooldown>0){dashSlot.style.opacity='.5'}else{dashSlot.style.opacity='1'}}
+}
+
+// ═══ ENHANCED PLAYER NAMEPLATE ═══
+function renderPlayerPlate(){
+const p=state.player,zone=zoneMap[state.world.activeZone]||{name:'Unknown'},ti=state.dayTime<120?'☀':'☾',cls=p.class?cap(p.class):'Walker';
+const hpPct=(p.hp/p.hpMax)*100;
+const platEl=qs('#playerPlate');
+if(!platEl)return;
+platEl.innerHTML=`
+<div class="plate-portrait"><span class="portrait-icon">⛨</span><span class="plate-level">${p.level}</span></div>
+<div class="plate-info">
+<div class="plate-name">${cls} <span style="color:#6a5a3a;font-size:10px;font-family:'JetBrains Mono',monospace">${ti} ${zone.name} • Day ${state.day}</span></div>
+<div class="plate-bar"><div class="plate-bar-fill plate-bar-hp" style="width:${hpPct}%"></div><div class="plate-bar-text">${p.hp}/${p.hpMax}</div></div>
+<div class="plate-bar" style="height:6px"><div class="plate-bar-fill plate-bar-mp" style="width:100%"></div><div class="plate-bar-text" style="font-size:7px">Veil Energy</div></div>
+<div class="plate-stats-row">⚔ <span>${totalAtk()}</span> 🛡 <span>${totalDef()}</span> 💰 <span>${p.gold}</span></div>
+${p.buffs.length?`<div class="plate-buffs">${p.buffs.map(b=>`<div class="plate-buff" title="${b.type} +${b.amount}">⬥</div>`).join('')}</div>`:''}
+${state.dungeon.active?`<div style="font-size:9px;color:#9b8afb;font-family:'JetBrains Mono',monospace;margin-top:2px">⬡ ${state.dungeon.name} Room ${state.dungeon.currentRoom+1}/${state.dungeon.rooms.length}</div>`:''}
+${state.activeBounty&&!state.activeBounty.completed?`<div style="font-size:9px;color:#ff9f1a;font-family:'JetBrains Mono',monospace;margin-top:1px">📜 ${state.activeBounty.name}: ${state.activeBounty.progress}/${state.activeBounty.count}</div>`:''}
+${state.activeEvent?`<div style="font-size:9px;color:#fbbf24;font-family:'JetBrains Mono',monospace;margin-top:1px">⚡ ${state.activeEvent.name} (${Math.ceil(state.activeEvent.timeLeft)}s)</div>`:''}
+</div>`}
 
 // ═══ TITLE SCREEN ═══
 const titleCanvas=qs('#titleCanvas'),titleCtx=titleCanvas.getContext('2d');
