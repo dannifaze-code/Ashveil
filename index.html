@@ -176,6 +176,8 @@ const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const sample=a=>a[Math.floor(Math.random()*a.length)],cap=s=>s[0].toUpperCase()+s.slice(1);
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE;
+function separateEnemies(arr,dt){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const a=arr[i],b=arr[j],sd=dist(a,b);if(sd<ENEMY_SEP&&sd>0.1){const sx=(b.x-a.x)/sd,sy=(b.y-a.y)/sd,push=(ENEMY_SEP-sd)*5*dt;a.x-=sx*push;a.y-=sy*push;b.x+=sx*push;b.y+=sy*push}}}}
 
 const canvas=qs('#game'),ctx=canvas.getContext('2d'),hud=qs('#hud'),toastWrap=qs('#toastWrap');
 const dialogueEl=qs('#dialogue'),dialogueSpeaker=qs('#dialogueSpeaker'),dialogueText=qs('#dialogueText'),dialogueChoices=qs('#dialogueChoices');
@@ -418,7 +420,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:180,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -723,10 +725,12 @@ btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
 state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
 // Enemy AI (overworld)
 if(!state.dungeon.active){
-state.enemies.forEach(e=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax}if(!e.alive)return;if(e.zone===state.world.activeZone){const d=dist(e,p);if(d<180*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(25+(zoneMap[e.zone]?.danger||0)*8)*SCALE;e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt;if(d<20*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;toast('Fell.','combat');addLog('💀 Fell.')}}}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
+state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax}if(!e.alive)return;if(e.zone===state.world.activeZone){const d=dist(e,p);if(d<180*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;toast('Fell.','combat');addLog('💀 Fell.')}}}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
+separateEnemies(state.enemies.filter(e=>e.alive&&e.zone===state.world.activeZone),dt);
 }else{
 // Dungeon enemy AI
-state.dungeon.enemies.forEach(e=>{if(!e.alive)return;const d=dist(e,p);if(d<200*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;e.x+=(dx/len)*35*SCALE*dt;e.y+=(dy/len)*35*SCALE*dt;if(d<20*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}})
+state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);if(d<200*SCALE){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];const dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnDamageNumber(p.x,p.y-20,`${dmg}`,'#dc2626');spawnParticle(p.x,p.y,'#dc2626',3);if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}});
+separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
 // Particles
 state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=80*dt;pt.life-=dt;return pt.life>0});
