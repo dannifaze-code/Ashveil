@@ -1751,6 +1751,8 @@ separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
 // Particles
 state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=80*dt;pt.life-=dt;return pt.life>0});
+// Dead enemies cleanup
+state.deadEnemies=state.deadEnemies.filter(de=>{de.timer-=dt;return de.timer>0});
 // Quest auto
 if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQuest('first_steps',{gold:12,exp:14});setQuestStage('wild_proof',1)}
 if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joystick + buttons. PC: WASD move, SPACE attack, F gather, E interact, R dungeon.','info')}
@@ -1861,6 +1863,8 @@ hpGrad.addColorStop(0,'#6b1a1a');hpGrad.addColorStop(1,'#dc2626');
 ctx.fillStyle=hpGrad;roundRect(ctx,bx+0.5,by+0.5,Math.max(0,(bw-1)*hpPct),bh-1,1.5);ctx.fill();
 }
 }})});
+// Dead enemies (corpses for looting)
+state.deadEnemies.forEach(de=>{const spr=sprites.enemies[de.type];if(!spr)return;const eDef=enemyDefs[de.type];const isR=eDef.rarity==='rare'||eDef.rarity==='uncommon';const isElite=eDef.rarity==='rare';const sz=isElite?T*SCALE*2.3:T*SCALE*1.4;drawables.push({y:de.y+sz/2,draw:()=>{ctx.globalAlpha=0.5;ctx.drawImage(spr,de.x-sz/2,de.y-sz/2,sz,sz);ctx.globalAlpha=1;ctx.fillStyle='rgba(245,158,11,.7)';ctx.font=`bold ${8*SCALE}px "JetBrains Mono",monospace`;ctx.textAlign='center';ctx.fillText('💰',de.x,de.y-sz/2-5);ctx.textAlign='left'}})});
 // Player
 const p=state.player,pDir=p.facing==='left'?'right':p.facing,pSpr=p.isMoving?sprites.player.walk[pDir][p.animFrame%4]:sprites.player.idle[pDir][p.animFrame%2];
 const pBob=p.isMoving?Math.sin(state.time*12)*1.5:Math.sin(state.time*2)*0.5;
@@ -1971,6 +1975,7 @@ joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListene
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
 window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue();if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash()});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
+canvas.addEventListener('click',(e)=>{const rect=canvas.getBoundingClientRect();const cx=e.clientX-rect.left+state.camera.x;const cy=e.clientY-rect.top+state.camera.y;state.deadEnemies.forEach((de,idx)=>{const eDef=enemyDefs[de.type];const isElite=eDef.rarity==='rare';const sz=isElite?T*SCALE*2.3:T*SCALE*1.4;if(Math.hypot(cx-de.x,cy-de.y)<sz){const lootItems=[...de.loot];if(de.gold>0){state.player.gold+=de.gold}openLoot(lootItems);state.deadEnemies.splice(idx,1)}})});
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
