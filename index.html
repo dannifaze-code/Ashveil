@@ -263,7 +263,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 #classAwakeningBox h2{font-family:'Cinzel',serif;color:#f59e0b;font-size:22px;letter-spacing:4px;margin-bottom:8px;text-shadow:0 2px 16px rgba(200,160,32,.6);text-transform:uppercase}
 .awakening-subtitle{font-size:12px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;margin-bottom:24px;line-height:1.6}
 .class-choices{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.class-choice-card{flex:1;min-width:180px;max-width:220px;border:2px solid rgba(90,60,20,.5);border-radius:14px;padding:20px 16px;background:linear-gradient(180deg,rgba(50,35,15,.6),rgba(30,20,10,.8));cursor:pointer;transition:all .3s;text-align:center}
+.class-choice-card{appearance:none;flex:1;min-width:180px;max-width:220px;border:2px solid rgba(90,60,20,.5);border-radius:14px;padding:20px 16px;background:linear-gradient(180deg,rgba(50,35,15,.6),rgba(30,20,10,.8));cursor:pointer;transition:all .3s;text-align:center;font:inherit}
 .class-choice-card:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(90,65,30,.7),rgba(50,35,15,.9));transform:translateY(-4px);box-shadow:0 8px 30px rgba(200,160,32,.3)}
 .class-choice-icon{font-size:36px;margin-bottom:8px}
 .class-choice-name{font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;margin-bottom:6px}
@@ -1491,17 +1491,18 @@ const overlay=qs('#classAwakeningOverlay');
 const choices=qs('#classChoices');
 const pts=state.player.skillPoints;
 choices.innerHTML=Object.entries(classUnlockDefs).map(([key,cd])=>{
-return`<div class="class-choice-card" onclick="W.chooseClass('${key}')">
+return`<button class="class-choice-card" onclick="W.chooseClass('${key}')">
 <div class="class-choice-icon">${cd.icon}</div>
 <div class="class-choice-name" style="color:${cd.color}">${cd.name}</div>
 <div class="class-choice-desc" style="color:#8a7a5a">${cd.desc}</div>
 <div class="class-choice-bonus" style="color:${cd.color}">${cd.bonusDesc}</div>
-</div>`;
+</button>`;
 }).join('');
 overlay.classList.add('open');
 }
 function chooseClass(classKey){
 const p=state.player;
+if(!['warden','artificer','veilwalker'].includes(classKey))return;
 const cd=classUnlockDefs[classKey];
 if(!cd||p.class)return;
 p.class=classKey;
