@@ -13,7 +13,7 @@
 :root{--bg:#08090d;--panel:#0e1117;--panel2:#151a24;--panel3:#1a2030;--line:#2a3347;--line2:#1e2738;--text:#d4dae8;--muted:#7a8ba8;--bright:#f0f4ff;--fire:#ff6b35;--fire2:#ff9f1a;--ember:#cc4a1a;--veil:#7b68ee;--veil2:#9b8afb;--veil3:#5b4ecc;--nature:#3ddc84;--nature2:#2ebd6b;--water:#4fc3f7;--water2:#0891b2;--blood:#dc2626;--blood2:#ef4444;--gold:#f59e0b;--gold2:#fbbf24;--ash:#9ca3af;--scholar:#4fc3f7;--ashen:#ff6b35}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Crimson Text',Georgia,serif}
-#app{display:grid;grid-template-columns:1fr 400px;width:100vw;height:100vh}
+#app{display:grid;grid-template-columns:1fr;width:100vw;height:100vh}
 #gameWrap{position:relative;overflow:hidden;background:radial-gradient(ellipse at 30% 20%,rgba(123,104,238,.06),transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(255,107,53,.04),transparent 50%),linear-gradient(180deg,#0a0c14,#060810)}
 #game{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;cursor:crosshair}
 #hud{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:6px;z-index:2;pointer-events:none;opacity:0;height:0;overflow:hidden}
@@ -28,16 +28,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .action-btn:hover{border-color:var(--fire);background:rgba(255,107,53,.1);transform:translateY(-2px)}
 .action-btn .key{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;background:rgba(255,255,255,.08);border-radius:4px;color:var(--muted)}
 .action-btn.dungeon-btn{border-color:rgba(123,104,238,.4);animation:dungeonPulse 2s infinite}
-#side{display:flex;flex-direction:column;border-left:1px solid var(--line2);background:linear-gradient(180deg,#0c0e16,#080a10);overflow:hidden}
-#sideHeader{padding:14px 16px 10px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(123,104,238,.06),transparent)}
-#sideHeader h1{font-family:'Cinzel',serif;font-size:16px;color:var(--veil2);letter-spacing:2px;text-transform:uppercase;text-shadow:0 0 20px rgba(123,104,238,.3)}
-#sideHeader .subtitle{font-size:12px;color:var(--muted);margin-top:2px;font-style:italic}
-#tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-bottom:1px solid var(--line2)}
-.tabBtn{appearance:none;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:6px;padding:6px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
-.tabBtn:hover{color:var(--text);background:rgba(255,255,255,.04)}
-.tabBtn.active{color:var(--fire2);border-color:rgba(255,159,26,.3);background:rgba(255,107,53,.08)}
-.panel{display:none;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:12px;gap:10px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent;word-wrap:break-word;overflow-wrap:break-word}
-.panel.active{display:flex;flex-direction:column;animation:fadeIn .3s ease}
 .card{background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));border:1px solid var(--line2);border-radius:12px;padding:14px;position:relative;overflow:hidden;flex-shrink:0}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(123,104,238,.2),transparent)}
 .card h3{font-family:'Cinzel',serif;font-size:14px;color:var(--veil2);margin-bottom:8px;letter-spacing:1px}
@@ -100,10 +90,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #touchButtons{position:absolute;right:18px;bottom:80px;display:flex;gap:10px;pointer-events:auto;touch-action:none}
 #touchButtons button{width:64px;height:64px;border-radius:50%;font-size:22px}
 @media(min-width:921px){#touchControls{display:none}}
-#mobileToggle{display:none;position:fixed;right:14px;top:112px;z-index:201;appearance:none;border:1px solid var(--line);background:rgba(14,17,23,.92);color:var(--gold2);border-radius:10px;width:44px;height:44px;font-size:20px;font-family:'Cinzel',serif;cursor:pointer;backdrop-filter:blur(8px);align-items:center;justify-content:center;text-shadow:0 1px 2px rgba(0,0,0,.5);transition:all .2s}
-#mobileToggle:hover{border-color:var(--veil);background:rgba(123,104,238,.12)}
-#mobileBackdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;backdrop-filter:blur(2px)}
-@media(max-width:920px){#app{grid-template-columns:1fr;grid-template-rows:1fr}#gameWrap{height:100vh}#side{position:fixed;right:0;top:0;bottom:0;width:340px;max-width:80vw;z-index:200;transform:translateX(100%);transition:transform .3s ease;border-left:1px solid var(--line2);border-top:0;box-shadow:-4px 0 20px rgba(0,0,0,.5)}#side.mobile-open{transform:translateX(0)}#minimap{width:120px;height:90px}#btnFullscreen{right:142px;top:112px}#mobileToggle{display:flex}#mobileBackdrop.active{display:block}#tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-right:20px}#tabs::-webkit-scrollbar{display:none}.tabBtn{white-space:nowrap;flex-shrink:0}.panel{padding:10px;padding-bottom:24px}.panel .card{max-width:100%}.panel .card p,.panel .card h3,.panel .card h4{word-wrap:break-word;overflow-wrap:break-word}.item{flex-wrap:wrap}#actionBar{display:none}#dialogue{left:0;right:0;top:0;bottom:0}#dialogueBox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:760px}#sideHeader{padding:10px 12px 6px}#sideHeader h1{font-size:14px}#joystickZone{bottom:24px;left:20px}#touchButtons{bottom:24px;right:20px}#journalBtn{right:14px;bottom:72px;width:44px;height:44px}#gameMenuBtn{width:44px;height:44px}}
+@media(max-width:920px){#app{grid-template-columns:1fr;grid-template-rows:1fr}#gameWrap{height:100vh}#minimap{width:120px;height:90px}#btnFullscreen{right:14px;top:112px}.item{flex-wrap:wrap}#actionBar{display:none}#dialogue{left:0;right:0;top:0;bottom:0}#dialogueBox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:760px}#joystickZone{bottom:24px;left:20px}#touchButtons{bottom:24px;right:20px}#journalBtn{right:14px;bottom:72px;width:44px;height:44px}#gameMenuBtn{width:44px;height:44px}}
 #portraitOverlay{display:none;position:fixed;inset:0;z-index:9999;background:#0d0d12;color:var(--gold2);flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Cinzel',serif;gap:16px}
 #portraitOverlay .rotate-icon{font-size:64px;animation:rotateHint 2s ease-in-out infinite}
 #portraitOverlay h2{font-size:22px;margin:0;letter-spacing:2px}
@@ -550,20 +537,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button id="inventoryBtn" title="Inventory (I)">🎒</button>
 <button id="skillsBtn" title="Skills (K)" aria-label="Open Skills Menu">⚔</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
-<button id="mobileToggle">☰</button>
 </div>
-<div id="mobileBackdrop"></div>
-<aside id="side">
-<div id="sideHeader"><h1>⬥ Ashveil</h1><div class="subtitle">The Veils are weakening...</div></div>
-<div id="tabs">
-<button class="tabBtn active" data-tab="inventory">Items</button>
-<button class="tabBtn" data-tab="equip">Equip</button>
-<button class="tabBtn" data-tab="skills">Skills</button>
-</div>
-<section class="panel active" id="panel-inventory"></section>
-<section class="panel" id="panel-equip"></section>
-<section class="panel" id="panel-skills"></section>
-</aside>
 <!-- Journal Overlay -->
 <div id="journalOverlay">
 <div id="journalBox">
@@ -671,7 +645,6 @@ const dialogueEl=qs('#dialogue'),dialogueSpeaker=qs('#dialogueSpeaker'),dialogue
 const eventBanner=qs('#eventBanner'),joystickZone=qs('#joystickZone'),joystickThumb=qs('#joystickThumb');
 const mmCanvas=qs('#minimap canvas'),mmCtx=mmCanvas?mmCanvas.getContext('2d'):null;
 const btnDungeon=qs('#btnDungeon');
-const panels={};qsa('.panel').forEach(p=>{panels[p.id.replace('panel-','')]=p});
 const journalPanels={};qsa('.journal-panel').forEach(p=>{journalPanels[p.id.replace('journal-panel-','')]=p});
 
 // ═══ SPRITE SYSTEM ═══
@@ -1956,16 +1929,6 @@ if(journalPanels.journal)journalPanels.journal.innerHTML=journalHTML;
 const storyHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="tiny">Your choices shape the narrative. Story progresses through exploration, combat, faction loyalty, and dungeon delving.</p></div>`+storyChapters.map(ch=>{const stages=ch.stages.map(st=>{const done=st.complete;return`<div class="item" style="${done?'border-color:rgba(155,138,251,.3);background:rgba(155,138,251,.04)':'opacity:.6'}"><div><strong>${st.name}</strong>${done?' <span class="badge badge-chapter">Done</span>':''}<div class="tiny">${st.desc}</div></div></div>`}).join('');return`<div class="card"><h3>${ch.name}</h3><div class="list">${stages}</div></div>`}).join('');
 if(journalPanels.story)journalPanels.story.innerHTML=storyHTML;
 
-// Inventory
-const inv=Object.entries(p.inventory);
-panels.inventory.innerHTML=`<div class="card"><h3>⬥ Inventory</h3><p class="tiny">${inv.length} types</p></div><div class="card"><div class="list">${inv.length?inv.map(([id,cnt])=>{const it=itemDefs[id];if(!it)return'';const rc='rarity-'+(it.rarity||'common');const act=it.type==='consumable'?`<button class="item-btn" onclick="W.useItem('${id}')">Use</button>`:it.slot?`<button class="item-btn" onclick="W.equipItem('${id}')">Equip</button>`:'';return`<div class="item"><div><strong class="${rc}">${it.name}</strong><div class="tiny">x${cnt} • ${cap(it.type)}</div></div>${act}</div>`}).join(''):'<div class="item"><div class="tiny">Empty.</div></div>'}</div></div>`;
-
-// Equipment
-panels.equip.innerHTML=`<div class="card"><h3>⬥ Equipment</h3></div><div class="card"><div class="equipGrid">${['weapon','body','trinket'].map(s=>{const id=p.equipment[s],it=id?itemDefs[id]:null,rc=it?'rarity-'+(it.rarity||'common'):'';return`<div class="slot"><div class="slot-label">${cap(s)}</div><div class="slot-item ${rc}">${it?it.name:'—'}</div>${it?`<div class="tiny" style="margin-top:4px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div><button class="item-btn" style="margin-top:4px" onclick="W.unequip('${s}')">Remove</button>`:''}</div>`}).join('')}</div></div><div class="card"><div class="row"><span>Attack</span><strong class="fire">${totalAtk()}</strong></div><div class="row"><span>Defense</span><strong class="veil">${totalDef()}</strong></div><div class="row"><span>Crit</span><strong class="gold">${p.critChance}%</strong></div></div>`;
-
-// Skills
-panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}<p class="tiny gold">Skill Points: ${p.skillPoints||0}</p><button class="item-btn" style="margin-top:6px;width:100%" onclick="W.openSkills()">Open Skill Trees</button></div>${Object.entries(p.skills||{}).map(([sk,lv])=>{const xp=(p.skillXp||{})[sk]||0,need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
-
 // Crafting
 const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
 if(journalPanels.crafting)journalPanels.crafting.innerHTML=craftingHTML;
@@ -2027,7 +1990,6 @@ window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
-qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
 // ═══ LOOT SYSTEM ═══
 let activeLootEnemy=null;const LOOT_HITBOX=30*SCALE;
 function openLootUI(enemy){
@@ -2280,8 +2242,6 @@ const hover=allEnemies.find(en=>en.lootable&&en.loot&&en.loot.length>0&&Math.hyp
 canvas.style.cursor=hover?'pointer':'crosshair'});
 // ═══ JOURNAL OVERLAY ═══
 (function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
-// ═══ MOBILE MENU TOGGLE ═══
-(function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
 window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup};
