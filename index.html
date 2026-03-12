@@ -281,6 +281,350 @@ function makeRockTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16
 function makeBushTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const g=['#2a5a1e','#3a6a2e','#4a7a38','#2a6628'];for(let y=6;y<=12;y++)for(let x=4;x<=11;x++){if(Math.hypot(x-7.5,y-9)<3.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
 function makeFlowerTile(fc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};p(8,8,fc);p(7,9,fc);p(9,9,fc);p(8,10,fc);p(8,9,'#ffcc44');p(8,11,'#3a6628');p(8,12,'#3a6628');p(8,13,'#2a5618');return createSprite(s)}
 function makeHouseTile(wc,rc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=1;y<=4;y++)for(let x=2;x<=13;x++)p(x,y,rc);for(let x=3;x<=12;x++)p(x,0,rc);for(let y=5;y<=12;y++)for(let x=3;x<=12;x++)p(x,y,wc);p(7,9,C.wood);p(8,9,C.wood);p(7,10,C.woodD);p(8,10,C.woodD);p(7,11,C.wood);p(8,11,C.wood);p(7,12,C.woodD);p(8,12,C.woodD);p(5,7,'#4fc3f7');p(10,7,'#4fc3f7');p(5,8,'#2a5a7e');p(10,8,'#2a5a7e');return createSprite(s)}
+
+// ═══ SETTLEMENT STRUCTURE SPRITES ═══
+function makeTentSprite(v){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const cv=v===0?'#c8b896':v===1?'#b8a878':'#d4c4a0';
+const cd=v===0?'#a89870':v===1?'#988860':'#b4a480';
+const cl=v===0?'#d8c8a6':v===1?'#c8b896':'#e4d4b0';
+const pl='#6b4a2a',pd='#5a3a1a',rp='#8a7a5a';
+p(7,1,pl);p(8,1,pl);p(7,2,pd);p(8,2,pd);
+p(6,3,cd);p(7,3,cv);p(8,3,cv);p(9,3,cd);
+p(5,4,cd);p(6,4,cv);p(7,4,cl);p(8,4,cl);p(9,4,cv);p(10,4,cd);
+p(4,5,cd);p(5,5,cv);p(6,5,cl);p(7,5,cv);p(8,5,cv);p(9,5,cl);p(10,5,cv);p(11,5,cd);
+p(3,6,cd);p(4,6,cv);p(5,6,cl);p(6,6,cv);p(7,6,cd);p(8,6,cd);p(9,6,cv);p(10,6,cl);p(11,6,cv);p(12,6,cd);
+p(3,7,cd);p(4,7,cv);p(5,7,cv);p(6,7,cl);p(7,7,cv);p(8,7,cv);p(9,7,cl);p(10,7,cv);p(11,7,cv);p(12,7,cd);
+p(2,8,cd);p(3,8,cv);p(4,8,cl);p(5,8,cv);p(6,8,cv);p(7,8,cd);p(8,8,cd);p(9,8,cv);p(10,8,cv);p(11,8,cl);p(12,8,cv);p(13,8,cd);
+p(2,9,cd);p(3,9,cv);p(4,9,cv);p(5,9,cl);p(6,9,cv);p(7,9,'#1a1a0a');p(8,9,'#1a1a0a');p(9,9,cv);p(10,9,cl);p(11,9,cv);p(12,9,cv);p(13,9,cd);
+p(2,10,cd);p(3,10,cv);p(4,10,cv);p(5,10,cv);p(6,10,cd);p(7,10,'#0a0a00');p(8,10,'#0a0a00');p(9,10,cd);p(10,10,cv);p(11,10,cv);p(12,10,cv);p(13,10,cd);
+for(let x=2;x<=13;x++)p(x,11,cd);p(7,11,'#0a0a00');p(8,11,'#0a0a00');
+p(1,10,rp);p(14,10,rp);p(1,11,pd);p(14,11,pd);
+for(let x=3;x<=12;x++)p(x,12,'#1a2a0a');
+return createSprite(s)}
+
+function makeCampfireSprite(f){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+p(5,12,C.stone2);p(6,12,C.stone1);p(9,12,C.stone1);p(10,12,C.stone2);
+p(4,11,C.stone1);p(11,11,C.stone1);p(4,10,C.stone2);p(11,10,C.stone2);
+p(5,13,C.stone1);p(10,13,C.stone1);
+p(6,11,C.woodD);p(7,11,C.wood);p(8,11,C.wood);p(9,11,C.woodD);
+p(6,10,C.wood);p(7,10,C.woodD);p(8,10,C.woodD);p(9,10,C.wood);
+p(5,10,'#4a2800');p(10,10,'#4a2800');p(5,11,'#3a1800');p(10,11,'#3a1800');
+const o=f%4;
+p(7,9,C.fire);p(8,9,C.fire);p(7,8,C.fire2);p(8,8,C.fire);
+p(7,7,C.fire3);p(8,7,C.fire2);p(7,6,C.fire3);p(8,6,C.fire3);
+if(o<2){p(7,5,'#ffdd66');p(6,7,C.fire);p(9,8,C.fire2)}
+if(o>=2){p(8,5,'#ffdd66');p(9,7,C.fire);p(6,8,C.fire2)}
+if(o===0)p(6,5,'#ff990033');if(o===1)p(9,5,'#ff990033');
+if(o===2)p(7,4,'#88888833');if(o===3)p(8,4,'#88888833');
+return createSprite(s)}
+
+function makeWoodHouseSprite(v){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const wb=v===0?'#7a5a2a':v===1?'#6a4a1a':'#8a6a3a';
+const wl=v===0?'#9a7a4a':v===1?'#8a6a3a':'#aa8a5a';
+const wd=v===0?'#5a3a0a':v===1?'#4a2a00':'#6a4a1a';
+const th=v===0?'#6a5030':v===1?'#5a4020':'#7a6040';
+const tl=v===0?'#8a7050':v===1?'#7a6040':'#9a8060';
+const td=v===0?'#4a3010':v===1?'#3a2000':'#5a4020';
+// Thatched roof - steeper, more detailed
+for(let x=6;x<=9;x++)p(x,0,td);
+for(let x=4;x<=11;x++)p(x,1,th);p(5,1,tl);p(10,1,tl);
+for(let x=3;x<=12;x++)p(x,2,th);p(4,2,tl);p(7,2,tl);p(11,2,tl);
+for(let x=2;x<=13;x++)p(x,3,th);p(3,3,tl);p(6,3,tl);p(9,3,tl);p(12,3,tl);
+for(let x=2;x<=13;x++)p(x,4,td);p(3,4,th);p(8,4,th);p(12,4,th);
+// Timber frame walls
+for(let y=5;y<=12;y++)for(let x=3;x<=12;x++){
+const isFrame=(x===3||x===12||x===7||x===8||y===5||y===12);
+p(x,y,isFrame?wd:(y%2===0?wl:wb))}
+// Cross-beam detail
+p(5,7,wd);p(10,7,wd);p(5,9,wd);p(10,9,wd);
+// Door - wooden with frame
+p(7,9,wd);p(8,9,wd);p(7,10,'#3a1a00');p(8,10,'#3a1a00');
+p(7,11,wd);p(8,11,wd);p(7,12,'#3a1a00');p(8,12,'#3a1a00');
+p(8,10,'#c8a020');// doorknob
+// Windows with shutters
+p(4,7,'#4a3010');p(5,7,wd);p(4,8,'#4fc3f7');p(5,8,'#4fc3f7');
+p(4,9,'#2a5a7e');p(5,9,'#2a5a7e');
+p(10,7,wd);p(11,7,'#4a3010');p(10,8,'#4fc3f7');p(11,8,'#4fc3f7');
+p(10,9,'#2a5a7e');p(11,9,'#2a5a7e');
+// Chimney
+p(11,0,C.stone1);p(12,0,C.stone2);p(11,1,C.stone2);
+// Foundation
+for(let x=3;x<=12;x++)p(x,13,C.dirt2);
+return createSprite(s)}
+
+function makeForgeSprite(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+// Stone chimney/hood
+for(let x=8;x<=12;x++){p(x,1,C.stone2);p(x,2,C.stone1)}
+p(9,0,C.stone1);p(10,0,C.stone2);p(11,0,C.stone1);
+// Smoke
+p(10,0,'#88888866');
+// Stone base
+for(let y=6;y<=12;y++)for(let x=2;x<=13;x++){
+const isEdge=(x===2||x===13||y===6);
+p(x,y,isEdge?C.stone2:C.stone1)}
+// Fire pit
+for(let x=9;x<=12;x++){p(x,7,C.fire);p(x,8,C.fire2)}
+p(10,6,C.fire3);p(11,6,C.fire);
+// Bellows
+p(7,8,C.leather);p(7,9,C.leatherD);p(8,8,C.leather);p(8,9,C.leather);
+// Anvil
+p(4,9,C.metalD);p(5,9,C.metal);p(6,9,C.metalL);
+p(4,10,C.metalD);p(5,10,C.metal);
+p(5,11,C.metalD);p(5,12,C.metalD);
+// Stone hearth connection
+for(let y=3;y<=5;y++){p(9,y,C.stone1);p(10,y,C.stone2);p(11,y,C.stone1);p(12,y,C.stone2)}
+// Work surface
+for(let x=3;x<=7;x++)p(x,8,C.wood);
+// Water bucket
+p(3,10,'#2a5a7e');p(3,11,'#4a3a1a');p(3,12,'#2a5a7e');
+// Ground
+for(let x=2;x<=13;x++)p(x,13,C.dirt2);
+return createSprite(s)}
+
+function makePalisadeH(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const pk='#7a5a2a',pd='#5a3a0a',pl='#9a7a4a',bn='#4a3010';
+// Pointed stakes - varying heights, side by side
+const heights=[4,2,3,1,3,2,4,1,3,2,4,3,2,4,3,1];
+for(let x=0;x<16;x++){
+const top=heights[x];
+for(let y=top;y<=14;y++){
+const c=(x%3===0)?pd:(y===top)?pl:(y%2===0)?pk:pl;
+p(x,y,c)}
+p(x,top,pl);// pointed tip highlight
+if(top>0)p(x,top-1,(x%2===0)?pd:0);// sharper point
+}
+// Horizontal binding ropes/planks
+for(let x=0;x<16;x++){p(x,8,bn);p(x,11,bn)}
+return createSprite(s)}
+
+function makePalisadeV(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const pk='#7a5a2a',pd='#5a3a0a',pl='#9a7a4a',bn='#4a3010';
+const widths=[4,2,3,1,3,2,4,1,3,2,4,3,2,4,3,1];
+for(let y=0;y<16;y++){
+const left=widths[y];
+for(let x=left;x<=14;x++){
+const c=(y%3===0)?pd:(x===left)?pl:(x%2===0)?pk:pl;
+p(x,y,c)}
+p(left,y,pl);
+if(left>0)p(left-1,y,(y%2===0)?pd:0);
+}
+for(let y=0;y<16;y++){p(8,y,bn);p(11,y,bn)}
+return createSprite(s)}
+
+function makeStoneHouseSprite(v){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl=v===0?'#7a8090':v===1?'#8a8a7a':'#6a7a8a';
+const sm=v===0?'#667080':v===1?'#7a7a6a':'#5a6a7a';
+const sd=v===0?'#556070':v===1?'#6a6a5a':'#4a5a6a';
+const rl=v===0?'#8a4a3a':v===1?'#6a5a4a':'#5a6a7a';
+const rm=v===0?'#7a3a2a':v===1?'#5a4a3a':'#4a5a6a';
+const rd=v===0?'#6a2a1a':v===1?'#4a3a2a':'#3a4a5a';
+// Slate/tile roof
+for(let x=5;x<=10;x++)p(x,0,rd);
+for(let x=3;x<=12;x++)p(x,1,rm);p(4,1,rl);p(8,1,rl);p(11,1,rl);
+for(let x=2;x<=13;x++)p(x,2,rm);p(3,2,rl);p(6,2,rl);p(10,2,rl);
+for(let x=2;x<=13;x++)p(x,3,rd);p(4,3,rm);p(7,3,rl);p(11,3,rm);
+for(let x=1;x<=14;x++)p(x,4,rd);p(2,4,rm);p(5,4,rl);p(9,4,rm);p(13,4,rl);
+// Stone walls
+for(let y=5;y<=12;y++)for(let x=3;x<=12;x++){
+const brick=((x+y)%4===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+// Stone quoin details (corner blocks)
+for(let y=5;y<=12;y++){p(3,y,(y%2===0)?sl:sd);p(12,y,(y%2===0)?sl:sd)}
+// Door - arched wood
+p(7,9,C.woodD);p(8,9,C.woodD);p(7,10,'#3a1a00');p(8,10,'#3a1a00');
+p(7,11,C.woodD);p(8,11,C.woodD);p(7,12,C.wood);p(8,12,C.wood);
+p(6,9,sd);p(9,9,sd);// door arch stones
+p(8,10,'#c8a020');// doorknob
+// Windows - stone frame with glass
+p(4,7,sd);p(5,7,'#4fc3f7');p(6,7,sd);
+p(4,8,sd);p(5,8,'#2a5a7e');p(6,8,sd);
+p(9,7,sd);p(10,7,'#4fc3f7');p(11,7,sd);
+p(9,8,sd);p(10,8,'#2a5a7e');p(11,8,sd);
+// Chimney
+p(11,0,sm);p(12,0,sd);p(11,1,sm);
+// Stone foundation line
+for(let x=2;x<=13;x++)p(x,13,sd);
+return createSprite(s)}
+
+function makeStrongholdHouseSprite(v){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl='#8a8a9a',sm='#6a7080',sd='#4a5060';
+const rl='#5a5a6a',rm='#4a4a5a',rd='#3a3a4a';
+// Fortified slate roof with battlements
+for(let x=4;x<=11;x++)p(x,0,rd);
+for(let x=2;x<=13;x++)p(x,1,rm);p(3,1,rl);p(7,1,rl);p(12,1,rl);
+for(let x=2;x<=13;x++)p(x,2,rd);p(4,2,rm);p(9,2,rl);
+for(let x=1;x<=14;x++)p(x,3,rm);p(2,3,rl);p(6,3,rl);p(11,3,rl);
+// Battlement crenels on roof edge
+p(1,3,rl);p(3,3,0);p(5,3,rl);p(8,3,0);p(10,3,rl);p(13,3,0);p(14,3,rl);
+// Heavy stone walls
+for(let y=4;y<=12;y++)for(let x=3;x<=12;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+// Reinforced corners
+for(let y=4;y<=12;y++){p(2,y,sd);p(3,y,sl);p(12,y,sl);p(13,y,sd)}
+// Iron door
+p(7,9,C.metalD);p(8,9,C.metalD);p(7,10,C.metal);p(8,10,C.metal);
+p(7,11,C.metalD);p(8,11,C.metalD);p(7,12,C.metal);p(8,12,C.metal);
+p(8,10,C.metalL);// handle
+p(6,9,sd);p(9,9,sd);
+// Arrow slits
+p(5,6,'#0a0a1a');p(5,7,'#0a0a1a');p(5,8,'#0a0a1a');
+p(10,6,'#0a0a1a');p(10,7,'#0a0a1a');p(10,8,'#0a0a1a');
+// Iron bands on walls
+for(let x=3;x<=12;x++){if(x%3===0){p(x,6,C.metalD);p(x,10,C.metalD)}}
+// Foundation
+for(let x=2;x<=13;x++)p(x,13,sd);
+return createSprite(s)}
+
+function makeBastionHouseSprite(v){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl='#9a9aaa',sm='#7a7a8a',sd='#5a5a6a';
+const vl='#9b8afb',vm='#7b68ee',vd='#5b4ecc';
+// Grand roof with veil-touched tiles
+for(let x=4;x<=11;x++)p(x,0,vd);
+for(let x=2;x<=13;x++)p(x,1,vm);p(4,1,vl);p(9,1,vl);
+for(let x=2;x<=13;x++)p(x,2,vd);p(3,2,vm);p(7,2,vl);p(12,2,vm);
+for(let x=1;x<=14;x++)p(x,3,vd);p(2,3,vm);p(6,3,vl);p(11,3,vm);
+// Battlement with veil glow
+p(1,3,vm);p(3,3,0);p(5,3,vl);p(8,3,0);p(10,3,vl);p(13,3,0);p(14,3,vm);
+// Polished stone walls
+for(let y=4;y<=12;y++)for(let x=3;x<=12;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+// Veil-infused corners
+for(let y=4;y<=12;y++){p(2,y,vd);p(3,y,(y%2===0)?sl:vd);p(12,y,(y%2===0)?sl:vd);p(13,y,vd)}
+// Ornate door
+p(7,9,vd);p(8,9,vd);p(7,10,vm);p(8,10,vm);
+p(7,11,vd);p(8,11,vd);p(7,12,vm);p(8,12,vm);
+p(8,10,vl);// glowing handle
+p(6,9,sl);p(9,9,sl);
+// Veil-lit windows
+p(4,7,sd);p(5,7,vl);p(6,7,sd);
+p(4,8,sd);p(5,8,vm);p(6,8,sd);
+p(9,7,sd);p(10,7,vl);p(11,7,sd);
+p(9,8,sd);p(10,8,vm);p(11,8,sd);
+// Veil rune accents
+p(5,5,vl);p(10,5,vl);p(7,5,vl);p(8,5,vl);
+// Foundation
+for(let x=2;x<=13;x++)p(x,13,vd);
+return createSprite(s)}
+
+function makeWatchtowerSprite(){
+const s=new Array(576).fill(0),W=16,H=36,p=(x,y,c)=>{if(x>=0&&x<W&&y>=0&&y<H)s[y*W+x]=c};
+const sl='#8a8a9a',sm='#6a7080',sd='#4a5060';
+// Crenelated top
+p(4,0,sl);p(5,0,sm);p(7,0,sl);p(8,0,sm);p(10,0,sl);p(11,0,sm);
+for(let x=4;x<=11;x++)p(x,1,sm);
+for(let x=4;x<=11;x++)p(x,2,sd);
+// Torch/flame at top
+p(7,0,C.fire3);p(8,0,C.fire2);p(7,1,C.fire);
+// Tower body
+for(let y=3;y<=30;y++)for(let x=5;x<=10;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+// Edges
+for(let y=3;y<=30;y++){p(4,y,sd);p(11,y,sd)}
+// Arrow slits at intervals
+for(let ay=6;ay<=26;ay+=7){p(7,ay,'#0a0a1a');p(7,ay+1,'#0a0a1a');p(8,ay,'#0a0a1a');p(8,ay+1,'#0a0a1a')}
+// Stone bands
+for(let x=4;x<=11;x++){p(x,10,sd);p(x,20,sd)}
+// Base - wider
+for(let y=31;y<=35;y++)for(let x=3;x<=12;x++){
+p(x,y,((x+y)%3===0)?sl:sd)}
+return createSprite(s,W,H)}
+
+function makeStoneWallH(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl='#8a8a9a',sm='#6a7080',sd='#4a5060';
+// Crenelated stone wall
+p(1,4,sl);p(2,4,sm);p(5,4,sl);p(6,4,sm);p(9,4,sl);p(10,4,sm);p(13,4,sl);p(14,4,sm);
+for(let x=0;x<=15;x++)p(x,5,sm);
+for(let y=6;y<=14;y++)for(let x=0;x<=15;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+for(let x=0;x<=15;x++){p(x,6,sd);p(x,14,sd)}
+return createSprite(s)}
+
+function makeStoneWallV(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl='#8a8a9a',sm='#6a7080',sd='#4a5060';
+for(let y=0;y<=15;y++)for(let x=4;x<=11;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+for(let y=0;y<=15;y++){p(4,y,sd);p(11,y,sd)}
+return createSprite(s)}
+
+function makeBeaconSprite(){
+const s=new Array(576).fill(0),W=16,H=36,p=(x,y,c)=>{if(x>=0&&x<W&&y>=0&&y<H)s[y*W+x]=c};
+const sl='#9a9aaa',sm='#7a7a8a',sd='#5a5a6a';
+const vl='#ccbbff',vm='#9b8afb',vd='#7b68ee',vdd='#5b4ecc';
+// Beacon flame - veil energy
+p(7,0,vl);p(8,0,vl);
+p(6,1,vm);p(7,1,vl);p(8,1,vl);p(9,1,vm);
+p(6,2,vd);p(7,2,vm);p(8,2,vm);p(9,2,vd);
+p(7,3,vd);p(8,3,vd);
+// Crystal focus
+p(7,4,vl);p(8,4,vl);p(7,5,vm);p(8,5,vm);
+// Tower pinnacle
+for(let x=6;x<=9;x++){p(x,6,sd);p(x,7,sl)}
+// Main tower body
+for(let y=8;y<=28;y++)for(let x=5;x<=10;x++){
+const brick=((x+y*2)%5===0)?sd:((x+y)%3===0)?sl:sm;
+p(x,y,brick)}
+for(let y=8;y<=28;y++){p(4,y,sd);p(11,y,sd)}
+// Veil rune lines running up tower
+for(let y=10;y<=26;y+=2){p(7,y,vd);p(8,y,vdd)}
+// Windows
+for(let wy=12;wy<=24;wy+=6){p(5,wy,vl);p(5,wy+1,vm);p(10,wy,vl);p(10,wy+1,vm)}
+// Base
+for(let y=29;y<=35;y++)for(let x=3;x<=12;x++){
+p(x,y,((x+y)%3===0)?sl:sd)}
+// Veil glow at base
+p(5,29,vd);p(10,29,vd);p(6,30,vdd);p(9,30,vdd);
+return createSprite(s,W,H)}
+
+function makeBannerSprite(color){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const pole='#6b4a2a',poleD='#5a3a1a';
+// Pole
+for(let y=0;y<=15;y++){p(7,y,pole);p(8,y,poleD)}
+// Flag
+const fl=color,fd=color==='#7b68ee'?'#5b4ecc':'#4a1a1a';
+for(let y=2;y<=8;y++)for(let x=9;x<=14;x++){
+const wave=Math.sin((y-2)*0.8)*0.5;
+if(x<=13+wave)p(x,y,(x+y)%3===0?fd:fl)}
+// Flag tip detail
+p(13,4,fd);p(14,5,fl);
+// Pole cap
+p(7,0,'#c8a020');p(8,0,'#c8a020');
+return createSprite(s)}
+
+function makeGateSprite(){
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sl='#8a8a9a',sm='#6a7080',sd='#4a5060';
+// Two pillars with arch
+for(let y=0;y<=14;y++){
+p(1,y,sd);p(2,y,sm);p(3,y,sl);
+p(12,y,sl);p(13,y,sm);p(14,y,sd)}
+// Arch top
+for(let x=4;x<=11;x++){p(x,0,sd);p(x,1,sm)}
+for(let x=5;x<=10;x++)p(x,2,sd);
+for(let x=6;x<=9;x++)p(x,3,sd);
+// Iron gate bars
+for(let y=4;y<=14;y++){p(5,y,C.metalD);p(7,y,C.metalD);p(9,y,C.metalD);p(11,y,C.metalD)}
+// Cross bars
+for(let x=5;x<=11;x++){p(x,7,C.metal);p(x,11,C.metal)}
+// Ground
+for(let x=1;x<=14;x++)p(x,15,C.dirt2);
+return createSprite(s)}
 function makeWaterTile(f=0){const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.water3:w>0.5?C.water2:C.water1}return createSprite(s)}
 function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}return createSprite(s)}
 
@@ -299,6 +643,22 @@ sprites.objects.rock=[makeRockTile(),makeRockTile()];
 sprites.objects.bush=[makeBushTile(),makeBushTile()];
 sprites.objects.flower=[makeFlowerTile('#dc2626'),makeFlowerTile('#a855f7'),makeFlowerTile('#4fc3f7'),makeFlowerTile('#f59e0b')];
 sprites.objects.house=[makeHouseTile(C.wall1,C.roof1),makeHouseTile(C.wall2,C.roof2),makeHouseTile('#8a8a7a','#4a5a6a')];
+// Settlement-level sprites
+sprites.objects.tent=[makeTentSprite(0),makeTentSprite(1),makeTentSprite(2)];
+sprites.objects.campfire=[0,1,2,3].map(f=>makeCampfireSprite(f));
+sprites.objects.woodHouse=[makeWoodHouseSprite(0),makeWoodHouseSprite(1),makeWoodHouseSprite(2)];
+sprites.objects.forge=[makeForgeSprite()];
+sprites.objects.palisadeH=[makePalisadeH()];
+sprites.objects.palisadeV=[makePalisadeV()];
+sprites.objects.stoneHouse=[makeStoneHouseSprite(0),makeStoneHouseSprite(1),makeStoneHouseSprite(2)];
+sprites.objects.strongholdHouse=[makeStrongholdHouseSprite(0),makeStrongholdHouseSprite(1),makeStrongholdHouseSprite(2)];
+sprites.objects.bastionHouse=[makeBastionHouseSprite(0),makeBastionHouseSprite(1),makeBastionHouseSprite(2)];
+sprites.objects.watchtower=[makeWatchtowerSprite()];
+sprites.objects.stoneWallH=[makeStoneWallH()];
+sprites.objects.stoneWallV=[makeStoneWallV()];
+sprites.objects.beacon=[makeBeaconSprite()];
+sprites.objects.banner=[makeBannerSprite('#dc2626'),makeBannerSprite('#7b68ee')];
+sprites.objects.gate=[makeGateSprite()];
 const resourceSprites={};
 ['branch','herb','ore','fiber','scrap','hide','relicShard'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
 
@@ -308,6 +668,106 @@ const terrain=new Uint8Array(MW*MH),terrainVariant=new Uint8Array(MW*MH),corrupt
 const decorations=[],buildings=[];
 // Dungeon entrance locations
 const dungeonEntrances=[{x:78,y:25,name:'Shattered Reliquary',zone:'ruins',minLevel:3,floors:3},{x:25,y:50,name:'Sunken Hollow',zone:'marsh',minLevel:5,floors:4},{x:15,y:20,name:'The Deep Root',zone:'forest',minLevel:7,floors:5}];
+
+// ═══ DYNAMIC SETTLEMENT LAYOUT ═══
+function rebuildSettlement(){
+buildings.length=0;
+const lv=state.settlement.level;
+// Town center ~(50,36), town zone x:40-60, y:28-44
+if(lv===1){
+// Camp: tents around a campfire
+buildings.push({x:47,y:33,type:'tent',variant:0,sz:2.4});
+buildings.push({x:53,y:33,type:'tent',variant:1,sz:2.4});
+buildings.push({x:45,y:37,type:'tent',variant:2,sz:2.4});
+buildings.push({x:55,y:37,type:'tent',variant:0,sz:2.4});
+buildings.push({x:50,y:40,type:'tent',variant:1,sz:2.4});
+buildings.push({x:50,y:36,type:'campfire',variant:0,sz:1.8});
+// Scattered crates/supplies (small tents as supply piles)
+buildings.push({x:48,y:39,type:'tent',variant:2,sz:1.6});
+}
+else if(lv===2){
+// Outpost: wooden houses, forge, palisade walls
+buildings.push({x:47,y:32,type:'woodHouse',variant:0,sz:2.6});
+buildings.push({x:53,y:32,type:'woodHouse',variant:1,sz:2.6});
+buildings.push({x:45,y:36,type:'woodHouse',variant:2,sz:2.6});
+buildings.push({x:55,y:36,type:'woodHouse',variant:0,sz:2.6});
+buildings.push({x:50,y:39,type:'woodHouse',variant:1,sz:2.6});
+buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
+buildings.push({x:48,y:41,type:'campfire',variant:0,sz:1.5});
+// Palisade walls - perimeter
+for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:43,type:'palisadeH',variant:0,sz:2})}
+for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:58,y:y,type:'palisadeV',variant:0,sz:2})}
+// Gate entrance (south)
+buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+}
+else if(lv===3){
+// Hamlet: stone-foundation houses, more buildings, palisade
+buildings.push({x:44,y:32,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:48,y:31,type:'stoneHouse',variant:1,sz:2.6});
+buildings.push({x:52,y:32,type:'stoneHouse',variant:2,sz:2.6});
+buildings.push({x:56,y:33,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:45,y:36,type:'stoneHouse',variant:1,sz:2.6});
+buildings.push({x:50,y:37,type:'stoneHouse',variant:2,sz:2.6});
+buildings.push({x:55,y:36,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
+buildings.push({x:48,y:41,type:'campfire',variant:0,sz:1.5});
+// Palisade walls
+for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:43,type:'palisadeH',variant:0,sz:2})}
+for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:58,y:y,type:'palisadeV',variant:0,sz:2})}
+buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+}
+else if(lv===4){
+// Stronghold: fortified houses, watchtowers, stone walls
+buildings.push({x:44,y:32,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:48,y:31,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:52,y:32,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:56,y:33,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:45,y:36,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:50,y:37,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:55,y:36,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:47,y:40,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:53,y:40,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
+// Stone walls replace palisade
+for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:43,type:'stoneWallH',variant:0,sz:2})}
+for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:58,y:y,type:'stoneWallV',variant:0,sz:2})}
+// Watchtowers at corners
+buildings.push({x:41,y:28,type:'watchtower',variant:0,sz:3});
+buildings.push({x:58,y:28,type:'watchtower',variant:0,sz:3});
+buildings.push({x:41,y:42,type:'watchtower',variant:0,sz:3});
+buildings.push({x:58,y:42,type:'watchtower',variant:0,sz:3});
+buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+}
+else if(lv>=5){
+// Veil Bastion: grand buildings, beacon, banners, full fortification
+buildings.push({x:44,y:32,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:48,y:31,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:52,y:32,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:56,y:33,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:45,y:36,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:50,y:38,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:55,y:36,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:47,y:40,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:53,y:40,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
+// Central beacon tower
+buildings.push({x:50,y:35,type:'beacon',variant:0,sz:3.5});
+// Stone walls
+for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:43,type:'stoneWallH',variant:0,sz:2})}
+for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:58,y:y,type:'stoneWallV',variant:0,sz:2})}
+// Watchtowers
+buildings.push({x:41,y:28,type:'watchtower',variant:0,sz:3});
+buildings.push({x:58,y:28,type:'watchtower',variant:0,sz:3});
+buildings.push({x:41,y:42,type:'watchtower',variant:0,sz:3});
+buildings.push({x:58,y:42,type:'watchtower',variant:0,sz:3});
+// Banners
+buildings.push({x:46,y:29,type:'banner',variant:0,sz:2.2});
+buildings.push({x:54,y:29,type:'banner',variant:1,sz:2.2});
+buildings.push({x:46,y:43,type:'banner',variant:0,sz:2.2});
+buildings.push({x:54,y:43,type:'banner',variant:1,sz:2.2});
+buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+}
+}
 
 function generateWorld(){
 for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;terrainVariant[i]=rand(0,3);corruptionMap[i]=0;terrain[i]=0;
@@ -326,7 +786,6 @@ for(let i=0;i<180;i++){const x=rand(9,37),y=rand(6,34);if(terrain[y*MW+x]===0)de
 for(let i=0;i<40;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==3)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
 for(let i=0;i<60;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===0||terrain[y*MW+x]===4)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
 for(let i=0;i<50;i++){const x=rand(10,36),y=rand(6,33);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
-[{x:44,y:32},{x:48,y:31},{x:52,y:32},{x:56,y:33},{x:45,y:36},{x:50,y:37},{x:55,y:36},{x:47,y:40},{x:53,y:40}].forEach((b,i)=>buildings.push({x:b.x,y:b.y,variant:i%3}));
 for(let i=0;i<15;i++){const x=rand(65,92),y=rand(13,42);decorations.push({x,y,type:'rock',variant:rand(0,1)})}
 decorations.sort((a,b)=>a.y-b.y);
 }
@@ -529,6 +988,7 @@ return out}
 function generateBounties(){return[...bountyTemplates].sort(()=>Math.random()-0.5).slice(0,5).map(t=>({...t,progress:0,active:false,completed:false}))}
 
 state=createNewState();
+rebuildSettlement();
 
 // ═══ HELPERS ═══
 function addItem(id,n=1){state.player.inventory[id]=(state.player.inventory[id]||0)+n}
@@ -677,7 +1137,7 @@ function exitDungeon(){
 
 // ═══ SETTLEMENT ═══
 function canUpgradeSettlement(){const next=settlementLevels[state.settlement.level];if(!next||!next.cost)return false;if(state.player.gold<next.cost.gold)return false;for(const[item,count]of Object.entries(next.cost))if(item!=='gold'&&itemCount(item)<count)return false;return true}
-function upgradeSettlement(){const next=settlementLevels[state.settlement.level];if(!next||!canUpgradeSettlement())return;state.player.gold-=next.cost.gold;for(const[item,count]of Object.entries(next.cost))if(item!=='gold')removeItem(item,count);state.settlement.level++;const lvl=settlementLevels[state.settlement.level-1];toast(`Settlement → ${lvl.name}!`,'event');addLog(`🏠 Cindergate: ${lvl.name}.`);if(state.settlement.level>=3)state.player.hpMax+=5;if(state.settlement.level>=4){state.player.atkBase+=3;state.player.defBase+=3}renderPanels()}
+function upgradeSettlement(){const next=settlementLevels[state.settlement.level];if(!next||!canUpgradeSettlement())return;state.player.gold-=next.cost.gold;for(const[item,count]of Object.entries(next.cost))if(item!=='gold')removeItem(item,count);state.settlement.level++;const lvl=settlementLevels[state.settlement.level-1];toast(`Settlement → ${lvl.name}!`,'event');addLog(`🏠 Cindergate: ${lvl.name}.`);if(state.settlement.level>=3)state.player.hpMax+=5;if(state.settlement.level>=4){state.player.atkBase+=3;state.player.defBase+=3}rebuildSettlement();renderPanels()}
 
 // ═══ COMBAT ═══
 function attackNearest(){
@@ -778,7 +1238,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);closeDialogue();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -839,7 +1299,19 @@ for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+
 // Corruption overlay
 const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==7){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
 // Buildings
-buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE;if(bx>state.camera.x-T*SCALE*2.4&&bx<state.camera.x+cssW+T*SCALE*2.4&&by>state.camera.y-T*SCALE*2.4&&by<state.camera.y+cssH+T*SCALE*2.4)ctx.drawImage(sprites.objects.house[b.variant],bx,by,T*SCALE*2.4,T*SCALE*2.4)});
+buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE,bsz=(b.sz||2.4)*T*SCALE;
+if(bx>state.camera.x-bsz&&bx<state.camera.x+cssW+bsz&&by>state.camera.y-bsz&&by<state.camera.y+cssH+bsz){
+const sprArr=sprites.objects[b.type];if(!sprArr)return;
+const fi=b.type==='campfire'?waterFrame.current%sprArr.length:b.variant%sprArr.length;
+const spr=sprArr[fi];if(!spr)return;
+// Beacon and watchtower are taller sprites (16x36), render taller
+if(b.type==='beacon'||b.type==='watchtower'){ctx.drawImage(spr,bx,by-bsz*0.8,bsz,bsz*2.25)}
+else{ctx.drawImage(spr,bx,by,bsz,bsz)}
+// Beacon veil glow effect
+if(b.type==='beacon'){ctx.globalAlpha=0.12+Math.sin(state.time*2)*0.06;ctx.fillStyle='#9b8afb';ctx.beginPath();ctx.arc(bx+bsz/2,by-bsz*0.3,bsz*1.2,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+// Campfire light glow
+if(b.type==='campfire'){ctx.globalAlpha=0.08+Math.sin(state.time*3)*0.04;ctx.fillStyle='#ff9f1a';ctx.beginPath();ctx.arc(bx+bsz/2,by+bsz/2,bsz*1.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+}});
 const drawables=[];
 // Decorations
 decorations.forEach(d=>{const dx=d.x*T*SCALE,dy=d.y*T*SCALE;if(dx>state.camera.x-T*SCALE*2&&dx<state.camera.x+cssW+T*SCALE*2&&dy>state.camera.y-T*SCALE*2&&dy<state.camera.y+cssH+T*SCALE*2){const sa=sprites.objects[d.type];if(sa){const sp=sa[d.variant%sa.length];const sz=d.type==='tree'?T*SCALE*2:(d.type==='rock'?T*SCALE*1.5:T*SCALE);drawables.push({y:dy+sz,draw:()=>ctx.drawImage(sp,dx,dy,sz,sz)})}}});
