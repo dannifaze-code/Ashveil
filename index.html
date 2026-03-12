@@ -1431,7 +1431,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0,swingAngle:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1485,6 +1485,7 @@ function removeItem(id,n=1){state.player.inventory[id]-=n;if(state.player.invent
 function itemCount(id){return state.player.inventory[id]||0}
 function totalAtk(){let n=state.player.atkBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;return n}
 function totalDef(){let n=state.player.defBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;return n}
+function totalCrit(){let n=state.player.critChance;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.critBonus)n+=itemDefs[s].critBonus;if(state.player.class==='veilwalker')n+=10;return n}
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
@@ -1686,13 +1687,13 @@ let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>60*SCALE)return toast('No enemy in range.');
 p.attackCooldown=0.4;const wv=weaponVisuals[p.equipment.weapon];if(wv)p.swingTimer=wv.swing;const eDef=enemyDefs[enemy.type];
-const crit=Math.random()*100<p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0)+(itemDefs[p.equipment.ring]?.critBonus||0);
+const crit=Math.random()*100<totalCrit();
 let dmg=Math.max(1,totalAtk()+rand(0,3)-1);if(crit)dmg=Math.floor(dmg*1.8);
 // Ashen Order bonus vs corrupted
 if(getFactionTier(state.faction.ashenOrder)>=1&&(enemy.type==='corruptWolf'||enemy.type==='voidSentinel'))dmg+=3;
 enemy.hp-=dmg;gainSkill('combat',4);state.stats.totalDamageDealt+=dmg;state.stats.pacifistStreak=0;
-const wvAtk=weaponVisuals[p.equipment.weapon];const pColor=wvAtk?wvAtk.particles:(crit?'#ffcc44':'#ff6b35');spawnParticle(enemy.x,enemy.y,pColor,crit?10:6,crit?80:50);
-if(wvAtk&&(itemDefs[p.equipment.weapon]?.rarity==='epic'||itemDefs[p.equipment.weapon]?.rarity==='legendary')){spawnParticle(enemy.x+rand(-10,10),enemy.y+rand(-10,10),wvAtk.glow||wvAtk.color,4,40)}
+const pColor=wv?wv.particles:(crit?'#ffcc44':'#ff6b35');spawnParticle(enemy.x,enemy.y,pColor,crit?10:6,crit?80:50);
+if(wv&&(itemDefs[p.equipment.weapon]?.rarity==='epic'||itemDefs[p.equipment.weapon]?.rarity==='legendary')){spawnParticle(enemy.x+rand(-10,10),enemy.y+rand(-10,10),wv.glow||wv.color,4,40)}
 spawnDamageNumber(enemy.x,enemy.y-20,crit?`CRIT ${dmg}`:`${dmg}`,crit?'#ffcc44':'#ff6b35');
 triggerShake(crit?10:4,crit?0.2:0.1);p.lastCombatTime=state.time;
 if(enemy.hp<=0){
@@ -2404,7 +2405,7 @@ qs('#charStats').innerHTML=`
 <div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${p.hpMax}</span></div>
 <div class="char-stat"><span class="stat-label">Attack</span><span class="stat-value">${totalAtk()}</span></div>
 <div class="char-stat"><span class="stat-label">Defense</span><span class="stat-value">${totalDef()}</span></div>
-<div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${p.critChance+(itemDefs[p.equipment.weapon]?.critBonus||0)+(itemDefs[p.equipment.ring]?.critBonus||0)}%</span></div>
+<div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${totalCrit()}%</span></div>
 <div class="char-stat"><span class="stat-label">Level</span><span class="stat-value">${p.level}</span></div>
 <div class="char-stat"><span class="stat-label">Gold</span><span class="stat-value">${p.gold}</span></div>
 `}
