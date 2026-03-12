@@ -255,6 +255,21 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .skill-class-info p{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5}
 .skill-class-locked{text-align:center;padding:24px;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px;border:1px dashed rgba(90,60,20,.3);border-radius:10px;margin-top:12px}
 @media(max-width:920px){#skillsBox{width:95vw;height:92vh;max-height:none}.skills-body{flex-direction:column}.skills-nav{flex-direction:row;min-width:auto;overflow-x:auto;border-right:none;border-bottom:2px solid rgba(90,60,20,.3);padding:8px}.skill-nav-btn{min-width:120px;padding:8px 12px;font-size:10px;justify-content:center}.skills-content{padding:12px}.skill-tree-grid{grid-template-columns:1fr}#skillsBtn{right:66px;bottom:72px;width:44px;height:44px}}
+/* ═══ CLASS AWAKENING OVERLAY ═══ */
+#classAwakeningOverlay{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(14px)}
+#classAwakeningOverlay.open{display:flex}
+#classAwakeningBox{width:90vw;max-width:720px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(200,160,32,.7);border-radius:20px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 80px rgba(200,160,32,.3);padding:32px;text-align:center}
+#classAwakeningBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(200,160,32,.6),rgba(245,158,11,.9),rgba(200,160,32,.6),transparent);margin:-32px -32px 24px}
+#classAwakeningBox h2{font-family:'Cinzel',serif;color:#f59e0b;font-size:22px;letter-spacing:4px;margin-bottom:8px;text-shadow:0 2px 16px rgba(200,160,32,.6);text-transform:uppercase}
+.awakening-subtitle{font-size:12px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;margin-bottom:24px;line-height:1.6}
+.class-choices{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.class-choice-card{appearance:none;flex:1;min-width:180px;max-width:220px;border:2px solid rgba(90,60,20,.5);border-radius:14px;padding:20px 16px;background:linear-gradient(180deg,rgba(50,35,15,.6),rgba(30,20,10,.8));cursor:pointer;transition:all .3s;text-align:center;font:inherit}
+.class-choice-card:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(90,65,30,.7),rgba(50,35,15,.9));transform:translateY(-4px);box-shadow:0 8px 30px rgba(200,160,32,.3)}
+.class-choice-icon{font-size:36px;margin-bottom:8px}
+.class-choice-name{font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;margin-bottom:6px}
+.class-choice-desc{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5;margin-bottom:10px}
+.class-choice-bonus{font-size:11px;font-family:'JetBrains Mono',monospace;padding:6px 10px;border-radius:6px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)}
+@media(max-width:920px){#classAwakeningBox{width:95vw;padding:20px}.class-choices{flex-direction:column;align-items:center}.class-choice-card{min-width:auto;max-width:280px;width:100%}}
 #inventoryOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
 #inventoryOverlay.open{display:flex}
 #inventoryBox{width:460px;max-width:95vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:16px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
@@ -372,6 +387,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div id="titleButtons">
 <button class="title-btn primary" id="btnPlay">Enter the Veil</button>
 <button class="title-btn" id="btnContinue" style="display:none">Continue Journey<span class="btn-sub">Load last save</span></button>
+<button class="title-btn" id="btnNewGame">New Game<span class="btn-sub">Start fresh</span></button>
 <button class="title-btn" id="btnSettings">Settings</button>
 </div>
 </div>
@@ -619,6 +635,13 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="skills-nav" id="skillsNav"></div>
 <div class="skills-content" id="skillsContent"></div>
 </div>
+</div>
+</div>
+<div id="classAwakeningOverlay">
+<div id="classAwakeningBox">
+<h2>⬥ Class Awakening ⬥</h2>
+<div class="awakening-subtitle">Choose your path, Walker. Your accumulated skill points will be invested in your chosen class.</div>
+<div class="class-choices" id="classChoices"></div>
 </div>
 </div>
 <div id="lootOverlay" style="display:none">
@@ -1370,7 +1393,7 @@ const settlementLevels=[
 const dialogueDefs={
 elder:{start:{speaker:'Elder Maelin',text:'The Veil stirs, Walker. Every day it grows thinner. Four powers now compete for Cindergate\'s future. Which burden will you carry?',choices:[{text:'I stand with Cindergate.',next:'town'},{text:'I follow coin—the Roadwardens.',next:'merc'},{text:'Tell me about the Veils.',next:'lore'},{text:'Who are the Scholars and the Order?',next:'factions'}]},town:{speaker:'Elder Maelin',text:'Then let the frontier remember your name. The wilds will test you.',effect:s=>{s.faction.cindergate+=5;setQuestStage('first_steps',1)},choices:[{text:'I understand.',close:true}]},merc:{speaker:'Elder Maelin',text:'The Roadwardens pay well, but their hands are not always clean.',effect:s=>{s.faction.roadwardens+=5},choices:[{text:'Noted.',close:true}]},lore:{speaker:'Elder Maelin',text:'Living barriers called Veils once separated civilization from ancient forces. Now they weaken. Someone—or something—is training our world to live without them.',choices:[{text:'Who is causing this?',next:'cause'},{text:'I should go.',close:true}]},cause:{speaker:'Elder Maelin',text:'The Scholars say natural decay. The Ashen Order says divine will. I say: someone is deliberately tearing them down. Find the truth in the dungeons.',choices:[{text:'I will.',close:true}]},factions:{speaker:'Elder Maelin',text:'The Veil Scholars study the old barriers—seekers of forbidden knowledge. The Ashen Order believes the Veils are chains that must be burned away. Both are dangerous. Both might be right.',choices:[{text:'I\'ll judge for myself.',close:true}]}},
 quartermaster:{start:{speaker:'Quartermaster Sen',text:'Walker. What do you need?',choices:[{text:'Got work?',next:'work'},{text:'Settlement upgrades?',next:'settlement'},{text:'Show me the map.',next:'map'},{text:'Later.',close:true}]},work:{speaker:'Quartermaster Sen',text:'Gather from Emberwood, survive a hunt. The bounty board has standing contracts.',effect:s=>{if(getQuest('first_steps').stage===0)setQuestStage('first_steps',1)},choices:[{text:'On it.',close:true}]},settlement:{speaker:'Quartermaster Sen',text:'Cindergate grows with investment. Bring materials and gold for upgrades. A stronger settlement means better gear.',choices:[{text:'I\'ll contribute.',close:true}]},map:{speaker:'Quartermaster Sen',text:'West: Emberwood. South: Mirefen. East: Glass Ruins. Dungeon entrances have been found in each. None want you there.',choices:[{text:'Understood.',close:true}]}},
-herbalist:{start:{speaker:'Herbalist Yara',text:'A Walker with all their fingers still. I deal in remedies and awakenings.',choices:[{text:'Awakenings?',next:'awaken'},{text:'What do you sell?',next:'shop'},{text:'Not now.',close:true}]},awaken:{speaker:'Herbalist Yara',text:'Every Walker has a latent class shaped by how they fight, gather, and decide. At level 5, your dominant skill crystallizes. Combat→Warden. Foraging/Crafting→Artificer. Influence→Veilwalker.',choices:[{text:'I\'ll be ready.',close:true}]},shop:{speaker:'Herbalist Yara',text:'Three herbs and a fiber for two tonics. Five herbs and ore for a Veil Elixir.',choices:[{text:'Thanks.',close:true}]}},
+herbalist:{start:{speaker:'Herbalist Yara',text:'A Walker with all their fingers still. I deal in remedies and awakenings.',choices:[{text:'Awakenings?',next:'awaken'},{text:'What do you sell?',next:'shop'},{text:'Not now.',close:true}]},awaken:{speaker:'Herbalist Yara',text:'Every Walker has a latent class waiting to emerge. At level 5, you will choose your path: Warden, Artificer, or Veilwalker. Your accumulated skill points will be invested in your chosen class, giving it a head start. Choose wisely—your first class will always lead.',choices:[{text:'I\'ll be ready.',close:true}]},shop:{speaker:'Herbalist Yara',text:'Three herbs and a fiber for two tonics. Five herbs and ore for a Veil Elixir.',choices:[{text:'Thanks.',close:true}]}},
 smuggler:{start:{speaker:'Kael the Smuggler',text:'*leans in* Laws are flexible. The Roadwardens and I have an arrangement. Want in?',choices:[{text:'What arrangement?',next:'deal'},{text:'I\'m loyal to Cindergate.',next:'refuse'},{text:'Not interested.',close:true}]},deal:{speaker:'Kael the Smuggler',text:'Bring me ruin materials—scrap, ore—I pay triple. Weakens Cindergate\'s supply chain. Gold is gold, right?',effect:s=>{s.faction.roadwardens+=3},choices:[{text:'I\'ll think about it.',close:true}]},refuse:{speaker:'Kael the Smuggler',text:'*shrugs* Loyalty is a luxury. When the Veil cracks and Cindergate starves, remember who offered an alternative.',effect:s=>{s.faction.cindergate+=3},choices:[{text:'We\'ll see.',close:true}]}},
 bountyMaster:{start:{speaker:'Bounty Master Rhett',text:'Board\'s full, Walker. Pick a contract, get it done, get paid.',choices:[{text:'Show me bounties.',next:'board'},{text:'Any rare targets?',next:'rare'},{text:'Later.',close:true}]},board:{speaker:'Bounty Master Rhett',text:'Check the Bounty tab. Active contracts listed there.',choices:[{text:'Got it.',close:true}]},rare:{speaker:'Bounty Master Rhett',text:'Ash Drakes, Veil Wraiths, and now Corrupted beasts—creatures warped by the failing Veils. Unique materials. Worth the risk.',choices:[{text:'I don\'t run.',close:true}]}},
 scholarLynn:{start:{speaker:'Scholar Lynn',text:'Ah, the Walker everyone is whispering about. I am Lynn of the Veil Scholars. We study the barriers between worlds. I suspect you have more connection to them than you realize.',choices:[{text:'What do you study?',next:'study'},{text:'What do you want from me?',next:'want'},{text:'I\'ve heard you attract Veil beasts.',next:'accusation'},{text:'Not now.',close:true}]},study:{speaker:'Scholar Lynn',text:'The Veils are organic—alive, in a sense. They breathe, flex, and communicate. When a dungeon forms, it\'s the Veil trying to... express something. We need those relics to understand the language.',effect:s=>{s.faction.veilScholars+=3},choices:[{text:'That\'s fascinating.',close:true}]},want:{speaker:'Scholar Lynn',text:'Relic Shards. The dungeons produce them—fragments of the Veil\'s memory. Bring them to me and I\'ll teach you to read the patterns. The rewards are... considerable. Both in knowledge and in power.',effect:s=>{s.faction.veilScholars+=5;if(!getQuest('scholar_quest'))state.quests.push({id:'scholar_quest',name:'The Scholar\'s Collection',stage:0,done:false,desc:'Bring 5 Relic Shards to Scholar Lynn.'})},choices:[{text:'I\'ll bring what I find.',close:true}]},accusation:{speaker:'Scholar Lynn',text:'*pauses* The beasts are not drawn to us. They are drawn to the knowledge we uncover. There is a difference. A subtle one, I grant you. But the Ashen Order\'s answer—burning everything—is no answer at all.',choices:[{text:'Fair point.',close:true},{text:'I\'m not sure I believe you.',close:true}]}},
@@ -1462,7 +1485,56 @@ let dustTimer=0;
 function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
 
 // ═══ CLASS AWAKENING ═══
-function checkClassAwakening(){if(state.player.class||state.player.level<5)return;const sk=state.player.skills;if(sk.combat>=sk.foraging&&sk.combat>=sk.influence){state.player.class='warden';toast('⚔ AWAKENING: Warden! +3 ATK','achievement');addLog('🔥 Awakened as a Warden.')}else if(sk.foraging>=sk.combat&&sk.foraging>=sk.influence){state.player.class='artificer';toast('⚒ AWAKENING: Artificer! +2 DEF','achievement');addLog('⚒ Awakened as an Artificer.')}else{state.player.class='veilwalker';toast('◈ AWAKENING: Veilwalker! +crit','achievement');addLog('◈ Awakened as a Veilwalker.');state.player.critChance+=10}}
+function checkClassAwakening(){if(state.player.class||state.player.level<5)return;showClassAwakeningPopup()}
+function showClassAwakeningPopup(){
+const overlay=qs('#classAwakeningOverlay');
+const choices=qs('#classChoices');
+const pts=state.player.skillPoints;
+choices.innerHTML=Object.entries(classUnlockDefs).map(([key,cd])=>{
+return`<button class="class-choice-card" onclick="W.chooseClass('${key}')">
+<div class="class-choice-icon">${cd.icon}</div>
+<div class="class-choice-name" style="color:${cd.color}">${cd.name}</div>
+<div class="class-choice-desc" style="color:#8a7a5a">${cd.desc}</div>
+<div class="class-choice-bonus" style="color:${cd.color}">${cd.bonusDesc}</div>
+</button>`;
+}).join('');
+overlay.classList.add('open');
+}
+function chooseClass(classKey){
+const p=state.player;
+if(!['warden','artificer','veilwalker'].includes(classKey))return;
+const cd=classUnlockDefs[classKey];
+if(!cd||p.class)return;
+p.class=classKey;
+if(classKey==='veilwalker')p.critChance+=10;
+const classTreeMap={warden:['combat','survival'],artificer:['foraging','crafting'],veilwalker:['influence','veilsense']};
+const trees=classTreeMap[classKey];
+const originalPts=p.skillPoints;
+let remaining=p.skillPoints;
+for(let t=0;t<trees.length&&remaining>0;t++){
+const root=skillTreeDefs[trees[t]].nodes[0];
+const cur=getSkillNodeRank(trees[t],root.id);
+const canInvest=Math.min(remaining,root.maxRank-cur);
+for(let i=0;i<canInvest;i++){
+setSkillNodeRank(trees[t],root.id,getSkillNodeRank(trees[t],root.id)+1);
+if(root.perRank.atk)p.atkBase+=root.perRank.atk;
+if(root.perRank.def)p.defBase+=root.perRank.def;
+if(root.perRank.hp)p.hpMax+=root.perRank.hp;
+if(root.perRank.crit)p.critChance+=root.perRank.crit;
+}
+remaining-=canInvest;
+}
+p.skillPoints=remaining;
+qs('#classAwakeningOverlay').classList.remove('open');
+const totalInvested=originalPts-remaining;
+toast(`${cd.icon} AWAKENING: ${cd.name}!`,'achievement');
+addLog(`${cd.icon} Awakened as a ${cd.name}.`);
+if(totalInvested>0)toast(`${totalInvested} points auto-invested in ${cd.name} trees!`,'quest');
+triggerShake(10,0.4);
+spawnParticle(state.player.x,state.player.y,cd.color,20,120);
+spawnDamageNumber(state.player.x,state.player.y-40,`${cd.name.toUpperCase()}!`,cd.color);
+renderPanels();
+}
 
 // ═══ WORLD MUTATION SYSTEM ═══
 function updateWorldMutation(dt){
@@ -1683,7 +1755,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -2086,6 +2158,7 @@ function getSkillNodeRank(skillKey,nodeId){return(state.player.classTree&&state.
 function setSkillNodeRank(skillKey,nodeId,rank){state.player.classTree[skillKey+'_'+nodeId]=rank}
 function canUpgradeNode(skillKey,node){
 const p=state.player;
+if(!p.class)return false;
 if(p.skillPoints<=0)return false;
 const currentRank=getSkillNodeRank(skillKey,node.id);
 if(currentRank>=node.maxRank)return false;
@@ -2144,7 +2217,7 @@ if(p.class){
 const cd=classUnlockDefs[p.class];
 if(cd)classInfo=`<div class="skill-class-info"><h4>${cd.icon} ${cd.name}</h4><p>${cd.bonusDesc}</p></div>`;
 }else{
-classInfo=`<div class="skill-class-locked">⬥ Class awakens at Level 5 ⬥<br><span style="font-size:11px;color:#6a5a3a;font-family:'JetBrains Mono',monospace;margin-top:4px;display:inline-block">Your dominant skill determines your class</span></div>`;
+classInfo=`<div class="skill-class-locked">⬥ Awaken your class at Level 5 ⬥<br><span style="font-size:11px;color:#6a5a3a;font-family:'JetBrains Mono',monospace;margin-top:4px;display:inline-block">Skill points cannot be spent until you choose your class</span></div>`;
 }
 content.innerHTML=`
 <div class="skill-tree-header">
@@ -2177,7 +2250,7 @@ return`<div class="skill-node${unlocked?' unlocked':''}${maxed?' maxed':''}" sty
 <div class="skill-node-desc">${node.desc}<br><span style="color:${tree.color}">${node.effect}</span></div>
 ${reqText?`<div class="skill-node-cost">${reqText}</div>`:''}
 ${!maxed?`<button class="skill-upgrade-btn" ${canUp?'':'disabled'} onclick="W.upgradeSkillNode('${activeSkillTab}','${node.id}')">
-${canUp?'Upgrade (1 Point)':locked?'Class Locked':!reqMet?'Requirements Not Met':'No Points'}
+${canUp?'Upgrade (1 Point)':!p.class?'Awaken Class First':locked?'Class Locked':!reqMet?'Requirements Not Met':'No Points'}
 </button>`:`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px">✦ MAXED ✦</div>`}
 </div>`;
 }).join('')}</div>`;
@@ -2211,7 +2284,7 @@ canvas.style.cursor=hover?'pointer':'crosshair'});
 (function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup};
 
 // ═══ SETTINGS ═══
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem('ashveil_settings'));if(s){Object.assign(gameSettings,s);qs('#setAutoSave').value=s.autoSaveInterval??60;qs('#setShake').value=s.shakeEnabled===false?'0':'1';qs('#setDust').value=s.dustEnabled===false?'0':'1';qs('#setRegen').value=s.regenEnabled===false?'0':'1'}}catch(e){}}
@@ -2534,6 +2607,7 @@ function startGame(fromSave=false){
 if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block'}
 qs('#btnPlay').onclick=()=>startGame(false);
 qs('#btnContinue').onclick=()=>startGame(true);
+qs('#btnNewGame').onclick=()=>{state=createNewState();rebuildSettlement();startGame(false)};
 
 // Start title loop
 resizeTitleCanvas();
