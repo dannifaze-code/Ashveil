@@ -1683,7 +1683,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null)p.skillPoints=0;if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1892,7 +1892,7 @@ panels.inventory.innerHTML=`<div class="card"><h3>⬥ Inventory</h3><p class="ti
 panels.equip.innerHTML=`<div class="card"><h3>⬥ Equipment</h3></div><div class="card"><div class="equipGrid">${['weapon','body','trinket'].map(s=>{const id=p.equipment[s],it=id?itemDefs[id]:null,rc=it?'rarity-'+(it.rarity||'common'):'';return`<div class="slot"><div class="slot-label">${cap(s)}</div><div class="slot-item ${rc}">${it?it.name:'—'}</div>${it?`<div class="tiny" style="margin-top:4px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div><button class="item-btn" style="margin-top:4px" onclick="W.unequip('${s}')">Remove</button>`:''}</div>`}).join('')}</div></div><div class="card"><div class="row"><span>Attack</span><strong class="fire">${totalAtk()}</strong></div><div class="row"><span>Defense</span><strong class="veil">${totalDef()}</strong></div><div class="row"><span>Crit</span><strong class="gold">${p.critChance}%</strong></div></div>`;
 
 // Skills
-panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}<p class="tiny gold">Skill Points: ${p.skillPoints}</p><button class="item-btn" style="margin-top:6px;width:100%" onclick="W.openSkills()">Open Skill Trees</button></div>${Object.entries(p.skills).map(([sk,lv])=>{const xp=p.skillXp[sk],need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
+panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}<p class="tiny gold">Skill Points: ${p.skillPoints||0}</p><button class="item-btn" style="margin-top:6px;width:100%" onclick="W.openSkills()">Open Skill Trees</button></div>${Object.entries(p.skills||{}).map(([sk,lv])=>{const xp=(p.skillXp||{})[sk]||0,need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
 
 // Crafting
 const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
@@ -2082,7 +2082,7 @@ warden:{name:'Warden',desc:'The stalwart defender. High combat and survival.',ic
 artificer:{name:'Artificer',desc:'Master crafter and nature expert.',icon:'🔨',requirement:'Default class — Foraging focused.',color:'#3ddc84',bonusDesc:'+2 DEF. Unlocks Artificer-exclusive nodes in Foraging and Crafting trees.'},
 veilwalker:{name:'Veilwalker',desc:'Scholar of the Veil and master of influence.',icon:'◈',requirement:'Default class — Influence focused.',color:'#9b8afb',bonusDesc:'+10% Crit. Unlocks Veilwalker-exclusive nodes in Influence and Veilsense trees.'}
 };
-function getSkillNodeRank(skillKey,nodeId){return(state.player.classTree[skillKey+'_'+nodeId])||0}
+function getSkillNodeRank(skillKey,nodeId){return(state.player.classTree&&state.player.classTree[skillKey+'_'+nodeId])||0}
 function setSkillNodeRank(skillKey,nodeId,rank){state.player.classTree[skillKey+'_'+nodeId]=rank}
 function canUpgradeNode(skillKey,node){
 const p=state.player;
@@ -2116,6 +2116,10 @@ renderPanels();
 let activeSkillTab='combat';
 function renderSkillsOverlay(){
 const p=state.player;
+if(p.skillPoints==null)p.skillPoints=0;
+if(!p.classTree)p.classTree={};
+if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};
+if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};
 const nav=qs('#skillsNav');
 const content=qs('#skillsContent');
 qs('#skillPointsDisplay').textContent='Skill Points: '+p.skillPoints;
@@ -2132,8 +2136,8 @@ activeSkillTab=btn.dataset.skill;
 renderSkillsOverlay();
 });
 const tree=skillTreeDefs[activeSkillTab];
-const sk=p.skills[activeSkillTab];
-const xp=p.skillXp[activeSkillTab];
+const sk=p.skills[activeSkillTab]||1;
+const xp=p.skillXp[activeSkillTab]||0;
 const need=sk*20;
 let classInfo='';
 if(p.class){
