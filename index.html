@@ -207,6 +207,35 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .journal-panel{display:none}
 .journal-panel.active{display:block;animation:fadeIn .4s ease}
 @media(max-width:920px){#journalBox{width:95vw;height:92vh;max-height:none}.journal-tabs{flex-wrap:nowrap;-webkit-overflow-scrolling:touch}.journal-tab{min-width:120px;padding:10px 16px;font-size:11px}.journal-content{padding:16px}}
+/* ═══ INVENTORY OVERLAY ═══ */
+#inventoryBtn{position:absolute;right:130px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(90,60,20,.6);background:linear-gradient(180deg,rgba(70,50,25,.95),rgba(50,35,15,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,160,80,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
+#inventoryBtn:hover{border-color:rgba(180,140,60,.8);background:linear-gradient(180deg,rgba(90,65,30,.95),rgba(65,45,20,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,160,80,.3)}
+#inventoryOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
+#inventoryOverlay.open{display:flex}
+#inventoryBox{width:460px;max-width:95vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:16px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
+#inventoryBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.9),rgba(139,106,20,.6),transparent)}
+.inv-header{text-align:center;padding:14px 20px 10px;font-family:'Cinzel',serif;font-size:18px;color:#d4a84a;letter-spacing:3px;text-transform:uppercase;text-shadow:0 2px 12px rgba(200,160,32,.4);border-bottom:2px solid rgba(90,60,20,.4);background:linear-gradient(180deg,rgba(40,30,15,.8),rgba(30,20,10,.6));position:relative}
+.inv-close{position:absolute;top:10px;right:14px;appearance:none;border:2px solid rgba(90,60,20,.5);background:rgba(60,40,15,.7);color:#d4a84a;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.inv-close:hover{border-color:rgba(200,160,32,.8);background:rgba(90,60,20,.8);color:#f0f4ff}
+.inv-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:12px}
+.inv-slot{width:64px;height:64px;background:rgba(255,255,255,.03);border:1px solid rgba(42,51,71,.5);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:default;transition:all .15s;position:relative;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;image-rendering:pixelated}
+.inv-slot:hover{border-color:rgba(139,106,20,.5);background:rgba(255,255,255,.06)}
+.inv-slot.occupied{background:rgba(123,104,238,.06);border-color:rgba(123,104,238,.25);cursor:pointer}
+.inv-slot canvas{image-rendering:pixelated}
+.inv-slot .inv-count{position:absolute;bottom:2px;right:4px;font-size:10px;color:var(--gold2)}
+.inv-footer{padding:8px 14px;border-top:1px solid rgba(90,60,20,.3);text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px}
+.inv-gold{color:var(--gold2)}
+/* ═══ LOOT OVERLAY ═══ */
+#lootOverlay{position:fixed;z-index:9997;pointer-events:none;inset:0}
+#lootBox{position:absolute;width:250px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(139,106,20,.6);border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.7);pointer-events:auto;animation:fadeIn .2s ease}
+.loot-header{text-align:center;padding:8px;font-family:'Cinzel',serif;font-size:14px;color:#d4a84a;letter-spacing:2px;border-bottom:1px solid rgba(90,60,20,.4)}
+.loot-items{padding:6px;display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto}
+.loot-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid rgba(42,51,71,.4);border-radius:6px;background:rgba(255,255,255,.03);cursor:pointer;transition:all .15s;font-size:12px;color:var(--text);font-family:'Crimson Text',serif;image-rendering:pixelated}
+.loot-item:hover{border-color:rgba(139,106,20,.5);background:rgba(255,255,255,.07)}
+.loot-item canvas{image-rendering:pixelated}
+.loot-all-btn{appearance:none;width:calc(100% - 12px);margin:6px;padding:8px;border:1px solid rgba(139,106,20,.5);border-radius:6px;background:linear-gradient(180deg,rgba(70,50,25,.9),rgba(50,35,15,.9));color:#d4a84a;font-family:'Cinzel',serif;font-size:13px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.loot-all-btn:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(90,65,30,.9),rgba(65,45,20,.9))}
+.loot-cursor{cursor:pointer}
 
 /* ═══ CHAT BOX ═══ */
 #chatBox{position:absolute;left:14px;bottom:80px;width:280px;max-height:180px;z-index:3;pointer-events:auto;display:flex;flex-direction:column;border:1px solid rgba(90,60,20,.4);border-radius:10px;overflow:hidden;background:rgba(8,9,13,.85);backdrop-filter:blur(6px)}
@@ -457,6 +486,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button id="gameMenuBtn" title="Menu (ESC)">☰</button>
 <!-- Journal Overlay Button -->
 <button id="journalBtn" title="Journal (J)">📜</button>
+<button id="inventoryBtn" title="Inventory (I)">🎒</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -525,6 +555,20 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 </div>
 </div>
 </div>
+<div id="inventoryOverlay">
+<div id="inventoryBox">
+<div class="inv-header">⬥ Inventory ⬥<button class="inv-close">✕</button></div>
+<div class="inv-grid" id="invGrid"></div>
+<div class="inv-footer"><span class="inv-gold" id="invGold">💰 0</span></div>
+</div>
+</div>
+<div id="lootOverlay" style="display:none">
+<div id="lootBox">
+<div class="loot-header">Loot</div>
+<div class="loot-items" id="lootItems"></div>
+<button class="loot-all-btn" id="lootAllBtn">Loot All</button>
+</div>
+</div>
 </div>
 <script>
 (()=>{
@@ -537,7 +581,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.rando
 const sample=a=>a[Math.floor(Math.random()*a.length)],cap=s=>s[0].toUpperCase()+s.slice(1);
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
-const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE;
+const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE,LOOT_DROP_CHANCE=0.7,LOOT_DESPAWN_TIME=60;
 function separateEnemies(arr,dt){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const a=arr[i],b=arr[j],sd=dist(a,b);if(sd<ENEMY_SEP&&sd>0.1){const sx=(b.x-a.x)/sd,sy=(b.y-a.y)/sd,push=(ENEMY_SEP-sd)*5*dt;a.x-=sx*push;a.y-=sy*push;b.x+=sx*push;b.y+=sy*push}}}}
 
 const canvas=qs('#game'),ctx=canvas.getContext('2d'),hud=qs('#hud'),toastWrap=qs('#toastWrap');
@@ -929,6 +973,42 @@ for(let x=1;x<=14;x++)p(x,15,C.dirt2);
 return createSprite(s)}
 function makeWaterTile(f=0){const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.water3:w>0.5?C.water2:C.water1}return createSprite(s)}
 function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}return createSprite(s)}
+function makeItemIcon(id){
+const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard'];
+if(matTypes.includes(id))return makeResourceSprite(id);
+const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
+const sword=(c1,c2,c3)=>{p(12,2,c3);p(11,3,c2);p(10,4,c1);p(9,5,c2);p(8,6,c1);p(7,7,c2);p(6,8,c1);p(5,9,c3);p(4,10,'#8a7050');p(3,11,'#6b5535');p(4,11,'#8a7050');p(3,12,'#8a7050');p(2,13,'#6b5535')};
+const armor=(c1,c2,c3)=>{for(let x=5;x<=10;x++){p(x,4,c2);p(x,11,c3)}for(let y=5;y<=10;y++){p(5,y,c1);p(10,y,c1)}for(let y=5;y<=10;y++)for(let x=6;x<=9;x++)p(x,y,c2);p(6,5,c3);p(9,5,c3);p(7,3,c1);p(8,3,c1);p(4,6,c1);p(11,6,c1)};
+const trinket=(c1,c2)=>{p(7,4,c1);p(8,4,c1);p(6,5,c2);p(9,5,c2);p(7,5,c1);p(8,5,c1);p(6,6,c1);p(9,6,c1);p(7,6,c2);p(8,6,c2);p(7,7,c1);p(8,7,c1);p(7,3,'#888');p(8,3,'#888');p(7,2,'#888');p(8,2,'#888')};
+const potion=(c1,c2)=>{p(7,3,'#aaa');p(8,3,'#aaa');p(7,4,'#888');p(8,4,'#888');for(let y=5;y<=11;y++){p(6,y,c1);p(7,y,c2);p(8,y,c2);p(9,y,c1)}p(6,5,c1);p(9,5,c1);p(6,11,c1);p(9,11,c1)};
+if(id==='woodblade')sword('#8a6a3a','#a0804a','#6b5020');
+else if(id==='ironblade')sword('#aaaaaa','#cccccc','#888888');
+else if(id==='veilEdge')sword('#9b8afb','#b8a8ff','#7b68ee');
+else if(id==='ashfangBlade')sword('#ff6b35','#ff9f1a','#cc4a1a');
+else if(id==='wraithTouch')sword('#b088ee','#d0b8ff','#8060cc');
+else if(id==='relicBlade')sword('#f5c842','#ffe066','#c8a020');
+else if(id==='voidreaper'){sword('#2a1040','#5020aa','#8844dd');p(11,3,'#8844dd');p(9,5,'#6633bb')}
+else if(id==='wanderercoat')armor('#8a6a3a','#a0804a','#6b5020');
+else if(id==='marshwraps')armor('#3a7a3a','#4a9a4a','#2a5a2a');
+else if(id==='veilcloak')armor('#7b68ee','#9b8afb','#5b4ecc');
+else if(id==='drakemail')armor('#cc4a1a','#ff6b35','#993310');
+else if(id==='relicArmor')armor('#c8a020','#f5c842','#a08018');
+else if(id==='charm')trinket('#4fc3f7','#7dd3fc');
+else if(id==='huntersBadge')trinket('#8a6a3a','#a0804a');
+else if(id==='corruptionWard')trinket('#3ddc84','#6eff9a');
+else if(id==='scholarsPendant')trinket('#4fc3f7','#80d0ff');
+else if(id==='ashenSignet')trinket('#ff9f1a','#ffcc44');
+else if(id==='tonic')potion('#cc2222','#ee4444');
+else if(id==='veilElixir')potion('#7b68ee','#9b8afb');
+else if(id==='strengthDraft')potion('#cc6600','#ff9f1a');
+else if(id==='dungeonMap'){for(let y=4;y<=12;y++)for(let x=4;x<=11;x++)p(x,y,'#d4c4a0');p(5,6,'#6b5535');p(6,7,'#6b5535');p(7,7,'#6b5535');p(8,8,'#6b5535');p(9,9,'#6b5535');p(10,10,'#6b5535');p(4,12,'#c4a86e');p(11,4,'#c4a86e')}
+else if(id==='ashCore'){p(7,6,'#ff6b35');p(8,6,'#ff9f1a');p(6,7,'#ff6b35');p(7,7,'#ffcc44');p(8,7,'#ffcc44');p(9,7,'#ff6b35');p(7,8,'#ff9f1a');p(8,8,'#ff6b35');p(7,5,'#cc4a1a');p(8,9,'#cc4a1a')}
+else if(id==='wraithEssence'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#b088ee');p(9,6,'#7b68ee');p(7,7,'#d0b8ff');p(8,7,'#9b8afb');p(6,8,'#7b68ee');p(9,8,'#9b8afb');p(7,9,'#5b4ecc');p(8,9,'#7b68ee')}
+else if(id==='drakeScale'){for(let y=5;y<=10;y++)for(let x=5;x<=10;x++){const c=((x+y)%2===0)?'#cc4a1a':'#ff6b35';p(x,y,c)}p(6,6,'#ff9f1a');p(8,8,'#ff9f1a')}
+else if(id==='voidFragment'){p(7,5,'#2a1040');p(8,5,'#1a0830');p(6,6,'#3a2060');p(9,6,'#2a1040');p(7,7,'#5020aa');p(8,7,'#3a2060');p(6,8,'#2a1040');p(9,8,'#3a2060');p(7,9,'#1a0830');p(8,9,'#2a1040');p(7,6,'#8844dd');p(8,8,'#6633bb')}
+else if(id==='corruptedHeart'){p(6,5,'#5a1030');p(9,5,'#5a1030');p(5,6,'#7a2040');p(6,6,'#aa3060');p(7,6,'#7a2040');p(8,6,'#aa3060');p(9,6,'#7a2040');p(10,6,'#5a1030');p(5,7,'#7a2040');p(6,7,'#cc4070');p(7,7,'#aa3060');p(8,7,'#cc4070');p(9,7,'#aa3060');p(10,7,'#7a2040');p(6,8,'#7a2040');p(7,8,'#aa3060');p(8,8,'#7a2040');p(9,8,'#5a1030');p(7,9,'#5a1030');p(8,9,'#3a0820')}
+else{p(7,7,'#888');p(8,7,'#888');p(7,8,'#888');p(8,8,'#888')}
+return createSprite(s)}
 
 sprites.tiles.grass=[0,1,2,3].map(()=>makeTile(C.grass2,[C.grass1,C.grass3,C.grass4,C.grass1,C.grass3]));
 sprites.tiles.dirt=[0,1].map(()=>makeTile(C.dirt1,[C.dirt2,C.dirt3,C.dirt2]));
@@ -1101,6 +1181,7 @@ wanderercoat:{name:'Wanderer Coat',type:'armor',slot:'body',def:2,rarity:'common
 charm:{name:'Veil Charm',type:'trinket',slot:'trinket',def:1,atk:1,rarity:'uncommon',desc:'Ward against beyond.'},huntersBadge:{name:"Hunter's Badge",type:'trinket',slot:'trinket',atk:3,rarity:'uncommon',desc:'Proven hunter.'},corruptionWard:{name:'Corruption Ward',type:'trinket',slot:'trinket',def:3,rarity:'rare',desc:'Shields the mind.'},scholarsPendant:{name:"Scholar's Pendant",type:'trinket',slot:'trinket',atk:2,def:2,rarity:'rare',desc:'Veil Scholars granted this.'},ashenSignet:{name:'Ashen Signet',type:'trinket',slot:'trinket',atk:4,def:1,rarity:'rare',desc:'Mark of the Ashen Order.'},
 tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},
 };
+const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon(id)});
 
 const recipes=[
 {id:'woodblade',name:'Woodblade',needs:{branch:3,fiber:2},makes:'woodblade'},
@@ -1464,9 +1545,11 @@ if(enemy.hp<=0){
   if(enemy.type==='veilWraith')state.stats.wraithKills++;
   if(enemy.type==='corruptWolf'||enemy.type==='voidSentinel')state.stats.corruptKills++;
   gainExp(eDef.exp);const goldDrop=eDef.gold+rand(0,3);state.player.gold+=goldDrop;
-  const drop=sample(eDef.drops);addItem(drop,1);
+  const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE||loot.length===0)loot.push(d)});
+  if(loot.length===0)loot.push(sample(eDef.drops));
+  enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
   spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);
-  toast(`${eDef.name} defeated! +${goldDrop}g +${itemDefs[drop]?.name||drop}`,'combat');
+  toast(`${eDef.name} defeated! +${goldDrop}g — loot available`,'combat');
   addLog(`⚔ Defeated ${eDef.name}.`);
   // Bounty
   if(state.activeBounty&&!state.activeBounty.completed&&state.activeBounty.target===enemy.type&&!state.activeBounty.gather){state.activeBounty.progress++;if(state.activeBounty.progress>=state.activeBounty.count)completeBounty()}
@@ -1540,7 +1623,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info')}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1584,6 +1667,9 @@ if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joy
 const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
 state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
 trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);
+// Loot corpse cleanup
+const allEn=state.dungeon.active?state.dungeon.enemies:state.enemies;
+allEn.forEach(e=>{if(e.lootable&&state.time>=e.lootTimer){e.lootable=false;e.loot=null;if(activeLootEnemy===e){closeLootUI();toast('Loot despawned','info')}}});
 if(Math.floor(state.time*2)!==Math.floor((state.time-dt)*2)){checkAchievements();checkStoryProgress()}
 }
 
@@ -1626,6 +1712,12 @@ dungeonEntrances.forEach(de=>{const dx=de.x*T*SCALE,dy=de.y*T*SCALE;drawables.pu
 state.nodes.forEach(n=>{if(!n.ready)return;const spr=resourceSprites[n.type];if(!spr)return;if(Math.abs(n.x-state.camera.x-cssW/2)>cssW&&Math.abs(n.y-state.camera.y-cssH/2)>cssH)return;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.globalAlpha=0.3+Math.sin(state.time*3+n.x)*0.15;ctx.drawImage(spr,n.x-T*SCALE*0.6,n.y-T*SCALE*0.6,T*SCALE*1.2,T*SCALE*1.2);ctx.globalAlpha=1;ctx.drawImage(spr,n.x-T*SCALE*0.5,n.y-T*SCALE*0.5,T*SCALE,T*SCALE)}})});
 // NPCs
 state.npcs.forEach(n=>{const spr=sprites.npcs[n.id];if(!spr)return;const nBob=Math.sin(state.time*1.5+n.x*0.01)*1.5;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.drawImage(spr,n.x-T*SCALE*0.6,n.y-T*SCALE*0.85+nBob,T*SCALE*1.2,T*SCALE*1.55);ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(8,9,13,.8)';const tw=ctx.measureText(n.name).width;ctx.fillRect(n.x-tw/2-4,n.y-T*SCALE*0.95-2+nBob,tw+8,14);ctx.fillStyle='#f59e0b';ctx.fillText(n.name,n.x,n.y-T*SCALE*0.85+nBob);ctx.textAlign='left'}})});
+// Lootable corpses
+const lootCorpses=state.dungeon.active?state.dungeon.enemies.filter(e=>!e.alive&&e.lootable&&e.loot&&e.loot.length>0):state.enemies.filter(e=>!e.alive&&e.lootable&&e.loot&&e.loot.length>0&&(e.zone===state.world.activeZone||dist(e,state.player)<500*SCALE));
+lootCorpses.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const sz=T*SCALE*1.4;
+drawables.push({y:e.y+sz/2,draw:()=>{
+ctx.globalAlpha=0.35;ctx.drawImage(spr,e.x-sz/2,e.y-sz/2,sz,sz);ctx.globalAlpha=1;
+const glow=0.4+Math.sin(state.time*4+e.x)*0.2;ctx.globalAlpha=glow;ctx.fillStyle='#f59e0b';ctx.font='14px serif';ctx.textAlign='center';ctx.fillText('💰',e.x,e.y-sz/2-4);ctx.textAlign='left';ctx.globalAlpha=1}})});
 // Enemies (overworld or dungeon)
 const visEnemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,state.player)<500*SCALE));
 visEnemies.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const eDef=enemyDefs[e.type];const isR=eDef.rarity==='rare'||eDef.rarity==='uncommon';const isElite=eDef.rarity==='rare';const sz=isElite?T*SCALE*2.3:T*SCALE*1.4;const eBob=Math.sin(state.time*2.5+e.x*0.02)*2;
@@ -1773,6 +1865,8 @@ if(journalPanels.dungeon)journalPanels.dungeon.innerHTML=dungeonHTML;
 const achieveHTML=`<div class="card"><h3>⬥ Achievements</h3><p class="tiny">${state.achievements.length}/${achievementDefs.length}</p></div><div class="card"><div class="list">${achievementDefs.map(a=>{const u=state.achievements.includes(a.id);return`<div class="item" style="${u?'border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.04)':'opacity:.5'}"><div><strong>${a.icon} ${a.name}</strong>${u?' <span class="badge badge-achievement">✓</span>':''}<div class="tiny">${a.desc}</div></div></div>`}).join('')}</div></div>
 <div class="card"><h3>Stats</h3><div class="row"><span>Kills</span><span class="tiny">${state.stats.kills}</span></div><div class="row"><span>Gathers</span><span class="tiny">${state.stats.gathers}</span></div><div class="row"><span>Crafts</span><span class="tiny">${state.stats.crafts}</span></div><div class="row"><span>Deaths</span><span class="tiny">${state.stats.deaths}</span></div><div class="row"><span>Bounties</span><span class="tiny">${state.stats.bountiesCompleted}</span></div><div class="row"><span>Dungeons Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div><div class="row"><span>Corrupt Kills</span><span class="tiny">${state.stats.corruptKills}</span></div><div class="row"><span>Mutations</span><span class="tiny">${state.stats.mutationCount}</span></div><div class="row"><span>Damage Dealt</span><span class="tiny">${state.stats.totalDamageDealt}</span></div><div class="row"><span>Zones Found</span><span class="tiny">${state.stats.zonesVisited.size}/4</span></div></div>`;
 if(journalPanels.achieve)journalPanels.achieve.innerHTML=achieveHTML;
+// Update inventory overlay if open
+if(qs('#inventoryOverlay').classList.contains('open'))renderInventoryGrid();
 }
 
 function renderAll(){renderHud();renderPanels()}
@@ -1796,19 +1890,95 @@ joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActi
 joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
-window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape')closeDialogue();if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash()});
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
 qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
+// ═══ LOOT SYSTEM ═══
+let activeLootEnemy=null;const LOOT_HITBOX=30*SCALE;
+function openLootUI(enemy){
+if(!enemy||!enemy.lootable||!enemy.loot||enemy.loot.length===0)return;
+activeLootEnemy=enemy;
+const lo=qs('#lootOverlay'),lb=qs('#lootBox'),li=qs('#lootItems');
+lo.style.display='block';
+const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
+const sx=((enemy.x-state.camera.x)/cssW)*100,sy=((enemy.y-state.camera.y)/cssH)*100;
+const lx=clamp(sx,5,70),ly=clamp(sy-10,5,60);
+lb.style.left=lx+'%';lb.style.top=ly+'%';
+li.innerHTML='';
+enemy.loot.forEach((itemId,i)=>{
+const def=itemDefs[itemId];if(!def)return;
+const row=document.createElement('div');row.className='loot-item';
+const icon=itemIcons[itemId];
+if(icon){const tc=document.createElement('canvas');tc.width=32;tc.height=32;const tctx=tc.getContext('2d');tctx.imageSmoothingEnabled=false;tctx.drawImage(icon,0,0,32,32);row.appendChild(tc)}
+const nm=document.createElement('span');nm.textContent=def.name;nm.style.flex='1';row.appendChild(nm);
+row.onclick=()=>{lootItem(enemy,i)};
+li.appendChild(row)});
+qs('#lootAllBtn').onclick=()=>{lootAll(enemy)}}
+function closeLootUI(){qs('#lootOverlay').style.display='none';activeLootEnemy=null}
+function lootItem(enemy,index){
+if(!enemy||!enemy.loot||index<0||index>=enemy.loot.length)return;
+const itemId=enemy.loot[index];addItem(itemId,1);
+toast(`Picked up ${itemDefs[itemId]?.name||itemId}`,'loot');
+enemy.loot.splice(index,1);
+if(enemy.loot.length===0){enemy.lootable=false;closeLootUI()}
+else openLootUI(enemy)}
+function lootAll(enemy){
+if(!enemy||!enemy.loot)return;
+const names=[];enemy.loot.forEach(id=>{addItem(id,1);names.push(itemDefs[id]?.name||id)});
+toast(`Looted: ${names.join(', ')}`,'loot');
+enemy.loot=[];enemy.lootable=false;closeLootUI()}
+// ═══ INVENTORY OVERLAY ═══
+function renderInventoryGrid(){
+const grid=qs('#invGrid');grid.innerHTML='';
+const inv=state.player.inventory;const keys=Object.keys(inv).filter(k=>inv[k]>0);
+for(let i=0;i<36;i++){
+const slot=document.createElement('div');slot.className='inv-slot';
+if(i<keys.length){
+const id=keys[i],count=inv[id],def=itemDefs[id];
+slot.classList.add('occupied');
+const icon=itemIcons[id];
+if(icon){const tc=document.createElement('canvas');tc.width=32;tc.height=32;const tctx=tc.getContext('2d');tctx.imageSmoothingEnabled=false;tctx.drawImage(icon,0,0,32,32);slot.appendChild(tc)}
+const cnt=document.createElement('span');cnt.className='inv-count';cnt.textContent=count>1?count:'';slot.appendChild(cnt);
+slot.title=(def?def.name:id)+(def?' — '+def.desc:'');
+slot.onclick=()=>{
+if(!def)return;
+if(def.type==='consumable'){useItem(id);renderInventoryGrid();renderPanels()}
+else if(def.slot){equipItem(id);renderInventoryGrid();renderPanels()}}}
+grid.appendChild(slot)}
+qs('#invGold').textContent='💰 '+state.player.gold}
+function openInventory(){const io=qs('#inventoryOverlay');io.classList.add('open');renderInventoryGrid()}
+function closeInventory(){qs('#inventoryOverlay').classList.remove('open')}
+qs('#inventoryBtn').onclick=()=>openInventory();
+qs('.inv-close').onclick=()=>closeInventory();
+qs('#inventoryOverlay').onclick=e=>{if(e.target===qs('#inventoryOverlay'))closeInventory()};
+// Canvas click for loot corpses
+canvas.addEventListener('click',e=>{
+const rect=canvas.getBoundingClientRect();
+const mx=(e.clientX-rect.left),my=(e.clientY-rect.top);
+const wx=mx+state.camera.x,wy=my+state.camera.y;
+const allEnemies=state.dungeon.active?state.dungeon.enemies:state.enemies;
+const lootable=allEnemies.filter(en=>en.lootable&&en.loot&&en.loot.length>0);
+const clicked=lootable.find(en=>Math.hypot(en.x-wx,en.y-wy)<LOOT_HITBOX);
+if(clicked)openLootUI(clicked)});
+let lastCursorCheck=0;
+canvas.addEventListener('mousemove',e=>{
+const now=performance.now();if(now-lastCursorCheck<100)return;lastCursorCheck=now;
+const rect=canvas.getBoundingClientRect();
+const mx=(e.clientX-rect.left),my=(e.clientY-rect.top);
+const wx=mx+state.camera.x,wy=my+state.camera.y;
+const allEnemies=state.dungeon.active?state.dungeon.enemies:state.enemies;
+const hover=allEnemies.find(en=>en.lootable&&en.loot&&en.loot.length>0&&Math.hypot(en.x-wx,en.y-wy)<LOOT_HITBOX);
+canvas.style.cursor=hover?'pointer':'crosshair'});
 // ═══ JOURNAL OVERLAY ═══
 (function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
 // ═══ MOBILE MENU TOGGLE ═══
 (function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI};
 
 // ═══ SETTINGS ═══
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem('ashveil_settings'));if(s){Object.assign(gameSettings,s);qs('#setAutoSave').value=s.autoSaveInterval??60;qs('#setShake').value=s.shakeEnabled===false?'0':'1';qs('#setDust').value=s.dustEnabled===false?'0':'1';qs('#setRegen').value=s.regenEnabled===false?'0':'1'}}catch(e){}}
