@@ -210,6 +210,51 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 /* ═══ INVENTORY OVERLAY ═══ */
 #inventoryBtn{position:absolute;right:130px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(90,60,20,.6);background:linear-gradient(180deg,rgba(70,50,25,.95),rgba(50,35,15,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,160,80,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
 #inventoryBtn:hover{border-color:rgba(180,140,60,.8);background:linear-gradient(180deg,rgba(90,65,30,.95),rgba(65,45,20,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,160,80,.3)}
+#skillsBtn{position:absolute;right:188px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(90,60,20,.6);background:linear-gradient(180deg,rgba(70,50,25,.95),rgba(50,35,15,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,160,80,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
+#skillsBtn:hover{border-color:rgba(180,140,60,.8);background:linear-gradient(180deg,rgba(90,65,30,.95),rgba(65,45,20,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,160,80,.3)}
+/* ═══ SKILLS OVERLAY ═══ */
+#skillsOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
+#skillsOverlay.open{display:flex}
+#skillsBox{width:85vw;max-width:900px;height:85vh;max-height:750px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:20px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
+#skillsBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.9),rgba(139,106,20,.6),transparent)}
+.skills-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 12px;font-family:'Cinzel',serif;font-size:20px;color:#d4a84a;letter-spacing:4px;text-transform:uppercase;text-shadow:0 2px 12px rgba(200,160,32,.4);border-bottom:2px solid rgba(90,60,20,.4);background:linear-gradient(180deg,rgba(40,30,15,.8),rgba(30,20,10,.6))}
+.skills-header-title{display:flex;align-items:center;gap:12px}
+.skills-points{font-size:13px;color:#f59e0b;font-family:'JetBrains Mono',monospace;letter-spacing:1px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:6px 14px}
+.skills-close{appearance:none;border:2px solid rgba(90,60,20,.5);background:rgba(60,40,15,.7);color:#d4a84a;width:36px;height:36px;border-radius:8px;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.skills-close:hover{border-color:rgba(200,160,32,.8);background:rgba(90,60,20,.8);color:#f0f4ff}
+.skills-body{display:flex;flex:1;min-height:0;overflow:hidden}
+.skills-nav{display:flex;flex-direction:column;gap:4px;padding:12px;border-right:2px solid rgba(90,60,20,.3);background:rgba(20,15,8,.6);min-width:160px;overflow-y:auto}
+.skill-nav-btn{appearance:none;border:2px solid rgba(90,60,20,.3);background:linear-gradient(180deg,rgba(50,35,15,.5),rgba(40,25,10,.6));color:#8a7a5a;border-radius:10px;padding:12px 14px;font-size:12px;font-family:'Cinzel',serif;cursor:pointer;transition:all .25s;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:10px;text-align:left}
+.skill-nav-btn:hover{color:#d4a84a;border-color:rgba(139,106,20,.5);background:linear-gradient(180deg,rgba(70,50,20,.6),rgba(55,40,15,.7))}
+.skill-nav-btn.active{color:#f0f4ff;border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(139,106,20,.7),rgba(90,60,20,.8));box-shadow:0 0 20px rgba(200,160,32,.3),inset 0 1px 0 rgba(255,200,100,.2)}
+.skill-nav-icon{font-size:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.skill-nav-level{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b}
+.skills-content{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:rgba(139,106,20,.5) transparent}
+.skill-tree-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(90,60,20,.3)}
+.skill-tree-title{font-family:'Cinzel',serif;font-size:18px;color:#d4a84a;letter-spacing:2px}
+.skill-tree-level{font-family:'JetBrains Mono',monospace;font-size:14px;color:#9b8afb}
+.skill-tree-xp{margin-top:4px}
+.skill-tree-xp .meter{height:6px}
+.skill-tree-xp .tiny{font-size:10px}
+.skill-tree-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.skill-node{border:2px solid rgba(90,60,20,.4);border-radius:12px;padding:14px;background:linear-gradient(135deg,rgba(50,35,15,.5),rgba(40,25,10,.6));position:relative;overflow:hidden;transition:all .25s;cursor:default}
+.skill-node::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.3),transparent)}
+.skill-node.unlocked{border-color:rgba(139,106,20,.6);background:linear-gradient(135deg,rgba(70,50,20,.5),rgba(55,35,15,.6))}
+.skill-node.unlocked::before{background:linear-gradient(90deg,transparent,rgba(200,160,32,.5),transparent)}
+.skill-node.maxed{border-color:rgba(245,158,11,.5);box-shadow:0 0 15px rgba(245,158,11,.15)}
+.skill-node-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.skill-node-name{font-family:'Cinzel',serif;font-size:13px;color:#d4a84a;letter-spacing:1px}
+.skill-node-rank{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9b8afb}
+.skill-node-desc{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5;margin-bottom:10px}
+.skill-node-cost{font-size:10px;color:#f59e0b;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.skill-upgrade-btn{appearance:none;width:100%;padding:8px 12px;border:1px solid rgba(139,106,20,.5);background:linear-gradient(180deg,rgba(100,65,15,.7),rgba(70,45,10,.8));color:#d4a84a;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.skill-upgrade-btn:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(130,85,20,.8),rgba(90,55,15,.9));color:#f0f4ff}
+.skill-upgrade-btn:disabled{opacity:.3;cursor:default;border-color:rgba(90,60,20,.3)}
+.skill-class-info{border:2px solid rgba(123,104,238,.3);border-radius:12px;padding:16px;background:rgba(123,104,238,.05);margin-bottom:16px}
+.skill-class-info h4{font-family:'Cinzel',serif;font-size:14px;color:#9b8afb;margin-bottom:6px;letter-spacing:1px}
+.skill-class-info p{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5}
+.skill-class-locked{text-align:center;padding:24px;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px;border:1px dashed rgba(90,60,20,.3);border-radius:10px;margin-top:12px}
+@media(max-width:920px){#skillsBox{width:95vw;height:92vh;max-height:none}.skills-body{flex-direction:column}.skills-nav{flex-direction:row;min-width:auto;overflow-x:auto;border-right:none;border-bottom:2px solid rgba(90,60,20,.3);padding:8px}.skill-nav-btn{min-width:120px;padding:8px 12px;font-size:10px;justify-content:center}.skills-content{padding:12px}.skill-tree-grid{grid-template-columns:1fr}#skillsBtn{right:188px;bottom:72px;width:44px;height:44px}}
 #inventoryOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
 #inventoryOverlay.open{display:flex}
 #inventoryBox{width:460px;max-width:95vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:16px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
@@ -487,6 +532,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <!-- Journal Overlay Button -->
 <button id="journalBtn" title="Journal (J)">📜</button>
 <button id="inventoryBtn" title="Inventory (I)">🎒</button>
+<button id="skillsBtn" title="Skills (K)">⚔</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -560,6 +606,19 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="inv-header">⬥ Inventory ⬥<button class="inv-close">✕</button></div>
 <div class="inv-grid" id="invGrid"></div>
 <div class="inv-footer"><span class="inv-gold" id="invGold">💰 0</span></div>
+</div>
+</div>
+<div id="skillsOverlay">
+<div id="skillsBox">
+<div class="skills-header">
+<div class="skills-header-title">⬥ Skills ⬥</div>
+<div class="skills-points" id="skillPointsDisplay">Skill Points: 0</div>
+<button class="skills-close" id="skillsClose">✕</button>
+</div>
+<div class="skills-body">
+<div class="skills-nav" id="skillsNav"></div>
+<div class="skills-content" id="skillsContent"></div>
+</div>
 </div>
 </div>
 <div id="lootOverlay" style="display:none">
@@ -1325,7 +1384,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,regenTimer:0,lastCombatTime:0,critFlash:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,regenTimer:0,lastCombatTime:0,critFlash:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1382,7 +1441,7 @@ function totalDef(){let n=state.player.defBase;for(const s of Object.values(stat
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening()}}
+function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening()}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -1501,6 +1560,7 @@ function advanceDungeonRoom(){
     toast(`⬡ ${d.name} CLEARED! +${bonusGold}g`,'dungeon');
     addLog(`⬡ Cleared ${d.name}! The relic's power flows through you.`);
     gainSkill('veilsense',15);
+    state.player.skillPoints+=3;
     // Scholar quest progress
     if(getQuest('scholar_quest')&&!getQuest('scholar_quest').done&&itemCount('relicShard')>=5){completeQuest('scholar_quest',{gold:50,exp:40,item:'scholarsPendant'});state.faction.veilScholars+=15}
   }else{
@@ -1602,7 +1662,7 @@ function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consum
 function chooseFaction(side){state.faction[side]+=10;gainSkill('influence',6);toast(`+10 ${factionDefs[side]?.name||side} standing`,'quest');addLog(`Supported ${factionDefs[side]?.name||side}.`);renderPanels()}
 
 function acceptBounty(idx){if(state.activeBounty&&!state.activeBounty.completed)return toast('Complete current bounty first.');const b=state.bounties[idx];if(!b||b.completed)return;b.active=true;b.progress=0;state.activeBounty=b;toast(`Bounty: ${b.name}`,'event');addLog(`📜 Bounty: ${b.name}`);renderPanels()}
-function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=true;let goldReward=b.reward.gold;if(getFactionTier(state.faction.roadwardens)>=1)goldReward=Math.floor(goldReward*1.2);state.player.gold+=goldReward;if(b.reward.exp)gainExp(b.reward.exp);if(b.reward.item)addItem(b.reward.item,1);state.stats.bountiesCompleted++;state.faction.roadwardens+=3;toast(`Bounty done: ${b.name}! +${goldReward}g`,'quest');addLog(`✦ Bounty: ${b.name}`);state.activeBounty=null;if(state.bounties.every(b=>b.completed)){state.bounties=generateBounties();toast('New bounties!','event')}renderPanels()}
+function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=true;let goldReward=b.reward.gold;if(getFactionTier(state.faction.roadwardens)>=1)goldReward=Math.floor(goldReward*1.2);state.player.gold+=goldReward;if(b.reward.exp)gainExp(b.reward.exp);if(b.reward.item)addItem(b.reward.item,1);state.stats.bountiesCompleted++;state.faction.roadwardens+=3;if(b.reward.gold>=50){state.player.skillPoints+=1;toast('+1 Skill Point!','quest')}toast(`Bounty done: ${b.name}! +${goldReward}g`,'quest');addLog(`✦ Bounty: ${b.name}`);state.activeBounty=null;if(state.bounties.every(b=>b.completed)){state.bounties=generateBounties();toast('New bounties!','event')}renderPanels()}
 
 // ═══ EVENTS ═══
 function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
@@ -1832,7 +1892,7 @@ panels.inventory.innerHTML=`<div class="card"><h3>⬥ Inventory</h3><p class="ti
 panels.equip.innerHTML=`<div class="card"><h3>⬥ Equipment</h3></div><div class="card"><div class="equipGrid">${['weapon','body','trinket'].map(s=>{const id=p.equipment[s],it=id?itemDefs[id]:null,rc=it?'rarity-'+(it.rarity||'common'):'';return`<div class="slot"><div class="slot-label">${cap(s)}</div><div class="slot-item ${rc}">${it?it.name:'—'}</div>${it?`<div class="tiny" style="margin-top:4px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}</div><button class="item-btn" style="margin-top:4px" onclick="W.unequip('${s}')">Remove</button>`:''}</div>`}).join('')}</div></div><div class="card"><div class="row"><span>Attack</span><strong class="fire">${totalAtk()}</strong></div><div class="row"><span>Defense</span><strong class="veil">${totalDef()}</strong></div><div class="row"><span>Crit</span><strong class="gold">${p.critChance}%</strong></div></div>`;
 
 // Skills
-panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}</div>${Object.entries(p.skills).map(([sk,lv])=>{const xp=p.skillXp[sk],need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
+panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}<p class="tiny gold">Skill Points: ${p.skillPoints}</p><button class="item-btn" style="margin-top:6px;width:100%" onclick="W.openSkills()">Open Skill Trees</button></div>${Object.entries(p.skills).map(([sk,lv])=>{const xp=p.skillXp[sk],need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
 
 // Crafting
 const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
@@ -1890,7 +1950,7 @@ joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActi
 joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
-window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}});
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();attackNearest()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory();closeSkills()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}if(e.code==='KeyK'){const so=qs('#skillsOverlay');if(so.classList.contains('open'))closeSkills();else openSkills()}});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
@@ -1954,6 +2014,175 @@ function closeInventory(){qs('#inventoryOverlay').classList.remove('open')}
 qs('#inventoryBtn').onclick=()=>openInventory();
 qs('.inv-close').onclick=()=>closeInventory();
 qs('#inventoryOverlay').onclick=e=>{if(e.target===qs('#inventoryOverlay'))closeInventory()};
+// ═══ SKILLS OVERLAY SYSTEM ═══
+const skillTreeDefs={
+combat:{name:'Combat',icon:'⚔',desc:'Mastery of weapons and warfare.',color:'#ff6b35',nodes:[
+{id:'powerStrike',name:'Power Strike',desc:'Increases base attack damage.',maxRank:5,effect:'+1 ATK per rank',perRank:{atk:1}},
+{id:'criticalEdge',name:'Critical Edge',desc:'Improves critical hit chance.',maxRank:5,effect:'+2% crit per rank',perRank:{crit:2},requires:'powerStrike',reqRank:1},
+{id:'armorPierce',name:'Armor Pierce',desc:'Attacks ignore some enemy defense.',maxRank:3,effect:'Ignore 1 DEF per rank',perRank:{pierce:1},requires:'powerStrike',reqRank:2},
+{id:'berserkerRage',name:'Berserker Rage',desc:'Deal more damage at low HP.',maxRank:3,effect:'+10% dmg below 30% HP per rank',perRank:{rage:10},requires:'criticalEdge',reqRank:2},
+{id:'wardensMight',name:"Warden's Might",desc:'Unlocks at Warden class. Massive ATK boost.',maxRank:3,effect:'+3 ATK per rank',perRank:{atk:3},requires:'armorPierce',reqRank:2,classReq:'warden'},
+{id:'battleHardened',name:'Battle Hardened',desc:'Increases max HP.',maxRank:5,effect:'+5 HP per rank',perRank:{hp:5}},
+{id:'swiftStrikes',name:'Swift Strikes',desc:'Reduces attack cooldown.',maxRank:3,effect:'Faster attacks per rank',perRank:{speed:1},requires:'battleHardened',reqRank:2},
+{id:'deathBlow',name:'Death Blow',desc:'Chance to deal double damage on killing blow.',maxRank:3,effect:'+10% lethal strike per rank',perRank:{lethal:10},requires:'berserkerRage',reqRank:1}
+]},
+foraging:{name:'Foraging',icon:'🌿',desc:'Knowledge of the wilds and resource gathering.',color:'#3ddc84',nodes:[
+{id:'keenEye',name:'Keen Eye',desc:'Resources respawn faster.',maxRank:5,effect:'-1s respawn per rank',perRank:{respawn:1}},
+{id:'bountifulHarvest',name:'Bountiful Harvest',desc:'Chance to gather double resources.',maxRank:5,effect:'+8% double gather per rank',perRank:{doubleGather:8},requires:'keenEye',reqRank:1},
+{id:'herbalKnowledge',name:'Herbal Knowledge',desc:'Healing items are more effective.',maxRank:3,effect:'+15% heal per rank',perRank:{healBonus:15},requires:'keenEye',reqRank:2},
+{id:'naturesBounty',name:"Nature's Bounty",desc:'Gather rare materials occasionally.',maxRank:3,effect:'+5% rare material per rank',perRank:{rareDrop:5},requires:'bountifulHarvest',reqRank:2},
+{id:'artificerTouch',name:"Artificer's Touch",desc:'Unlocks at Artificer class. DEF boost from gathering.',maxRank:3,effect:'+2 DEF per rank',perRank:{def:2},requires:'herbalKnowledge',reqRank:2,classReq:'artificer'},
+{id:'wildInstinct',name:'Wild Instinct',desc:'Increases survival XP gain.',maxRank:3,effect:'+20% survival XP per rank',perRank:{survXp:20}},
+{id:'rootKnowledge',name:'Root Knowledge',desc:'Identify rare herbs for extra gold.',maxRank:3,effect:'+3 gold per gather',perRank:{gatherGold:3},requires:'wildInstinct',reqRank:1},
+{id:'livingLand',name:'Living Land',desc:'Chance to find Relic Shards while foraging.',maxRank:3,effect:'+3% relic shard per rank',perRank:{relicChance:3},requires:'naturesBounty',reqRank:2}
+]},
+crafting:{name:'Crafting',icon:'🔨',desc:'The art of creation and engineering.',color:'#f59e0b',nodes:[
+{id:'efficientCraft',name:'Efficient Craft',desc:'Crafting uses fewer materials.',maxRank:5,effect:'-10% material cost per rank',perRank:{matDiscount:10}},
+{id:'masterwork',name:'Masterwork',desc:'Crafted items have bonus stats.',maxRank:5,effect:'+1 bonus stat per rank',perRank:{craftBonus:1},requires:'efficientCraft',reqRank:1},
+{id:'salvageExpert',name:'Salvage Expert',desc:'Recover materials from unwanted items.',maxRank:3,effect:'+1 salvage per rank',perRank:{salvage:1},requires:'efficientCraft',reqRank:2},
+{id:'forgemaster',name:'Forgemaster',desc:'Unlock rare crafting recipes.',maxRank:3,effect:'New recipes per rank',perRank:{recipes:1},requires:'masterwork',reqRank:2},
+{id:'artificerForge',name:"Artificer's Forge",desc:'Unlocks at Artificer class. Superior crafting.',maxRank:3,effect:'Superior item quality per rank',perRank:{quality:1},requires:'forgemaster',reqRank:1,classReq:'artificer'},
+{id:'quickHands',name:'Quick Hands',desc:'Reduces crafting time.',maxRank:3,effect:'Faster crafting per rank',perRank:{craftSpeed:1}},
+{id:'gemCutting',name:'Gem Cutting',desc:'Extract gems from ore for bonus gold.',maxRank:3,effect:'+5 gold per craft',perRank:{craftGold:5},requires:'quickHands',reqRank:1},
+{id:'relicSmith',name:'Relic Smith',desc:'Craft with Relic Shards for powerful items.',maxRank:3,effect:'Relic crafting tier per rank',perRank:{relicCraft:1},requires:'forgemaster',reqRank:2}
+]},
+influence:{name:'Influence',icon:'👁',desc:'Social manipulation and faction standing.',color:'#9b8afb',nodes:[
+{id:'silvertongue',name:'Silvertongue',desc:'Increases faction standing gains.',maxRank:5,effect:'+20% standing per rank',perRank:{standing:20}},
+{id:'diplomat',name:'Diplomat',desc:'Unlock bonus dialogue options.',maxRank:3,effect:'New dialogue per rank',perRank:{dialogue:1},requires:'silvertongue',reqRank:1},
+{id:'merchant',name:'Merchant',desc:'Better prices at shops.',maxRank:5,effect:'+10% gold from bounties per rank',perRank:{bountyGold:10},requires:'silvertongue',reqRank:2},
+{id:'spyNetwork',name:'Spy Network',desc:'Reveals hidden quests and bounties.',maxRank:3,effect:'Hidden content per rank',perRank:{intel:1},requires:'diplomat',reqRank:2},
+{id:'veilwalkerGrace',name:"Veilwalker's Grace",desc:'Unlocks at Veilwalker class. Crit & influence combined.',maxRank:3,effect:'+3% crit + standing per rank',perRank:{crit:3,standing:10},requires:'spyNetwork',reqRank:1,classReq:'veilwalker'},
+{id:'intimidate',name:'Intimidate',desc:'Weaker enemies flee from you.',maxRank:3,effect:'Enemy flee chance per rank',perRank:{flee:1}},
+{id:'inspire',name:'Inspire',desc:'Gain XP bonus from faction events.',maxRank:3,effect:'+15% event XP per rank',perRank:{eventXp:15},requires:'intimidate',reqRank:1},
+{id:'politicalPower',name:'Political Power',desc:'Influence world state changes.',maxRank:3,effect:'World influence per rank',perRank:{worldInfluence:1},requires:'spyNetwork',reqRank:2}
+]},
+survival:{name:'Survival',icon:'🛡',desc:'Endurance and defensive techniques.',color:'#4fc3f7',nodes:[
+{id:'thickSkin',name:'Thick Skin',desc:'Increases base defense.',maxRank:5,effect:'+1 DEF per rank',perRank:{def:1}},
+{id:'quickRecovery',name:'Quick Recovery',desc:'Faster HP regeneration.',maxRank:5,effect:'+1 HP regen per rank',perRank:{regen:1},requires:'thickSkin',reqRank:1},
+{id:'evasion',name:'Evasion',desc:'Chance to dodge attacks entirely.',maxRank:3,effect:'+5% dodge per rank',perRank:{dodge:5},requires:'thickSkin',reqRank:2},
+{id:'lastStand',name:'Last Stand',desc:'Survive lethal damage once.',maxRank:3,effect:'Survival chance per rank',perRank:{lastStand:1},requires:'evasion',reqRank:2},
+{id:'wardenResilience',name:"Warden's Resilience",desc:'Unlocks at Warden class. Massive DEF boost.',maxRank:3,effect:'+2 DEF per rank',perRank:{def:2},requires:'lastStand',reqRank:1,classReq:'warden'},
+{id:'endurance',name:'Endurance',desc:'Increases max HP.',maxRank:5,effect:'+8 HP per rank',perRank:{hp:8}},
+{id:'ironWill',name:'Iron Will',desc:'Reduces damage from critical hits.',maxRank:3,effect:'-15% crit damage taken per rank',perRank:{critReduce:15},requires:'endurance',reqRank:2},
+{id:'zoneAdapt',name:'Zone Adaptation',desc:'Reduced corruption damage in dangerous zones.',maxRank:3,effect:'Zone resist per rank',perRank:{zoneResist:1},requires:'quickRecovery',reqRank:2}
+]},
+veilsense:{name:'Veilsense',icon:'◈',desc:'Perception of the Veil and dungeon mastery.',color:'#7b68ee',nodes:[
+{id:'veilSight',name:'Veil Sight',desc:'See hidden dungeon paths and traps.',maxRank:5,effect:'Vision per rank',perRank:{vision:1}},
+{id:'relicAffinity',name:'Relic Affinity',desc:'Increases relic drop rates in dungeons.',maxRank:5,effect:'+10% relic drops per rank',perRank:{relicDrop:10},requires:'veilSight',reqRank:1},
+{id:'veilShield',name:'Veil Shield',desc:'Absorb damage using veil energy.',maxRank:3,effect:'Shield per rank',perRank:{shield:1},requires:'veilSight',reqRank:2},
+{id:'dungeonMaster',name:'Dungeon Master',desc:'Bonus rewards from dungeon completion.',maxRank:3,effect:'+20% dungeon rewards per rank',perRank:{dungeonReward:20},requires:'relicAffinity',reqRank:2},
+{id:'veilwalkerSight',name:"Veilwalker's Sight",desc:'Unlocks at Veilwalker class. See through the Veil.',maxRank:3,effect:'Veil mastery per rank',perRank:{veilMastery:1},requires:'dungeonMaster',reqRank:1,classReq:'veilwalker'},
+{id:'darkAdapt',name:'Dark Adaptation',desc:'Better performance in dungeons.',maxRank:3,effect:'+1 ATK in dungeons per rank',perRank:{dungeonAtk:1}},
+{id:'ancientKnowledge',name:'Ancient Knowledge',desc:'Bonus XP from dungeon exploration.',maxRank:3,effect:'+15% dungeon XP per rank',perRank:{dungeonXp:15},requires:'darkAdapt',reqRank:1},
+{id:'veilBreaker',name:'Veil Breaker',desc:'Deal bonus damage to Veil creatures.',maxRank:3,effect:'+3 dmg vs Veil enemies per rank',perRank:{veilDmg:3},requires:'veilShield',reqRank:2}
+]}
+};
+const classUnlockDefs={
+warden:{name:'Warden',desc:'The stalwart defender. High combat and survival.',icon:'⚔',requirement:'Default class — Combat focused.',color:'#ff6b35',bonusDesc:'+3 ATK. Unlocks Warden-exclusive nodes in Combat and Survival trees.'},
+artificer:{name:'Artificer',desc:'Master crafter and nature expert.',icon:'🔨',requirement:'Default class — Foraging focused.',color:'#3ddc84',bonusDesc:'+2 DEF. Unlocks Artificer-exclusive nodes in Foraging and Crafting trees.'},
+veilwalker:{name:'Veilwalker',desc:'Scholar of the Veil and master of influence.',icon:'◈',requirement:'Default class — Influence focused.',color:'#9b8afb',bonusDesc:'+10% Crit. Unlocks Veilwalker-exclusive nodes in Influence and Veilsense trees.'}
+};
+function getSkillNodeRank(skillKey,nodeId){return(state.player.classTree[skillKey+'_'+nodeId])||0}
+function setSkillNodeRank(skillKey,nodeId,rank){state.player.classTree[skillKey+'_'+nodeId]=rank}
+function canUpgradeNode(skillKey,node){
+const p=state.player;
+if(p.skillPoints<=0)return false;
+const currentRank=getSkillNodeRank(skillKey,node.id);
+if(currentRank>=node.maxRank)return false;
+if(node.classReq&&p.class!==node.classReq)return false;
+if(node.requires){
+const reqRank=getSkillNodeRank(skillKey,node.requires);
+if(reqRank<(node.reqRank||1))return false;
+}
+return true;
+}
+function upgradeSkillNode(skillKey,nodeId){
+const tree=skillTreeDefs[skillKey];
+if(!tree)return;
+const node=tree.nodes.find(n=>n.id===nodeId);
+if(!node||!canUpgradeNode(skillKey,node))return;
+state.player.skillPoints--;
+const newRank=getSkillNodeRank(skillKey,nodeId)+1;
+setSkillNodeRank(skillKey,nodeId,newRank);
+if(node.perRank.atk)state.player.atkBase+=node.perRank.atk;
+if(node.perRank.def)state.player.defBase+=node.perRank.def;
+if(node.perRank.hp)state.player.hpMax+=node.perRank.hp;
+if(node.perRank.crit)state.player.critChance+=node.perRank.crit;
+toast(`${node.name} → Rank ${newRank}`,'quest');
+addLog(`⬥ Upgraded ${node.name} (${tree.name}).`);
+renderSkillsOverlay();
+renderPanels();
+}
+let activeSkillTab='combat';
+function renderSkillsOverlay(){
+const p=state.player;
+const nav=qs('#skillsNav');
+const content=qs('#skillsContent');
+qs('#skillPointsDisplay').textContent='Skill Points: '+p.skillPoints;
+nav.innerHTML=Object.entries(skillTreeDefs).map(([key,tree])=>{
+const totalRanks=tree.nodes.reduce((s,n)=>s+getSkillNodeRank(key,n.id),0);
+return`<button class="skill-nav-btn${activeSkillTab===key?' active':''}" data-skill="${key}">
+<span class="skill-nav-icon">${tree.icon}</span>
+<span>${tree.name}</span>
+<span class="skill-nav-level">${totalRanks}</span>
+</button>`;
+}).join('');
+qsa('.skill-nav-btn').forEach(btn=>btn.onclick=()=>{
+activeSkillTab=btn.dataset.skill;
+renderSkillsOverlay();
+});
+const tree=skillTreeDefs[activeSkillTab];
+const sk=p.skills[activeSkillTab];
+const xp=p.skillXp[activeSkillTab];
+const need=sk*20;
+let classInfo='';
+if(p.class){
+const cd=classUnlockDefs[p.class];
+if(cd)classInfo=`<div class="skill-class-info"><h4>${cd.icon} ${cd.name}</h4><p>${cd.bonusDesc}</p></div>`;
+}else{
+classInfo=`<div class="skill-class-locked">⬥ Class awakens at Level 5 ⬥<br><span style="font-size:11px;color:#6a5a3a;font-family:'JetBrains Mono',monospace;margin-top:4px;display:inline-block">Your dominant skill determines your class</span></div>`;
+}
+content.innerHTML=`
+<div class="skill-tree-header">
+<div>
+<div class="skill-tree-title">${tree.icon} ${tree.name}</div>
+<div style="font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;margin-top:2px">${tree.desc}</div>
+</div>
+<div class="skill-tree-level">Lv ${sk}</div>
+</div>
+<div class="skill-tree-xp">
+<div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div>
+<div class="tiny">${xp}/${need} skill xp</div>
+</div>
+${classInfo}
+<div class="skill-tree-grid">${tree.nodes.map(node=>{
+const rank=getSkillNodeRank(activeSkillTab,node.id);
+const maxed=rank>=node.maxRank;
+const canUp=canUpgradeNode(activeSkillTab,node);
+const unlocked=rank>0;
+const locked=node.classReq&&p.class!==node.classReq;
+const reqMet=!node.requires||getSkillNodeRank(activeSkillTab,node.requires)>=(node.reqRank||1);
+let reqText='';
+if(node.requires){const reqNode=tree.nodes.find(n=>n.id===node.requires);reqText=`Requires: ${reqNode?reqNode.name:'?'} Rank ${node.reqRank||1}`}
+if(node.classReq)reqText+=(reqText?' • ':'')+'Class: '+cap(node.classReq);
+return`<div class="skill-node${unlocked?' unlocked':''}${maxed?' maxed':''}" style="${locked?'opacity:.5':''}${!reqMet&&!unlocked?';opacity:.6':''}">
+<div class="skill-node-header">
+<div class="skill-node-name">${node.name}</div>
+<div class="skill-node-rank">${rank}/${node.maxRank}</div>
+</div>
+<div class="skill-node-desc">${node.desc}<br><span style="color:${tree.color}">${node.effect}</span></div>
+${reqText?`<div class="skill-node-cost">${reqText}</div>`:''}
+${!maxed?`<button class="skill-upgrade-btn" ${canUp?'':'disabled'} onclick="W.upgradeSkillNode('${activeSkillTab}','${node.id}')">
+${canUp?'Upgrade (1 Point)':locked?'Class Locked':!reqMet?'Requirements Not Met':'No Points'}
+</button>`:`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px">✦ MAXED ✦</div>`}
+</div>`;
+}).join('')}</div>`;
+}
+function openSkills(){qs('#skillsOverlay').classList.add('open');renderSkillsOverlay()}
+function closeSkills(){qs('#skillsOverlay').classList.remove('open')}
+qs('#skillsBtn').onclick=()=>openSkills();
+qs('#skillsClose').onclick=()=>closeSkills();
+qs('#skillsOverlay').onclick=e=>{if(e.target===qs('#skillsOverlay'))closeSkills()};
 // Canvas click for loot corpses
 canvas.addEventListener('click',e=>{
 const rect=canvas.getBoundingClientRect();
@@ -1978,7 +2207,7 @@ canvas.style.cursor=hover?'pointer':'crosshair'});
 (function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills};
 
 // ═══ SETTINGS ═══
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem('ashveil_settings'));if(s){Object.assign(gameSettings,s);qs('#setAutoSave').value=s.autoSaveInterval??60;qs('#setShake').value=s.shakeEnabled===false?'0':'1';qs('#setDust').value=s.dustEnabled===false?'0':'1';qs('#setRegen').value=s.regenEnabled===false?'0':'1'}}catch(e){}}
