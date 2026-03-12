@@ -186,6 +186,28 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .opt-select{background:rgba(40,30,10,.6);border:1px solid rgba(90,60,20,.5);color:#d4a84a;border-radius:6px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:11px}
 .opt-footer{padding:12px 16px;border-top:1px solid rgba(90,60,20,.3);text-align:right}
 
+/* ═══ JOURNAL OVERLAY ═══ */
+#journalBtn{position:absolute;right:72px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(90,60,20,.6);background:linear-gradient(180deg,rgba(70,50,25,.95),rgba(50,35,15,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,160,80,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
+#journalBtn:hover{border-color:rgba(180,140,60,.8);background:linear-gradient(180deg,rgba(90,65,30,.95),rgba(65,45,20,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,160,80,.3)}
+#journalOverlay{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
+#journalOverlay.open{display:flex}
+#journalBox{width:85vw;max-width:1200px;height:85vh;max-height:800px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:20px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
+#journalBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.9),rgba(139,106,20,.6),transparent)}
+.journal-header{text-align:center;padding:20px 24px 16px;font-family:'Cinzel',serif;font-size:22px;color:#d4a84a;letter-spacing:4px;text-transform:uppercase;text-shadow:0 2px 12px rgba(200,160,32,.4);border-bottom:2px solid rgba(90,60,20,.4);background:linear-gradient(180deg,rgba(40,30,15,.8),rgba(30,20,10,.6));position:relative}
+.journal-close{position:absolute;top:16px;right:20px;appearance:none;border:2px solid rgba(90,60,20,.5);background:rgba(60,40,15,.7);color:#d4a84a;width:36px;height:36px;border-radius:8px;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.journal-close:hover{border-color:rgba(200,160,32,.8);background:rgba(90,60,20,.8);color:#f0f4ff}
+.journal-tabs{display:flex;gap:8px;padding:16px 24px;border-bottom:2px solid rgba(90,60,20,.3);background:linear-gradient(180deg,rgba(30,20,10,.5),rgba(20,15,8,.5));overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(139,106,20,.5) transparent}
+.journal-tab{appearance:none;border:2px solid rgba(90,60,20,.4);background:linear-gradient(180deg,rgba(50,35,15,.6),rgba(40,25,10,.7));color:#8a7a5a;border-radius:10px;padding:12px 20px;font-size:12px;font-family:'Cinzel',serif;cursor:pointer;transition:all .25s;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:140px;justify-content:center;position:relative;overflow:hidden}
+.journal-tab::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(200,160,32,.1),transparent);transition:left .5s}
+.journal-tab:hover::before{left:100%}
+.journal-tab:hover{color:#d4a84a;border-color:rgba(139,106,20,.6);background:linear-gradient(180deg,rgba(70,50,20,.7),rgba(55,40,15,.8))}
+.journal-tab.active{color:#f0f4ff;border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(139,106,20,.7),rgba(90,60,20,.8));box-shadow:0 0 20px rgba(200,160,32,.3),inset 0 1px 0 rgba(255,200,100,.2)}
+.journal-tab-icon{font-size:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.journal-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:24px;background:linear-gradient(180deg,rgba(10,8,5,.7),rgba(8,6,4,.8));scrollbar-width:thin;scrollbar-color:rgba(139,106,20,.5) transparent}
+.journal-panel{display:none}
+.journal-panel.active{display:block;animation:fadeIn .4s ease}
+@media(max-width:920px){#journalBox{width:95vw;height:92vh;max-height:none}.journal-tabs{flex-wrap:nowrap;-webkit-overflow-scrolling:touch}.journal-tab{min-width:120px;padding:10px 16px;font-size:11px}.journal-content{padding:16px}}
+
 /* ═══ CHAT BOX ═══ */
 #chatBox{position:absolute;left:14px;bottom:80px;width:280px;max-height:180px;z-index:3;pointer-events:auto;display:flex;flex-direction:column;border:1px solid rgba(90,60,20,.4);border-radius:10px;overflow:hidden;background:rgba(8,9,13,.85);backdrop-filter:blur(6px)}
 #chatBox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.4),transparent)}
@@ -433,6 +455,8 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 </div>
 <!-- Game Menu Button -->
 <button id="gameMenuBtn" title="Menu (ESC)">☰</button>
+<!-- Journal Overlay Button -->
+<button id="journalBtn" title="Journal (J)">📜</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 <button id="mobileToggle">☰</button>
 </div>
@@ -440,30 +464,67 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <aside id="side">
 <div id="sideHeader"><h1>⬥ Ashveil</h1><div class="subtitle">The Veils are weakening...</div></div>
 <div id="tabs">
-<button class="tabBtn active" data-tab="journal">Journal</button>
-<button class="tabBtn" data-tab="story">Story</button>
-<button class="tabBtn" data-tab="inventory">Items</button>
+<button class="tabBtn active" data-tab="inventory">Items</button>
 <button class="tabBtn" data-tab="equip">Equip</button>
 <button class="tabBtn" data-tab="skills">Skills</button>
-<button class="tabBtn" data-tab="crafting">Craft</button>
-<button class="tabBtn" data-tab="bounty">Bounty</button>
-<button class="tabBtn" data-tab="factions">Factions</button>
-<button class="tabBtn" data-tab="world">World</button>
-<button class="tabBtn" data-tab="dungeon">Dungeon</button>
-<button class="tabBtn" data-tab="achieve">Feats</button>
 </div>
-<section class="panel active" id="panel-journal"></section>
-<section class="panel" id="panel-story"></section>
-<section class="panel" id="panel-inventory"></section>
+<section class="panel active" id="panel-inventory"></section>
 <section class="panel" id="panel-equip"></section>
 <section class="panel" id="panel-skills"></section>
-<section class="panel" id="panel-crafting"></section>
-<section class="panel" id="panel-bounty"></section>
-<section class="panel" id="panel-factions"></section>
-<section class="panel" id="panel-world"></section>
-<section class="panel" id="panel-dungeon"></section>
-<section class="panel" id="panel-achieve"></section>
 </aside>
+<!-- Journal Overlay -->
+<div id="journalOverlay">
+<div id="journalBox">
+<div class="journal-header">
+⬥ Chronicles of Ashveil ⬥
+<button class="journal-close">✕</button>
+</div>
+<div class="journal-tabs">
+<button class="journal-tab active" data-journal-tab="journal">
+<span class="journal-tab-icon">📖</span>
+<span>Journal</span>
+</button>
+<button class="journal-tab" data-journal-tab="story">
+<span class="journal-tab-icon">📜</span>
+<span>Story</span>
+</button>
+<button class="journal-tab" data-journal-tab="crafting">
+<span class="journal-tab-icon">🔨</span>
+<span>Craft</span>
+</button>
+<button class="journal-tab" data-journal-tab="bounty">
+<span class="journal-tab-icon">🎯</span>
+<span>Bounty</span>
+</button>
+<button class="journal-tab" data-journal-tab="factions">
+<span class="journal-tab-icon">⚔️</span>
+<span>Factions</span>
+</button>
+<button class="journal-tab" data-journal-tab="world">
+<span class="journal-tab-icon">🌍</span>
+<span>World</span>
+</button>
+<button class="journal-tab" data-journal-tab="dungeon">
+<span class="journal-tab-icon">🏰</span>
+<span>Dungeon</span>
+</button>
+<button class="journal-tab" data-journal-tab="achieve">
+<span class="journal-tab-icon">🏆</span>
+<span>Feats</span>
+</button>
+</div>
+<div class="journal-content">
+<section class="journal-panel active" id="journal-panel-journal"></section>
+<section class="journal-panel" id="journal-panel-story"></section>
+<section class="journal-panel" id="journal-panel-crafting"></section>
+<section class="journal-panel" id="journal-panel-bounty"></section>
+<section class="journal-panel" id="journal-panel-factions"></section>
+<section class="journal-panel" id="journal-panel-world"></section>
+<section class="journal-panel" id="journal-panel-dungeon"></section>
+<section class="journal-panel" id="journal-panel-achieve"></section>
+</div>
+</div>
+</div>
 </div>
 <script>
 (()=>{
@@ -485,6 +546,7 @@ const eventBanner=qs('#eventBanner'),joystickZone=qs('#joystickZone'),joystickTh
 const mmCanvas=qs('#minimap canvas'),mmCtx=mmCanvas?mmCanvas.getContext('2d'):null;
 const btnDungeon=qs('#btnDungeon');
 const panels={};qsa('.panel').forEach(p=>{panels[p.id.replace('panel-','')]=p});
+const journalPanels={};qsa('.journal-panel').forEach(p=>{journalPanels[p.id.replace('journal-panel-','')]=p});
 
 // ═══ SPRITE SYSTEM ═══
 function createSprite(data,w=16,h=16){const c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');for(let i=0;i<data.length;i++){if(data[i]){cx.fillStyle=data[i];cx.fillRect(i%w,Math.floor(i/w),1,1)}}return c}
@@ -1661,13 +1723,14 @@ function renderPanels(){
 const p=state.player;
 
 // Journal
-panels.journal.innerHTML=`<div class="card"><h3>⬥ Walker's Journal</h3><p>The Veils weaken. You are a Walker.${p.class?` Awakened as <strong class="fire">${cap(p.class)}</strong>.`:' Awakening at Lv 5.'}</p></div>
+const journalHTML=`<div class="card"><h3>⬥ Walker's Journal</h3><p>The Veils weaken. You are a Walker.${p.class?` Awakened as <strong class="fire">${cap(p.class)}</strong>.`:' Awakening at Lv 5.'}</p></div>
 <div class="card"><h3>Active Quests</h3><div class="list">${state.quests.map(q=>`<div class="item"><div><strong>${q.name}</strong> <span class="badge ${q.done?'badge-done':'badge-quest'}">${q.done?'Done':'Stage '+q.stage}</span><div class="tiny">${q.desc}</div></div></div>`).join('')}</div></div>
 <div class="card"><h3>Recent Log</h3><div class="list">${state.logs.slice(0,8).map(l=>`<div class="item"><div class="tiny">${l}</div></div>`).join('')}</div></div>`;
+if(journalPanels.journal)journalPanels.journal.innerHTML=journalHTML;
 
 // Story
-const storyHTML=storyChapters.map(ch=>{const stages=ch.stages.map(st=>{const done=st.complete;return`<div class="item" style="${done?'border-color:rgba(155,138,251,.3);background:rgba(155,138,251,.04)':'opacity:.6'}"><div><strong>${st.name}</strong>${done?' <span class="badge badge-chapter">Done</span>':''}<div class="tiny">${st.desc}</div></div></div>`}).join('');return`<div class="card"><h3>${ch.name}</h3><div class="list">${stages}</div></div>`}).join('');
-panels.story.innerHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="tiny">Your choices shape the narrative. Story progresses through exploration, combat, faction loyalty, and dungeon delving.</p></div>${storyHTML}`;
+const storyHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="tiny">Your choices shape the narrative. Story progresses through exploration, combat, faction loyalty, and dungeon delving.</p></div>`+storyChapters.map(ch=>{const stages=ch.stages.map(st=>{const done=st.complete;return`<div class="item" style="${done?'border-color:rgba(155,138,251,.3);background:rgba(155,138,251,.04)':'opacity:.6'}"><div><strong>${st.name}</strong>${done?' <span class="badge badge-chapter">Done</span>':''}<div class="tiny">${st.desc}</div></div></div>`}).join('');return`<div class="card"><h3>${ch.name}</h3><div class="list">${stages}</div></div>`}).join('');
+if(journalPanels.story)journalPanels.story.innerHTML=storyHTML;
 
 // Inventory
 const inv=Object.entries(p.inventory);
@@ -1680,30 +1743,36 @@ panels.equip.innerHTML=`<div class="card"><h3>⬥ Equipment</h3></div><div class
 panels.skills.innerHTML=`<div class="card"><h3>⬥ Skills</h3>${p.class?`<p class="tiny">Class: <strong class="fire">${cap(p.class)}</strong></p>`:'<p class="tiny">Lv 5 to awaken.</p>'}</div>${Object.entries(p.skills).map(([sk,lv])=>{const xp=p.skillXp[sk],need=lv*20;return`<div class="card"><div class="row"><strong>${cap(sk)}</strong><span class="veil">${lv}</span></div><div class="meter"><div class="meter-fill meter-skill" style="width:${(xp/need)*100}%"></div></div><div class="tiny">${xp}/${need} xp</div></div>`}).join('')}<div class="card"><div class="row"><strong>Level</strong><span class="fire">${p.level}</span></div><div class="meter"><div class="meter-fill meter-xp" style="width:${(p.exp/p.expNext)*100}%"></div></div><div class="tiny">${p.exp}/${p.expNext} xp</div></div>`;
 
 // Crafting
-panels.crafting.innerHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
+const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
+if(journalPanels.crafting)journalPanels.crafting.innerHTML=craftingHTML;
 
 // Bounty
-panels.bounty.innerHTML=`<div class="card"><h3>⬥ Bounty Board</h3></div>${state.activeBounty&&!state.activeBounty.completed?`<div class="card" style="border-color:rgba(255,107,53,.3)"><h4>Active: ${state.activeBounty.name}</h4><p class="tiny">${state.activeBounty.desc}</p><div class="meter" style="margin-top:6px"><div class="meter-fill" style="width:${(state.activeBounty.progress/state.activeBounty.count)*100}%;background:linear-gradient(90deg,#ff6b35,#ff9f1a)"></div></div><div class="tiny">${state.activeBounty.progress}/${state.activeBounty.count}</div></div>`:''}<div class="card"><div class="list">${state.bounties.map((b,i)=>`<div class="item"><div><strong>${b.name}</strong> <span class="badge ${b.completed?'badge-done':b.active?'badge-bounty':'badge-event'}">${b.completed?'Done':b.active?'Active':'Open'}</span><div class="tiny">${b.desc}</div><div class="tiny gold">${b.reward.gold}g ${b.reward.exp}xp${b.reward.item?' +'+itemDefs[b.reward.item]?.name:''}</div></div>${!b.active&&!b.completed?`<button class="item-btn" onclick="W.acceptBounty(${i})">Accept</button>`:''}</div>`).join('')}</div></div>`;
+const bountyHTML=`<div class="card"><h3>⬥ Bounty Board</h3></div>${state.activeBounty&&!state.activeBounty.completed?`<div class="card" style="border-color:rgba(255,107,53,.3)"><h4>Active: ${state.activeBounty.name}</h4><p class="tiny">${state.activeBounty.desc}</p><div class="meter" style="margin-top:6px"><div class="meter-fill" style="width:${(state.activeBounty.progress/state.activeBounty.count)*100}%;background:linear-gradient(90deg,#ff6b35,#ff9f1a)"></div></div><div class="tiny">${state.activeBounty.progress}/${state.activeBounty.count}</div></div>`:''}<div class="card"><div class="list">${state.bounties.map((b,i)=>`<div class="item"><div><strong>${b.name}</strong> <span class="badge ${b.completed?'badge-done':b.active?'badge-bounty':'badge-event'}">${b.completed?'Done':b.active?'Active':'Open'}</span><div class="tiny">${b.desc}</div><div class="tiny gold">${b.reward.gold}g ${b.reward.exp}xp${b.reward.item?' +'+itemDefs[b.reward.item]?.name:''}</div></div>${!b.active&&!b.completed?`<button class="item-btn" onclick="W.acceptBounty(${i})">Accept</button>`:''}</div>`).join('')}</div></div>`;
+if(journalPanels.bounty)journalPanels.bounty.innerHTML=bountyHTML;
 
 // Factions (4 factions!)
-panels.factions.innerHTML=`<div class="card"><h3>⬥ Factions</h3><p class="tiny">Four powers compete. Your standing shapes the world.</p></div><div class="faction-grid">${Object.entries(factionDefs).map(([id,f])=>{const standing=state.faction[id]||0;const tier=getFactionTier(standing);const tierName=f.tiers[tier];return`<div class="faction-card${tier>=2?' highlight':''}"><div style="font-size:20px">${f.icon}</div><strong style="color:${f.color}">${f.name}</strong><div class="tiny">${tierName} (${standing})</div><div class="meter" style="margin:4px 0"><div class="meter-fill" style="width:${Math.min(100,standing)}%;background:${f.color}"></div></div><div class="tiny">${f.perks[tier]||''}</div><button class="item-btn" style="margin-top:4px" onclick="W.chooseFaction('${id}')">Support</button></div>`}).join('')}</div><div class="card"><p class="tiny">${factionDefs[Object.entries(state.faction).sort((a,b)=>b[1]-a[1])[0]?.[0]]?.desc||''}</p></div>`;
+const factionsHTML=`<div class="card"><h3>⬥ Factions</h3><p class="tiny">Four powers compete. Your standing shapes the world.</p></div><div class="faction-grid">${Object.entries(factionDefs).map(([id,f])=>{const standing=state.faction[id]||0;const tier=getFactionTier(standing);const tierName=f.tiers[tier];return`<div class="faction-card${tier>=2?' highlight':''}"><div style="font-size:20px">${f.icon}</div><strong style="color:${f.color}">${f.name}</strong><div class="tiny">${tierName} (${standing})</div><div class="meter" style="margin:4px 0"><div class="meter-fill" style="width:${Math.min(100,standing)}%;background:${f.color}"></div></div><div class="tiny">${f.perks[tier]||''}</div><button class="item-btn" style="margin-top:4px" onclick="W.chooseFaction('${id}')">Support</button></div>`}).join('')}</div><div class="card"><p class="tiny">${factionDefs[Object.entries(state.faction).sort((a,b)=>b[1]-a[1])[0]?.[0]]?.desc||''}</p></div>`;
+if(journalPanels.factions)journalPanels.factions.innerHTML=factionsHTML;
 
 // World
 const r=state.world.regionState,sl=settlementLevels[state.settlement.level-1],nsl=settlementLevels[state.settlement.level];
-panels.world.innerHTML=`<div class="card"><h3>⬥ World State</h3></div><div class="card"><h4>Corruption</h4><div class="meter"><div class="meter-fill meter-corruption" style="width:${r.corruption}%"></div></div><div class="tiny">${Math.floor(r.corruption)}% — ${r.corruption>60?'World darkens.':r.corruption>30?'Shadows creep.':'Stable.'}</div></div><div class="card"><h4>Stability</h4><div class="meter"><div class="meter-fill meter-stability" style="width:${r.stability}%"></div></div><div class="tiny">${Math.floor(r.stability)}% — Favored: ${r.favoredFaction}</div></div>
+const worldHTML=`<div class="card"><h3>⬥ World State</h3></div><div class="card"><h4>Corruption</h4><div class="meter"><div class="meter-fill meter-corruption" style="width:${r.corruption}%"></div></div><div class="tiny">${Math.floor(r.corruption)}% — ${r.corruption>60?'World darkens.':r.corruption>30?'Shadows creep.':'Stable.'}</div></div><div class="card"><h4>Stability</h4><div class="meter"><div class="meter-fill meter-stability" style="width:${r.stability}%"></div></div><div class="tiny">${Math.floor(r.stability)}% — Favored: ${r.favoredFaction}</div></div>
 <div class="card"><h4>Ecology</h4><div class="row"><span>Wolf Pop</span><span class="tiny">${(state.world.ecology.wolfPop*100).toFixed(0)}%</span></div><div class="row"><span>Bogling Pop</span><span class="tiny">${(state.world.ecology.boglingPop*100).toFixed(0)}%</span></div><div class="tiny" style="margin-top:4px">Overhunting reduces populations. They recover over time. High corruption spawns mutants.</div></div>
 <div class="card"><h4>Settlement: ${sl.name} (Lv ${state.settlement.level})</h4><p class="tiny">${sl.desc}</p><p class="tiny nature">${sl.benefits}</p>${nsl?`<div style="margin-top:8px"><h4>Next: ${nsl.name}</h4><div class="tiny">${Object.entries(nsl.cost).map(([k,v])=>`${cap(k)}: ${k==='gold'?state.player.gold:itemCount(k)}/${v}`).join(', ')}</div><button class="item-btn" style="margin-top:6px" ${canUpgradeSettlement()?'':'disabled'} onclick="W.upgradeSettlement()">Upgrade</button></div>`:'<div class="tiny gold" style="margin-top:4px">Max level!</div>'}</div>`;
+if(journalPanels.world)journalPanels.world.innerHTML=worldHTML;
 
 // Dungeon
 const d=state.dungeon;
-panels.dungeon.innerHTML=`<div class="card"><h3>⬥ Relic Dungeons</h3><p class="tiny">Ancient structures formed by failing Veils. Dangerous but rich with relics.</p></div>
+const dungeonHTML=`<div class="card"><h3>⬥ Relic Dungeons</h3><p class="tiny">Ancient structures formed by failing Veils. Dangerous but rich with relics.</p></div>
 ${d.active?`<div class="card" style="border-color:rgba(123,104,238,.4)"><h4>⬡ Active: ${d.name}</h4><div class="tiny">Room ${d.currentRoom+1}/${d.rooms.length} — Enemies: ${d.enemies.filter(e=>e.alive).length} alive</div><button class="item-btn" style="margin-top:6px" onclick="W.exitDungeon()">Flee Dungeon</button></div>`:''}
 <div class="card"><h3>Dungeon Entrances</h3><div class="list">${dungeonEntrances.map((de,i)=>`<div class="item"><div><strong class="veil">${de.name}</strong><div class="tiny">Zone: ${de.zone} • Min Lv ${de.minLevel} • ${de.floors} floors</div></div>${!d.active?`<button class="item-btn" onclick="W.enterDungeon(${i})">Enter</button>`:''}</div>`).join('')}</div></div>
 <div class="card"><h4>Dungeon Stats</h4><div class="row"><span>Entered</span><span class="tiny">${state.stats.dungeonsEntered}</span></div><div class="row"><span>Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div></div>`;
+if(journalPanels.dungeon)journalPanels.dungeon.innerHTML=dungeonHTML;
 
 // Achievements
-panels.achieve.innerHTML=`<div class="card"><h3>⬥ Achievements</h3><p class="tiny">${state.achievements.length}/${achievementDefs.length}</p></div><div class="card"><div class="list">${achievementDefs.map(a=>{const u=state.achievements.includes(a.id);return`<div class="item" style="${u?'border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.04)':'opacity:.5'}"><div><strong>${a.icon} ${a.name}</strong>${u?' <span class="badge badge-achievement">✓</span>':''}<div class="tiny">${a.desc}</div></div></div>`}).join('')}</div></div>
+const achieveHTML=`<div class="card"><h3>⬥ Achievements</h3><p class="tiny">${state.achievements.length}/${achievementDefs.length}</p></div><div class="card"><div class="list">${achievementDefs.map(a=>{const u=state.achievements.includes(a.id);return`<div class="item" style="${u?'border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.04)':'opacity:.5'}"><div><strong>${a.icon} ${a.name}</strong>${u?' <span class="badge badge-achievement">✓</span>':''}<div class="tiny">${a.desc}</div></div></div>`}).join('')}</div></div>
 <div class="card"><h3>Stats</h3><div class="row"><span>Kills</span><span class="tiny">${state.stats.kills}</span></div><div class="row"><span>Gathers</span><span class="tiny">${state.stats.gathers}</span></div><div class="row"><span>Crafts</span><span class="tiny">${state.stats.crafts}</span></div><div class="row"><span>Deaths</span><span class="tiny">${state.stats.deaths}</span></div><div class="row"><span>Bounties</span><span class="tiny">${state.stats.bountiesCompleted}</span></div><div class="row"><span>Dungeons Cleared</span><span class="tiny">${state.stats.dungeonsCleared}</span></div><div class="row"><span>Corrupt Kills</span><span class="tiny">${state.stats.corruptKills}</span></div><div class="row"><span>Mutations</span><span class="tiny">${state.stats.mutationCount}</span></div><div class="row"><span>Damage Dealt</span><span class="tiny">${state.stats.totalDamageDealt}</span></div><div class="row"><span>Zones Found</span><span class="tiny">${state.stats.zonesVisited.size}/4</span></div></div>`;
+if(journalPanels.achieve)journalPanels.achieve.innerHTML=achieveHTML;
 }
 
 function renderAll(){renderHud();renderPanels()}
@@ -1733,6 +1802,8 @@ qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#b
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
 qs('#btnDungeon').onclick=()=>{const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))};
 qsa('.tabBtn').forEach(btn=>btn.onclick=()=>{qsa('.tabBtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.tab;Object.entries(panels).forEach(([key,el])=>el.classList.toggle('active',key===id))});
+// ═══ JOURNAL OVERLAY ═══
+(function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
 // ═══ MOBILE MENU TOGGLE ═══
 (function(){const mt=qs('#mobileToggle'),mb=qs('#mobileBackdrop'),sd=qs('#side');if(!mt||!mb||!sd)return;function openMenu(){sd.classList.add('mobile-open');mb.classList.add('active');mt.textContent='✕'}function closeMenu(){sd.classList.remove('mobile-open');mb.classList.remove('active');mt.textContent='☰'}mt.onclick=()=>{sd.classList.contains('mobile-open')?closeMenu():openMenu()};mb.onclick=closeMenu})();
 window.addEventListener('resize',()=>{resize();renderAll()});
