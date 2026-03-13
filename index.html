@@ -113,6 +113,23 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .title-btn.primary:hover{border-color:rgba(255,107,53,.7);background:linear-gradient(135deg,rgba(255,107,53,.2),rgba(123,104,238,.15));box-shadow:0 8px 30px rgba(255,107,53,.2)}
 .title-btn .btn-sub{display:block;font-family:'Crimson Text',serif;font-size:11px;color:rgba(212,218,232,.4);text-transform:none;letter-spacing:0;margin-top:2px}
 #titleVersion{position:absolute;bottom:16px;right:20px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(122,139,168,.3);z-index:1}
+/* ═══ CHARACTER CREATOR ═══ */
+#charCreator{position:fixed;inset:0;z-index:10001;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,9,13,.97)}
+#charCreatorBox{background:rgba(20,18,30,.95);border:1px solid rgba(123,104,238,.3);border-radius:16px;padding:24px 28px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(123,104,238,.1)}
+#charCreatorBox h2{font-family:'Cinzel',serif;font-size:22px;color:#f0f4ff;text-align:center;margin-bottom:16px;letter-spacing:2px}
+#charCreatorBox .cc-row{display:flex;gap:12px;margin-bottom:12px;align-items:center}
+#charCreatorBox .cc-row label{font-family:'Crimson Text',serif;font-size:14px;color:rgba(212,218,232,.7);min-width:80px;text-align:right}
+#charCreatorBox .cc-row select{flex:1;appearance:none;background:rgba(123,104,238,.08);border:1px solid rgba(123,104,238,.25);color:#d4dae8;border-radius:8px;padding:8px 12px;font-size:13px;font-family:'Crimson Text',serif;cursor:pointer}
+#charCreatorBox .cc-row select:hover{border-color:rgba(123,104,238,.5)}
+#ccPreview{display:block;margin:16px auto;border:1px solid rgba(123,104,238,.2);border-radius:8px;background:rgba(0,0,0,.3);image-rendering:pixelated}
+#ccConfirm{display:block;margin:8px auto 0;appearance:none;border:1px solid rgba(255,107,53,.4);background:linear-gradient(135deg,rgba(255,107,53,.15),rgba(123,104,238,.1));color:#f0f4ff;border-radius:12px;padding:14px 40px;font-size:16px;font-family:'Cinzel',serif;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .3s}
+#ccConfirm:hover{border-color:rgba(255,107,53,.7);background:linear-gradient(135deg,rgba(255,107,53,.25),rgba(123,104,238,.18));box-shadow:0 6px 24px rgba(255,107,53,.2);transform:translateY(-2px)}
+#ccBack{display:block;margin:8px auto 0;appearance:none;border:1px solid rgba(123,104,238,.2);background:transparent;color:rgba(212,218,232,.5);border-radius:8px;padding:8px 24px;font-size:12px;font-family:'Crimson Text',serif;cursor:pointer}
+#ccBack:hover{color:#d4dae8;border-color:rgba(123,104,238,.4)}
+/* ═══ DIALOGUE CHATHEAD ═══ */
+#dialogueFace{width:52px;height:52px;border-radius:50%;border:2px solid rgba(245,158,11,.4);background:rgba(20,16,30,.9);display:none;overflow:hidden;flex-shrink:0;image-rendering:pixelated}
+#dialogueFace canvas{width:100%;height:100%}
+#dialogueHeader{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 /* ═══ SETTINGS MODAL ═══ */
 #settingsModal{display:none;position:fixed;inset:0;z-index:10001;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 #settingsModal.open{display:flex}
@@ -424,6 +441,21 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 </div>
 <div id="titleVersion">v1.6 — The Broken Veil</div>
 </div>
+<!-- ═══ CHARACTER CREATOR ═══ -->
+<div id="charCreator">
+<div id="charCreatorBox">
+<h2>Create Your Character</h2>
+<canvas id="ccPreview" width="168" height="256"></canvas>
+<div class="cc-row"><label>Race</label><select id="ccRace"></select></div>
+<div class="cc-row"><label>Gender</label><select id="ccGender"></select></div>
+<div class="cc-row"><label>Skin</label><select id="ccSkin"></select></div>
+<div class="cc-row"><label>Eyes</label><select id="ccEyes"></select></div>
+<div class="cc-row"><label>Build</label><select id="ccBody"></select></div>
+<div class="cc-row"><label>Mouth</label><select id="ccMouth"></select></div>
+<button id="ccConfirm">Enter the Veil</button>
+<button id="ccBack">← Back</button>
+</div>
+</div>
 <!-- ═══ SETTINGS MODAL ═══ -->
 <div id="settingsModal">
 <div id="settingsBox">
@@ -532,7 +564,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button class="action-btn" id="btnFullscreen">Fullscreen</button>
 <div id="eventBanner"></div>
 <div id="toastWrap"></div>
-<div id="dialogue"><div id="dialogueBox"><div id="dialogueSpeaker"></div><h3 id="dialogueText"></h3><div id="dialogueChoices"></div></div></div>
+<div id="dialogue"><div id="dialogueBox"><div id="dialogueHeader"><div id="dialogueFace"></div><div id="dialogueSpeaker"></div></div><h3 id="dialogueText"></h3><div id="dialogueChoices"></div></div></div>
 <!-- Old action bar hidden, replaced by spell bar -->
 <div id="actionBar" style="display:none">
 <button class="action-btn" id="btnAttack">⚔ Attack <span class="key">LMB</span></button>
@@ -696,6 +728,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <script src="sprites/npcs.js"></script>
 <script src="sprites/enemies.js"></script>
 <script src="sprites/weapons.js"></script>
+<script src="sprites/creator.js"></script>
 <script src="sprites/init.js"></script>
 
 <script>
@@ -1459,7 +1492,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1776,8 +1809,8 @@ const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCALE-p.y)<60
 if(de){const idx=dungeonEntrances.indexOf(de);enterDungeon(idx);return}
 toast('Nothing nearby.')}
 
-function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
-function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none'}
+function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';const faceEl=qs('#dialogueFace');if(faceEl){if(sprites.npcFaces[id]){faceEl.innerHTML='';faceEl.appendChild(sprites.npcFaces[id].cloneNode(true));faceEl.style.display='block'}else{faceEl.style.display='none'}}node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
+function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none';const faceEl=qs('#dialogueFace');if(faceEl)faceEl.style.display='none'}
 
 function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe||!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
 function canCraft(r){return Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n)}
@@ -1809,7 +1842,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -2790,7 +2823,7 @@ const hpPct=(p.hp/p.hpMax)*100;
 const platEl=qs('#playerPlate');
 if(!platEl)return;
 platEl.innerHTML=`
-<div class="plate-portrait"><span class="portrait-icon">⛨</span><span class="plate-level">${p.level}</span></div>
+<div class="plate-portrait">${sprites.playerFace?'<canvas id="platePortraitCv" style="width:44px;height:44px;image-rendering:pixelated"></canvas>':'<span class="portrait-icon">⛨</span>'}<span class="plate-level">${p.level}</span></div>
 <div class="plate-info">
 <div class="plate-name">${cls} <span style="color:#6a5a3a;font-size:10px;font-family:'JetBrains Mono',monospace">${ti} ${zone.name} • Day ${state.day}</span></div>
 <div class="plate-bar"><div class="plate-bar-fill plate-bar-hp" style="width:${hpPct}%"></div><div class="plate-bar-text">${p.hp}/${p.hpMax}</div></div>
@@ -2800,7 +2833,8 @@ ${p.buffs.length?`<div class="plate-buffs">${p.buffs.map(b=>`<div class="plate-b
 ${state.dungeon.active?`<div style="font-size:9px;color:#9b8afb;font-family:'JetBrains Mono',monospace;margin-top:2px">⬡ ${state.dungeon.name} Room ${state.dungeon.currentRoom+1}/${state.dungeon.rooms.length}</div>`:''}
 ${state.activeBounty&&!state.activeBounty.completed?`<div style="font-size:9px;color:#ff9f1a;font-family:'JetBrains Mono',monospace;margin-top:1px">📜 ${state.activeBounty.name}: ${state.activeBounty.progress}/${state.activeBounty.count}</div>`:''}
 ${state.activeEvent?`<div style="font-size:9px;color:#fbbf24;font-family:'JetBrains Mono',monospace;margin-top:1px">⚡ ${state.activeEvent.name} (${Math.ceil(state.activeEvent.timeLeft)}s)</div>`:''}
-</div>`}
+</div>`;
+const _ppCv=qs('#platePortraitCv');if(_ppCv&&sprites.playerFace){_ppCv.width=48;_ppCv.height=48;const _ppCx=_ppCv.getContext('2d');_ppCx.imageSmoothingEnabled=false;_ppCx.drawImage(sprites.playerFace,0,0)}}
 
 // ═══ TITLE SCREEN ═══
 const titleCanvas=qs('#titleCanvas'),titleCtx=titleCanvas.getContext('2d');
@@ -2961,18 +2995,56 @@ function titleLoop(now){
 function startGame(fromSave=false){
   titleActive=false;
   qs('#titleScreen').style.display='none';
+  qs('#charCreator').style.display='none';
   qs('#app').style.display='grid';
   if(fromSave)loadGame(0);
+  // Rebuild NPC sprites from character assets
+  rebuildNPCSprites().then(()=>{renderAll();drawMinimap()});
   resize();renderAll();drawMinimap();
   last=performance.now();
   requestAnimationFrame(loop);
+}
+
+// ═══ CHARACTER CREATOR UI ═══
+function openCharCreator(){
+  qs('#charCreator').style.display='flex';
+  const rSel=qs('#ccRace'),gSel=qs('#ccGender'),sSel=qs('#ccSkin'),eSel=qs('#ccEyes'),bSel=qs('#ccBody'),mSel=qs('#ccMouth');
+  // Populate static options
+  rSel.innerHTML='';['human','elf'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=RACE_LABELS[v];rSel.appendChild(o)});
+  gSel.innerHTML='';['m','f'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=GENDER_LABELS[v];gSel.appendChild(o)});
+  eSel.innerHTML='';EYE_COLORS.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=EYE_LABELS[v]||v;eSel.appendChild(o)});
+  bSel.innerHTML='';BODY_TYPES.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=BODY_LABELS[v]||v;bSel.appendChild(o)});
+  mSel.innerHTML='';MOUTH_OPTIONS.forEach((v,i)=>{const o=document.createElement('option');o.value=v;o.textContent='Style '+(i+1);mSel.appendChild(o)});
+  // Dynamic skin color filtering based on race+gender+body
+  function updateSkinOptions(){
+    const avail=getAvailableSkins(rSel.value,gSel.value,bSel.value);
+    const prev=sSel.value;
+    sSel.innerHTML='';avail.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=SKIN_LABELS[v]||v;sSel.appendChild(o)});
+    if(avail.includes(prev))sSel.value=prev;else sSel.value=avail[0];
+  }
+  updateSkinOptions();
+  function getAppearance(){return{race:rSel.value,gender:gSel.value,skin:sSel.value,eyes:eSel.value,bodyType:bSel.value,mouth:mSel.value}}
+  let _previewTimer=null;
+  function schedulePreview(){clearTimeout(_previewTimer);_previewTimer=setTimeout(()=>{renderCharacterPreview(qs('#ccPreview'),getAppearance())},80)}
+  [rSel,gSel,bSel].forEach(el=>el.addEventListener('change',()=>{updateSkinOptions();schedulePreview()}));
+  [sSel,eSel,mSel].forEach(el=>el.addEventListener('change',schedulePreview));
+  schedulePreview();
+  qs('#ccConfirm').onclick=async()=>{
+    const app=getAppearance();
+    state=createNewState();
+    state.player.appearance=app;
+    await rebuildPlayerSprites(app);
+    rebuildSettlement();
+    startGame(false);
+  };
+  qs('#ccBack').onclick=()=>{qs('#charCreator').style.display='none'};
 }
 
 // Check for existing save
 if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block'}
 qs('#btnPlay').onclick=()=>startGame(false);
 qs('#btnContinue').onclick=()=>startGame(true);
-qs('#btnNewGame').onclick=()=>{state=createNewState();rebuildSettlement();startGame(false)};
+qs('#btnNewGame').onclick=()=>openCharCreator();
 
 // Start title loop
 resizeTitleCanvas();
