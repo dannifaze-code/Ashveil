@@ -746,7 +746,9 @@ const ARMS_LENGTH=40*SCALE,ENEMY_SEP=30*SCALE,LOOT_DROP_CHANCE=0.7,LOOT_DESPAWN_
 const AGGRO_RANGE=180*SCALE,LEASH_RANGE=350*SCALE;
 const BOSS_AGGRO_RANGE=250*SCALE,BOSS_LEASH_RANGE=500*SCALE;
 const DUNGEON_AGGRO_RANGE=200*SCALE,DUNGEON_LEASH_RANGE=400*SCALE;
+const ATTACK_RANGE=60*SCALE,PATROL_RADIUS=30*SCALE,HOME_THRESHOLD=5*SCALE;
 function separateEnemies(arr,dt){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const a=arr[i],b=arr[j],sd=dist(a,b);if(sd<ENEMY_SEP&&sd>0.1){const sx=(b.x-a.x)/sd,sy=(b.y-a.y)/sd,push=(ENEMY_SEP-sd)*5*dt;a.x-=sx*push;a.y-=sy*push;b.x+=sx*push;b.y+=sy*push}}}}
+function returnToHomeOrPatrol(e,spd,dt){const homeDist=Math.hypot(e.x-e.homeX,e.y-e.homeY);if(homeDist>HOME_THRESHOLD){const hx=e.homeX-e.x,hy=e.homeY-e.y,hlen=Math.hypot(hx,hy)||1;e.x+=(hx/hlen)*spd*dt;e.y+=(hy/hlen)*spd*dt}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*PATROL_RADIUS;e.y=e.homeY+Math.sin(e.patrolAngle)*PATROL_RADIUS}}
 
 const canvas=qs('#game'),ctx=canvas.getContext('2d'),hud=qs('#hud'),toastWrap=qs('#toastWrap');
 const dialogueEl=qs('#dialogue'),dialogueSpeaker=qs('#dialogueSpeaker'),dialogueText=qs('#dialogueText'),dialogueChoices=qs('#dialogueChoices');
@@ -1750,7 +1752,7 @@ const p=state.player;if(p.attackCooldown>0||p.isBlocking)return;
 // In dungeon, attack dungeon enemies
 let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
-if(!enemy||dist(p,enemy)>60*SCALE){if(!silent)toast('No enemy in range.');return}
+if(!enemy||dist(p,enemy)>ATTACK_RANGE){if(!silent)toast('No enemy in range.');return}
 // Target locking: check if engaged by someone else (multiplayer-ready)
 if(enemy.engagedBy&&enemy.engagedBy!=='player'){if(!silent)toast('Someone else is fighting that.');return}
 // Engage the target
@@ -1899,9 +1901,7 @@ if(!e.engaged&&d<aRange){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>lRange){e.engaged=false;e.engagedBy=null}
 if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
-// Not engaged: return to home or patrol
-const homeDist=Math.hypot(e.x-e.homeX,e.y-e.homeY);
-if(homeDist>5*SCALE){const hx=e.homeX-e.x,hy=e.homeY-e.y,hlen=Math.hypot(hx,hy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;e.x+=(hx/hlen)*spd*dt;e.y+=(hy/hlen)*spd*dt}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
+returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
 separateEnemies(state.enemies.filter(e=>e.alive&&e.zone===state.world.activeZone),dt);
 }else{
 // Dungeon enemy AI
@@ -1911,9 +1911,7 @@ if(!e.engaged&&d<DUNGEON_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>DUNGEON_LEASH_RANGE){e.engaged=false;e.engagedBy=null}
 if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}else{
-// Not engaged in dungeon: return to home or idle
-const homeDist=Math.hypot(e.x-e.homeX,e.y-e.homeY);
-if(homeDist>5*SCALE){const hx=e.homeX-e.x,hy=e.homeY-e.y,hlen=Math.hypot(hx,hy)||1;const dSpd=50*SCALE;e.x+=(hx/hlen)*dSpd*dt;e.y+=(hy/hlen)*dSpd*dt}else{e.patrolAngle+=dt*0.5;e.x=e.homeX+Math.cos(e.patrolAngle)*30*SCALE;e.y=e.homeY+Math.sin(e.patrolAngle)*30*SCALE}}});
+returnToHomeOrPatrol(e,50*SCALE,dt)}});
 separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
 // Particles
