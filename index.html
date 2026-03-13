@@ -3009,17 +3009,25 @@ function startGame(fromSave=false){
 function openCharCreator(){
   qs('#charCreator').style.display='flex';
   const rSel=qs('#ccRace'),gSel=qs('#ccGender'),sSel=qs('#ccSkin'),eSel=qs('#ccEyes'),bSel=qs('#ccBody'),mSel=qs('#ccMouth');
-  // Populate options
+  // Populate static options
   rSel.innerHTML='';['human','elf'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=RACE_LABELS[v];rSel.appendChild(o)});
   gSel.innerHTML='';['m','f'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=GENDER_LABELS[v];gSel.appendChild(o)});
-  sSel.innerHTML='';SKIN_COLORS.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=SKIN_LABELS[v]||v;sSel.appendChild(o)});
   eSel.innerHTML='';EYE_COLORS.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=EYE_LABELS[v]||v;eSel.appendChild(o)});
   bSel.innerHTML='';BODY_TYPES.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=BODY_LABELS[v]||v;bSel.appendChild(o)});
   mSel.innerHTML='';MOUTH_OPTIONS.forEach((v,i)=>{const o=document.createElement('option');o.value=v;o.textContent='Style '+(i+1);mSel.appendChild(o)});
+  // Dynamic skin color filtering based on race+gender+body
+  function updateSkinOptions(){
+    const avail=getAvailableSkins(rSel.value,gSel.value,bSel.value);
+    const prev=sSel.value;
+    sSel.innerHTML='';avail.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=SKIN_LABELS[v]||v;sSel.appendChild(o)});
+    if(avail.includes(prev))sSel.value=prev;else sSel.value=avail[0];
+  }
+  updateSkinOptions();
   function getAppearance(){return{race:rSel.value,gender:gSel.value,skin:sSel.value,eyes:eSel.value,bodyType:bSel.value,mouth:mSel.value}}
   let _previewTimer=null;
   function schedulePreview(){clearTimeout(_previewTimer);_previewTimer=setTimeout(()=>{renderCharacterPreview(qs('#ccPreview'),getAppearance())},80)}
-  [rSel,gSel,sSel,eSel,bSel,mSel].forEach(el=>el.addEventListener('change',schedulePreview));
+  [rSel,gSel,bSel].forEach(el=>el.addEventListener('change',()=>{updateSkinOptions();schedulePreview()}));
+  [sSel,eSel,mSel].forEach(el=>el.addEventListener('change',schedulePreview));
   schedulePreview();
   qs('#ccConfirm').onclick=async()=>{
     const app=getAppearance();

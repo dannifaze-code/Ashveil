@@ -21,6 +21,21 @@ const GENDER_LABELS = {m:'Male',f:'Female'};
 /* ── Default appearance ── */
 function defaultAppearance(){return{race:'human',gender:'m',skin:'ash',eyes:'blue',bodyType:'normal',mouth:'001'}}
 
+/* ── Availability map: which skin colors exist for each race+gender+bodyType ── */
+const SKIN_AVAILABILITY={
+  'human-m-normal':['ash','black','brown','dark_ash'],
+  'human-m-heavy':['ash','black'],
+  'human-f-normal':['dark_ash','light_black','light_brown'],
+  'human-f-heavy':['ash','black','brown','dark_ash','light','light_black','light_brown'],
+  'elf-m-normal':['ash','black','brown','dark_ash','light','light_black','light_brown'],
+  'elf-m-heavy':['ash','black','brown','dark_ash','light','light_brown'],
+  'elf-f-normal':['ash','black','brown','dark_ash','light_black','light_brown'],
+  'elf-f-heavy':['ash','black','brown','dark_ash','light','light_black','light_brown']
+};
+function getAvailableSkins(race,gender,bodyType){
+  return SKIN_AVAILABILITY[race+'-'+gender+'-'+bodyType]||SKIN_COLORS;
+}
+
 /* ── Image cache ── */
 const _imgCache={};
 function loadImg(src){
@@ -111,13 +126,13 @@ async function buildFacePortrait(appearance,size){
 
 /* ── NPC appearance presets ── */
 const NPC_APPEARANCES={
-  elder:      {race:'human',gender:'m',skin:'ash',      eyes:'amber',   bodyType:'normal',mouth:'001'},
-  quartermaster:{race:'human',gender:'m',skin:'brown',  eyes:'brown',   bodyType:'heavy', mouth:'002'},
+  elder:      {race:'human',gender:'m',skin:'ash',      eyes:'amber',       bodyType:'normal',mouth:'001'},
+  quartermaster:{race:'human',gender:'m',skin:'ash',    eyes:'brown',       bodyType:'heavy', mouth:'002'},
   herbalist:  {race:'elf',  gender:'f',skin:'light_brown',eyes:'apple_green',bodyType:'normal',mouth:'003'},
-  smuggler:   {race:'human',gender:'m',skin:'dark_ash', eyes:'black',   bodyType:'normal',mouth:'001'},
-  bountyMaster:{race:'human',gender:'m',skin:'black',   eyes:'scarlet', bodyType:'heavy', mouth:'002'},
-  scholarLynn:{race:'elf',  gender:'f',skin:'light',    eyes:'amethyst',bodyType:'normal',mouth:'004'},
-  commanderVoss:{race:'human',gender:'m',skin:'light_black',eyes:'azure',bodyType:'heavy',mouth:'001'}
+  smuggler:   {race:'human',gender:'m',skin:'dark_ash', eyes:'black',       bodyType:'normal',mouth:'001'},
+  bountyMaster:{race:'human',gender:'m',skin:'black',   eyes:'scarlet',     bodyType:'heavy', mouth:'002'},
+  scholarLynn:{race:'elf',  gender:'f',skin:'light_brown',eyes:'amethyst',    bodyType:'normal',mouth:'004'},
+  commanderVoss:{race:'human',gender:'m',skin:'black',  eyes:'azure',       bodyType:'heavy', mouth:'001'}
 };
 
 /* ── Preview: render a character preview onto a target canvas ── */
