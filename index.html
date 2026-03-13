@@ -257,6 +257,50 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .class-choice-desc{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5;margin-bottom:10px}
 .class-choice-bonus{font-size:11px;font-family:'JetBrains Mono',monospace;padding:6px 10px;border-radius:6px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)}
 @media(max-width:920px){#classAwakeningBox{width:95vw;padding:20px}.class-choices{flex-direction:column;align-items:center}.class-choice-card{min-width:auto;max-width:280px;width:100%}}
+/* ═══ ABILITIES OVERLAY ═══ */
+#abilitiesBtn{position:absolute;right:246px;bottom:14px;z-index:7;appearance:none;width:48px;height:48px;border-radius:12px;border:2px solid rgba(90,60,20,.6);background:linear-gradient(180deg,rgba(70,50,25,.95),rgba(50,35,15,.95));color:#d4a84a;font-family:'Cinzel',serif;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,160,80,.2);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:all .2s}
+#abilitiesBtn:hover{border-color:rgba(180,140,60,.8);background:linear-gradient(180deg,rgba(90,65,30,.95),rgba(65,45,20,.95));transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,160,80,.3)}
+#abilitiesOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
+#abilitiesOverlay.open{display:flex}
+#abilitiesBox{width:85vw;max-width:900px;height:85vh;max-height:750px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:20px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
+#abilitiesBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.6),rgba(200,160,32,.9),rgba(139,106,20,.6),transparent)}
+.abilities-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 12px;font-family:'Cinzel',serif;font-size:20px;color:#d4a84a;letter-spacing:4px;text-transform:uppercase;text-shadow:0 2px 12px rgba(200,160,32,.4);border-bottom:2px solid rgba(90,60,20,.4);background:linear-gradient(180deg,rgba(40,30,15,.8),rgba(30,20,10,.6))}
+.abilities-header-title{display:flex;align-items:center;gap:12px}
+.abilities-points{font-size:13px;color:#f59e0b;font-family:'JetBrains Mono',monospace;letter-spacing:1px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:6px 14px}
+.abilities-close{appearance:none;border:2px solid rgba(90,60,20,.5);background:rgba(60,40,15,.7);color:#d4a84a;width:36px;height:36px;border-radius:8px;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.abilities-close:hover{border-color:rgba(200,160,32,.8);background:rgba(90,60,20,.8);color:#f0f4ff}
+.abilities-body{display:flex;flex:1;min-height:0;overflow:hidden;justify-content:center}
+.abilities-content{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:rgba(139,106,20,.5) transparent;max-width:800px}
+.ability-path-banner{text-align:center;padding:16px;margin-bottom:16px;border:2px solid rgba(139,106,20,.4);border-radius:12px;background:rgba(139,106,20,.05)}
+.ability-path-banner h3{font-family:'Cinzel',serif;font-size:18px;letter-spacing:2px;margin-bottom:4px}
+.ability-path-banner p{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace}
+.ability-tree-grid{display:flex;flex-direction:column;gap:10px}
+.ability-node{border:2px solid rgba(90,60,20,.4);border-radius:12px;padding:14px;background:linear-gradient(135deg,rgba(50,35,15,.5),rgba(40,25,10,.6));position:relative;overflow:hidden;transition:all .25s;cursor:default}
+.ability-node::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(139,106,20,.3),transparent)}
+.ability-node.unlocked{border-color:rgba(139,106,20,.6);background:linear-gradient(135deg,rgba(70,50,20,.5),rgba(55,35,15,.6))}
+.ability-node.unlocked::before{background:linear-gradient(90deg,transparent,rgba(200,160,32,.5),transparent)}
+.ability-node.maxed{border-color:rgba(245,158,11,.5);box-shadow:0 0 15px rgba(245,158,11,.15)}
+.ability-node-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ability-node-name{font-family:'Cinzel',serif;font-size:13px;color:#d4a84a;letter-spacing:1px}
+.ability-node-rank{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9b8afb}
+.ability-node-desc{font-size:11px;color:#8a7a5a;font-family:'JetBrains Mono',monospace;line-height:1.5;margin-bottom:10px}
+.ability-node-cost{font-size:10px;color:#f59e0b;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.ability-node-actions{display:flex;gap:8px}
+.ability-upgrade-btn{appearance:none;flex:1;padding:8px 12px;border:1px solid rgba(139,106,20,.5);background:linear-gradient(180deg,rgba(100,65,15,.7),rgba(70,45,10,.8));color:#d4a84a;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.ability-upgrade-btn:hover{border-color:rgba(200,160,32,.8);background:linear-gradient(180deg,rgba(130,85,20,.8),rgba(90,55,15,.9));color:#f0f4ff}
+.ability-upgrade-btn:disabled{opacity:.3;cursor:default;border-color:rgba(90,60,20,.3)}
+.ability-cast-btn{appearance:none;padding:8px 16px;border:1px solid rgba(61,220,132,.5);background:linear-gradient(180deg,rgba(30,120,60,.7),rgba(20,80,40,.8));color:#3ddc84;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.ability-cast-btn:hover{border-color:rgba(61,220,132,.8);background:linear-gradient(180deg,rgba(40,150,70,.8),rgba(30,100,50,.9));color:#f0f4ff}
+.ability-cast-btn:disabled{opacity:.3;cursor:default}
+.ability-locked-msg{text-align:center;padding:24px;color:#6a5a3a;font-family:'Cinzel',serif;font-size:13px;border:1px dashed rgba(90,60,20,.3);border-radius:10px;margin-top:12px}
+#abilityPathOverlay{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(14px)}
+#abilityPathOverlay.open{display:flex}
+#abilityPathBox{width:90vw;max-width:720px;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(200,160,32,.7);border-radius:20px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 80px rgba(200,160,32,.3);padding:32px;text-align:center}
+#abilityPathBox::before{content:'';display:block;height:4px;background:linear-gradient(90deg,transparent,rgba(200,160,32,.6),rgba(245,158,11,.9),rgba(200,160,32,.6),transparent);margin:-32px -32px 24px}
+#abilityPathBox h2{font-family:'Cinzel',serif;color:#f59e0b;font-size:22px;letter-spacing:4px;margin-bottom:8px;text-shadow:0 2px 16px rgba(200,160,32,.6);text-transform:uppercase}
+@keyframes abilityFlash{0%{box-shadow:0 0 8px rgba(245,158,11,.4)}50%{box-shadow:0 0 24px rgba(245,158,11,.8)}100%{box-shadow:0 0 8px rgba(245,158,11,.4)}}
+.spell-slot .cd-overlay{position:absolute;inset:0;background:rgba(0,0,0,.65);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'JetBrains Mono',monospace;color:#f59e0b;pointer-events:none}
+@media(max-width:920px){#abilitiesBox{width:95vw;height:92vh;max-height:none}.abilities-body{flex-direction:column}.abilities-content{padding:12px}.ability-tree-grid{grid-template-columns:1fr}#abilitiesBtn{right:124px;bottom:72px;width:44px;height:44px}}
 #inventoryOverlay{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)}
 #inventoryOverlay.open{display:flex}
 #inventoryBox{width:460px;max-width:95vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:3px solid rgba(139,106,20,.7);border-radius:16px;overflow:hidden;animation:menuSlideIn .3s ease;box-shadow:0 20px 100px rgba(0,0,0,.8),0 0 60px rgba(139,106,20,.2);display:flex;flex-direction:column;position:relative}
@@ -536,6 +580,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button id="journalBtn" title="Journal (J)">📜</button>
 <button id="inventoryBtn" title="Inventory (I)">🎒</button>
 <button id="skillsBtn" title="Skills (K)" aria-label="Open Skills Menu">⚔</button>
+<button id="abilitiesBtn" title="Abilities (L)" aria-label="Open Abilities Menu">◆</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 </div>
 <!-- Journal Overlay -->
@@ -616,6 +661,25 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <h2>⬥ Class Awakening ⬥</h2>
 <div class="awakening-subtitle">Choose your path, Walker. Your accumulated skill points will be invested in your chosen class.</div>
 <div class="class-choices" id="classChoices"></div>
+</div>
+</div>
+<div id="abilitiesOverlay">
+<div id="abilitiesBox">
+<div class="abilities-header">
+<div class="abilities-header-title">⬥ Abilities ⬥</div>
+<div class="abilities-points" id="abilityPointsDisplay">Ability Points: 0</div>
+<button class="abilities-close" id="abilitiesClose">✕</button>
+</div>
+<div class="abilities-body">
+<div class="abilities-content" id="abilitiesContent"></div>
+</div>
+</div>
+</div>
+<div id="abilityPathOverlay">
+<div id="abilityPathBox">
+<h2>⬥ Ability Awakening ⬥</h2>
+<div class="awakening-subtitle">You have reached Level 10. Choose your ability path, Walker. This choice is permanent.</div>
+<div class="class-choices" id="abilityPathChoices"></div>
 </div>
 </div>
 <div id="lootOverlay" style="display:none">
@@ -1431,7 +1495,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1489,7 +1553,7 @@ function totalCrit(){let n=state.player.critChance;for(const s of Object.values(
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening()}}
+function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -1781,7 +1845,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1792,7 +1856,7 @@ if(state.dayTime>=240){state.dayTime=0;state.day++;state.stats.nightsSurvived++;
 const p=state.player;p.attackCooldown=Math.max(0,p.attackCooldown-dt);p.invincible=Math.max(0,p.invincible-dt);p.critFlash=Math.max(0,p.critFlash-dt);
 p.swingTimer=Math.max(0,(p.swingTimer||0)-dt);
 p.dashCooldown=Math.max(0,p.dashCooldown-dt);if(p.isDashing){p.dashTimer-=dt;if(p.dashTimer<=0){p.isDashing=false;p.vx*=0.3;p.vy*=0.3}}
-p.buffs=p.buffs.filter(b=>{b.remaining-=dt;return b.remaining>0});
+p.buffs=p.buffs.filter(b=>{b.remaining-=dt;if(b.type==='regen'&&b.remaining>0){b._tick=(b._tick||0)+dt;if(b._tick>=1){b._tick-=1;p.hp=Math.min(p.hpMax,p.hp+b.amount);spawnParticle(p.x,p.y,'#3ddc84',2,15)}}return b.remaining>0});
 updateShake(dt);spawnDustTrail(dt);
 if(!state.currentDialogue&&!p.isDashing){
 const kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
@@ -1827,7 +1891,7 @@ if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQ
 if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joystick + buttons. PC: WASD move, LMB attack, RMB block, SPACE loot, F gather, E interact.','info')}
 const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
 state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
-trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);
+trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);updateAbilityCooldowns(dt);updateHotbarSlots();
 // Loot corpse cleanup
 const allEn=state.dungeon.active?state.dungeon.enemies:state.enemies;
 allEn.forEach(e=>{if(e.lootable&&state.time>=e.lootTimer){e.lootable=false;e.loot=null;if(activeLootEnemy===e){closeLootUI();toast('Loot despawned','info')}}});
@@ -2041,7 +2105,7 @@ joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActi
 joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
-window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();lootAllNearby()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory();closeSkills()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}if(e.code==='KeyK'){const so=qs('#skillsOverlay');if(so.classList.contains('open'))closeSkills();else openSkills()}});
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();lootAllNearby()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory();closeSkills();closeAbilities()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}if(e.code==='KeyK'){const so=qs('#skillsOverlay');if(so.classList.contains('open'))closeSkills();else openSkills()}if(e.code==='KeyL'){const ao=qs('#abilitiesOverlay');if(ao.classList.contains('open'))closeAbilities();else openAbilities()}if(e.code==='Digit1')castAbility(0);if(e.code==='Digit2')castAbility(1);if(e.code==='Digit3')castAbility(2);if(e.code==='Digit4')castAbility(3)});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
@@ -2173,6 +2237,34 @@ warden:{name:'Warden',desc:'The stalwart defender. High combat and survival.',ic
 artificer:{name:'Artificer',desc:'Master crafter and nature expert.',icon:'🔨',requirement:'Default class — Foraging focused.',color:'#3ddc84',bonusDesc:'+2 DEF. Unlocks Artificer-exclusive nodes in Foraging and Crafting trees.'},
 veilwalker:{name:'Veilwalker',desc:'Scholar of the Veil and master of influence.',icon:'◈',requirement:'Default class — Influence focused.',color:'#9b8afb',bonusDesc:'+10% Crit. Unlocks Veilwalker-exclusive nodes in Influence and Veilsense trees.'}
 };
+const abilityPathDefs={
+brute:{name:'Brute',desc:'Melee warrior of raw power.',icon:'🗡',color:'#ff6b35',bonusDesc:'Melee devastation. Crushing strikes and war cries.'},
+maiden:{name:'Maiden',desc:'Arcane mage channeling veil energy.',icon:'✦',color:'#9b8afb',bonusDesc:'Ranged magic. Bolts, shields, and storms.'},
+leviath:{name:'Leviath',desc:'Sacred healer attuned to nature.',icon:'✿',color:'#3ddc84',bonusDesc:'Healing light. Restoration and protection.'}
+};
+const abilityTreeDefs={
+brute:[
+{id:'crushingBlow',name:'Crushing Blow',icon:'💥',desc:'Heavy melee hit dealing 150% ATK damage.',cooldown:8,cost:0,levelReq:10,requires:null,maxRank:3,type:'damage',multiplier:1.5,perRank:{multiplier:0.15}},
+{id:'warCry',name:'War Cry',icon:'📢',desc:'Buff: +5 ATK for 10s.',cooldown:20,cost:2,levelReq:10,requires:'crushingBlow',maxRank:3,type:'buff',buffType:'atk',buffAmount:5,buffDuration:10,perRank:{buffAmount:2}},
+{id:'ironSkin',name:'Iron Skin',icon:'🛡',desc:'Buff: +8 DEF for 12s.',cooldown:25,cost:2,levelReq:10,requires:'warCry',maxRank:3,type:'buff',buffType:'def',buffAmount:8,buffDuration:12,perRank:{buffAmount:3}},
+{id:'groundSlam',name:'Ground Slam',icon:'🌋',desc:'AoE damage all nearby enemies for 200% ATK.',cooldown:30,cost:3,levelReq:10,requires:'ironSkin',maxRank:3,type:'aoe',multiplier:2.0,perRank:{multiplier:0.2}},
+{id:'berserkerRage',name:'Berserker Rage',icon:'🔥',desc:'Ultimate: +10 ATK, +15% crit for 15s.',cooldown:60,cost:4,levelReq:10,requires:'groundSlam',maxRank:3,type:'ultimate',buffDuration:15,perRank:{buffDuration:3}}
+],
+maiden:[
+{id:'veilBolt',name:'Veil Bolt',icon:'⚡',desc:'Ranged magic bolt dealing 120% ATK damage.',cooldown:6,cost:0,levelReq:10,requires:null,maxRank:3,type:'damage',multiplier:1.2,perRank:{multiplier:0.1}},
+{id:'arcaneShield',name:'Arcane Shield',icon:'🔮',desc:'Absorb next 20 damage.',cooldown:18,cost:2,levelReq:10,requires:'veilBolt',maxRank:3,type:'shield',shieldAmount:20,perRank:{shieldAmount:8}},
+{id:'frostNova',name:'Frost Nova',icon:'❄',desc:'AoE freeze + 80% ATK damage.',cooldown:22,cost:2,levelReq:10,requires:'arcaneShield',maxRank:3,type:'aoe',multiplier:0.8,perRank:{multiplier:0.1}},
+{id:'chainLightning',name:'Chain Lightning',icon:'⛈',desc:'Hit up to 3 enemies for 100% ATK each.',cooldown:28,cost:3,levelReq:10,requires:'frostNova',maxRank:3,type:'chain',multiplier:1.0,targets:3,perRank:{targets:1}},
+{id:'veilStorm',name:'Veil Storm',icon:'🌀',desc:'Massive AoE: 250% ATK to all nearby.',cooldown:55,cost:4,levelReq:10,requires:'chainLightning',maxRank:3,type:'ultimate_aoe',multiplier:2.5,perRank:{multiplier:0.25}}
+],
+leviath:[
+{id:'mendingLight',name:'Mending Light',icon:'💚',desc:'Heal self for 30% max HP.',cooldown:10,cost:0,levelReq:10,requires:null,maxRank:3,type:'heal',healPercent:30,perRank:{healPercent:5}},
+{id:'purify',name:'Purify',icon:'✨',desc:'Cleanse debuffs + heal 15% HP.',cooldown:15,cost:2,levelReq:10,requires:'mendingLight',maxRank:3,type:'cleanse',healPercent:15,perRank:{healPercent:5}},
+{id:'naturesGrasp',name:"Nature's Grasp",icon:'🌿',desc:'Regen 5 HP/s for 8s.',cooldown:20,cost:2,levelReq:10,requires:'purify',maxRank:3,type:'regen',regenAmount:5,regenDuration:8,perRank:{regenAmount:2}},
+{id:'sanctuary',name:'Sanctuary',icon:'🏛',desc:'50% damage reduction for 10s.',cooldown:30,cost:3,levelReq:10,requires:'naturesGrasp',maxRank:3,type:'buff',buffType:'def',buffAmount:50,buffDuration:10,perRank:{buffAmount:10}},
+{id:'divineRestoration',name:'Divine Restoration',icon:'🌟',desc:'Full heal + cleanse + 8 DEF for 15s.',cooldown:50,cost:4,levelReq:10,requires:'sanctuary',maxRank:3,type:'ultimate_heal',buffDuration:15,perRank:{buffDuration:3}}
+]
+};
 function getSkillNodeRank(skillKey,nodeId){return(state.player.classTree&&state.player.classTree[skillKey+'_'+nodeId])||0}
 function setSkillNodeRank(skillKey,nodeId,rank){state.player.classTree[skillKey+'_'+nodeId]=rank}
 function canUpgradeNode(skillKey,node){
@@ -2276,7 +2368,278 @@ ${canUp?'Upgrade (1 Point)':!p.class?'Awaken Class First':locked?'Class Locked':
 }
 function openSkills(){qs('#skillsOverlay').classList.add('open');renderSkillsOverlay()}
 function closeSkills(){qs('#skillsOverlay').classList.remove('open')}
+function getAbilityRank(abilityId){return state.player.abilities[abilityId]||0}
+function setAbilityRank(abilityId,rank){state.player.abilities[abilityId]=rank}
+function canUpgradeAbility(path,ability){
+const p=state.player;
+if(p.abilityPath!==path)return false;
+if(ability.cost===0)return false;
+if(p.abilityPoints<ability.cost)return false;
+const rank=getAbilityRank(ability.id);
+if(rank>=ability.maxRank)return false;
+if(ability.requires&&getAbilityRank(ability.requires)<1)return false;
+return true;
+}
+function checkAbilityAwakening(){if(state.player.abilityPath||state.player.level<10)return;showAbilityPathPopup()}
+function showAbilityPathPopup(){
+const overlay=qs('#abilityPathOverlay');
+const choices=qs('#abilityPathChoices');
+choices.innerHTML=Object.entries(abilityPathDefs).map(([key,pd])=>{
+return`<button class="class-choice-card" onclick="W.chooseAbilityPath('${key}')">
+<div class="class-choice-icon">${pd.icon}</div>
+<div class="class-choice-name" style="color:${pd.color}">${pd.name}</div>
+<div class="class-choice-desc" style="color:#8a7a5a">${pd.desc}</div>
+<div class="class-choice-bonus" style="color:${pd.color}">${pd.bonusDesc}</div>
+</button>`;
+}).join('');
+overlay.classList.add('open');
+}
+function chooseAbilityPath(pathKey){
+const p=state.player;
+if(!abilityPathDefs[pathKey]||p.abilityPath)return;
+p.abilityPath=pathKey;
+const tree=abilityTreeDefs[pathKey];
+if(tree&&tree[0])setAbilityRank(tree[0].id,1);
+qs('#abilityPathOverlay').classList.remove('open');
+const pd=abilityPathDefs[pathKey];
+toast(`${pd.icon} ABILITY PATH: ${pd.name}!`,'achievement');
+addLog(`${pd.icon} Chose ability path: ${pd.name}.`);
+triggerShake(10,0.4);
+spawnParticle(state.player.x,state.player.y,pd.color,20,120);
+spawnDamageNumber(state.player.x,state.player.y-40,`${pd.name.toUpperCase()}!`,pd.color);
+updateHotbarSlots();
+}
+function openAbilities(){
+if(state.player.level<10&&!state.player.abilityPath){toast('Abilities unlock at Level 10.','info');return}
+if(!state.player.abilityPath){showAbilityPathPopup();return}
+qs('#abilitiesOverlay').classList.add('open');renderAbilitiesOverlay();
+}
+function closeAbilities(){qs('#abilitiesOverlay').classList.remove('open')}
+function renderAbilitiesOverlay(){
+const p=state.player;
+const path=p.abilityPath;
+if(!path)return;
+const pd=abilityPathDefs[path];
+const tree=abilityTreeDefs[path];
+qs('#abilityPointsDisplay').textContent='Ability Points: '+p.abilityPoints;
+const content=qs('#abilitiesContent');
+content.innerHTML=`
+<div class="ability-path-banner">
+<h3 style="color:${pd.color}">${pd.icon} ${pd.name} Path</h3>
+<p>${pd.desc}</p>
+</div>
+<div class="ability-tree-grid">${tree.map((ab,idx)=>{
+const rank=getAbilityRank(ab.id);
+const maxed=rank>=ab.maxRank;
+const unlocked=rank>0;
+const canUp=canUpgradeAbility(path,ab);
+const reqMet=!ab.requires||getAbilityRank(ab.requires)>=1;
+let reqText='';
+if(ab.requires){const reqAb=tree.find(a=>a.id===ab.requires);reqText=`Requires: ${reqAb?reqAb.name:'?'}`}
+if(ab.cost>0)reqText+=(reqText?' • ':'')+`Cost: ${ab.cost} pts`;
+const cdKey=ab.id;
+const onCd=p.abilityCooldowns[cdKey]>0;
+const cdRemain=onCd?Math.ceil(p.abilityCooldowns[cdKey])+'s':'Ready';
+return`<div class="ability-node${unlocked?' unlocked':''}${maxed?' maxed':''}" style="${!reqMet&&!unlocked?'opacity:.6':''}">
+<div class="ability-node-header">
+<div class="ability-node-name">${ab.icon} ${ab.name}</div>
+<div class="ability-node-rank">${rank}/${ab.maxRank}</div>
+</div>
+<div class="ability-node-desc">${ab.desc}<br><span style="color:${pd.color}">Cooldown: ${ab.cooldown}s${unlocked?' • '+cdRemain:''}</span></div>
+${reqText?`<div class="ability-node-cost">${reqText}</div>`:''}
+<div class="ability-node-actions">
+${!maxed&&ab.cost>0?`<button class="ability-upgrade-btn" ${canUp?'':'disabled'} onclick="W.upgradeAbility('${ab.id}')">
+${canUp?'Upgrade ('+ab.cost+' pts)':!reqMet?'Requirements Not Met':'No Points'}
+</button>`:ab.cost===0&&maxed?`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px;flex:1">✦ MAXED ✦</div>`:ab.cost===0?`<button class="ability-upgrade-btn" disabled style="flex:1">Auto-unlocked</button>`:`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px;flex:1">✦ MAXED ✦</div>`}
+${unlocked?`<button class="ability-cast-btn" ${onCd?'disabled':''} onclick="W.castAbility(${idx})">${onCd?'CD: '+cdRemain:'Cast ('+['1','2','3','4'][idx]+')'}</button>`:''}
+</div>
+</div>`;
+}).join('')}</div>`;
+}
+function upgradeAbility(abilityId){
+const p=state.player;
+const path=p.abilityPath;
+if(!path)return;
+const tree=abilityTreeDefs[path];
+const ab=tree.find(a=>a.id===abilityId);
+if(!ab||!canUpgradeAbility(path,ab))return;
+p.abilityPoints-=ab.cost;
+const newRank=getAbilityRank(abilityId)+1;
+setAbilityRank(abilityId,newRank);
+toast(`${ab.icon} ${ab.name} → Rank ${newRank}`,'quest');
+addLog(`⬥ Upgraded ${ab.name} to Rank ${newRank}.`);
+renderAbilitiesOverlay();
+updateHotbarSlots();
+}
+function castAbility(slotIndex){
+const p=state.player;
+if(!p.abilityPath||state.currentDialogue)return;
+const tree=abilityTreeDefs[p.abilityPath];
+if(!tree||slotIndex>=tree.length)return;
+const ab=tree[slotIndex];
+const rank=getAbilityRank(ab.id);
+if(rank<1)return;
+if(p.abilityCooldowns[ab.id]>0){toast(`${ab.name} on cooldown`,'info');return}
+const pd=abilityPathDefs[p.abilityPath];
+const atk=totalAtk();
+p.abilityCooldowns[ab.id]=ab.cooldown;
+p.lastCombatTime=state.time;
+if(ab.type==='damage'){
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
+if(!enemy||dist(p,enemy)>80*SCALE){toast('No enemy in range.','info');p.abilityCooldowns[ab.id]=0;return}
+const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
+const dmg=Math.max(1,Math.floor(atk*mult));
+enemy.hp-=dmg;state.stats.totalDamageDealt+=dmg;
+spawnParticle(enemy.x,enemy.y,pd.color,12,80);
+spawnDamageNumber(enemy.x,enemy.y-20,`${ab.icon} ${dmg}`,pd.color);
+triggerShake(8,0.2);
+toast(`${ab.icon} ${ab.name}! ${dmg} damage`,'combat');
+if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
+const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
+enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);toast(`${eDef.name} defeated!`,'combat');
+if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}
+}else if(ab.type==='buff'){
+const amt=ab.buffAmount+(rank-1)*(ab.perRank.buffAmount||0);
+p.buffs.push({type:ab.buffType,amount:amt,remaining:ab.buffDuration});
+spawnParticle(p.x,p.y,pd.color,10,60);
+spawnDamageNumber(p.x,p.y-30,`${ab.icon} +${amt} ${ab.buffType.toUpperCase()}`,pd.color);
+toast(`${ab.icon} ${ab.name}! +${amt} ${ab.buffType.toUpperCase()} for ${ab.buffDuration}s`,'quest');
+}else if(ab.type==='aoe'){
+const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const nearby=enemies.filter(e=>dist(p,e)<150*SCALE);
+if(nearby.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
+let totalDmg=0;
+nearby.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;totalDmg+=dmg;state.stats.totalDamageDealt+=dmg;
+spawnParticle(enemy.x,enemy.y,pd.color,8,70);spawnDamageNumber(enemy.x,enemy.y-20,`${ab.icon} ${dmg}`,pd.color);
+if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
+const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
+enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}});
+triggerShake(12,0.3);toast(`${ab.icon} ${ab.name}! ${totalDmg} total damage to ${nearby.length} enemies`,'combat');
+}else if(ab.type==='chain'){
+const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
+const maxTargets=ab.targets+(rank-1)*(ab.perRank.targets||0);
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const sorted=enemies.filter(e=>dist(p,e)<150*SCALE).sort((a,b)=>dist(p,a)-dist(p,b)).slice(0,maxTargets);
+if(sorted.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
+sorted.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;state.stats.totalDamageDealt+=dmg;
+spawnParticle(enemy.x,enemy.y,pd.color,8,70);spawnDamageNumber(enemy.x,enemy.y-20,`${ab.icon} ${dmg}`,pd.color);
+if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
+const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
+enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}});
+triggerShake(10,0.25);toast(`${ab.icon} ${ab.name}! Hit ${sorted.length} enemies`,'combat');
+}else if(ab.type==='shield'){
+const amt=ab.shieldAmount+(rank-1)*(ab.perRank.shieldAmount||0);
+p.buffs.push({type:'shield',amount:amt,remaining:30});
+spawnParticle(p.x,p.y,pd.color,10,60);
+spawnDamageNumber(p.x,p.y-30,`${ab.icon} Shield +${amt}`,pd.color);
+toast(`${ab.icon} ${ab.name}! Absorb ${amt} damage`,'quest');
+}else if(ab.type==='heal'){
+const pct=ab.healPercent+(rank-1)*(ab.perRank.healPercent||0);
+const heal=Math.floor(p.hpMax*(pct/100));
+p.hp=Math.min(p.hpMax,p.hp+heal);
+spawnParticle(p.x,p.y,'#3ddc84',12,70);
+spawnDamageNumber(p.x,p.y-30,`${ab.icon} +${heal} HP`,'#3ddc84');
+toast(`${ab.icon} ${ab.name}! Healed ${heal} HP`,'quest');
+}else if(ab.type==='cleanse'){
+const pct=ab.healPercent+(rank-1)*(ab.perRank.healPercent||0);
+const heal=Math.floor(p.hpMax*(pct/100));
+p.hp=Math.min(p.hpMax,p.hp+heal);
+p.buffs=p.buffs.filter(b=>!b.isDebuff);
+spawnParticle(p.x,p.y,'#3ddc84',15,80);
+spawnDamageNumber(p.x,p.y-30,`${ab.icon} Purified +${heal}`,'#3ddc84');
+toast(`${ab.icon} ${ab.name}! Cleansed & healed ${heal} HP`,'quest');
+}else if(ab.type==='regen'){
+const amt=ab.regenAmount+(rank-1)*(ab.perRank.regenAmount||0);
+const dur=ab.regenDuration;
+p.buffs.push({type:'regen',amount:amt,remaining:dur,_tick:0});
+spawnParticle(p.x,p.y,'#3ddc84',10,60);
+spawnDamageNumber(p.x,p.y-30,`${ab.icon} Regen ${amt}/s`,'#3ddc84');
+toast(`${ab.icon} ${ab.name}! Regen ${amt} HP/s for ${dur}s`,'quest');
+}else if(ab.type==='ultimate'){
+const dur=ab.buffDuration+(rank-1)*(ab.perRank.buffDuration||0);
+p.buffs.push({type:'atk',amount:10,remaining:dur});
+p.buffs.push({type:'crit',amount:15,remaining:dur});
+spawnParticle(p.x,p.y,'#ff6b35',20,100);
+spawnParticle(p.x,p.y,'#ffcc44',15,80);
+spawnDamageNumber(p.x,p.y-40,`${ab.icon} BERSERKER!`,'#ff6b35');
+triggerShake(12,0.4);
+toast(`${ab.icon} ${ab.name}! +10 ATK, +15% Crit for ${dur}s`,'achievement');
+}else if(ab.type==='ultimate_aoe'){
+const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const nearby=enemies.filter(e=>dist(p,e)<200*SCALE);
+let totalDmg=0;
+nearby.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;totalDmg+=dmg;state.stats.totalDamageDealt+=dmg;
+spawnParticle(enemy.x,enemy.y,pd.color,12,90);spawnDamageNumber(enemy.x,enemy.y-20,`${ab.icon} ${dmg}`,pd.color);
+if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
+const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
+enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}});
+spawnParticle(p.x,p.y,pd.color,25,120);triggerShake(15,0.5);
+toast(`${ab.icon} ${ab.name}! ${totalDmg} total damage`,'achievement');
+}else if(ab.type==='ultimate_heal'){
+const dur=ab.buffDuration+(rank-1)*(ab.perRank.buffDuration||0);
+p.hp=p.hpMax;
+p.buffs=p.buffs.filter(b=>!b.isDebuff);
+p.buffs.push({type:'def',amount:8,remaining:dur});
+spawnParticle(p.x,p.y,'#3ddc84',25,120);
+spawnParticle(p.x,p.y,'#ffcc44',15,80);
+spawnDamageNumber(p.x,p.y-40,`${ab.icon} DIVINE!`,'#3ddc84');
+triggerShake(12,0.4);
+toast(`${ab.icon} ${ab.name}! Full heal + 8 DEF for ${dur}s`,'achievement');
+}
+if(qs('#abilitiesOverlay').classList.contains('open'))renderAbilitiesOverlay();
+}
+function updateAbilityCooldowns(dt){
+const cds=state.player.abilityCooldowns;
+if(!cds)return;
+for(const key in cds){if(cds[key]>0){cds[key]-=dt;if(cds[key]<0)cds[key]=0}}
+}
+function updateHotbarSlots(){
+const p=state.player;
+if(!p.abilityPath){return}
+const tree=abilityTreeDefs[p.abilityPath];
+if(!tree)return;
+const pd=abilityPathDefs[p.abilityPath];
+for(let i=0;i<4;i++){
+const slot=qs('#slot-spell'+(i+1));
+if(!slot)continue;
+const ab=tree[i];
+if(!ab)continue;
+const rank=getAbilityRank(ab.id);
+if(rank>0){
+slot.classList.remove('empty');
+slot.classList.add('active');
+slot.title=ab.name+' ('+(i+1)+')';
+const iconEl=slot.querySelector('.slot-icon');
+if(iconEl){iconEl.textContent=ab.icon;iconEl.style.color=pd.color}
+let cdEl=slot.querySelector('.cd-overlay');
+const cd=p.abilityCooldowns[ab.id]||0;
+if(cd>0){
+if(!cdEl){cdEl=document.createElement('div');cdEl.className='cd-overlay';slot.appendChild(cdEl)}
+cdEl.textContent=Math.ceil(cd)+'s';
+cdEl.style.display='flex';
+}else{if(cdEl)cdEl.style.display='none'}
+}else{
+slot.classList.add('empty');
+slot.classList.remove('active');
+slot.title='Spell '+(i+1)+' ('+(i+1)+')';
+const iconEl=slot.querySelector('.slot-icon');
+if(iconEl){iconEl.textContent='◇';iconEl.style.color=''}
+const cdEl=slot.querySelector('.cd-overlay');
+if(cdEl)cdEl.style.display='none';
+}
+}
+}
 qs('#skillsBtn').onclick=()=>openSkills();
+qs('#abilitiesBtn').onclick=()=>openAbilities();
+qs('#abilitiesClose').onclick=()=>closeAbilities();
+qs('#abilitiesOverlay').onclick=e=>{if(e.target===qs('#abilitiesOverlay'))closeAbilities()};
 qs('#skillsClose').onclick=()=>closeSkills();
 qs('#skillsOverlay').onclick=e=>{if(e.target===qs('#skillsOverlay'))closeSkills()};
 // Mouse world position tracking for aiming
@@ -2302,7 +2665,7 @@ canvas.style.cursor=hover?'pointer':'crosshair'});
 (function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,lootAllNearby,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,lootAllNearby,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup,chooseAbilityPath,upgradeAbility,openAbilities,closeAbilities,castAbility,showAbilityPathPopup};
 
 // ═══ SETTINGS ═══
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem('ashveil_settings'));if(s){Object.assign(gameSettings,s);qs('#setAutoSave').value=s.autoSaveInterval??60;qs('#setShake').value=s.shakeEnabled===false?'0':'1';qs('#setDust').value=s.dustEnabled===false?'0':'1';qs('#setRegen').value=s.regenEnabled===false?'0':'1'}}catch(e){}}
