@@ -1856,12 +1856,17 @@ p.dashCooldown=Math.max(0,p.dashCooldown-dt);if(p.isDashing){p.dashTimer-=dt;if(
 p.buffs=p.buffs.filter(b=>{b.remaining-=dt;if(b.type==='regen'&&b.remaining>0){b._tick=(b._tick||0)+dt;if(b._tick>=1){b._tick-=1;p.hp=Math.min(p.hpMax,p.hp+b.amount);spawnParticle(p.x,p.y,'#3ddc84',2,15)}}return b.remaining>0});
 updateShake(dt);spawnDustTrail(dt);
 if(!state.currentDialogue&&!p.isDashing){
-const kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
-const ky=(state.input.KeyS||state.input.ArrowDown?1:0)-(state.input.KeyW||state.input.ArrowUp?1:0);
-const mx=clamp(kx+state.touchMove.x,-1,1),my=clamp(ky+state.touchMove.y,-1,1);
-const maxSpd=p.speed;if(mx||my){const len=Math.hypot(mx,my)||1;const dx=mx/len,dy=my/len;const tVx=dx*maxSpd,tVy=dy*maxSpd;const lerp=Math.min(1,12*dt);p.vx+=(tVx-p.vx)*lerp;p.vy+=(tVy-p.vy)*lerp;p.isMoving=true}else{const spd=Math.hypot(p.vx,p.vy);if(spd>1){const f=Math.max(0,1-10*dt);p.vx*=f;p.vy*=f}else{p.vx=0;p.vy=0}p.isMoving=Math.hypot(p.vx,p.vy)>5}p.x+=p.vx*dt*SCALE;p.y+=p.vy*dt*SCALE;
-// Facing follows mouse cursor
-const mfx=mouseWorldX-p.x,mfy=mouseWorldY-p.y;if(Math.abs(mfx)>Math.abs(mfy))p.facing=mfx>0?'right':'left';else p.facing=mfy>0?'down':'up';if(p.isMoving){p.animTimer+=dt*(Math.hypot(p.vx,p.vy)/maxSpd+0.5);if(p.animTimer>0.12){p.animTimer=0;p.animFrame=(p.animFrame+1)%4}}else{p.animTimer+=dt;if(p.animTimer>0.8){p.animTimer=0;p.animFrame=(p.animFrame+1)%2}}}
+let kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
+let ky=(state.input.KeyS||state.input.ArrowDown?1:0)-(state.input.KeyW||state.input.ArrowUp?1:0);
+// Enforce 4-way movement: when both axes active, use the most recently pressed axis
+if(kx&&ky){if(lastMoveAxis==='x')ky=0;else kx=0}
+let tmx=kx+state.touchMove.x,tmy=ky+state.touchMove.y;
+if(tmx&&tmy){if(Math.abs(tmx)>=Math.abs(tmy))tmy=0;else tmx=0}
+const mx=clamp(tmx,-1,1),my=clamp(tmy,-1,1);
+const maxSpd=p.speed;if(mx||my){const tVx=mx*maxSpd,tVy=my*maxSpd;const lerp=Math.min(1,12*dt);p.vx+=(tVx-p.vx)*lerp;p.vy+=(tVy-p.vy)*lerp;p.isMoving=true}else{const spd=Math.hypot(p.vx,p.vy);if(spd>1){const f=Math.max(0,1-10*dt);p.vx*=f;p.vy*=f}else{p.vx=0;p.vy=0}p.isMoving=Math.hypot(p.vx,p.vy)>5}p.x+=p.vx*dt*SCALE;p.y+=p.vy*dt*SCALE;
+// Facing follows movement direction (not mouse cursor)
+if(mx||my){if(Math.abs(mx)>Math.abs(my))p.facing=mx>0?'right':'left';else p.facing=my>0?'down':'up'}
+if(p.isMoving){p.animTimer+=dt*(Math.hypot(p.vx,p.vy)/maxSpd+0.5);if(p.animTimer>0.12){p.animTimer=0;p.animFrame=(p.animFrame+1)%4}}else{p.animTimer+=dt;if(p.animTimer>0.8){p.animTimer=0;p.animFrame=(p.animFrame+1)%2}}}
 p.x=clamp(p.x,T*SCALE*4,MW*T*SCALE-T*SCALE*4);p.y=clamp(p.y,T*SCALE*3,MH*T*SCALE-T*SCALE*4);
 // Passive HP regen: 1 HP/2s out of combat (5s delay), 1 HP/s in town
 const timeSinceCombat=state.time-p.lastCombatTime;if(gameSettings.regenEnabled&&timeSinceCombat>5&&p.hp<p.hpMax){p.regenTimer+=dt;const regenRate=state.world.activeZone==='town'?1:2;if(p.regenTimer>=regenRate){p.regenTimer=0;p.hp=Math.min(p.hpMax,p.hp+1);if(p.hp%10===0&&p.hp<p.hpMax)spawnParticle(p.x,p.y-10,'#3ddc84',2,15)}}else{p.regenTimer=0}
@@ -2122,7 +2127,7 @@ joystickZone?.addEventListener('pointerdown',e=>{e.preventDefault();joystickActi
 joystickZone?.addEventListener('pointermove',e=>{e.preventDefault();if(joystickActive)handleJ(e.clientX,e.clientY)});
 joystickZone?.addEventListener('pointerup',resetJ);joystickZone?.addEventListener('pointercancel',resetJ);
 qs('#touchAttack')?.addEventListener('click',attackNearest);qs('#touchDash')?.addEventListener('click',performDash);qs('#touchLoot')?.addEventListener('click',gatherNearest);qs('#touchTalk')?.addEventListener('click',interactNearest);
-window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='Space'){e.preventDefault();lootAllNearby()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory();closeSkills();closeAbilities()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}if(e.code==='KeyK'){const so=qs('#skillsOverlay');if(so.classList.contains('open'))closeSkills();else openSkills()}if(e.code==='KeyL'){const ao=qs('#abilitiesOverlay');if(ao.classList.contains('open'))closeAbilities();else openAbilities()}if(e.code==='Digit1')castAbility(0);if(e.code==='Digit2')castAbility(1);if(e.code==='Digit3')castAbility(2);if(e.code==='Digit4')castAbility(3)});
+window.addEventListener('keydown',e=>{state.input[e.code]=true;if(e.code==='KeyW'||e.code==='KeyS'||e.code==='ArrowUp'||e.code==='ArrowDown')lastMoveAxis='y';if(e.code==='KeyA'||e.code==='KeyD'||e.code==='ArrowLeft'||e.code==='ArrowRight')lastMoveAxis='x';if(e.code==='Space'){e.preventDefault();lootAllNearby()}if(e.code==='KeyE')interactNearest();if(e.code==='KeyF')gatherNearest();if(e.code==='KeyR'){const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-state.player.x,d.y*T*SCALE-state.player.y)<60*SCALE);if(de&&!state.dungeon.active)enterDungeon(dungeonEntrances.indexOf(de))}if(e.code==='Escape'){closeDialogue();closeLootUI();closeInventory();closeSkills();closeAbilities()}if(e.code==='ShiftLeft'||e.code==='ShiftRight')performDash();if(e.code==='KeyI'){const io=qs('#inventoryOverlay');if(io.classList.contains('open'))closeInventory();else openInventory()}if(e.code==='KeyK'){const so=qs('#skillsOverlay');if(so.classList.contains('open'))closeSkills();else openSkills()}if(e.code==='KeyL'){const ao=qs('#abilitiesOverlay');if(ao.classList.contains('open'))closeAbilities();else openAbilities()}if(e.code==='Digit1')castAbility(0);if(e.code==='Digit2')castAbility(1);if(e.code==='Digit3')castAbility(2);if(e.code==='Digit4')castAbility(3)});
 window.addEventListener('keyup',e=>state.input[e.code]=false);
 qs('#btnAttack').onclick=attackNearest;qs('#btnDash').onclick=performDash;qs('#btnLoot').onclick=gatherNearest;qs('#btnTalk').onclick=interactNearest;qs('#btnSave').onclick=()=>saveGame(0);qs('#btnSave2').onclick=()=>saveGame(1);qs('#btnSave3').onclick=()=>saveGame(2);qs('#btnLoad').onclick=()=>loadGame(0);qs('#btnLoad2').onclick=()=>loadGame(1);qs('#btnLoad3').onclick=()=>loadGame(2);
 qs('#btnFullscreen').onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>toast('Fullscreen not supported','info'));}else{document.exitFullscreen();}};
@@ -2661,6 +2666,7 @@ qs('#skillsClose').onclick=()=>closeSkills();
 qs('#skillsOverlay').onclick=e=>{if(e.target===qs('#skillsOverlay'))closeSkills()};
 // Mouse world position tracking for aiming
 let mouseWorldX=0,mouseWorldY=0,lastCursorCheck=0;
+let lastMoveAxis='x'; // Track last pressed movement axis for 4-way priority
 // Left click to attack
 canvas.addEventListener('mousedown',e=>{
 if(e.button===0)attackNearest();
