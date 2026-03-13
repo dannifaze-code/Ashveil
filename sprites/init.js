@@ -1,6 +1,6 @@
 // ═══ SPRITE INITIALIZATION ═══
 // Assembles all character sprites into the global `sprites` object.
-// This file runs after config.js, player.js, npcs.js, and enemies.js have loaded.
+// This file runs after config.js, player.js, npcs.js, enemies.js, and creator.js have loaded.
 // The tiles and objects properties are populated later by inline code in index.html.
 
 const sprites={
@@ -25,6 +25,8 @@ const sprites={
     scholarLynn:makeNPCSprite('#1a3a6a','#4fc3f7',true),
     commanderVoss:makeNPCSprite('#4a2a0a','#ff6b35',false)
   },
+  npcFaces:{},
+  playerFace:null,
   enemies:{},
   tiles:{},
   objects:{}
@@ -32,3 +34,18 @@ const sprites={
 
 // Generate all enemy sprites
 ['wolf','bogling','sentinel','bandit','ashDrake','veilWraith','corruptWolf','voidSentinel','dungeonGuardian'].forEach(t=>{sprites.enemies[t]=makeEnemySprite(t)});
+
+// Rebuild player sprites from a saved appearance object (async)
+async function rebuildPlayerSprites(appearance){
+  const built=await buildCharacterSprites(appearance);
+  sprites.player=built;
+  sprites.playerFace=await buildFacePortrait(appearance,48);
+}
+
+// Rebuild NPC sprites from the new character assets (async)
+async function rebuildNPCSprites(){
+  for(const id of Object.keys(NPC_APPEARANCES)){
+    sprites.npcs[id]=await buildNPCSprite(NPC_APPEARANCES[id]);
+    sprites.npcFaces[id]=await buildFacePortrait(NPC_APPEARANCES[id],48);
+  }
+}
