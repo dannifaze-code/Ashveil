@@ -1393,6 +1393,14 @@ voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,drops:['voidFragm
 dungeonGuardian:{name:'Dungeon Guardian',hp:200,atk:22,exp:120,gold:50,drops:['relicShard','voidFragment','relicShard','relicHelm','relicSabatons','ashenCirclet'],rarity:'rare'},
 };
 
+// ═══ PET DEFINITIONS ═══
+const petDefs={
+ashPup:{name:'Ash Pup',desc:'A young wolf, tamed by the Veil.',source:'wolf',dropChance:0.03,bonus:{atk:2},color:'#c4a86e'},
+boglingKit:{name:'Bogling Kit',desc:'A curious creature from the marshes.',source:'bogling',dropChance:0.03,bonus:{def:2},color:'#3ddc84'},
+veilSprite:{name:'Veil Sprite',desc:'A shimmering fragment of Veil energy.',source:'veilWraith',dropChance:0.05,bonus:{crit:5},color:'#9b8afb'},
+emberDrakelet:{name:'Ember Drakelet',desc:'A fiery hatchling from the Ash Drake.',source:'ashDrake',dropChance:0.06,bonus:{atk:3,def:1},color:'#ff6b35'},
+};
+
 // ═══ FACTION SYSTEM (4 FACTIONS) ═══
 const factionDefs={
 cindergate:{name:'Cindergate',color:'var(--fire2)',desc:'The frontier town. Values survival, community, and strength.',icon:'🏠',tiers:['Stranger','Known','Trusted','Champion','Pillar'],perks:['','Shop prices -10%','Settlement discount','Unique recipes','+5 ATK/DEF in town']},
@@ -1501,7 +1509,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1561,9 +1569,9 @@ rebuildSettlement();
 function addItem(id,n=1){state.player.inventory[id]=(state.player.inventory[id]||0)+n}
 function removeItem(id,n=1){state.player.inventory[id]-=n;if(state.player.inventory[id]<=0)delete state.player.inventory[id]}
 function itemCount(id){return state.player.inventory[id]||0}
-function totalAtk(){let n=state.player.atkBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;return n}
-function totalDef(){let n=state.player.defBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;return n}
-function totalCrit(){let n=state.player.critChance;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.critBonus)n+=itemDefs[s].critBonus;if(state.player.class==='veilwalker')n+=10;return n}
+function totalAtk(){let n=state.player.atkBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.atk)n+=petDefs[state.player.pet].bonus.atk;return n}
+function totalDef(){let n=state.player.defBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.def)n+=petDefs[state.player.pet].bonus.def;return n}
+function totalCrit(){let n=state.player.critChance;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.critBonus)n+=itemDefs[s].critBonus;if(state.player.class==='veilwalker')n+=10;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.crit)n+=petDefs[state.player.pet].bonus.crit;return n}
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
@@ -1865,7 +1873,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1933,6 +1941,8 @@ state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+
 if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQuest('first_steps',{gold:12,exp:14});setQuestStage('wild_proof',1)}
 if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joystick + buttons. PC: WASD move, LMB attack, RMB block, SPACE loot, F gather, E interact.','info')}
 const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
+// Pet follow logic
+if(p.pet&&petDefs[p.pet]){if(!p._petX)p._petX=p.x;if(!p._petY)p._petY=p.y;const pdist=Math.hypot(p.x-p._petX,p.y-p._petY);if(pdist>25*SCALE){const ratio=Math.min(1,6*dt);p._petX+=(p.x-p._petX-15*SCALE*(p.facing==='right'?-1:p.facing==='left'?1:0))*ratio;p._petY+=(p.y-p._petY-15*SCALE*(p.facing==='down'?-1:p.facing==='up'?1:0))*ratio}}
 state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
 trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);updateAbilityCooldowns(dt);updateHotbarSlots();
 // Loot corpse cleanup
@@ -2072,6 +2082,8 @@ if(wv.glow){ctx.strokeStyle=wv.glow;ctx.lineWidth=5;ctx.globalAlpha=0.3+Math.sin
 if(p.swingTimer>0){const prog=1-p.swingTimer/(wv.swing||0.3);ctx.globalAlpha=0.4*(1-prog);ctx.strokeStyle=wv.trail||wv.color;ctx.lineWidth=3;
 const startA=restAng+dir*((-(wv.arc||120)*Math.PI/180)/2);ctx.beginPath();ctx.arc(handAX,handAY,wLen*0.8,-startA,-swAngle,!flip);ctx.stroke();ctx.globalAlpha=1;
 if(Math.random()<0.6){spawnParticle(tipX,tipY,wv.particles||wv.color,1,30)}}}}const bw=T*SCALE*1.05,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw,bh);ctx.fillStyle=p.hp/p.hpMax>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw*(p.hp/p.hpMax),bh);if(p.isBlocking){ctx.strokeStyle='rgba(96,165,250,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y-T*SCALE*0.15,T*SCALE*0.85,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(96,165,250,0.12)';ctx.fill()}}});
+// Pet companion rendering
+if(state.player.pet&&petDefs[state.player.pet]){const px=state.player._petX||state.player.x,py=state.player._petY||state.player.y;const pc=petDefs[state.player.pet].color;const bobY=Math.sin(state.time*3)*2*SCALE;drawables.push({y:py+T*SCALE*0.5,draw:()=>{ctx.save();ctx.fillStyle=pc;ctx.globalAlpha=0.9;ctx.beginPath();ctx.arc(px,py+bobY,5*SCALE,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=0.4;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px-1.5*SCALE,py+bobY-1.5*SCALE,1.5*SCALE,0,Math.PI*2);ctx.fill();ctx.restore()}})}
 drawables.sort((a,b)=>a.y-b.y);drawables.forEach(d=>d.draw());
 // Particles
 state.particles.forEach(pt=>{ctx.globalAlpha=pt.life/pt.maxLife;if(pt.isText){ctx.font='bold 12px "JetBrains Mono",monospace';ctx.fillStyle=pt.color;ctx.textAlign='center';ctx.fillText(pt.text,pt.x,pt.y);ctx.textAlign='left'}else{ctx.fillStyle=pt.color;ctx.fillRect(pt.x-pt.size/2,pt.y-pt.size/2,pt.size,pt.size)}ctx.globalAlpha=1});
@@ -2561,6 +2573,8 @@ toast(`${ab.icon} ${ab.name}! ${dmg} damage`,'combat');
 if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
 const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
 enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+  // Pet drop chance
+  if(!state.player.pet){const petEntry=Object.entries(petDefs).find(([,pd])=>pd.source===enemy.type);if(petEntry&&Math.random()<petEntry[1].dropChance){state.player.pet=petEntry[0];toast(`🐾 ${petEntry[1].name} has joined you!`,'quest');addLog(`🐾 Tamed a ${petEntry[1].name}!`);spawnParticle(enemy.x,enemy.y,'#f59e0b',15,100)}}
 spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);toast(`${eDef.name} defeated!`,'combat');
 if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}
 }else if(ab.type==='buff'){
@@ -2830,6 +2844,8 @@ return`<div class="char-slot" style="${spanStyle}">
 ${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}${it.critBonus?'+'+it.critBonus+'% Crit ':''}</div>`:''}
 ${it?`<button class="item-btn" style="margin-top:4px;font-size:9px;padding:3px 6px" onclick="W.unequip('${s.key}');W.renderCharPanel()">Remove</button>`:''}
 </div>`}).join('');
+const petInfo=p.pet&&petDefs[p.pet];
+const petBonusStr=petInfo?Object.entries(petInfo.bonus).map(([k,v])=>'+'+v+' '+k.toUpperCase()).join(', '):'';
 qs('#charStats').innerHTML=`
 <div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${p.hpMax}</span></div>
 <div class="char-stat"><span class="stat-label">Attack</span><span class="stat-value">${totalAtk()}</span></div>
@@ -2837,7 +2853,12 @@ qs('#charStats').innerHTML=`
 <div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${totalCrit()}%</span></div>
 <div class="char-stat"><span class="stat-label">Level</span><span class="stat-value">${p.level}</span></div>
 <div class="char-stat"><span class="stat-label">Gold</span><span class="stat-value">${p.gold}</span></div>
+${petInfo?`<div class="char-stat" style="grid-column:span 2;border-top:1px solid rgba(90,60,20,.3);padding-top:6px;margin-top:4px"><span class="stat-label">🐾 Companion</span><span class="stat-value" style="color:${petInfo.color}">${petInfo.name}</span></div>
+<div class="char-stat" style="grid-column:span 2"><span class="stat-label" style="font-size:9px;color:#8a7a5a">${petInfo.desc}</span><span class="stat-value" style="font-size:9px;color:#3ddc84">${petBonusStr}</span></div>
+<div class="char-stat" style="grid-column:span 2"><button class="item-btn" style="font-size:9px;padding:3px 8px;width:100%" onclick="W.dismissPet()">Release Companion</button></div>`:'<div class="char-stat" style="grid-column:span 2;border-top:1px solid rgba(90,60,20,.3);padding-top:6px;margin-top:4px"><span class="stat-label" style="color:#555">🐾 No companion</span><span class="stat-value" style="font-size:9px;color:#555">Defeat monsters for a chance to tame one</span></div>'}
 `}
+function dismissPet(){if(!state.player.pet)return;const name=petDefs[state.player.pet]?.name||'companion';state.player.pet=null;toast(`Released ${name}`,'info');renderCharPanel()}
+window.W.dismissPet=dismissPet;
 window.W.renderCharPanel=renderCharPanel;
 
 // ═══ SPELL BAR ACTIONS ═══
