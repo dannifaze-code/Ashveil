@@ -1,7 +1,7 @@
 // ═══ CHARACTER CREATOR ═══
 // Composites layered PNG sprite sheets into playable character sprites.
 // Sprite sheets are 72×128 (3 frames × 4 directions, each frame 24×32).
-// Directions in sheet: 0=up, 1=left, 2=down, 3=right.
+// Directions in sheet: 0=up, 1=right, 2=down, 3=left.
 //
 // Depends on: nothing (standalone module loaded before init.js)
 
@@ -87,7 +87,7 @@ function extractFrame(sheet,dir,frame){
      Returns {walk:{down:[],up:[],right:[]}, idle:{down:[],up:[],right:[]}} */
 async function buildCharacterSprites(appearance){
   const sheet=await compositeCharacter(appearance);
-  // Sheet dirs: 0=up,1=left,2=down,3=right
+  // Sheet dirs: 0=up,1=right,2=down,3=left
   // Game dirs stored: down, up, right (left = flipped right at render)
   // Walk: 4 frames mapped from 3 sheet frames: 0,1,2,1
   // Idle: 2 frames (standing frame repeated)
@@ -95,12 +95,12 @@ async function buildCharacterSprites(appearance){
     walk:{
       down:[0,1,2,1].map(f=>extractFrame(sheet,2,f)),
       up:  [0,1,2,1].map(f=>extractFrame(sheet,0,f)),
-      right:[0,1,2,1].map(f=>extractFrame(sheet,3,f))
+      right:[0,1,2,1].map(f=>extractFrame(sheet,1,f))
     },
     idle:{
       down:[extractFrame(sheet,2,1),extractFrame(sheet,2,1)],
       up:  [extractFrame(sheet,0,1),extractFrame(sheet,0,1)],
-      right:[extractFrame(sheet,3,1),extractFrame(sheet,3,1)]
+      right:[extractFrame(sheet,1,1),extractFrame(sheet,1,1)]
     }
   };
 }
