@@ -1,7 +1,7 @@
 // ═══ CHARACTER CREATOR ═══
 // Composites layered PNG sprite sheets into playable character sprites.
 // Sprite sheets are 72×128 (3 frames × 4 directions, each frame 24×32).
-// Directions in sheet: 0=down, 1=left, 2=right, 3=up.
+// Directions in sheet: 0=up, 1=left, 2=down, 3=right.
 //
 // Depends on: nothing (standalone module loaded before init.js)
 
@@ -87,20 +87,20 @@ function extractFrame(sheet,dir,frame){
      Returns {walk:{down:[],up:[],right:[]}, idle:{down:[],up:[],right:[]}} */
 async function buildCharacterSprites(appearance){
   const sheet=await compositeCharacter(appearance);
-  // Sheet dirs: 0=down,1=left,2=right,3=up
+  // Sheet dirs: 0=up,1=left,2=down,3=right
   // Game dirs stored: down, up, right (left = flipped right at render)
   // Walk: 4 frames mapped from 3 sheet frames: 0,1,2,1
   // Idle: 2 frames (standing frame repeated)
   return{
     walk:{
-      down:[0,1,2,1].map(f=>extractFrame(sheet,0,f)),
-      up:  [0,1,2,1].map(f=>extractFrame(sheet,3,f)),
-      right:[0,1,2,1].map(f=>extractFrame(sheet,2,f))
+      down:[0,1,2,1].map(f=>extractFrame(sheet,2,f)),
+      up:  [0,1,2,1].map(f=>extractFrame(sheet,0,f)),
+      right:[0,1,2,1].map(f=>extractFrame(sheet,3,f))
     },
     idle:{
-      down:[extractFrame(sheet,0,1),extractFrame(sheet,0,1)],
-      up:  [extractFrame(sheet,3,1),extractFrame(sheet,3,1)],
-      right:[extractFrame(sheet,2,1),extractFrame(sheet,2,1)]
+      down:[extractFrame(sheet,2,1),extractFrame(sheet,2,1)],
+      up:  [extractFrame(sheet,0,1),extractFrame(sheet,0,1)],
+      right:[extractFrame(sheet,3,1),extractFrame(sheet,3,1)]
     }
   };
 }
@@ -108,7 +108,7 @@ async function buildCharacterSprites(appearance){
 /* ── Build a static NPC sprite (single down-facing frame) ── */
 async function buildNPCSprite(appearance){
   const sheet=await compositeCharacter(appearance);
-  return extractFrame(sheet,0,1);
+  return extractFrame(sheet,2,1);
 }
 
 /* ── Build a face portrait canvas from the composed character ──
@@ -120,7 +120,7 @@ async function buildFacePortrait(appearance,size){
   const cx=cv.getContext('2d');
   cx.imageSmoothingEnabled=false;
   // Head region in front-facing frame: roughly rows 4-18, cols 5-18 (14×14 area)
-  cx.drawImage(sheet,5,4,14,14,2,2,size-4,size-4);
+  cx.drawImage(sheet,5,68,14,14,2,2,size-4,size-4);
   return cv;
 }
 
@@ -142,7 +142,7 @@ async function renderCharacterPreview(canvas,appearance){
   cx.clearRect(0,0,canvas.width,canvas.height);
   cx.imageSmoothingEnabled=false;
   // Draw front-facing standing frame centered and scaled up
-  const frame=extractFrame(sheet,0,1);
+  const frame=extractFrame(sheet,2,1);
   const scale=Math.min(Math.floor(canvas.width/24),Math.floor(canvas.height/32));
   const w=24*scale,h=32*scale;
   const ox=(canvas.width-w)/2,oy=(canvas.height-h)/2;
@@ -155,7 +155,7 @@ async function renderCharacterPreview(canvas,appearance){
   const startY=oy+h+8;
   if(startY+sh<=canvas.height){
     for(let i=0;i<3;i++){
-      const wf=extractFrame(sheet,0,i);
+      const wf=extractFrame(sheet,2,i);
       cx.drawImage(wf,0,0,24,32,startX+i*(sw+4),startY,sw,sh);
     }
   }
