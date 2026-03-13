@@ -580,7 +580,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <button id="journalBtn" title="Journal (J)">📜</button>
 <button id="inventoryBtn" title="Inventory (I)">🎒</button>
 <button id="skillsBtn" title="Skills (K)" aria-label="Open Skills Menu">⚔</button>
-<button id="abilitiesBtn" title="Abilities (L)">◆</button>
+<button id="abilitiesBtn" title="Abilities (L)" aria-label="Open Abilities Menu">◆</button>
 <div id="touchControls"><div id="joystickZone"><div id="joystickBase"></div><div id="joystickThumb"></div></div><div id="touchButtons"><button class="action-btn" id="touchAttack">⚔</button><button class="action-btn" id="touchDash">⟐</button><button class="action-btn" id="touchLoot">✦</button><button class="action-btn" id="touchTalk">◈</button></div></div>
 </div>
 <!-- Journal Overlay -->
@@ -2451,7 +2451,7 @@ ${reqText?`<div class="ability-node-cost">${reqText}</div>`:''}
 ${!maxed&&ab.cost>0?`<button class="ability-upgrade-btn" ${canUp?'':'disabled'} onclick="W.upgradeAbility('${ab.id}')">
 ${canUp?'Upgrade ('+ab.cost+' pts)':!reqMet?'Requirements Not Met':'No Points'}
 </button>`:ab.cost===0&&maxed?`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px;flex:1">✦ MAXED ✦</div>`:ab.cost===0?`<button class="ability-upgrade-btn" disabled style="flex:1">Auto-unlocked</button>`:`<div style="text-align:center;font-size:11px;color:#f59e0b;font-family:'Cinzel',serif;letter-spacing:1px;flex:1">✦ MAXED ✦</div>`}
-${unlocked?`<button class="ability-cast-btn" ${onCd?'disabled':''} onclick="W.castAbility(${idx})">${onCd?'CD: '+cdRemain:'Cast ('+['1','2','3','4','5'][idx]+')'}</button>`:''}
+${unlocked?`<button class="ability-cast-btn" ${onCd?'disabled':''} onclick="W.castAbility(${idx})">${onCd?'CD: '+cdRemain:'Cast ('+['1','2','3','4'][idx]+')'}</button>`:''}
 </div>
 </div>`;
 }).join('')}</div>`;
