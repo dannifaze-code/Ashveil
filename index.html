@@ -1856,7 +1856,7 @@ if(state.dayTime>=240){state.dayTime=0;state.day++;state.stats.nightsSurvived++;
 const p=state.player;p.attackCooldown=Math.max(0,p.attackCooldown-dt);p.invincible=Math.max(0,p.invincible-dt);p.critFlash=Math.max(0,p.critFlash-dt);
 p.swingTimer=Math.max(0,(p.swingTimer||0)-dt);
 p.dashCooldown=Math.max(0,p.dashCooldown-dt);if(p.isDashing){p.dashTimer-=dt;if(p.dashTimer<=0){p.isDashing=false;p.vx*=0.3;p.vy*=0.3}}
-p.buffs=p.buffs.filter(b=>{b.remaining-=dt;return b.remaining>0});
+p.buffs=p.buffs.filter(b=>{b.remaining-=dt;if(b.type==='regen'&&b.remaining>0){b._tick=(b._tick||0)+dt;if(b._tick>=1){b._tick-=1;p.hp=Math.min(p.hpMax,p.hp+b.amount);spawnParticle(p.x,p.y,'#3ddc84',2,15)}}return b.remaining>0});
 updateShake(dt);spawnDustTrail(dt);
 if(!state.currentDialogue&&!p.isDashing){
 const kx=(state.input.KeyD||state.input.ArrowRight?1:0)-(state.input.KeyA||state.input.ArrowLeft?1:0);
@@ -2549,14 +2549,15 @@ toast(`${ab.icon} ${ab.name}! Healed ${heal} HP`,'quest');
 const pct=ab.healPercent+(rank-1)*(ab.perRank.healPercent||0);
 const heal=Math.floor(p.hpMax*(pct/100));
 p.hp=Math.min(p.hpMax,p.hp+heal);
-p.buffs=p.buffs.filter(b=>b.amount>=0);
+p.buffs=p.buffs.filter(b=>!b.isDebuff);
 spawnParticle(p.x,p.y,'#3ddc84',15,80);
 spawnDamageNumber(p.x,p.y-30,`${ab.icon} Purified +${heal}`,'#3ddc84');
 toast(`${ab.icon} ${ab.name}! Cleansed & healed ${heal} HP`,'quest');
 }else if(ab.type==='regen'){
 const amt=ab.regenAmount+(rank-1)*(ab.perRank.regenAmount||0);
 const dur=ab.regenDuration;
-for(let i=0;i<dur;i++){setTimeout(()=>{if(state.player.hp<state.player.hpMax){state.player.hp=Math.min(state.player.hpMax,state.player.hp+amt);if(i%2===0)spawnParticle(p.x,p.y,'#3ddc84',3,20)}},i*1000)}
+p.buffs.push({type:'regen',amount:amt,remaining:dur,_tick:0});
+spawnParticle(p.x,p.y,'#3ddc84',10,60);
 spawnDamageNumber(p.x,p.y-30,`${ab.icon} Regen ${amt}/s`,'#3ddc84');
 toast(`${ab.icon} ${ab.name}! Regen ${amt} HP/s for ${dur}s`,'quest');
 }else if(ab.type==='ultimate'){
@@ -2584,7 +2585,7 @@ toast(`${ab.icon} ${ab.name}! ${totalDmg} total damage`,'achievement');
 }else if(ab.type==='ultimate_heal'){
 const dur=ab.buffDuration+(rank-1)*(ab.perRank.buffDuration||0);
 p.hp=p.hpMax;
-p.buffs=p.buffs.filter(b=>b.amount>=0);
+p.buffs=p.buffs.filter(b=>!b.isDebuff);
 p.buffs.push({type:'def',amount:8,remaining:dur});
 spawnParticle(p.x,p.y,'#3ddc84',25,120);
 spawnParticle(p.x,p.y,'#ffcc44',15,80);
