@@ -536,6 +536,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="char-slots" id="charSlots"></div>
 </div>
 <div class="char-stats" id="charStats"></div>
+<div id="charAllocStats" style="padding:8px 16px 12px"></div>
 </div>
 <!-- ═══ CONTROLS OVERLAY ═══ -->
 <div id="controlsOverlay" style="display:none;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)">
@@ -1110,9 +1111,9 @@ for(let x=5;x<=11;x++){p(x,7,C.metal);p(x,11,C.metal)}
 for(let x=1;x<=14;x++)p(x,15,C.dirt2);
 return createSprite(s)}
 function makeWaterTile(f=0){const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.water3:w>0.5?C.water2:C.water1}return createSprite(s)}
-function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}return createSprite(s)}
+function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}else if(type==='rawFish'){p(5,7,'#4fc3f7');p(6,6,'#4fc3f7');p(7,6,'#7dd3fc');p(8,6,'#4fc3f7');p(9,6,'#7dd3fc');p(10,7,'#4fc3f7');p(11,8,'#4fc3f7');p(6,7,'#7dd3fc');p(7,7,'#b0e0ff');p(8,7,'#7dd3fc');p(9,7,'#4fc3f7');p(10,8,'#4fc3f7');p(8,8,'#4fc3f7');p(7,5,'#7dd3fc')}else if(type==='log'){for(let y=5;y<=11;y++){p(6,y,C.wood);p(7,y,C.woodD);p(8,y,C.wood);p(9,y,C.woodD)}p(5,5,C.wood);p(10,5,C.wood);p(5,11,C.wood);p(10,11,C.wood);p(7,7,'#8a7040');p(8,8,'#8a7040')}return createSprite(s)}
 function makeItemIcon(id){
-const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard'];
+const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log'];
 if(matTypes.includes(id))return makeResourceSprite(id);
 const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
 const sword=(c1,c2,c3)=>{p(12,2,c3);p(11,3,c2);p(10,4,c1);p(9,5,c2);p(8,6,c1);p(7,7,c2);p(6,8,c1);p(5,9,c3);p(4,10,'#8a7050');p(3,11,'#6b5535');p(4,11,'#8a7050');p(3,12,'#8a7050');p(2,13,'#6b5535')};
@@ -1139,6 +1140,8 @@ else if(id==='ashenSignet')trinket('#ff9f1a','#ffcc44');
 else if(id==='tonic')potion('#cc2222','#ee4444');
 else if(id==='veilElixir')potion('#7b68ee','#9b8afb');
 else if(id==='strengthDraft')potion('#cc6600','#ff9f1a');
+else if(id==='cookedFish'){p(5,5,'#cc8844');p(6,5,'#dd9944');p(7,5,'#cc8844');p(8,5,'#dd9944');p(9,5,'#cc8844');p(5,6,'#dd9944');p(6,6,'#ffaa55');p(7,6,'#ffbb66');p(8,6,'#ffaa55');p(9,6,'#dd9944');p(5,7,'#cc8844');p(6,7,'#dd9944');p(7,7,'#cc8844');p(8,7,'#dd9944');p(9,7,'#cc8844');p(7,8,'#aa6633');p(7,9,'#aa6633');p(4,7,'#ffcc44');p(10,6,'#cc8844')}
+else if(id==='timberShield'){for(let y=3;y<=12;y++)for(let x=4;x<=11;x++){if(Math.abs(x-7.5)+Math.abs(y-7.5)<6)p(x,y,'#8a6a3a')}p(7,5,'#c8a020');p(8,5,'#c8a020');p(7,9,'#c8a020');p(8,9,'#c8a020');p(5,7,'#c8a020');p(10,7,'#c8a020');p(7,7,'#aa8030');p(8,7,'#aa8030');p(7,8,'#aa8030');p(8,8,'#aa8030')}
 else if(id==='dungeonMap'){for(let y=4;y<=12;y++)for(let x=4;x<=11;x++)p(x,y,'#d4c4a0');p(5,6,'#6b5535');p(6,7,'#6b5535');p(7,7,'#6b5535');p(8,8,'#6b5535');p(9,9,'#6b5535');p(10,10,'#6b5535');p(4,12,'#c4a86e');p(11,4,'#c4a86e')}
 else if(id==='ashCore'){p(7,6,'#ff6b35');p(8,6,'#ff9f1a');p(6,7,'#ff6b35');p(7,7,'#ffcc44');p(8,7,'#ffcc44');p(9,7,'#ff6b35');p(7,8,'#ff9f1a');p(8,8,'#ff6b35');p(7,5,'#cc4a1a');p(8,9,'#cc4a1a')}
 else if(id==='wraithEssence'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#b088ee');p(9,6,'#7b68ee');p(7,7,'#d0b8ff');p(8,7,'#9b8afb');p(6,8,'#7b68ee');p(9,8,'#9b8afb');p(7,9,'#5b4ecc');p(8,9,'#7b68ee')}
@@ -1197,7 +1200,7 @@ sprites.objects.beacon=[makeBeaconSprite()];
 sprites.objects.banner=[makeBannerSprite('#dc2626'),makeBannerSprite('#7b68ee')];
 sprites.objects.gate=[makeGateSprite()];
 const resourceSprites={};
-['branch','herb','ore','fiber','scrap','hide','relicShard'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
+['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
 
 // ═══ WORLD MAP ═══
 const zoneMap={town:{x1:40,y1:28,x2:60,y2:44,name:'Cindergate',danger:0},forest:{x1:8,y1:5,x2:38,y2:35,name:'Emberwood',danger:1},marsh:{x1:20,y1:45,x2:55,y2:72,name:'Mirefen',danger:2},ruins:{x1:62,y1:10,x2:95,y2:45,name:'Glass Ruins',danger:3}};
@@ -1330,42 +1333,42 @@ generateWorld();
 
 // ═══ ITEM DEFINITIONS ═══
 const itemDefs={
-branch:{name:'Branch',type:'material',rarity:'common',desc:'Rough wood.'},fiber:{name:'Fiber',type:'material',rarity:'common',desc:'Plant fibers.'},herb:{name:'Herb',type:'material',rarity:'common',desc:'Restorative herb.'},scrap:{name:'Scrap Metal',type:'material',rarity:'common',desc:'Ruin salvage.'},hide:{name:'Hide',type:'material',rarity:'common',desc:'Tough beast hide.'},ore:{name:'Veil Ore',type:'material',rarity:'uncommon',desc:'Crystallized veil energy.'},ashCore:{name:'Ash Core',type:'material',rarity:'rare',desc:'Smolders with ancient heat.'},wraithEssence:{name:'Wraith Essence',type:'material',rarity:'epic',desc:'Condensed veil energy.'},drakeScale:{name:'Drake Scale',type:'material',rarity:'rare',desc:'Nearly indestructible.'},relicShard:{name:'Relic Shard',type:'material',rarity:'rare',desc:'Fragment of an ancient relic. Scholars covet these.'},voidFragment:{name:'Void Fragment',type:'material',rarity:'epic',desc:'A piece of nothingness. It hums.'},corruptedHeart:{name:'Corrupted Heart',type:'material',rarity:'epic',desc:'Pulses with dark energy.'},
+branch:{name:'Branch',type:'material',rarity:'common',desc:'Rough wood.'},fiber:{name:'Fiber',type:'material',rarity:'common',desc:'Plant fibers.'},herb:{name:'Herb',type:'material',rarity:'common',desc:'Restorative herb.'},scrap:{name:'Scrap Metal',type:'material',rarity:'common',desc:'Ruin salvage.'},hide:{name:'Hide',type:'material',rarity:'common',desc:'Tough beast hide.'},ore:{name:'Veil Ore',type:'material',rarity:'uncommon',desc:'Crystallized veil energy.'},ashCore:{name:'Ash Core',type:'material',rarity:'rare',desc:'Smolders with ancient heat.'},wraithEssence:{name:'Wraith Essence',type:'material',rarity:'epic',desc:'Condensed veil energy.'},drakeScale:{name:'Drake Scale',type:'material',rarity:'rare',desc:'Nearly indestructible.'},relicShard:{name:'Relic Shard',type:'material',rarity:'rare',desc:'Fragment of an ancient relic. Scholars covet these.'},voidFragment:{name:'Void Fragment',type:'material',rarity:'epic',desc:'A piece of nothingness. It hums.'},corruptedHeart:{name:'Corrupted Heart',type:'material',rarity:'epic',desc:'Pulses with dark energy.'},rawFish:{name:'Raw Fish',type:'material',rarity:'common',desc:'Fresh catch from Ashveil waters.'},log:{name:'Timber Log',type:'material',rarity:'common',desc:'Hewn from Ashveil forests.'},
 woodblade:{name:'Woodblade',type:'weapon',slot:'weapon',atk:3,rarity:'common',desc:'Simple blade.'},ironblade:{name:'Iron Blade',type:'weapon',slot:'weapon',atk:6,rarity:'uncommon',desc:'Proper steel.'},veilEdge:{name:'Veil Edge',type:'weapon',slot:'weapon',atk:10,rarity:'rare',desc:'Hums with energy.'},ashfangBlade:{name:'Ashfang Blade',type:'weapon',slot:'weapon',atk:16,rarity:'epic',desc:'Forged from drake fang. Evolves with kills.',evolves:true,kills:0},wraithTouch:{name:'Wraith Touch',type:'weapon',slot:'weapon',atk:12,rarity:'epic',desc:'Phases through armor.',critBonus:15},relicBlade:{name:'Relic Blade',type:'weapon',slot:'weapon',atk:20,rarity:'legendary',desc:'An ancient weapon reformed from dungeon shards.'},voidreaper:{name:'Voidreaper',type:'weapon',slot:'weapon',atk:24,rarity:'legendary',desc:'Carved from pure void. Enemies flee.'},
 wanderercoat:{name:'Wanderer Coat',type:'armor',slot:'body',def:2,rarity:'common',desc:'Basic protection.'},marshwraps:{name:'Marsh Wraps',type:'armor',slot:'body',def:4,rarity:'uncommon',desc:'Toxin resistant.'},veilcloak:{name:'Veilcloak',type:'armor',slot:'body',def:7,rarity:'rare',desc:'Shimmers at edges.'},drakemail:{name:'Drake Mail',type:'armor',slot:'body',def:12,rarity:'epic',desc:'Impossible toughness.'},relicArmor:{name:'Relic Plate',type:'armor',slot:'body',def:16,rarity:'legendary',desc:'Ancient protection reforged.'},
 charm:{name:'Veil Charm',type:'trinket',slot:'trinket',def:1,atk:1,rarity:'uncommon',desc:'Ward against beyond.'},huntersBadge:{name:"Hunter's Badge",type:'trinket',slot:'trinket',atk:3,rarity:'uncommon',desc:'Proven hunter.'},corruptionWard:{name:'Corruption Ward',type:'trinket',slot:'trinket',def:3,rarity:'rare',desc:'Shields the mind.'},scholarsPendant:{name:"Scholar's Pendant",type:'trinket',slot:'trinket',atk:2,def:2,rarity:'rare',desc:'Veil Scholars granted this.'},ashenSignet:{name:'Ashen Signet',type:'trinket',slot:'trinket',atk:4,def:1,rarity:'rare',desc:'Mark of the Ashen Order.'},
 leatherHood:{name:'Leather Hood',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A simple hooded cowl.'},ironHelm:{name:'Iron Helm',type:'helm',slot:'helm',def:3,rarity:'uncommon',desc:'Forged iron headpiece.'},veilCrown:{name:'Veil Crown',type:'helm',slot:'helm',def:5,rarity:'rare',desc:'Hums with Veil resonance.'},drakeVisage:{name:'Drake Visage',type:'helm',slot:'helm',def:8,rarity:'epic',desc:'Carved from drake skull.'},relicHelm:{name:'Relic Helm',type:'helm',slot:'helm',def:12,rarity:'legendary',desc:'An ancient crown reforged.'},
 wandererBoots:{name:'Wanderer Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Sturdy road boots.'},marshTreads:{name:'Marsh Treads',type:'boots',slot:'boots',def:2,rarity:'uncommon',desc:'Grip the mire.'},veilStriders:{name:'Veil Striders',type:'boots',slot:'boots',def:4,rarity:'rare',desc:'Step between worlds.'},drakeGreaves:{name:'Drake Greaves',type:'boots',slot:'boots',def:6,rarity:'epic',desc:'Scale-plated greaves.'},relicSabatons:{name:'Relic Sabatons',type:'boots',slot:'boots',def:10,rarity:'legendary',desc:'Ancient boots reforged.'},
 boneRing:{name:'Bone Ring',type:'ring',slot:'ring',atk:2,rarity:'uncommon',desc:'Carved from beast bone.'},emberBand:{name:'Ember Band',type:'ring',slot:'ring',atk:3,def:1,rarity:'rare',desc:'Warm to the touch.'},voidLoop:{name:'Void Loop',type:'ring',slot:'ring',atk:5,critBonus:5,rarity:'epic',desc:'Bends light around it.'},ashenCirclet:{name:'Ashen Circlet',type:'ring',slot:'ring',atk:4,def:3,critBonus:8,rarity:'legendary',desc:'Mark of the Ashbringer.'},
-tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},
+tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},cookedFish:{name:'Cooked Fish',type:'consumable',heal:35,rarity:'common',desc:'Hearty meal. Restores 35 HP.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},timberShield:{name:'Timber Shield',type:'trinket',slot:'trinket',def:3,rarity:'common',desc:'Crude but sturdy shield hewn from Ashveil timber.'},
 };
 const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon(id)});
 
 const recipes=[
 {id:'woodblade',name:'Woodblade',needs:{branch:3,fiber:2},makes:'woodblade'},
-{id:'ironblade',name:'Iron Blade',needs:{woodblade:1,ore:3,scrap:2},makes:'ironblade'},
-{id:'veilEdge',name:'Veil Edge',needs:{ironblade:1,ore:5,wraithEssence:1},makes:'veilEdge'},
+{id:'ironblade',name:'Iron Blade',needs:{woodblade:1,ore:3,scrap:2},makes:'ironblade',station:'forge'},
+{id:'veilEdge',name:'Veil Edge',needs:{ironblade:1,ore:5,wraithEssence:1},makes:'veilEdge',station:'forge'},
 {id:'wanderercoat',name:'Wanderer Coat',needs:{hide:2,fiber:2},makes:'wanderercoat'},
-{id:'marshwraps',name:'Marsh Wraps',needs:{hide:3,herb:2,scrap:1},makes:'marshwraps'},
-{id:'veilcloak',name:'Veilcloak',needs:{marshwraps:1,ore:3,wraithEssence:1},makes:'veilcloak'},
-{id:'drakemail',name:'Drake Mail',needs:{drakeScale:3,ore:5,scrap:4},makes:'drakemail'},
+{id:'marshwraps',name:'Marsh Wraps',needs:{hide:3,herb:2,scrap:1},makes:'marshwraps',station:'forge'},
+{id:'veilcloak',name:'Veilcloak',needs:{marshwraps:1,ore:3,wraithEssence:1},makes:'veilcloak',station:'forge'},
+{id:'drakemail',name:'Drake Mail',needs:{drakeScale:3,ore:5,scrap:4},makes:'drakemail',station:'forge'},
 {id:'charm',name:'Veil Charm',needs:{herb:2,scrap:2,ore:1},makes:'charm'},
 {id:'huntersBadge',name:"Hunter's Badge",needs:{hide:4,scrap:2},makes:'huntersBadge'},
 {id:'corruptionWard',name:'Corruption Ward',needs:{ore:4,wraithEssence:1,herb:3},makes:'corruptionWard'},
 {id:'tonic',name:'Field Tonic',needs:{herb:3,fiber:1},makes:'tonic',count:2},
 {id:'veilElixir',name:'Veil Elixir',needs:{herb:5,ore:2},makes:'veilElixir'},
 {id:'strengthDraft',name:'Strength Draft',needs:{herb:3,ashCore:1},makes:'strengthDraft'},
-{id:'ashfangBlade',name:'Ashfang Blade',needs:{ironblade:1,drakeScale:2,ashCore:2},makes:'ashfangBlade'},
-{id:'relicBlade',name:'Relic Blade',needs:{veilEdge:1,relicShard:5,voidFragment:2},makes:'relicBlade'},
-{id:'relicArmor',name:'Relic Plate',needs:{veilcloak:1,relicShard:5,voidFragment:2},makes:'relicArmor'},
+{id:'ashfangBlade',name:'Ashfang Blade',needs:{ironblade:1,drakeScale:2,ashCore:2},makes:'ashfangBlade',station:'forge'},
+{id:'relicBlade',name:'Relic Blade',needs:{veilEdge:1,relicShard:5,voidFragment:2},makes:'relicBlade',station:'forge'},
+{id:'relicArmor',name:'Relic Plate',needs:{veilcloak:1,relicShard:5,voidFragment:2},makes:'relicArmor',station:'forge'},
 {id:'scholarsPendant',name:"Scholar's Pendant",needs:{ore:3,relicShard:2},makes:'scholarsPendant'},
 {id:'ashenSignet',name:'Ashen Signet',needs:{ashCore:1,scrap:4,hide:3},makes:'ashenSignet'},
-{id:'voidreaper',name:'Voidreaper',needs:{relicBlade:1,voidFragment:5,corruptedHeart:2},makes:'voidreaper'},
+{id:'voidreaper',name:'Voidreaper',needs:{relicBlade:1,voidFragment:5,corruptedHeart:2},makes:'voidreaper',station:'forge'},
 {id:'leatherHood',name:'Leather Hood',needs:{hide:2,fiber:1},makes:'leatherHood'},
-{id:'ironHelm',name:'Iron Helm',needs:{scrap:3,ore:2},makes:'ironHelm'},
-{id:'veilCrown',name:'Veil Crown',needs:{ore:4,wraithEssence:1},makes:'veilCrown'},
-{id:'drakeVisage',name:'Drake Visage',needs:{drakeScale:2,ore:3,ashCore:1},makes:'drakeVisage'},
-{id:'relicHelm',name:'Relic Helm',needs:{veilCrown:1,relicShard:3,voidFragment:1},makes:'relicHelm'},
+{id:'ironHelm',name:'Iron Helm',needs:{scrap:3,ore:2},makes:'ironHelm',station:'forge'},
+{id:'veilCrown',name:'Veil Crown',needs:{ore:4,wraithEssence:1},makes:'veilCrown',station:'forge'},
+{id:'drakeVisage',name:'Drake Visage',needs:{drakeScale:2,ore:3,ashCore:1},makes:'drakeVisage',station:'forge'},
+{id:'relicHelm',name:'Relic Helm',needs:{veilCrown:1,relicShard:3,voidFragment:1},makes:'relicHelm',station:'forge'},
 {id:'wandererBoots',name:'Wanderer Boots',needs:{hide:2,fiber:2},makes:'wandererBoots'},
 {id:'marshTreads',name:'Marsh Treads',needs:{hide:3,scrap:2},makes:'marshTreads'},
 {id:'veilStriders',name:'Veil Striders',needs:{hide:4,ore:3,wraithEssence:1},makes:'veilStriders'},
@@ -1375,6 +1378,8 @@ const recipes=[
 {id:'emberBand',name:'Ember Band',needs:{ore:3,ashCore:1},makes:'emberBand'},
 {id:'voidLoop',name:'Void Loop',needs:{voidFragment:2,relicShard:1},makes:'voidLoop'},
 {id:'ashenCirclet',name:'Ashen Circlet',needs:{voidFragment:3,corruptedHeart:1,relicShard:2},makes:'ashenCirclet'},
+{id:'cookedFish',name:'Cooked Fish',needs:{rawFish:2,branch:1},makes:'cookedFish',count:2},
+{id:'timberShield',name:'Timber Shield',needs:{log:4,fiber:2},makes:'timberShield'},
 ];
 
 const enemyDefs={
@@ -1387,6 +1392,14 @@ veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,drops:['wraithEssence
 corruptWolf:{name:'Corrupt Wolf',hp:45,atk:10,exp:25,gold:8,drops:['corruptedHeart','hide','boneRing'],rarity:'uncommon'},
 voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,drops:['voidFragment','scrap','relicShard','voidLoop'],rarity:'uncommon'},
 dungeonGuardian:{name:'Dungeon Guardian',hp:200,atk:22,exp:120,gold:50,drops:['relicShard','voidFragment','relicShard','relicHelm','relicSabatons','ashenCirclet'],rarity:'rare'},
+};
+
+// ═══ PET DEFINITIONS ═══
+const petDefs={
+ashPup:{name:'Ash Pup',desc:'A young wolf, tamed by the Veil.',source:'wolf',dropChance:0.03,bonus:{atk:2},color:'#c4a86e'},
+boglingKit:{name:'Bogling Kit',desc:'A curious creature from the marshes.',source:'bogling',dropChance:0.03,bonus:{def:2},color:'#3ddc84'},
+veilSprite:{name:'Veil Sprite',desc:'A shimmering fragment of Veil energy.',source:'veilWraith',dropChance:0.05,bonus:{crit:5},color:'#9b8afb'},
+emberDrakelet:{name:'Ember Drakelet',desc:'A fiery hatchling from the Ash Drake.',source:'ashDrake',dropChance:0.06,bonus:{atk:3,def:1},color:'#ff6b35'},
 };
 
 // ═══ FACTION SYSTEM (4 FACTIONS) ═══
@@ -1497,7 +1510,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1523,13 +1536,21 @@ stats:{kills:0,wolfKills:0,drakeKills:0,wraithKills:0,gathers:0,crafts:0,deaths:
 particles:[],
 }}
 
-function buildNodes(){const out=[],push=(tx,ty,zone,type)=>out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,ready:true,respawn:0});
+function buildNodes(){const out=[],push=(tx,ty,zone,type,action)=>out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,ready:true,respawn:0,action:action||'gather'});
 for(let i=0;i<18;i++)push(rand(10,36),rand(7,33),'forest',sample(['branch','fiber','hide','branch','fiber']));
 for(let i=0;i<16;i++)push(rand(22,53),rand(47,70),'marsh',sample(['herb','fiber','hide','herb','herb']));
 for(let i=0;i<14;i++)push(rand(64,93),rand(12,43),'ruins',sample(['scrap','ore','scrap','ore','herb']));
 for(let i=0;i<8;i++)push(rand(41,59),rand(29,43),'town',sample(['branch','fiber','herb']));
 // Relic shard nodes near dungeon entrances
 dungeonEntrances.forEach(de=>{for(let i=0;i<3;i++)push(de.x+rand(-3,3),de.y+rand(-3,3),de.zone,'relicShard')});
+// Woodcutting nodes (forests)
+for(let i=0;i<6;i++)push(rand(10,36),rand(7,33),'forest','log','chop');
+for(let i=0;i<3;i++)push(rand(41,59),rand(29,43),'town','log','chop');
+// Mining nodes (ruins/caves)
+for(let i=0;i<6;i++)push(rand(64,93),rand(12,43),'ruins','ore','mine');
+// Fishing spots (marsh/water edges)
+for(let i=0;i<8;i++)push(rand(22,53),rand(47,70),'marsh','rawFish','fish');
+for(let i=0;i<3;i++)push(rand(41,59),rand(40,44),'town','rawFish','fish');
 return out}
 
 function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
@@ -1549,13 +1570,14 @@ rebuildSettlement();
 function addItem(id,n=1){state.player.inventory[id]=(state.player.inventory[id]||0)+n}
 function removeItem(id,n=1){state.player.inventory[id]-=n;if(state.player.inventory[id]<=0)delete state.player.inventory[id]}
 function itemCount(id){return state.player.inventory[id]||0}
-function totalAtk(){let n=state.player.atkBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;return n}
-function totalDef(){let n=state.player.defBase;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;return n}
-function totalCrit(){let n=state.player.critChance;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.critBonus)n+=itemDefs[s].critBonus;if(state.player.class==='veilwalker')n+=10;return n}
+function totalAtk(){let n=state.player.atkBase+(state.player.allocStats?.strength||0);for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.atk)n+=itemDefs[s].atk;state.player.buffs.forEach(b=>{if(b.type==='atk')n+=b.amount});if(state.player.class==='warden')n+=3;if(getFactionTier(state.faction.ashenOrder)>=1)n+=2;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.atk)n+=petDefs[state.player.pet].bonus.atk;return n}
+function totalDef(){let n=state.player.defBase+(state.player.allocStats?.defense||0);for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.def)n+=itemDefs[s].def;if(state.player.class==='artificer')n+=2;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.def)n+=petDefs[state.player.pet].bonus.def;return n}
+function totalCrit(){let n=state.player.critChance;for(const s of Object.values(state.player.equipment))if(s&&itemDefs[s]?.critBonus)n+=itemDefs[s].critBonus;if(state.player.class==='veilwalker')n+=10;if(state.player.pet&&petDefs[state.player.pet]?.bonus?.crit)n+=petDefs[state.player.pet].bonus.crit;return n}
+function totalHpMax(){return state.player.hpMax+(state.player.allocStats?.vitality||0)*5}
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=state.player.hpMax;state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;toast(`Level up! Now level ${state.player.level}`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}}
+function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -1758,6 +1780,8 @@ if(enemy.engagedBy&&enemy.engagedBy!=='player'){if(!silent)toast('Someone else i
 // Engage the target
 enemy.engaged=true;enemy.engagedBy='player';
 p.attackCooldown=0.4;const wv=weaponVisuals[p.equipment.weapon];if(wv)p.swingTimer=wv.swing;const eDef=enemyDefs[enemy.type];
+// Accuracy check — each point of accuracy above 0 increases hit rate
+const accBonus=(state.player.allocStats?.accuracy||0)*2;const hitChance=Math.min(95,75+accBonus);if(Math.random()*100>hitChance){spawnDamageNumber(enemy.x,enemy.y-20,'MISS','#888888');spawnParticle(enemy.x,enemy.y,'#888888',3,20);p.attackCooldown=0.4;return}
 const crit=Math.random()*100<totalCrit();
 let dmg=Math.max(1,totalAtk()+rand(0,3)-1);if(crit)dmg=Math.floor(dmg*1.8);
 // Ashen Order bonus vs corrupted
@@ -1803,8 +1827,9 @@ if(enemy.hp<=0){
 
 function gatherNearest(){const p=state.player;const node=state.nodes.filter(n=>n.ready&&dist(p,n)<50*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!node)return toast('No resource nearby.');
+const act=node.action||'gather';const actionVerbs={chop:'Chopped',mine:'Mined',fish:'Caught',gather:'Gathered'};const actionColors={chop:'#8a6a3a',mine:'#aaaacc',fish:'#4fc3f7',gather:'#3ddc84'};
 addItem(node.type,1);node.ready=false;node.respawn=state.time+8+Math.random()*10;gainSkill('foraging',4);state.stats.gathers++;state.stats.pacifistStreak++;
-spawnParticle(node.x,node.y,'#3ddc84',6,40);toast(`Gathered ${itemDefs[node.type]?.name||node.type}`,'loot');addLog(`✦ Gathered ${itemDefs[node.type]?.name||node.type}.`);
+spawnParticle(node.x,node.y,actionColors[act]||'#3ddc84',6,40);toast(`${actionVerbs[act]||'Gathered'} ${itemDefs[node.type]?.name||node.type}`,'loot');addLog(`✦ ${actionVerbs[act]||'Gathered'} ${itemDefs[node.type]?.name||node.type}.`);
 if(state.activeBounty&&!state.activeBounty.completed&&state.activeBounty.gather&&state.activeBounty.target===node.type){state.activeBounty.progress++;if(state.activeBounty.progress>=state.activeBounty.count)completeBounty()}
 const zone=currentZoneAt(p.x,p.y);
 if(zone==='forest'&&getQuest('first_steps')?.stage<2)setQuestStage('first_steps',2);
@@ -1822,11 +1847,12 @@ toast('Nothing nearby.')}
 function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';const faceEl=qs('#dialogueFace');if(faceEl){if(sprites.npcFaces[id]){faceEl.innerHTML='';faceEl.appendChild(sprites.npcFaces[id].cloneNode(true));faceEl.style.display='block'}else{faceEl.style.display='none'}}node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
 function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none';const faceEl=qs('#dialogueFace');if(faceEl)faceEl.style.display='none'}
 
-function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe||!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
-function canCraft(r){return Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n)}
+function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe)return;if(recipe.station&&!nearStation(recipe.station)){toast(`Requires a ${recipe.station} — visit the settlement forge.`,'info');return}if(!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
+function nearStation(type){const p=state.player;return buildings.some(b=>b.type===type&&Math.hypot(b.x*T*SCALE-p.x,b.y*T*SCALE-p.y)<80*SCALE)}
+function canCraft(r){if(!Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n))return false;if(r.station&&!nearStation(r.station))return false;return true}
 function equipItem(id){const def=itemDefs[id];if(!def||!def.slot)return;const prev=state.player.equipment[def.slot];if(prev)addItem(prev,1);state.player.equipment[def.slot]=id;removeItem(id,1);toast(`Equipped ${def.name}`);renderPanels()}
 function unequip(slot){const id=state.player.equipment[slot];if(!id)return;addItem(id,1);state.player.equipment[slot]=null;renderPanels()}
-function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal)state.player.hp=clamp(state.player.hp+def.heal,0,state.player.hpMax);if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
+function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal)state.player.hp=clamp(state.player.hp+def.heal,0,totalHpMax());if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
 
 function chooseFaction(side){state.faction[side]+=10;gainSkill('influence',6);toast(`+10 ${factionDefs[side]?.name||side} standing`,'quest');addLog(`Supported ${factionDefs[side]?.name||side}.`);renderPanels()}
 
@@ -1852,7 +1878,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -1881,7 +1907,7 @@ p.x=clamp(p.x,T*SCALE*4,MW*T*SCALE-T*SCALE*4);p.y=clamp(p.y,T*SCALE*3,MH*T*SCALE
 // Auto-attack: hold mouse button to continuously attack
 if(mouseHeld&&!state.currentDialogue)attackNearest(true);
 // Passive HP regen: 1 HP/2s out of combat (5s delay), 1 HP/s in town
-const timeSinceCombat=state.time-p.lastCombatTime;if(gameSettings.regenEnabled&&timeSinceCombat>5&&p.hp<p.hpMax){p.regenTimer+=dt;const regenRate=state.world.activeZone==='town'?1:2;if(p.regenTimer>=regenRate){p.regenTimer=0;p.hp=Math.min(p.hpMax,p.hp+1);if(p.hp%10===0&&p.hp<p.hpMax)spawnParticle(p.x,p.y-10,'#3ddc84',2,15)}}else{p.regenTimer=0}
+const timeSinceCombat=state.time-p.lastCombatTime;if(gameSettings.regenEnabled&&timeSinceCombat>5&&p.hp<totalHpMax()){p.regenTimer+=dt;const regenRate=state.world.activeZone==='town'?1:2;if(p.regenTimer>=regenRate){p.regenTimer=0;p.hp=Math.min(totalHpMax(),p.hp+1);if(p.hp%10===0&&p.hp<totalHpMax())spawnParticle(p.x,p.y-10,'#3ddc84',2,15)}}else{p.regenTimer=0}
 const prevZone=state.world.activeZone;state.world.activeZone=currentZoneAt(p.x,p.y);
 if(state.world.activeZone!==prevZone){state.stats.zonesVisited.add(state.world.activeZone);gainSkill('survival',3)}
 // Dungeon button visibility
@@ -1920,6 +1946,8 @@ state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+
 if(getQuest('first_steps')?.stage===2&&!getQuest('first_steps')?.done){completeQuest('first_steps',{gold:12,exp:14});setQuestStage('wild_proof',1)}
 if(!state.flags.tutorialShown){state.flags.tutorialShown=true;toast('Mobile: joystick + buttons. PC: WASD move, LMB attack, RMB block, SPACE loot, F gather, E interact.','info')}
 const cssW=canvas.clientWidth||1,cssH=canvas.clientHeight||1;
+// Pet follow logic
+if(p.pet&&petDefs[p.pet]){if(!p._petX)p._petX=p.x;if(!p._petY)p._petY=p.y;const pdist=Math.hypot(p.x-p._petX,p.y-p._petY);if(pdist>25*SCALE){const ratio=Math.min(1,6*dt);p._petX+=(p.x-p._petX-15*SCALE*(p.facing==='right'?-1:p.facing==='left'?1:0))*ratio;p._petY+=(p.y-p._petY-15*SCALE*(p.facing==='down'?-1:p.facing==='up'?1:0))*ratio}}
 state.camera.x=clamp(p.x-cssW*0.5,0,MW*T*SCALE-cssW);state.camera.y=clamp(p.y-cssH*0.5,0,MH*T*SCALE-cssH);
 trySpawnEvent();updateEvent(dt);updateWorldMutation(dt);autoSave(dt);updateAbilityCooldowns(dt);updateHotbarSlots();
 // Loot corpse cleanup
@@ -2058,7 +2086,9 @@ ctx.strokeStyle=wv.color;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.beginPath();c
 if(wv.glow){ctx.strokeStyle=wv.glow;ctx.lineWidth=5;ctx.globalAlpha=0.3+Math.sin(state.time*4)*0.1;ctx.beginPath();ctx.moveTo(handAX,handAY);ctx.lineTo(tipX,tipY);ctx.stroke();ctx.globalAlpha=1}
 if(p.swingTimer>0){const prog=1-p.swingTimer/(wv.swing||0.3);ctx.globalAlpha=0.4*(1-prog);ctx.strokeStyle=wv.trail||wv.color;ctx.lineWidth=3;
 const startA=restAng+dir*((-(wv.arc||120)*Math.PI/180)/2);ctx.beginPath();ctx.arc(handAX,handAY,wLen*0.8,-startA,-swAngle,!flip);ctx.stroke();ctx.globalAlpha=1;
-if(Math.random()<0.6){spawnParticle(tipX,tipY,wv.particles||wv.color,1,30)}}}}const bw=T*SCALE*1.05,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw,bh);ctx.fillStyle=p.hp/p.hpMax>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw*(p.hp/p.hpMax),bh);if(p.isBlocking){ctx.strokeStyle='rgba(96,165,250,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y-T*SCALE*0.15,T*SCALE*0.85,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(96,165,250,0.12)';ctx.fill()}}});
+if(Math.random()<0.6){spawnParticle(tipX,tipY,wv.particles||wv.color,1,30)}}}}const bw=T*SCALE*1.05,bh=4;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw,bh);ctx.fillStyle=p.hp/totalHpMax()>0.3?'#60a5fa':'#dc2626';ctx.fillRect(p.x-bw/2,p.y-T*SCALE*0.95,bw*(p.hp/totalHpMax()),bh);if(p.isBlocking){ctx.strokeStyle='rgba(96,165,250,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y-T*SCALE*0.15,T*SCALE*0.85,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(96,165,250,0.12)';ctx.fill()}}});
+// Pet companion rendering
+if(state.player.pet&&petDefs[state.player.pet]){const px=state.player._petX||state.player.x,py=state.player._petY||state.player.y;const pc=petDefs[state.player.pet].color;const bobY=Math.sin(state.time*3)*2*SCALE;drawables.push({y:py+T*SCALE*0.5,draw:()=>{ctx.save();ctx.fillStyle=pc;ctx.globalAlpha=0.9;ctx.beginPath();ctx.arc(px,py+bobY,5*SCALE,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=0.4;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px-1.5*SCALE,py+bobY-1.5*SCALE,1.5*SCALE,0,Math.PI*2);ctx.fill();ctx.restore()}})}
 drawables.sort((a,b)=>a.y-b.y);drawables.forEach(d=>d.draw());
 // Particles
 state.particles.forEach(pt=>{ctx.globalAlpha=pt.life/pt.maxLife;if(pt.isText){ctx.font='bold 12px "JetBrains Mono",monospace';ctx.fillStyle=pt.color;ctx.textAlign='center';ctx.fillText(pt.text,pt.x,pt.y);ctx.textAlign='left'}else{ctx.fillStyle=pt.color;ctx.fillRect(pt.x-pt.size/2,pt.y-pt.size/2,pt.size,pt.size)}ctx.globalAlpha=1});
@@ -2100,7 +2130,7 @@ const storyHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="ti
 if(journalPanels.story)journalPanels.story.innerHTML=storyHTML;
 
 // Crafting
-const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
+const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div>${r.station?`<div style="font-size:9px;color:${nearStation(r.station)?'#3ddc84':'#dc2626'};margin-top:2px">⚒ Requires ${r.station}${nearStation(r.station)?'':' (not nearby)'}</div>`:''}</div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
 if(journalPanels.crafting)journalPanels.crafting.innerHTML=craftingHTML;
 
 // Bounty
@@ -2548,6 +2578,8 @@ toast(`${ab.icon} ${ab.name}! ${dmg} damage`,'combat');
 if(enemy.hp<=0){enemy.alive=false;state.stats.kills++;const eDef=enemyDefs[enemy.type];gainExp(eDef.exp);state.player.gold+=eDef.gold;
 const loot=[];eDef.drops.forEach(d=>{if(Math.random()<LOOT_DROP_CHANCE)loot.push(d)});if(loot.length===0)loot.push(sample(eDef.drops));
 enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
+  // Pet drop chance
+  if(!state.player.pet){const petEntry=Object.entries(petDefs).find(([,pd])=>pd.source===enemy.type);if(petEntry&&Math.random()<petEntry[1].dropChance){state.player.pet=petEntry[0];toast(`🐾 ${petEntry[1].name} has joined you!`,'quest');addLog(`🐾 Tamed a ${petEntry[1].name}!`);spawnParticle(enemy.x,enemy.y,'#f59e0b',15,100)}}
 spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);toast(`${eDef.name} defeated!`,'combat');
 if(state.dungeon.active&&state.dungeon.enemies.every(e=>!e.alive))advanceDungeonRoom()}
 }else if(ab.type==='buff'){
@@ -2817,14 +2849,37 @@ return`<div class="char-slot" style="${spanStyle}">
 ${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}${it.critBonus?'+'+it.critBonus+'% Crit ':''}</div>`:''}
 ${it?`<button class="item-btn" style="margin-top:4px;font-size:9px;padding:3px 6px" onclick="W.unequip('${s.key}');W.renderCharPanel()">Remove</button>`:''}
 </div>`}).join('');
+const petInfo=p.pet&&petDefs[p.pet];
+const petBonusStr=petInfo?Object.entries(petInfo.bonus).map(([k,v])=>'+'+v+' '+k.toUpperCase()).join(', '):'';
 qs('#charStats').innerHTML=`
-<div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${p.hpMax}</span></div>
+<div class="char-stat"><span class="stat-label">HP</span><span class="stat-value">${p.hp}/${totalHpMax()}</span></div>
+<div class="char-stat"><span class="stat-label">Accuracy</span><span class="stat-value">${Math.min(95,75+(p.allocStats?.accuracy||0)*2)}%</span></div>
 <div class="char-stat"><span class="stat-label">Attack</span><span class="stat-value">${totalAtk()}</span></div>
 <div class="char-stat"><span class="stat-label">Defense</span><span class="stat-value">${totalDef()}</span></div>
 <div class="char-stat"><span class="stat-label">Crit</span><span class="stat-value">${totalCrit()}%</span></div>
 <div class="char-stat"><span class="stat-label">Level</span><span class="stat-value">${p.level}</span></div>
 <div class="char-stat"><span class="stat-label">Gold</span><span class="stat-value">${p.gold}</span></div>
-`}
+${petInfo?`<div class="char-stat" style="grid-column:span 2;border-top:1px solid rgba(90,60,20,.3);padding-top:6px;margin-top:4px"><span class="stat-label">🐾 Companion</span><span class="stat-value" style="color:${petInfo.color}">${petInfo.name}</span></div>
+<div class="char-stat" style="grid-column:span 2"><span class="stat-label" style="font-size:9px;color:#8a7a5a">${petInfo.desc}</span><span class="stat-value" style="font-size:9px;color:#3ddc84">${petBonusStr}</span></div>
+<div class="char-stat" style="grid-column:span 2"><button class="item-btn" style="font-size:9px;padding:3px 8px;width:100%" onclick="W.dismissPet()">Release Companion</button></div>`:'<div class="char-stat" style="grid-column:span 2;border-top:1px solid rgba(90,60,20,.3);padding-top:6px;margin-top:4px"><span class="stat-label" style="color:#555">🐾 No companion</span><span class="stat-value" style="font-size:9px;color:#555">Defeat monsters for a chance to tame one</span></div>'}
+`;
+// Stat allocation section
+const as=p.allocStats||{accuracy:0,strength:0,defense:0,vitality:0};
+const asp=p.allocStatPoints||0;
+const statDescs={accuracy:'Hit chance (+2% per point)',strength:'Attack power (+1 ATK per point)',defense:'Damage reduction (+1 DEF per point)',vitality:'Maximum health (+5 HP per point)'};
+const statIcons={accuracy:'🎯',strength:'💪',defense:'🛡',vitality:'❤'};
+qs('#charAllocStats').innerHTML=`
+<div style="border-top:1px solid rgba(90,60,20,.3);padding-top:8px;margin-top:4px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;color:#d4a84a;font-weight:700">⬥ Attributes ⬥</span><span style="font-size:10px;color:${asp>0?'#3ddc84':'#555'}">Points: ${asp}</span></div>
+${Object.entries(statDescs).map(([key,desc])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(90,60,20,.15)">
+<div><span style="font-size:12px">${statIcons[key]}</span> <span style="font-size:10px;color:#c4a86e;font-weight:600">${key.charAt(0).toUpperCase()+key.slice(1)}</span><div style="font-size:8px;color:#666">${desc}</div></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:#e8d8a8;font-weight:700;min-width:20px;text-align:center">${as[key]}</span>${asp>0?`<button class="item-btn" style="font-size:9px;padding:2px 8px" onclick="W.allocStat('${key}')">+</button>`:''}</div>
+</div>`).join('')}
+</div>`}
+function allocStat(stat){const p=state.player;if(!p.allocStatPoints||p.allocStatPoints<=0)return toast('No stat points available.');if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};p.allocStats[stat]++;p.allocStatPoints--;toast(`+1 ${stat.charAt(0).toUpperCase()+stat.slice(1)}`,'loot');renderCharPanel()}
+window.W.allocStat=allocStat;
+function dismissPet(){if(!state.player.pet)return;const name=petDefs[state.player.pet]?.name||'companion';state.player.pet=null;toast(`Released ${name}`,'info');renderCharPanel()}
+window.W.dismissPet=dismissPet;
 window.W.renderCharPanel=renderCharPanel;
 
 // ═══ SPELL BAR ACTIONS ═══
@@ -2855,7 +2910,7 @@ if(dashSlot){if(p.dashCooldown>0){dashSlot.style.opacity='.5'}else{dashSlot.styl
 // ═══ ENHANCED PLAYER NAMEPLATE ═══
 function renderPlayerPlate(){
 const p=state.player,zone=zoneMap[state.world.activeZone]||{name:'Unknown'},ti=state.dayTime<120?'☀':'☾',cls=p.class?cap(p.class):'Walker';
-const hpPct=(p.hp/p.hpMax)*100;
+const hpPct=(p.hp/totalHpMax())*100;
 const platEl=qs('#playerPlate');
 if(!platEl)return;
 platEl.innerHTML=`
