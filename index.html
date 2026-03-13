@@ -1345,29 +1345,29 @@ const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon
 
 const recipes=[
 {id:'woodblade',name:'Woodblade',needs:{branch:3,fiber:2},makes:'woodblade'},
-{id:'ironblade',name:'Iron Blade',needs:{woodblade:1,ore:3,scrap:2},makes:'ironblade'},
-{id:'veilEdge',name:'Veil Edge',needs:{ironblade:1,ore:5,wraithEssence:1},makes:'veilEdge'},
+{id:'ironblade',name:'Iron Blade',needs:{woodblade:1,ore:3,scrap:2},makes:'ironblade',station:'forge'},
+{id:'veilEdge',name:'Veil Edge',needs:{ironblade:1,ore:5,wraithEssence:1},makes:'veilEdge',station:'forge'},
 {id:'wanderercoat',name:'Wanderer Coat',needs:{hide:2,fiber:2},makes:'wanderercoat'},
-{id:'marshwraps',name:'Marsh Wraps',needs:{hide:3,herb:2,scrap:1},makes:'marshwraps'},
-{id:'veilcloak',name:'Veilcloak',needs:{marshwraps:1,ore:3,wraithEssence:1},makes:'veilcloak'},
-{id:'drakemail',name:'Drake Mail',needs:{drakeScale:3,ore:5,scrap:4},makes:'drakemail'},
+{id:'marshwraps',name:'Marsh Wraps',needs:{hide:3,herb:2,scrap:1},makes:'marshwraps',station:'forge'},
+{id:'veilcloak',name:'Veilcloak',needs:{marshwraps:1,ore:3,wraithEssence:1},makes:'veilcloak',station:'forge'},
+{id:'drakemail',name:'Drake Mail',needs:{drakeScale:3,ore:5,scrap:4},makes:'drakemail',station:'forge'},
 {id:'charm',name:'Veil Charm',needs:{herb:2,scrap:2,ore:1},makes:'charm'},
 {id:'huntersBadge',name:"Hunter's Badge",needs:{hide:4,scrap:2},makes:'huntersBadge'},
 {id:'corruptionWard',name:'Corruption Ward',needs:{ore:4,wraithEssence:1,herb:3},makes:'corruptionWard'},
 {id:'tonic',name:'Field Tonic',needs:{herb:3,fiber:1},makes:'tonic',count:2},
 {id:'veilElixir',name:'Veil Elixir',needs:{herb:5,ore:2},makes:'veilElixir'},
 {id:'strengthDraft',name:'Strength Draft',needs:{herb:3,ashCore:1},makes:'strengthDraft'},
-{id:'ashfangBlade',name:'Ashfang Blade',needs:{ironblade:1,drakeScale:2,ashCore:2},makes:'ashfangBlade'},
-{id:'relicBlade',name:'Relic Blade',needs:{veilEdge:1,relicShard:5,voidFragment:2},makes:'relicBlade'},
-{id:'relicArmor',name:'Relic Plate',needs:{veilcloak:1,relicShard:5,voidFragment:2},makes:'relicArmor'},
+{id:'ashfangBlade',name:'Ashfang Blade',needs:{ironblade:1,drakeScale:2,ashCore:2},makes:'ashfangBlade',station:'forge'},
+{id:'relicBlade',name:'Relic Blade',needs:{veilEdge:1,relicShard:5,voidFragment:2},makes:'relicBlade',station:'forge'},
+{id:'relicArmor',name:'Relic Plate',needs:{veilcloak:1,relicShard:5,voidFragment:2},makes:'relicArmor',station:'forge'},
 {id:'scholarsPendant',name:"Scholar's Pendant",needs:{ore:3,relicShard:2},makes:'scholarsPendant'},
 {id:'ashenSignet',name:'Ashen Signet',needs:{ashCore:1,scrap:4,hide:3},makes:'ashenSignet'},
-{id:'voidreaper',name:'Voidreaper',needs:{relicBlade:1,voidFragment:5,corruptedHeart:2},makes:'voidreaper'},
+{id:'voidreaper',name:'Voidreaper',needs:{relicBlade:1,voidFragment:5,corruptedHeart:2},makes:'voidreaper',station:'forge'},
 {id:'leatherHood',name:'Leather Hood',needs:{hide:2,fiber:1},makes:'leatherHood'},
-{id:'ironHelm',name:'Iron Helm',needs:{scrap:3,ore:2},makes:'ironHelm'},
-{id:'veilCrown',name:'Veil Crown',needs:{ore:4,wraithEssence:1},makes:'veilCrown'},
-{id:'drakeVisage',name:'Drake Visage',needs:{drakeScale:2,ore:3,ashCore:1},makes:'drakeVisage'},
-{id:'relicHelm',name:'Relic Helm',needs:{veilCrown:1,relicShard:3,voidFragment:1},makes:'relicHelm'},
+{id:'ironHelm',name:'Iron Helm',needs:{scrap:3,ore:2},makes:'ironHelm',station:'forge'},
+{id:'veilCrown',name:'Veil Crown',needs:{ore:4,wraithEssence:1},makes:'veilCrown',station:'forge'},
+{id:'drakeVisage',name:'Drake Visage',needs:{drakeScale:2,ore:3,ashCore:1},makes:'drakeVisage',station:'forge'},
+{id:'relicHelm',name:'Relic Helm',needs:{veilCrown:1,relicShard:3,voidFragment:1},makes:'relicHelm',station:'forge'},
 {id:'wandererBoots',name:'Wanderer Boots',needs:{hide:2,fiber:2},makes:'wandererBoots'},
 {id:'marshTreads',name:'Marsh Treads',needs:{hide:3,scrap:2},makes:'marshTreads'},
 {id:'veilStriders',name:'Veil Striders',needs:{hide:4,ore:3,wraithEssence:1},makes:'veilStriders'},
@@ -1843,8 +1843,9 @@ toast('Nothing nearby.')}
 function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';const faceEl=qs('#dialogueFace');if(faceEl){if(sprites.npcFaces[id]){faceEl.innerHTML='';faceEl.appendChild(sprites.npcFaces[id].cloneNode(true));faceEl.style.display='block'}else{faceEl.style.display='none'}}node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
 function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none';const faceEl=qs('#dialogueFace');if(faceEl)faceEl.style.display='none'}
 
-function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe||!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
-function canCraft(r){return Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n)}
+function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe)return;if(recipe.station&&!nearStation(recipe.station)){toast(`Requires a ${recipe.station} — visit the settlement forge.`,'info');return}if(!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
+function nearStation(type){const p=state.player;return buildings.some(b=>b.type===type&&Math.hypot(b.x*T*SCALE-p.x,b.y*T*SCALE-p.y)<80*SCALE)}
+function canCraft(r){if(!Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n))return false;if(r.station&&!nearStation(r.station))return false;return true}
 function equipItem(id){const def=itemDefs[id];if(!def||!def.slot)return;const prev=state.player.equipment[def.slot];if(prev)addItem(prev,1);state.player.equipment[def.slot]=id;removeItem(id,1);toast(`Equipped ${def.name}`);renderPanels()}
 function unequip(slot){const id=state.player.equipment[slot];if(!id)return;addItem(id,1);state.player.equipment[slot]=null;renderPanels()}
 function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal)state.player.hp=clamp(state.player.hp+def.heal,0,state.player.hpMax);if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
@@ -2125,7 +2126,7 @@ const storyHTML=`<div class="card"><h3>⬥ The Story of Ashveil</h3><p class="ti
 if(journalPanels.story)journalPanels.story.innerHTML=storyHTML;
 
 // Crafting
-const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div></div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
+const craftingHTML=`<div class="card"><h3>⬥ Crafting</h3></div><div class="card"><div class="list">${recipes.map(r=>{const can=canCraft(r),rc='rarity-'+(itemDefs[r.makes]?.rarity||'common');return`<div class="item"><div><strong class="${rc}">${r.name}</strong><div class="tiny">${Object.entries(r.needs).map(([id,n])=>`${itemDefs[id]?.name||id} ${itemCount(id)}/${n}`).join(', ')}</div>${r.station?`<div style="font-size:9px;color:${nearStation(r.station)?'#3ddc84':'#dc2626'};margin-top:2px">⚒ Requires ${r.station}${nearStation(r.station)?'':' (not nearby)'}</div>`:''}</div><button class="item-btn" ${can?'':'disabled'} onclick="W.craft('${r.id}')">Craft</button></div>`}).join('')}</div></div>`;
 if(journalPanels.crafting)journalPanels.crafting.innerHTML=craftingHTML;
 
 // Bounty
