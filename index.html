@@ -690,6 +690,14 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 </div>
 </div>
 </div>
+<!-- Sprite System (modular - swap files to change designs) -->
+<script src="sprites/config.js"></script>
+<script src="sprites/player.js"></script>
+<script src="sprites/npcs.js"></script>
+<script src="sprites/enemies.js"></script>
+<script src="sprites/weapons.js"></script>
+<script src="sprites/init.js"></script>
+
 <script>
 (()=>{
 'use strict';
@@ -711,32 +719,7 @@ const mmCanvas=qs('#minimap canvas'),mmCtx=mmCanvas?mmCanvas.getContext('2d'):nu
 const btnDungeon=qs('#btnDungeon');
 const journalPanels={};qsa('.journal-panel').forEach(p=>{journalPanels[p.id.replace('journal-panel-','')]=p});
 
-// ═══ SPRITE SYSTEM ═══
-function createSprite(data,w=16,h=16){const c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');for(let i=0;i<data.length;i++){if(data[i]){cx.fillStyle=data[i];cx.fillRect(i%w,Math.floor(i/w),1,1)}}return c}
-const C={skin:'#e8b89d',skinS:'#c4916e',hair:'#4a3728',hairL:'#6b5040',cloth:'#3a5068',clothL:'#4a6a88',clothD:'#2a3a4d',metal:'#8899aa',metalL:'#aabbcc',metalD:'#667788',leather:'#7a5533',leatherL:'#9a7553',leatherD:'#5a3513',wood:'#8b6914',woodL:'#ab8934',woodD:'#6b4904',fire:'#ff6b35',fire2:'#ff9f1a',fire3:'#ffcc44',veil:'#7b68ee',veil2:'#9b8afb',red:'#dc2626',green:'#3ddc84',blue:'#4fc3f7',gold:'#f59e0b',white:'#f0f4ff',gray:'#9ca3af',dark:'#2a3347',grass1:'#2d5a1e',grass2:'#3a6e2a',grass3:'#4a8038',grass4:'#1e4a12',dirt1:'#6b5233',dirt2:'#7a6243',dirt3:'#8a7253',stone1:'#555f6e',stone2:'#667080',stone3:'#778090',water1:'#1a4a6e',water2:'#2a5a7e',water3:'#3a6a8e',sand1:'#c4a86e',sand2:'#b49858',marsh1:'#2a4a1e',marsh2:'#3a5a28',marsh3:'#1a3a12',ruins1:'#3a3850',ruins2:'#4a4860',ruins3:'#5a5870',tree1:'#1a4a0a',tree2:'#2a5a1a',tree3:'#0a3a00',trunk:'#5a3a1a',trunkD:'#4a2a0a',roof1:'#8b3a2a',roof2:'#6b2a1a',wall1:'#9a8a6a',wall2:'#8a7a5a',corrupt1:'#3a1a3a',corrupt2:'#4a1a4a',corrupt3:'#2a0a2a',dungeon1:'#1a1a2a',dungeon2:'#2a2a3a',dungeon3:'#3a3a4a'};
-
-function makePlayerSprite(dir='down',frame=0,isWalk=false){const W=20,H=20,s=new Array(W*H).fill(0),p=(x,y,c)=>{if(x>=0&&x<W&&y>=0&&y<H)s[y*W+x]=c};const bob=(!isWalk&&frame%2===1)?1:0;
-const hD='#6b2a1a',hM='#8b3a2a',hL='#a04838',ear='#1a1a2a';
-const eW='#f0f4ff',eP='#1a1a2a',eH='#ffffff',mth='#c47070',blush='#d4968a';
-if(dir==='up'){p(6,0+bob,ear);p(13,0+bob,ear);p(6,1+bob,ear);p(13,1+bob,ear);for(let x=7;x<=12;x++)p(x,1+bob,hD);for(let x=5;x<=14;x++)p(x,2+bob,hM);for(let x=5;x<=14;x++)p(x,3+bob,hM);for(let x=5;x<=14;x++)p(x,4+bob,hD);for(let x=5;x<=14;x++)p(x,5+bob,hL);for(let x=5;x<=14;x++)p(x,6+bob,hM);for(let x=6;x<=13;x++)p(x,7+bob,hD);for(let x=7;x<=12;x++)p(x,8+bob,hD);p(9,9+bob,C.skinS);p(10,9+bob,C.skinS);for(let y=10;y<=12;y++){for(let x=7;x<=12;x++)p(x,y+bob,C.clothL);p(7,y+bob,C.cloth);p(12,y+bob,C.cloth)}p(6,11+bob,C.skin);p(13,11+bob,C.skin);p(6,12+bob,C.skin);p(13,12+bob,C.skin);p(7,13+bob,C.leatherD);p(8,13+bob,C.leather);p(9,13+bob,C.leather);p(10,13+bob,C.leather);p(11,13+bob,C.leather);p(12,13+bob,C.leatherD);if(isWalk){const lo=[0,1,0,-1][frame%4],ro=[0,-1,0,1][frame%4];p(8+lo,14+bob,C.leather);p(9+lo,14+bob,C.leather);p(10+ro,14+bob,C.leather);p(11+ro,14+bob,C.leather);p(8+lo,15+bob,C.leather);p(9+lo,15+bob,C.leather);p(10+ro,15+bob,C.leather);p(11+ro,15+bob,C.leather);p(8+lo,16+bob,C.leatherD);p(9+lo,16+bob,C.leatherD);p(10+ro,16+bob,C.leatherD);p(11+ro,16+bob,C.leatherD)}else{[8,9,10,11].forEach(x=>{p(x,14+bob,C.leather);p(x,15+bob,C.leather)});[8,9,10,11].forEach(x=>{p(x,16+bob,C.leatherD);p(x,17+bob,C.leatherD)})}}
-else if(dir==='right'){p(8,0+bob,ear);p(12,0+bob,ear);for(let x=7;x<=12;x++)p(x,1+bob,hD);p(7,1+bob,ear);for(let x=6;x<=13;x++)p(x,2+bob,hM);for(let x=5;x<=13;x++)p(x,3+bob,x<=7?hD:hM);p(5,4+bob,hD);p(6,4+bob,hD);for(let x=7;x<=12;x++)p(x,4+bob,C.skin);p(13,4+bob,C.skinS);p(5,5+bob,hD);p(6,5+bob,C.skin);p(7,5+bob,C.skin);p(8,5+bob,eH);p(9,5+bob,eW);p(10,5+bob,eP);p(11,5+bob,C.skin);p(12,5+bob,C.skin);p(13,5+bob,C.skinS);p(5,6+bob,hD);p(6,6+bob,C.skin);for(let x=7;x<=12;x++)p(x,6+bob,C.skin);p(13,6+bob,C.skinS);for(let x=6;x<=12;x++)p(x,7+bob,C.skin);p(10,7+bob,mth);for(let x=7;x<=11;x++)p(x,8+bob,C.skin);p(9,9+bob,C.skinS);p(10,9+bob,C.skinS);for(let y=10;y<=12;y++){for(let x=7;x<=12;x++)p(x,y+bob,C.clothL);p(7,y+bob,C.cloth);p(12,y+bob,C.cloth)}p(13,11+bob,C.skin);p(13,12+bob,C.skin);p(7,13+bob,C.leatherD);p(8,13+bob,C.leather);p(9,13+bob,C.leather);p(10,13+bob,C.leather);p(11,13+bob,C.leather);p(12,13+bob,C.leatherD);if(isWalk){const lo=[0,1,0,-1][frame%4],ro=[0,-1,0,1][frame%4];p(8+lo,14+bob,C.leather);p(9+lo,14+bob,C.leather);p(10+ro,14+bob,C.leather);p(11+ro,14+bob,C.leather);p(8+lo,15+bob,C.leather);p(9+lo,15+bob,C.leather);p(10+ro,15+bob,C.leather);p(11+ro,15+bob,C.leather);p(8+lo,16+bob,C.leatherD);p(9+lo,16+bob,C.leatherD);p(10+ro,16+bob,C.leatherD);p(11+ro,16+bob,C.leatherD)}else{[8,9,10,11].forEach(x=>{p(x,14+bob,C.leather);p(x,15+bob,C.leather)});[8,9,10,11].forEach(x=>{p(x,16+bob,C.leatherD);p(x,17+bob,C.leatherD)})}}
-else{p(6,0+bob,ear);p(13,0+bob,ear);p(6,1+bob,ear);p(13,1+bob,ear);for(let x=7;x<=12;x++)p(x,1+bob,hD);for(let x=6;x<=13;x++)p(x,2+bob,hM);for(let x=5;x<=14;x++)p(x,3+bob,hM);p(5,4+bob,hD);p(6,4+bob,hD);for(let x=7;x<=12;x++)p(x,4+bob,C.skin);p(13,4+bob,hD);p(14,4+bob,hD);p(5,5+bob,hD);p(6,5+bob,C.skin);p(7,5+bob,eH);p(8,5+bob,eW);p(9,5+bob,C.skin);p(10,5+bob,C.skin);p(11,5+bob,eW);p(12,5+bob,eH);p(13,5+bob,C.skin);p(14,5+bob,hD);p(5,6+bob,hD);p(6,6+bob,blush);for(let x=7;x<=12;x++)p(x,6+bob,C.skin);p(13,6+bob,blush);p(14,6+bob,hD);for(let x=6;x<=13;x++)p(x,7+bob,C.skin);p(9,7+bob,mth);p(10,7+bob,mth);for(let x=7;x<=12;x++)p(x,8+bob,C.skin);p(9,9+bob,C.skinS);p(10,9+bob,C.skinS);for(let y=10;y<=12;y++){for(let x=7;x<=12;x++)p(x,y+bob,C.clothL);p(7,y+bob,C.cloth);p(12,y+bob,C.cloth)}p(6,11+bob,C.skin);p(13,11+bob,C.skin);p(6,12+bob,C.skin);p(13,12+bob,C.skin);p(7,13+bob,C.leatherD);p(8,13+bob,C.leather);p(9,13+bob,C.leather);p(10,13+bob,C.leather);p(11,13+bob,C.leather);p(12,13+bob,C.leatherD);if(isWalk){const lo=[0,1,0,-1][frame%4],ro=[0,-1,0,1][frame%4];p(8+lo,14+bob,C.leather);p(9+lo,14+bob,C.leather);p(10+ro,14+bob,C.leather);p(11+ro,14+bob,C.leather);p(8+lo,15+bob,C.leather);p(9+lo,15+bob,C.leather);p(10+ro,15+bob,C.leather);p(11+ro,15+bob,C.leather);p(8+lo,16+bob,C.leatherD);p(9+lo,16+bob,C.leatherD);p(10+ro,16+bob,C.leatherD);p(11+ro,16+bob,C.leatherD)}else{[8,9,10,11].forEach(x=>{p(x,14+bob,C.leather);p(x,15+bob,C.leather)});[8,9,10,11].forEach(x=>{p(x,16+bob,C.leatherD);p(x,17+bob,C.leatherD)})}}
-return createSprite(s,W,H)}
-function makeNPCSprite(rc,ac,hood=false){const W=20,H=20,s=new Array(W*H).fill(0),p=(x,y,c)=>{if(x>=0&&x<W&&y>=0&&y<H)s[y*W+x]=c};const hD='#6b2a1a',hM='#8b3a2a',ear='#1a1a2a',eW='#f0f4ff',eP='#1a1a2a',eH='#ffffff',mth='#c47070',blush='#d4968a';if(hood){p(6,0,rc);p(13,0,rc);p(6,1,rc);p(13,1,rc);for(let x=7;x<=12;x++)p(x,1,rc);for(let x=6;x<=13;x++)p(x,2,rc);for(let x=5;x<=14;x++)p(x,3,rc);p(5,4,rc);p(6,4,rc);for(let x=7;x<=12;x++)p(x,4,C.skin);p(13,4,rc);p(14,4,rc)}else{p(6,0,ear);p(13,0,ear);p(6,1,ear);p(13,1,ear);for(let x=7;x<=12;x++)p(x,1,hD);for(let x=6;x<=13;x++)p(x,2,hM);for(let x=5;x<=14;x++)p(x,3,hM);p(5,4,hD);p(6,4,hD);for(let x=7;x<=12;x++)p(x,4,C.skin);p(13,4,hD);p(14,4,hD)}p(5,5,hood?rc:hD);p(6,5,C.skin);p(7,5,eH);p(8,5,eW);p(9,5,C.skin);p(10,5,C.skin);p(11,5,eW);p(12,5,eH);p(13,5,C.skin);p(14,5,hood?rc:hD);p(5,6,hood?rc:hD);p(6,6,blush);for(let x=7;x<=12;x++)p(x,6,C.skin);p(13,6,blush);p(14,6,hood?rc:hD);for(let x=6;x<=13;x++)p(x,7,C.skin);p(9,7,mth);p(10,7,mth);for(let x=7;x<=12;x++)p(x,8,C.skin);p(9,9,C.skinS);p(10,9,C.skinS);for(let y=10;y<=12;y++){p(7,y,rc);p(8,y,ac);p(9,y,ac);p(10,y,ac);p(11,y,ac);p(12,y,rc)}p(6,11,C.skin);p(13,11,C.skin);p(6,12,C.skin);p(13,12,C.skin);p(7,13,rc);p(8,13,ac);p(9,13,ac);p(10,13,ac);p(11,13,ac);p(12,13,rc);[8,9,10,11].forEach(x=>{p(x,14,rc);p(x,15,rc)});[8,9,10,11].forEach(x=>{p(x,16,C.leatherD);p(x,17,C.leatherD)});return createSprite(s,W,H)}
-function makeEnemySprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
-if(type==='wolf'){for(let x=4;x<=12;x++){p(x,8,'#6b3a2a');p(x,9,'#7a4a3a')}for(let x=5;x<=11;x++)p(x,7,'#7a4a3a');p(3,7,'#8a5a4a');p(3,8,'#7a4a3a');p(2,6,'#8a5a4a');p(3,6,'#8a5a4a');p(4,6,'#7a4a3a');p(2,5,'#6b3a2a');p(3,5,'#6b3a2a');p(2,7,'#aa6a5a');p(1,7,'#dc2626');p(5,10,'#5a2a1a');p(6,10,'#5a2a1a');p(10,10,'#5a2a1a');p(11,10,'#5a2a1a');p(5,11,'#5a2a1a');p(6,11,'#5a2a1a');p(10,11,'#5a2a1a');p(11,11,'#5a2a1a');p(13,7,'#6b3a2a');p(14,6,'#5a2a1a')}
-else if(type==='bogling'){for(let x=5;x<=10;x++){p(x,5,'#3a6628');p(x,6,'#4a7a38');p(x,7,'#4a7a38');p(x,8,'#3a6628')}p(4,6,'#3a6628');p(11,6,'#3a6628');p(4,7,'#3a6628');p(11,7,'#3a6628');p(6,4,'#3a6628');p(7,4,'#4a7a38');p(8,4,'#4a7a38');p(9,4,'#3a6628');p(6,5,'#ffcc44');p(9,5,'#ffcc44');p(7,7,'#2a4a18');p(8,7,'#2a4a18');p(6,9,'#2a5618');p(7,9,'#2a5618');p(8,9,'#2a5618');p(9,9,'#2a5618');p(5,10,'#2a5618');p(10,10,'#2a5618');p(5,11,'#1a4a08');p(10,11,'#1a4a08');p(4,8,'#5a9a48');p(11,8,'#5a9a48');p(3,9,'#4a8a38');p(12,9,'#4a8a38')}
-else if(type==='sentinel'){for(let x=6;x<=9;x++){p(x,3,'#8a6aee');p(x,4,'#7a5ade');p(x,5,'#6a4ace')}for(let x=5;x<=10;x++){p(x,6,'#7a5ade');p(x,7,'#8a6aee');p(x,8,'#7a5ade');p(x,9,'#6a4ace')}p(6,4,'#ccaaff');p(9,4,'#ccaaff');for(let x=6;x<=9;x++)p(x,10,'#5a3abe');p(6,11,'#4a2aae');p(9,11,'#4a2aae');p(6,12,'#3a1a9e');p(9,12,'#3a1a9e');p(7,2,'#bbaaff');p(8,2,'#bbaaff');p(7,1,'#ccbbff');p(8,1,'#ccbbff');p(4,5,'#aa8aff');p(11,5,'#aa8aff')}
-else if(type==='bandit'){p(7,2,C.hair);p(8,2,C.hair);p(6,3,C.dark);p(7,3,C.skin);p(8,3,C.skin);p(9,3,C.dark);p(7,4,C.skin);p(8,4,C.skin);p(7,5,'#dc2626');for(let y=6;y<=9;y++){p(6,y,'#3a2a1a');p(7,y,'#4a3a2a');p(8,y,'#4a3a2a');p(9,y,'#3a2a1a')}p(5,7,'#3a2a1a');p(10,7,C.metal);p(5,8,'#3a2a1a');p(10,8,C.metalL);p(10,9,C.metalL);p(10,10,C.metal);p(7,10,'#2a1a0a');p(8,10,'#2a1a0a');p(7,11,'#2a1a0a');p(8,11,'#2a1a0a');p(6,12,'#1a0a00');p(9,12,'#1a0a00')}
-else if(type==='ashDrake'){for(let x=3;x<=12;x++){p(x,6,'#8b2a1a');p(x,7,'#9b3a2a');p(x,8,'#8b2a1a')}for(let x=4;x<=11;x++){p(x,5,'#7b1a0a');p(x,9,'#7b1a0a')}p(2,4,'#ab3a2a');p(3,4,'#9b3a2a');p(4,4,'#8b2a1a');p(2,5,'#ab3a2a');p(3,5,'#9b3a2a');p(1,4,'#ffcc44');p(1,5,'#dc2626');p(0,5,'#ff6b35');p(5,3,'#6b1a0a');p(6,2,'#6b1a0a');p(7,1,'#5b0a00');p(10,3,'#6b1a0a');p(11,2,'#6b1a0a');p(12,1,'#5b0a00');p(13,7,'#7b1a0a');p(14,8,'#6b1a0a');p(15,8,'#ff6b35');p(5,10,'#5b0a00');p(6,10,'#5b0a00');p(10,10,'#5b0a00');p(11,10,'#5b0a00');p(5,11,'#4b0000');p(11,11,'#4b0000')}
-else if(type==='veilWraith'){for(let x=5;x<=10;x++){p(x,3,'#7b68ee');p(x,4,'#9b8afb')}for(let x=4;x<=11;x++){p(x,5,'#7b68ee');p(x,6,'#9b8afb');p(x,7,'#7b68ee')}p(6,4,'#ffffff');p(9,4,'#ffffff');for(let x=5;x<=10;x++){p(x,8,'#5b4ecc');p(x,9,'#3a2e8a')}p(3,6,'#9b8afb');p(12,6,'#9b8afb')}
-else if(type==='corruptWolf'){for(let x=4;x<=12;x++){p(x,8,'#4a1a3a');p(x,9,'#5a2a4a')}for(let x=5;x<=11;x++)p(x,7,'#5a2a4a');p(3,7,'#6a3a5a');p(3,8,'#5a2a4a');p(2,6,'#6a3a5a');p(3,6,'#6a3a5a');p(2,5,'#4a1a3a');p(3,5,'#4a1a3a');p(2,7,'#8a4a6a');p(1,7,'#ff44aa');p(5,10,'#3a0a2a');p(6,10,'#3a0a2a');p(10,10,'#3a0a2a');p(11,10,'#3a0a2a');p(5,11,'#3a0a2a');p(11,11,'#3a0a2a');p(13,7,'#4a1a3a');p(14,6,'#3a0a2a');p(4,5,'#aa44aa');p(11,5,'#aa44aa')}
-else if(type==='voidSentinel'){for(let x=5;x<=10;x++){p(x,3,'#1a1a4a');p(x,4,'#2a2a5a');p(x,5,'#1a1a4a');p(x,6,'#2a2a5a');p(x,7,'#3a3a6a');p(x,8,'#2a2a5a');p(x,9,'#1a1a4a')}p(6,4,'#ff4444');p(9,4,'#ff4444');p(7,1,'#4a4a8a');p(8,1,'#4a4a8a');p(7,2,'#3a3a7a');p(8,2,'#3a3a7a');p(4,6,'#5a5aaa');p(11,6,'#5a5aaa');for(let x=6;x<=9;x++){p(x,10,'#1a1a3a');p(x,11,'#0a0a2a')}}
-else if(type==='dungeonGuardian'){for(let x=4;x<=11;x++){p(x,3,'#4a3a2a');p(x,4,'#5a4a3a');p(x,5,'#4a3a2a');p(x,6,'#5a4a3a');p(x,7,'#6a5a4a');p(x,8,'#5a4a3a');p(x,9,'#4a3a2a');p(x,10,'#3a2a1a')}p(5,3,'#8899aa');p(10,3,'#8899aa');p(6,4,'#ffcc44');p(9,4,'#ffcc44');p(3,6,C.metalL);p(12,6,C.metalL);p(3,7,C.metal);p(12,7,C.metal);p(2,7,C.metalL);p(13,7,C.metalL);p(5,11,'#3a2a1a');p(10,11,'#3a2a1a');p(5,12,'#2a1a0a');p(10,12,'#2a1a0a')}
-return createSprite(s)}
-
-const sprites={player:{walk:{down:[0,1,2,3].map(f=>makePlayerSprite('down',f,true)),up:[0,1,2,3].map(f=>makePlayerSprite('up',f,true)),right:[0,1,2,3].map(f=>makePlayerSprite('right',f,true))},idle:{down:[0,1].map(f=>makePlayerSprite('down',f,false)),up:[0,1].map(f=>makePlayerSprite('up',f,false)),right:[0,1].map(f=>makePlayerSprite('right',f,false))}},npcs:{elder:makeNPCSprite('#c4a86e','#f59e0b',true),quartermaster:makeNPCSprite('#8b3a2a','#cc4a1a',false),herbalist:makeNPCSprite('#2a5a1e','#3ddc84',true),smuggler:makeNPCSprite('#2a2a3a','#555f6e',false),bountyMaster:makeNPCSprite('#5a1a1a','#dc2626',false),scholarLynn:makeNPCSprite('#1a3a6a','#4fc3f7',true),commanderVoss:makeNPCSprite('#4a2a0a','#ff6b35',false)},enemies:{},tiles:{},objects:{}};
-['wolf','bogling','sentinel','bandit','ashDrake','veilWraith','corruptWolf','voidSentinel','dungeonGuardian'].forEach(t=>{sprites.enemies[t]=makeEnemySprite(t)});
+// ═══ SPRITE SYSTEM ═══ (loaded from sprites/ folder)
 
 function makeTile(bc,v=[]){const s=new Array(256).fill(bc);v.forEach(vv=>{s[rand(0,255)]=vv});return createSprite(s)}
 function makeTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=9;y<=15;y++){p(7,y,C.trunk);p(8,y,C.trunkD)}const g=[C.tree1,C.tree2,C.tree3];for(let y=1;y<=9;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-5)<4.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
@@ -1143,44 +1126,6 @@ else if(id==='voidLoop')ring('#5020aa','#8844dd');
 else if(id==='ashenCirclet')ring('#f5c842','#ff9f1a');
 else{p(7,7,'#888');p(8,7,'#888');p(7,8,'#888');p(8,8,'#888')}}
 return createSprite(s)}
-
-// ═══ WEAPON VISUAL DEFINITIONS ═══
-const weaponVisuals={
-woodblade:{color:'#a0804a',glow:null,particles:'#8a6a3a',swing:0.35,arc:120,trail:'#a0804a',name:'slash'},
-ironblade:{color:'#cccccc',glow:null,particles:'#aaaaaa',swing:0.3,arc:130,trail:'#cccccc',name:'slash'},
-veilEdge:{color:'#9b8afb',glow:'#7b68ee',particles:'#b8a8ff',swing:0.28,arc:140,trail:'#9b8afb',name:'veil'},
-ashfangBlade:{color:'#ff9f1a',glow:'#ff6b35',particles:'#ffcc44',swing:0.25,arc:150,trail:'#ff6b35',name:'fire'},
-wraithTouch:{color:'#b088ee',glow:'#8060cc',particles:'#d0b8ff',swing:0.3,arc:120,trail:'#b088ee',name:'phase'},
-relicBlade:{color:'#f5c842',glow:'#c8a020',particles:'#ffe066',swing:0.22,arc:160,trail:'#f5c842',name:'relic'},
-voidreaper:{color:'#5020aa',glow:'#8844dd',particles:'#6633bb',swing:0.2,arc:180,trail:'#8844dd',name:'void'}
-};
-const equipColors={
-wanderercoat:{body:'#8a6a3a',accent:'#a0804a'},marshwraps:{body:'#3a7a3a',accent:'#4a9a4a'},veilcloak:{body:'#7b68ee',accent:'#9b8afb'},drakemail:{body:'#cc4a1a',accent:'#ff6b35'},relicArmor:{body:'#c8a020',accent:'#f5c842'},
-leatherHood:{body:'#8a6a3a',accent:'#a0804a'},ironHelm:{body:'#aaaaaa',accent:'#cccccc'},veilCrown:{body:'#7b68ee',accent:'#9b8afb'},drakeVisage:{body:'#cc4a1a',accent:'#ff6b35'},relicHelm:{body:'#c8a020',accent:'#f5c842'},
-wandererBoots:{body:'#8a6a3a',accent:'#a0804a'},marshTreads:{body:'#3a7a3a',accent:'#4a9a4a'},veilStriders:{body:'#7b68ee',accent:'#9b8afb'},drakeGreaves:{body:'#cc4a1a',accent:'#ff6b35'},relicSabatons:{body:'#c8a020',accent:'#f5c842'},
-boneRing:{glow:'#c4a86e'},emberBand:{glow:'#ff6b35'},voidLoop:{glow:'#8844dd'},ashenCirclet:{glow:'#f5c842'}
-};
-// ═══ ARM DRAWING SYSTEM ═══
-// 2-segment IK arm: shoulder→elbow→hand
-// sx,sy=shoulder  hx,hy=hand target  l1=upper arm  l2=forearm
-// thick=line width  color=skin  eBend=elbow bend sign (+1=below arm line, -1=above)
-// gripA=optional angle for elongated hand grip (weapon holding)
-function drawArm2J(ctx,sx,sy,hx,hy,l1,l2,thick,color,eBend,gripA){
-var dx=hx-sx,dy=hy-sy,dist=Math.sqrt(dx*dx+dy*dy),maxR=l1+l2;
-if(dist>maxR*0.95){var f=maxR*0.95/dist;hx=sx+dx*f;hy=sy+dy*f;dx=hx-sx;dy=hy-sy;dist=maxR*0.95}
-if(dist<Math.abs(l1-l2)*1.1+1)dist=Math.abs(l1-l2)*1.1+1;
-var cosA=Math.max(-1,Math.min(1,(l1*l1+dist*dist-l2*l2)/(2*l1*dist)));
-var angSH=Math.atan2(dy,dx);
-// eBend>0 means elbow bends in positive-Y direction (downward on screen)
-var elbA=angSH+(eBend||1)*Math.acos(cosA);
-var ex=sx+Math.cos(elbA)*l1,ey=sy+Math.sin(elbA)*l1;
-ctx.strokeStyle=color;ctx.lineCap='round';
-ctx.lineWidth=thick;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
-ctx.lineWidth=thick*0.78;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
-ctx.fillStyle=color;ctx.beginPath();ctx.arc(ex,ey,thick*0.35,0,Math.PI*2);ctx.fill();
-if(gripA!==undefined){ctx.save();ctx.translate(hx,hy);ctx.rotate(gripA);
-ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(0,0,thick*0.55,thick*0.35,0,0,Math.PI*2);ctx.fill();ctx.restore()}
-else{ctx.fillStyle=color;ctx.beginPath();ctx.arc(hx,hy,thick*0.42,0,Math.PI*2);ctx.fill()}}
 
 sprites.tiles.grass=[0,1,2,3].map(()=>makeTile(C.grass2,[C.grass1,C.grass3,C.grass4,C.grass1,C.grass3]));
 sprites.tiles.dirt=[0,1].map(()=>makeTile(C.dirt1,[C.dirt2,C.dirt3,C.dirt2]));
