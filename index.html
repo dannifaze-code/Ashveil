@@ -2410,7 +2410,7 @@ spawnDamageNumber(state.player.x,state.player.y-40,`${pd.name.toUpperCase()}!`,p
 updateHotbarSlots();
 }
 function openAbilities(){
-if(state.player.level<10){toast('Abilities unlock at Level 10.','info');return}
+if(state.player.level<10&&!state.player.abilityPath){toast('Abilities unlock at Level 10.','info');return}
 if(!state.player.abilityPath){showAbilityPathPopup();return}
 qs('#abilitiesOverlay').classList.add('open');renderAbilitiesOverlay();
 }
@@ -2664,7 +2664,7 @@ canvas.style.cursor=hover?'pointer':'crosshair'});
 (function(){const jo=qs('#journalOverlay'),jb=qs('#journalBtn'),jc=qs('.journal-close');if(!jo||!jb||!jc)return;function openJournal(){jo.classList.add('open');renderPanels()}function closeJournal(){jo.classList.remove('open')}jb.onclick=openJournal;jc.onclick=closeJournal;jo.onclick=(e)=>{if(e.target===jo)closeJournal()};qsa('.journal-tab').forEach(btn=>btn.onclick=()=>{qsa('.journal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const id=btn.dataset.journalTab;Object.entries(journalPanels).forEach(([key,el])=>el.classList.toggle('active',key===id));renderPanels()});document.addEventListener('keydown',(e)=>{if(e.key==='j'||e.key==='J'){if(!jo.classList.contains('open'))openJournal();else closeJournal()}})})();
 window.addEventListener('resize',()=>{resize();renderAll()});
 
-window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,lootAllNearby,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup,chooseAbilityPath,upgradeAbility,openAbilities,closeAbilities,castAbility};
+window.W={craft,equipItem,unequip,useItem,chooseFaction,acceptBounty,upgradeSettlement,enterDungeon,exitDungeon,saveGame,loadGame,lootItem,lootAll,lootAllNearby,openInventory,closeLootUI,upgradeSkillNode,openSkills,closeSkills,chooseClass,showClassAwakeningPopup,chooseAbilityPath,upgradeAbility,openAbilities,closeAbilities,castAbility,showAbilityPathPopup};
 
 // ═══ SETTINGS ═══
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem('ashveil_settings'));if(s){Object.assign(gameSettings,s);qs('#setAutoSave').value=s.autoSaveInterval??60;qs('#setShake').value=s.shakeEnabled===false?'0':'1';qs('#setDust').value=s.dustEnabled===false?'0':'1';qs('#setRegen').value=s.regenEnabled===false?'0':'1'}}catch(e){}}
