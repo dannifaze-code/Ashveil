@@ -433,9 +433,8 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="subtitle">The Broken Veil</div>
 <div class="lore-text">The ancient barriers between worlds are failing. Ash falls from a sky that remembers fire. You are a Walker — one of the few who crossed a Veil tear and survived.</div>
 <div id="titleButtons">
-<button class="title-btn primary" id="btnPlay">Enter the Veil</button>
 <button class="title-btn" id="btnContinue" style="display:none">Continue Journey<span class="btn-sub">Load last save</span></button>
-<button class="title-btn" id="btnNewGame">New Game<span class="btn-sub">Start fresh</span></button>
+<button class="title-btn primary" id="btnNewGame">New Game<span class="btn-sub">Start fresh</span></button>
 <button class="title-btn" id="btnSettings">Settings</button>
 </div>
 </div>
@@ -452,7 +451,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="cc-row"><label>Eyes</label><select id="ccEyes"></select></div>
 <div class="cc-row"><label>Build</label><select id="ccBody"></select></div>
 <div class="cc-row"><label>Mouth</label><select id="ccMouth"></select></div>
-<button id="ccConfirm">Enter the Veil</button>
+<button id="ccConfirm">Begin Journey</button>
 <button id="ccBack">← Back</button>
 </div>
 </div>
@@ -1838,7 +1837,7 @@ function totalHpMax(){return state.player.hpMax+(state.player.allocStats?.vitali
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}}
+function gainExp(amt){if(state.player.level>=250)return;if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext&&state.player.level<250){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}if(state.player.level>=250){state.player.exp=0;state.player.expNext=0}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -2032,8 +2031,8 @@ function upgradeSettlement(){const next=settlementLevels[state.settlement.level]
 function deaggroAll(){state.enemies.forEach(e=>{e.engaged=false;e.engagedBy=null});if(state.dungeon.active)state.dungeon.enemies.forEach(e=>{e.engaged=false;e.engagedBy=null})}
 function attackNearest(silent){
 const p=state.player;if(p.attackCooldown>0||p.isBlocking)return;
-// In dungeon, attack dungeon enemies
-let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+// In dungeon, attack dungeon enemies; overworld: same zone OR within attack range
+let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>ATTACK_RANGE){if(!silent)toast('No enemy in range.');return}
 // Target locking: check if engaged by someone else (multiplayer-ready)
@@ -2139,7 +2138,12 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;
+// Always rebuild enemies from current definitions so new/updated enemies appear in old saves
+state.enemies=buildEnemies();
+// Rebuild nodes if missing action property
+if(!state.nodes||state.nodes.length===0)state.nodes=buildNodes();
+rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -2176,20 +2180,22 @@ const nearDungeon=dungeonEntrances.some(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCAL
 btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
 // Nodes
 state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
-// Enemy AI (overworld)
+// Enemy AI (overworld) — static enemies, aggro on hit or proximity (higher-level enemies only)
 if(!state.dungeon.active){
+const PROXIMITY_AGGRO=100*SCALE; // close range for higher-level enemy proximity aggro
 state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax;e.engaged=false;e.engagedBy=null}if(!e.alive)return;
-const eDef=enemyDefs[e.type];const isBoss=eDef.rarity==='rare';
-const aRange=isBoss?BOSS_AGGRO_RANGE:AGGRO_RANGE;
+const eDef=enemyDefs[e.type];if(!eDef)return;const isBoss=eDef.rarity==='rare';
 const lRange=isBoss?BOSS_LEASH_RANGE:LEASH_RANGE;
-const d=dist(e,p);if(e.zone===state.world.activeZone||d<aRange){
-// Aggro detection
-if(!e.engaged&&d<aRange){e.engaged=true;e.engagedBy='player'}
+const d=dist(e,p);
+// Proximity aggro: only if enemy level > player level AND player is very close
+if(!e.engaged&&(eDef.level||1)>p.level&&d<PROXIMITY_AGGRO){e.engaged=true;e.engagedBy='player'}
+// Boss proximity aggro at wider range
+if(!e.engaged&&isBoss&&d<BOSS_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>lRange){e.engaged=false;e.engagedBy=null}
 if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
-returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
-separateEnemies(state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,p)<AGGRO_RANGE)),dt);
+returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}});
+separateEnemies(state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,p)<LEASH_RANGE)),dt);
 }else{
 // Dungeon enemy AI
 state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);
@@ -2840,7 +2846,7 @@ const atk=totalAtk();
 p.abilityCooldowns[ab.id]=ab.cooldown;
 p.lastCombatTime=state.time;
 if(ab.type==='damage'){
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>80*SCALE){toast('No enemy in range.','info');p.abilityCooldowns[ab.id]=0;return}
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
@@ -2865,7 +2871,7 @@ spawnDamageNumber(p.x,p.y-30,`${ab.icon} +${amt} ${ab.buffType.toUpperCase()}`,p
 toast(`${ab.icon} ${ab.name}! +${amt} ${ab.buffType.toUpperCase()} for ${ab.buffDuration}s`,'quest');
 }else if(ab.type==='aoe'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const nearby=enemies.filter(e=>dist(p,e)<150*SCALE);
 if(nearby.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
 let totalDmg=0;
@@ -2879,7 +2885,7 @@ triggerShake(12,0.3);toast(`${ab.icon} ${ab.name}! ${totalDmg} total damage to $
 }else if(ab.type==='chain'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
 const maxTargets=ab.targets+(rank-1)*(ab.perRank.targets||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const sorted=enemies.filter(e=>dist(p,e)<150*SCALE).sort((a,b)=>dist(p,a)-dist(p,b)).slice(0,maxTargets);
 if(sorted.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
 sorted.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;state.stats.totalDamageDealt+=dmg;
@@ -2928,7 +2934,7 @@ triggerShake(12,0.4);
 toast(`${ab.icon} ${ab.name}! +10 ATK, +15% Crit for ${dur}s`,'achievement');
 }else if(ab.type==='ultimate_aoe'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const nearby=enemies.filter(e=>dist(p,e)<200*SCALE);
 let totalDmg=0;
 nearby.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;totalDmg+=dmg;state.stats.totalDamageDealt+=dmg;
@@ -3407,8 +3413,7 @@ function openCharCreator(){
 }
 
 // Check for existing save
-if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block'}
-qs('#btnPlay').onclick=()=>startGame(false);
+if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block';qs('#btnContinue').classList.add('primary');qs('#btnNewGame').classList.remove('primary')}
 qs('#btnContinue').onclick=()=>startGame(true);
 qs('#btnNewGame').onclick=()=>openCharCreator();
 
