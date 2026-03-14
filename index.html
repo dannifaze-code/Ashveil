@@ -736,7 +736,9 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 (()=>{
 'use strict';
 const SAVE_KEY='ashveil_v5_save';
-const T=16,MW=120,MH=80,SCALE=3;
+const T=16,MW=280,MH=220,SCALE=3;
+// Terrain type indices (must match tSpr array order)
+const TT_GRASS=0,TT_DIRT=1,TT_STONE=2,TT_WATER=3,TT_MARSH=4,TT_RUINS=5,TT_SAND=6,TT_CORRUPT=7,TT_SNOW=8,TT_VOLCANIC=9,TT_DARKFOREST=10,TT_SHORE=11,TT_ROAD=12,TT_DEEPWATER=13,TT_CAVE=14,TT_LAVA=15;
 const gameSettings={autoSaveInterval:60,shakeEnabled:true,dustEnabled:true,regenEnabled:true};
 const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -765,6 +767,15 @@ function makeTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16
 function makeRockTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const co=[C.stone1,C.stone2,C.stone3];for(let y=4;y<=12;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-8)<4.5+Math.random()*1.5)p(x,y,sample(co))}return createSprite(s)}
 function makeBushTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const g=['#2a5a1e','#3a6a2e','#4a7a38','#2a6628'];for(let y=6;y<=12;y++)for(let x=4;x<=11;x++){if(Math.hypot(x-7.5,y-9)<3.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
 function makeFlowerTile(fc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};p(8,8,fc);p(7,9,fc);p(9,9,fc);p(8,10,fc);p(8,9,'#ffcc44');p(8,11,'#3a6628');p(8,12,'#3a6628');p(8,13,'#2a5618');return createSprite(s)}
+// New biome flora sprites
+function makePineTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=10;y<=15;y++){p(7,y,C.trunk);p(8,y,C.trunkD)}const g=[C.pine1,C.pine2,C.pine3];for(let ly=1;ly<=10;ly++){const w=Math.max(1,Math.floor((ly-1)*0.8));for(let x=8-w;x<=7+w;x++){if(x>=0&&x<16)p(x,ly,sample(g))}}return createSprite(s)}
+function makeDeadTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=4;y<=15;y++){p(7,y,C.deadTree);p(8,y,C.deadTreeD)}p(5,5,C.deadTree);p(6,4,C.deadTree);p(10,6,C.deadTreeD);p(11,5,C.deadTreeD);p(4,3,C.deadTree);p(12,4,C.deadTreeD);p(9,3,C.deadTree);return createSprite(s)}
+function makeDarkTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=9;y<=15;y++){p(7,y,C.darkTrunk);p(8,y,C.darkTrunk)}const g=[C.darkLeaf1,C.darkLeaf2,C.darkLeaf3];for(let y=1;y<=9;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-5)<4.5+Math.random())p(x,y,sample(g))}return createSprite(s)}
+function makePalmTreeTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=5;y<=15;y++){p(7,y,C.palmTrunk);p(8,y,C.palmTrunk)}const g=[C.palm1,C.palm2];for(let dx=-4;dx<=4;dx++){p(7+dx,2,sample(g));p(7+dx,3,sample(g))}p(4,1,sample(g));p(11,1,sample(g));p(3,1,sample(g));p(12,1,sample(g));return createSprite(s)}
+function makeCactusTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=4;y<=13;y++){p(7,y,C.cactus1);p(8,y,C.cactus2)}p(5,6,C.cactus1);p(5,7,C.cactus2);p(5,8,C.cactus1);p(6,8,C.cactus1);p(10,8,C.cactus2);p(10,9,C.cactus1);p(10,10,C.cactus2);p(9,8,C.cactus2);return createSprite(s)}
+function makeMushroomTile(mc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=9;y<=13;y++){p(7,y,C.mushroomStem);p(8,y,C.mushroomStem)}for(let x=4;x<=11;x++){p(x,7,mc);p(x,8,mc)}for(let x=5;x<=10;x++)p(x,6,mc);p(6,9,'#e0e0e0');p(9,9,'#e0e0e0');return createSprite(s)}
+function makeSnowRockTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const co=[C.snowRock,'#8090a0','#9aa0b0'];for(let y=4;y<=12;y++)for(let x=3;x<=12;x++){if(Math.hypot(x-7.5,y-8)<4.5+Math.random()*1.5)p(x,y,sample(co))}for(let x=4;x<=11;x++)if(Math.random()>0.4)p(x,4,C.snow1);return createSprite(s)}
+function makeIceFormationTile(){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};const ic=[C.ice1,C.ice2,'#c0e8ff'];for(let y=3;y<=11;y++)for(let x=4;x<=11;x++){if(Math.hypot(x-7.5,y-7)<3.5+Math.random())p(x,y,sample(ic))}return createSprite(s)}
 function makeHouseTile(wc,rc){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};for(let y=1;y<=4;y++)for(let x=2;x<=13;x++)p(x,y,rc);for(let x=3;x<=12;x++)p(x,0,rc);for(let y=5;y<=12;y++)for(let x=3;x<=12;x++)p(x,y,wc);p(7,9,C.wood);p(8,9,C.wood);p(7,10,C.woodD);p(8,10,C.woodD);p(7,11,C.wood);p(8,11,C.wood);p(7,12,C.woodD);p(8,12,C.woodD);p(5,7,'#4fc3f7');p(10,7,'#4fc3f7');p(5,8,'#2a5a7e');p(10,8,'#2a5a7e');return createSprite(s)}
 
 // ═══ SETTLEMENT STRUCTURE SPRITES ═══
@@ -1111,9 +1122,17 @@ for(let x=5;x<=11;x++){p(x,7,C.metal);p(x,11,C.metal)}
 for(let x=1;x<=14;x++)p(x,15,C.dirt2);
 return createSprite(s)}
 function makeWaterTile(f=0){const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.water3:w>0.5?C.water2:C.water1}return createSprite(s)}
-function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}else if(type==='rawFish'){p(5,7,'#4fc3f7');p(6,6,'#4fc3f7');p(7,6,'#7dd3fc');p(8,6,'#4fc3f7');p(9,6,'#7dd3fc');p(10,7,'#4fc3f7');p(11,8,'#4fc3f7');p(6,7,'#7dd3fc');p(7,7,'#b0e0ff');p(8,7,'#7dd3fc');p(9,7,'#4fc3f7');p(10,8,'#4fc3f7');p(8,8,'#4fc3f7');p(7,5,'#7dd3fc')}else if(type==='log'){for(let y=5;y<=11;y++){p(6,y,C.wood);p(7,y,C.woodD);p(8,y,C.wood);p(9,y,C.woodD)}p(5,5,C.wood);p(10,5,C.wood);p(5,11,C.wood);p(10,11,C.wood);p(7,7,'#8a7040');p(8,8,'#8a7040')}return createSprite(s)}
+function makeResourceSprite(type){const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};if(type==='branch'){p(5,6,C.wood);p(6,7,C.woodD);p(7,8,C.wood);p(8,9,C.woodD);p(9,10,C.wood);p(10,11,C.woodD);p(8,7,C.wood);p(9,6,C.woodD)}else if(type==='herb'){p(7,6,'#3ddc84');p(8,6,'#2ebd6b');p(6,7,'#3ddc84');p(9,7,'#2ebd6b');p(7,8,'#2ebd6b');p(8,8,'#3ddc84');p(7,9,C.trunk);p(8,9,C.trunk);p(7,7,'#ffcc44')}else if(type==='ore'){for(let y=7;y<=11;y++)for(let x=5;x<=10;x++){if(Math.random()>0.2)p(x,y,sample([C.stone1,C.stone2,'#8899aa']))}p(7,8,'#4fc3f7');p(8,9,'#7dd3fc')}else if(type==='fiber'){for(let i=0;i<5;i++){const bx=rand(5,10),by=rand(6,11);p(bx,by,'#c4a86e');p(bx,by+1,'#b49858')}}else if(type==='scrap'){p(6,7,C.metal);p(7,8,C.metalD);p(8,7,C.metalL);p(9,8,C.metal);p(7,9,C.metalD);p(8,10,C.metal)}else if(type==='hide'){for(let y=7;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.leather,C.leatherL,C.leatherD]))}else if(type==='relicShard'){p(7,5,'#9b8afb');p(8,5,'#7b68ee');p(6,6,'#9b8afb');p(7,6,'#ccbbff');p(8,6,'#9b8afb');p(9,6,'#7b68ee');p(7,7,'#7b68ee');p(8,7,'#9b8afb');p(7,8,'#5b4ecc');p(8,8,'#7b68ee');p(7,9,'#5b4ecc')}else if(type==='rawFish'){p(5,7,'#4fc3f7');p(6,6,'#4fc3f7');p(7,6,'#7dd3fc');p(8,6,'#4fc3f7');p(9,6,'#7dd3fc');p(10,7,'#4fc3f7');p(11,8,'#4fc3f7');p(6,7,'#7dd3fc');p(7,7,'#b0e0ff');p(8,7,'#7dd3fc');p(9,7,'#4fc3f7');p(10,8,'#4fc3f7');p(8,8,'#4fc3f7');p(7,5,'#7dd3fc')}else if(type==='log'){for(let y=5;y<=11;y++){p(6,y,C.wood);p(7,y,C.woodD);p(8,y,C.wood);p(9,y,C.woodD)}p(5,5,C.wood);p(10,5,C.wood);p(5,11,C.wood);p(10,11,C.wood);p(7,7,'#8a7040');p(8,8,'#8a7040')}
+// New biome resource sprites
+else if(type==='frostFur'){for(let y=6;y<=10;y++)for(let x=5;x<=10;x++)p(x,y,sample([C.snow1,C.snow2,'#d0d8e5']));p(7,7,'#a0d0ee');p(8,8,'#80c0e0')}
+else if(type==='magmaShard'){p(7,5,'#ff4400');p(8,5,'#ff6600');p(6,6,'#ff4400');p(7,6,'#ffaa22');p(8,6,'#ff6600');p(9,6,'#ff4400');p(7,7,'#ff6600');p(8,7,'#ff4400');p(7,8,C.volcanic1);p(8,8,C.volcanic2)}
+else if(type==='silkThread'){for(let i=0;i<6;i++){const bx=rand(5,10),by=rand(5,10);p(bx,by,'#cccccc');p(bx+1,by+1,'#999999')}}
+else if(type==='venomSac'){p(7,6,'#44aa44');p(8,6,'#44aa44');p(6,7,'#44aa44');p(7,7,'#66ff66');p(8,7,'#44aa44');p(9,7,'#44aa44');p(7,8,'#44aa44');p(8,8,'#66ff66');p(7,9,'#2a8a2a')}
+else if(type==='shellFragment'){for(let y=6;y<=10;y++)for(let x=5;x<=10;x++){if(Math.random()>0.3)p(x,y,sample(['#cc6633','#dd7744','#bb5522']))};p(7,7,'#eeaa88')}
+else if(type==='crystalShard'){p(7,4,'#aa88ff');p(8,4,'#cc44ff');p(6,5,'#aa88ff');p(7,5,'#cc44ff');p(8,5,'#aa88ff');p(9,5,'#cc44ff');p(7,6,'#cc44ff');p(8,6,'#aa88ff');p(7,7,'#8866cc');p(8,7,'#aa88ff');p(7,8,'#6644aa')}
+return createSprite(s)}
 function makeItemIcon(id){
-const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log'];
+const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log','frostFur','magmaShard','silkThread','venomSac','shellFragment','crystalShard'];
 if(matTypes.includes(id))return makeResourceSprite(id);
 const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
 const sword=(c1,c2,c3)=>{p(12,2,c3);p(11,3,c2);p(10,4,c1);p(9,5,c2);p(8,6,c1);p(7,7,c2);p(6,8,c1);p(5,9,c3);p(4,10,'#8a7050');p(3,11,'#6b5535');p(4,11,'#8a7050');p(3,12,'#8a7050');p(2,13,'#6b5535')};
@@ -1165,6 +1184,19 @@ else if(id==='boneRing')ring('#c4a86e','#a08050');
 else if(id==='emberBand')ring('#ff6b35','#ff9f1a');
 else if(id==='voidLoop')ring('#5020aa','#8844dd');
 else if(id==='ashenCirclet')ring('#f5c842','#ff9f1a');
+// New biome equipment icons
+else if(id==='frostBlade')sword('#a0d0ee','#c0e8ff','#80c0e0');
+else if(id==='magmaEdge')sword('#ff4400','#ff6600','#cc3300');
+else if(id==='silkDagger')sword('#cccccc','#eeeeee','#999999');
+else if(id==='crystalBlade')sword('#aa88ff','#cc44ff','#8866cc');
+else if(id==='frostCrown')helm('#a0d0ee','#c0e8ff','#80c0e0');
+else if(id==='magmaPlate')armor('#ff4400','#ff6600','#cc3300');
+else if(id==='shellShield'){for(let y=3;y<=12;y++)for(let x=4;x<=11;x++){if(Math.abs(x-7.5)+Math.abs(y-7.5)<6)p(x,y,'#cc6633')}p(7,7,'#dd7744');p(8,7,'#dd7744');p(7,8,'#eeaa88');p(8,8,'#eeaa88')}
+else if(id==='frostTonic')potion('#80c0e0','#a0d0ee');
+else if(id==='venomFlask')potion('#44aa44','#66ff66');
+else if(id==='frostCore'){p(7,6,'#a0d0ee');p(8,6,'#80c0e0');p(6,7,'#a0d0ee');p(7,7,'#c0e8ff');p(8,7,'#c0e8ff');p(9,7,'#a0d0ee');p(7,8,'#80c0e0');p(8,8,'#a0d0ee');p(7,5,'#60a0c0');p(8,9,'#60a0c0')}
+else if(id==='magmaCore'){p(7,6,'#ff4400');p(8,6,'#ff6600');p(6,7,'#ff4400');p(7,7,'#ffaa22');p(8,7,'#ffaa22');p(9,7,'#ff4400');p(7,8,'#ff6600');p(8,8,'#ff4400');p(7,5,'#cc3300');p(8,9,'#cc3300')}
+else if(id==='deepFang'){p(7,4,'#4a3a48');p(8,4,'#3a2a38');p(7,5,'#5a4a58');p(8,5,'#4a3a48');p(7,6,'#6a5a68');p(8,6,'#5a4a58');p(7,7,'#7a6a78');p(8,7,'#6a5a68');p(7,8,'#5a4a58');p(8,8,'#4a3a48');p(7,9,'#3a2a38');p(7,10,'#2a1a28')}
 else{p(7,7,'#888');p(8,7,'#888');p(7,8,'#888');p(8,8,'#888')}}
 return createSprite(s)}
 
@@ -1178,10 +1210,28 @@ sprites.tiles.water=[0,1,2,3].map(f=>makeWaterTile(f));
 sprites.tiles.corrupt=[0,1,2].map(()=>makeTile(C.corrupt1,[C.corrupt2,C.corrupt3,'#2a0a3a']));
 sprites.tiles.dungeon=[0,1].map(()=>makeTile(C.dungeon1,[C.dungeon2,C.dungeon3]));
 sprites.tiles.dungeonWall=[0].map(()=>makeTile('#0a0a1a',['#151528','#0f0f22']));
+// New biome terrain tiles
+sprites.tiles.snow=[0,1,2].map(()=>makeTile(C.snow1,[C.snow2,C.snow3,C.snow1,C.snow2]));
+sprites.tiles.volcanic=[0,1,2].map(()=>makeTile(C.volcanic1,[C.volcanic2,C.volcanic3,C.volcanic1]));
+sprites.tiles.darkforest=[0,1,2].map(()=>makeTile(C.darkForest1,[C.darkForest2,C.darkForest3,C.darkForest1]));
+sprites.tiles.shore=[0,1,2].map(()=>makeTile(C.shore1,[C.shore2,C.shore3,C.shore1]));
+sprites.tiles.road=[0,1].map(()=>makeTile(C.road1,[C.road2,C.road3,C.road1]));
+sprites.tiles.deepwater=[0,1,2,3].map(f=>makeWaterTile(f));
+sprites.tiles.lava=[0,1,2,3].map(f=>{const s=new Array(256).fill(0),o=f*2;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const w=Math.sin((x+o)*0.5+y*0.3)*0.5+0.5;s[y*16+x]=w>0.8?C.lava3:w>0.5?C.lava2:C.lava1}return createSprite(s)});
+sprites.tiles.cave=[0,1].map(()=>makeTile(C.cave1,[C.cave2,C.cave3]));
 sprites.objects.tree=[makeTreeTile(),makeTreeTile(),makeTreeTile()];
 sprites.objects.rock=[makeRockTile(),makeRockTile()];
 sprites.objects.bush=[makeBushTile(),makeBushTile()];
 sprites.objects.flower=[makeFlowerTile('#dc2626'),makeFlowerTile('#a855f7'),makeFlowerTile('#4fc3f7'),makeFlowerTile('#f59e0b')];
+// New biome-specific flora/tree sprites
+sprites.objects.pineTree=[makePineTreeTile(),makePineTreeTile(),makePineTreeTile()];
+sprites.objects.deadTree=[makeDeadTreeTile(),makeDeadTreeTile()];
+sprites.objects.darkTree=[makeDarkTreeTile(),makeDarkTreeTile(),makeDarkTreeTile()];
+sprites.objects.palmTree=[makePalmTreeTile(),makePalmTreeTile()];
+sprites.objects.cactus=[makeCactusTile(),makeCactusTile()];
+sprites.objects.mushroom=[makeMushroomTile('#8a2a2a'),makeMushroomTile('#aa3a3a'),makeMushroomTile('#6a4aaa')];
+sprites.objects.snowRock=[makeSnowRockTile(),makeSnowRockTile()];
+sprites.objects.iceFormation=[makeIceFormationTile(),makeIceFormationTile()];
 sprites.objects.house=[makeHouseTile(C.wall1,C.roof1),makeHouseTile(C.wall2,C.roof2),makeHouseTile('#8a8a7a','#4a5a6a')];
 // Settlement-level sprites
 sprites.objects.tent=[makeTentSprite(0),makeTentSprite(1),makeTentSprite(2)];
@@ -1200,133 +1250,215 @@ sprites.objects.beacon=[makeBeaconSprite()];
 sprites.objects.banner=[makeBannerSprite('#dc2626'),makeBannerSprite('#7b68ee')];
 sprites.objects.gate=[makeGateSprite()];
 const resourceSprites={};
-['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
+['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log','frostFur','magmaShard','silkThread','venomSac','shellFragment','crystalShard'].forEach(t=>{resourceSprites[t]=makeResourceSprite(t)});
 
 // ═══ WORLD MAP ═══
-const zoneMap={town:{x1:40,y1:28,x2:60,y2:44,name:'Cindergate',danger:0},forest:{x1:8,y1:5,x2:38,y2:35,name:'Emberwood',danger:1},marsh:{x1:20,y1:45,x2:55,y2:72,name:'Mirefen',danger:2},ruins:{x1:62,y1:10,x2:95,y2:45,name:'Glass Ruins',danger:3}};
+const zoneMap={
+town:{x1:120,y1:85,x2:160,y2:120,name:'Cindergate',danger:0},
+forest:{x1:90,y1:10,x2:170,y2:70,name:'Emberwood',danger:1},
+marsh:{x1:95,y1:145,x2:180,y2:205,name:'Mirefen',danger:2},
+ruins:{x1:185,y1:10,x2:265,y2:70,name:'Glass Ruins',danger:3},
+frost:{x1:10,y1:10,x2:80,y2:70,name:'Frostpeak',danger:2},
+scorchlands:{x1:10,y1:150,x2:85,y2:210,name:'Scorchlands',danger:3},
+thornveil:{x1:10,y1:80,x2:80,y2:140,name:'Thornveil',danger:3},
+crystalshore:{x1:190,y1:80,x2:265,y2:140,name:'Crystalshore',danger:2}
+};
 const terrain=new Uint8Array(MW*MH),terrainVariant=new Uint8Array(MW*MH),corruptionMap=new Float32Array(MW*MH);
 const decorations=[],buildings=[];
-// Dungeon entrance locations
-const dungeonEntrances=[{x:78,y:25,name:'Shattered Reliquary',zone:'ruins',minLevel:3,floors:3},{x:25,y:50,name:'Sunken Hollow',zone:'marsh',minLevel:5,floors:4},{x:15,y:20,name:'The Deep Root',zone:'forest',minLevel:7,floors:5}];
+// Dungeon entrance locations (expanded)
+const dungeonEntrances=[
+{x:220,y:40,name:'Shattered Reliquary',zone:'ruins',minLevel:3,floors:3},
+{x:140,y:175,name:'Sunken Hollow',zone:'marsh',minLevel:5,floors:4},
+{x:130,y:40,name:'The Deep Root',zone:'forest',minLevel:7,floors:5},
+{x:45,y:115,name:'Spider Caves',zone:'thornveil',minLevel:4,floors:3},
+{x:40,y:40,name:'Frost Caverns',zone:'frost',minLevel:6,floors:4},
+{x:50,y:185,name:'Magma Depths',zone:'scorchlands',minLevel:8,floors:5},
+{x:230,y:115,name:'Crystal Grotto',zone:'crystalshore',minLevel:5,floors:4}
+];
 
 // ═══ DYNAMIC SETTLEMENT LAYOUT ═══
 function rebuildSettlement(){
 buildings.length=0;
 const lv=state.settlement.level;
-// Town center ~(50,36), town zone x:40-60, y:28-44
+// Town center ~(140,100), town zone x:120-160, y:85-120
 if(lv===1){
-// Camp: tents around a campfire
-buildings.push({x:47,y:33,type:'tent',variant:0,sz:2.4});
-buildings.push({x:53,y:33,type:'tent',variant:1,sz:2.4});
-buildings.push({x:45,y:37,type:'tent',variant:2,sz:2.4});
-buildings.push({x:55,y:37,type:'tent',variant:0,sz:2.4});
-buildings.push({x:50,y:40,type:'tent',variant:1,sz:2.4});
-buildings.push({x:50,y:36,type:'campfire',variant:0,sz:1.8});
-// Scattered crates/supplies (small tents as supply piles)
-buildings.push({x:48,y:39,type:'tent',variant:2,sz:1.6});
+buildings.push({x:137,y:98,type:'tent',variant:0,sz:2.4});
+buildings.push({x:143,y:98,type:'tent',variant:1,sz:2.4});
+buildings.push({x:135,y:102,type:'tent',variant:2,sz:2.4});
+buildings.push({x:145,y:102,type:'tent',variant:0,sz:2.4});
+buildings.push({x:140,y:105,type:'tent',variant:1,sz:2.4});
+buildings.push({x:140,y:101,type:'campfire',variant:0,sz:1.8});
+buildings.push({x:138,y:104,type:'tent',variant:2,sz:1.6});
 }
 else if(lv===2){
-// Outpost: wooden houses, forge, palisade walls
-buildings.push({x:47,y:32,type:'woodHouse',variant:0,sz:2.6});
-buildings.push({x:53,y:32,type:'woodHouse',variant:1,sz:2.6});
-buildings.push({x:45,y:36,type:'woodHouse',variant:2,sz:2.6});
-buildings.push({x:55,y:36,type:'woodHouse',variant:0,sz:2.6});
-buildings.push({x:50,y:39,type:'woodHouse',variant:1,sz:2.6});
-buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
-buildings.push({x:48,y:41,type:'campfire',variant:0,sz:1.5});
-// Palisade walls - perimeter
-for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:43,type:'palisadeH',variant:0,sz:2})}
-for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:58,y:y,type:'palisadeV',variant:0,sz:2})}
-// Gate entrance (south)
-buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+buildings.push({x:137,y:97,type:'woodHouse',variant:0,sz:2.6});
+buildings.push({x:143,y:97,type:'woodHouse',variant:1,sz:2.6});
+buildings.push({x:135,y:101,type:'woodHouse',variant:2,sz:2.6});
+buildings.push({x:145,y:101,type:'woodHouse',variant:0,sz:2.6});
+buildings.push({x:140,y:104,type:'woodHouse',variant:1,sz:2.6});
+buildings.push({x:140,y:99,type:'forge',variant:0,sz:2.4});
+buildings.push({x:138,y:106,type:'campfire',variant:0,sz:1.5});
+for(let x=132;x<=147;x+=2){buildings.push({x:x,y:94,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:108,type:'palisadeH',variant:0,sz:2})}
+for(let y=95;y<=107;y+=2){buildings.push({x:131,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:148,y:y,type:'palisadeV',variant:0,sz:2})}
+buildings.push({x:140,y:108,type:'gate',variant:0,sz:2.4});
 }
 else if(lv===3){
-// Hamlet: stone-foundation houses, more buildings, palisade
-buildings.push({x:44,y:32,type:'stoneHouse',variant:0,sz:2.6});
-buildings.push({x:48,y:31,type:'stoneHouse',variant:1,sz:2.6});
-buildings.push({x:52,y:32,type:'stoneHouse',variant:2,sz:2.6});
-buildings.push({x:56,y:33,type:'stoneHouse',variant:0,sz:2.6});
-buildings.push({x:45,y:36,type:'stoneHouse',variant:1,sz:2.6});
-buildings.push({x:50,y:37,type:'stoneHouse',variant:2,sz:2.6});
-buildings.push({x:55,y:36,type:'stoneHouse',variant:0,sz:2.6});
-buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
-buildings.push({x:48,y:41,type:'campfire',variant:0,sz:1.5});
-// Palisade walls
-for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:43,type:'palisadeH',variant:0,sz:2})}
-for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:58,y:y,type:'palisadeV',variant:0,sz:2})}
-buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+buildings.push({x:134,y:97,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:138,y:96,type:'stoneHouse',variant:1,sz:2.6});
+buildings.push({x:142,y:97,type:'stoneHouse',variant:2,sz:2.6});
+buildings.push({x:146,y:98,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:135,y:101,type:'stoneHouse',variant:1,sz:2.6});
+buildings.push({x:140,y:102,type:'stoneHouse',variant:2,sz:2.6});
+buildings.push({x:145,y:101,type:'stoneHouse',variant:0,sz:2.6});
+buildings.push({x:140,y:99,type:'forge',variant:0,sz:2.4});
+buildings.push({x:138,y:106,type:'campfire',variant:0,sz:1.5});
+for(let x=132;x<=147;x+=2){buildings.push({x:x,y:94,type:'palisadeH',variant:0,sz:2});buildings.push({x:x,y:108,type:'palisadeH',variant:0,sz:2})}
+for(let y=95;y<=107;y+=2){buildings.push({x:131,y:y,type:'palisadeV',variant:0,sz:2});buildings.push({x:148,y:y,type:'palisadeV',variant:0,sz:2})}
+buildings.push({x:140,y:108,type:'gate',variant:0,sz:2.4});
 }
 else if(lv===4){
-// Stronghold: fortified houses, watchtowers, stone walls
-buildings.push({x:44,y:32,type:'strongholdHouse',variant:0,sz:2.6});
-buildings.push({x:48,y:31,type:'strongholdHouse',variant:1,sz:2.6});
-buildings.push({x:52,y:32,type:'strongholdHouse',variant:2,sz:2.6});
-buildings.push({x:56,y:33,type:'strongholdHouse',variant:0,sz:2.6});
-buildings.push({x:45,y:36,type:'strongholdHouse',variant:1,sz:2.6});
-buildings.push({x:50,y:37,type:'strongholdHouse',variant:2,sz:2.6});
-buildings.push({x:55,y:36,type:'strongholdHouse',variant:0,sz:2.6});
-buildings.push({x:47,y:40,type:'strongholdHouse',variant:1,sz:2.6});
-buildings.push({x:53,y:40,type:'strongholdHouse',variant:2,sz:2.6});
-buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
-// Stone walls replace palisade
-for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:43,type:'stoneWallH',variant:0,sz:2})}
-for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:58,y:y,type:'stoneWallV',variant:0,sz:2})}
-// Watchtowers at corners
-buildings.push({x:41,y:28,type:'watchtower',variant:0,sz:3});
-buildings.push({x:58,y:28,type:'watchtower',variant:0,sz:3});
-buildings.push({x:41,y:42,type:'watchtower',variant:0,sz:3});
-buildings.push({x:58,y:42,type:'watchtower',variant:0,sz:3});
-buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+buildings.push({x:134,y:97,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:138,y:96,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:142,y:97,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:146,y:98,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:135,y:101,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:140,y:102,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:145,y:101,type:'strongholdHouse',variant:0,sz:2.6});
+buildings.push({x:137,y:105,type:'strongholdHouse',variant:1,sz:2.6});
+buildings.push({x:143,y:105,type:'strongholdHouse',variant:2,sz:2.6});
+buildings.push({x:140,y:99,type:'forge',variant:0,sz:2.4});
+for(let x=132;x<=147;x+=2){buildings.push({x:x,y:94,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:108,type:'stoneWallH',variant:0,sz:2})}
+for(let y=95;y<=107;y+=2){buildings.push({x:131,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:148,y:y,type:'stoneWallV',variant:0,sz:2})}
+buildings.push({x:131,y:93,type:'watchtower',variant:0,sz:3});
+buildings.push({x:148,y:93,type:'watchtower',variant:0,sz:3});
+buildings.push({x:131,y:107,type:'watchtower',variant:0,sz:3});
+buildings.push({x:148,y:107,type:'watchtower',variant:0,sz:3});
+buildings.push({x:140,y:108,type:'gate',variant:0,sz:2.4});
 }
 else if(lv>=5){
-// Veil Bastion: grand buildings, beacon, banners, full fortification
-buildings.push({x:44,y:32,type:'bastionHouse',variant:0,sz:2.8});
-buildings.push({x:48,y:31,type:'bastionHouse',variant:1,sz:2.8});
-buildings.push({x:52,y:32,type:'bastionHouse',variant:2,sz:2.8});
-buildings.push({x:56,y:33,type:'bastionHouse',variant:0,sz:2.8});
-buildings.push({x:45,y:36,type:'bastionHouse',variant:1,sz:2.8});
-buildings.push({x:50,y:38,type:'bastionHouse',variant:2,sz:2.8});
-buildings.push({x:55,y:36,type:'bastionHouse',variant:0,sz:2.8});
-buildings.push({x:47,y:40,type:'bastionHouse',variant:1,sz:2.8});
-buildings.push({x:53,y:40,type:'bastionHouse',variant:2,sz:2.8});
-buildings.push({x:50,y:34,type:'forge',variant:0,sz:2.4});
-// Central beacon tower
-buildings.push({x:50,y:35,type:'beacon',variant:0,sz:3.5});
-// Stone walls
-for(let x=42;x<=57;x+=2){buildings.push({x:x,y:29,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:43,type:'stoneWallH',variant:0,sz:2})}
-for(let y=30;y<=42;y+=2){buildings.push({x:41,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:58,y:y,type:'stoneWallV',variant:0,sz:2})}
-// Watchtowers
-buildings.push({x:41,y:28,type:'watchtower',variant:0,sz:3});
-buildings.push({x:58,y:28,type:'watchtower',variant:0,sz:3});
-buildings.push({x:41,y:42,type:'watchtower',variant:0,sz:3});
-buildings.push({x:58,y:42,type:'watchtower',variant:0,sz:3});
-// Banners
-buildings.push({x:46,y:29,type:'banner',variant:0,sz:2.2});
-buildings.push({x:54,y:29,type:'banner',variant:1,sz:2.2});
-buildings.push({x:46,y:43,type:'banner',variant:0,sz:2.2});
-buildings.push({x:54,y:43,type:'banner',variant:1,sz:2.2});
-buildings.push({x:50,y:43,type:'gate',variant:0,sz:2.4});
+buildings.push({x:134,y:97,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:138,y:96,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:142,y:97,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:146,y:98,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:135,y:101,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:140,y:103,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:145,y:101,type:'bastionHouse',variant:0,sz:2.8});
+buildings.push({x:137,y:105,type:'bastionHouse',variant:1,sz:2.8});
+buildings.push({x:143,y:105,type:'bastionHouse',variant:2,sz:2.8});
+buildings.push({x:140,y:99,type:'forge',variant:0,sz:2.4});
+buildings.push({x:140,y:100,type:'beacon',variant:0,sz:3.5});
+for(let x=132;x<=147;x+=2){buildings.push({x:x,y:94,type:'stoneWallH',variant:0,sz:2});buildings.push({x:x,y:108,type:'stoneWallH',variant:0,sz:2})}
+for(let y=95;y<=107;y+=2){buildings.push({x:131,y:y,type:'stoneWallV',variant:0,sz:2});buildings.push({x:148,y:y,type:'stoneWallV',variant:0,sz:2})}
+buildings.push({x:131,y:93,type:'watchtower',variant:0,sz:3});
+buildings.push({x:148,y:93,type:'watchtower',variant:0,sz:3});
+buildings.push({x:131,y:107,type:'watchtower',variant:0,sz:3});
+buildings.push({x:148,y:107,type:'watchtower',variant:0,sz:3});
+buildings.push({x:136,y:94,type:'banner',variant:0,sz:2.2});
+buildings.push({x:144,y:94,type:'banner',variant:1,sz:2.2});
+buildings.push({x:136,y:108,type:'banner',variant:0,sz:2.2});
+buildings.push({x:144,y:108,type:'banner',variant:1,sz:2.2});
+buildings.push({x:140,y:108,type:'gate',variant:0,sz:2.4});
 }
+// ── Biome towns (simple camp-style with forge + campfire) ──
+const biomeTowns=[
+{zone:'frost',cx:50,cy:38,name:'Frostpeak Village'},
+{zone:'forest',cx:130,cy:32,name:'Emberwood Camp'},
+{zone:'ruins',cx:215,cy:35,name:'Ruins Outpost'},
+{zone:'thornveil',cx:45,cy:110,name:'Thornveil Haven'},
+{zone:'crystalshore',cx:230,cy:110,name:'Crystal Harbor'},
+{zone:'scorchlands',cx:50,cy:175,name:'Scorchfort'},
+{zone:'marsh',cx:140,cy:172,name:'Mirefen Settlement'}
+];
+biomeTowns.forEach(bt=>{
+buildings.push({x:bt.cx-3,y:bt.cy-2,type:'woodHouse',variant:0,sz:2.4});
+buildings.push({x:bt.cx+3,y:bt.cy-2,type:'woodHouse',variant:1,sz:2.4});
+buildings.push({x:bt.cx-2,y:bt.cy+2,type:'woodHouse',variant:2,sz:2.4});
+buildings.push({x:bt.cx+2,y:bt.cy+2,type:'woodHouse',variant:0,sz:2.4});
+buildings.push({x:bt.cx,y:bt.cy,type:'forge',variant:0,sz:2.2});
+buildings.push({x:bt.cx+1,y:bt.cy+4,type:'campfire',variant:0,sz:1.5});
+});
 }
 
 function generateWorld(){
+// ── Base terrain fill ──
 for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;terrainVariant[i]=rand(0,3);corruptionMap[i]=0;terrain[i]=0;
-if(x>=40&&x<=60&&y>=28&&y<=44)terrain[i]=Math.random()>0.4?1:2;
-else if(x>=8&&x<=38&&y>=5&&y<=35)terrain[i]=0;
-else if(x>=20&&x<=55&&y>=45&&y<=72)terrain[i]=Math.random()>0.3?4:(Math.random()>0.5?3:4);
-else if(x>=62&&x<=95&&y>=10&&y<=45)terrain[i]=Math.random()>0.4?5:2;
-if(x<4||x>MW-5||y<3||y>MH-4)terrain[i]=3;
-const rX=39+Math.sin(y*0.15)*3;if(Math.abs(x-rX)<2&&y>20&&y<50)terrain[i]=3;
-const rY=44+Math.sin(x*0.12)*2;if(Math.abs(y-rY)<1.5&&x>30&&x<65)terrain[i]=3;
-if(Math.abs(y-27)<1&&x>35&&x<42)terrain[i]=1;
-if(Math.abs(x-55)<1&&y>35&&y<48)terrain[i]=1;
-if(Math.abs(y-30)<1&&x>58&&x<65)terrain[i]=1;
+// Biome base terrain assignment
+if(x>=120&&x<=160&&y>=85&&y<=120)terrain[i]=Math.random()>0.4?TT_DIRT:TT_STONE; // Cindergate town (dirt/stone)
+else if(x>=90&&x<=170&&y>=10&&y<=70)terrain[i]=TT_GRASS; // Emberwood (grass/forest)
+else if(x>=95&&x<=180&&y>=145&&y<=205)terrain[i]=Math.random()>0.3?TT_MARSH:(Math.random()>0.5?TT_WATER:TT_MARSH); // Mirefen (marsh)
+else if(x>=185&&x<=265&&y>=10&&y<=70)terrain[i]=Math.random()>0.4?TT_RUINS:TT_STONE; // Glass Ruins (ruins/stone)
+else if(x>=10&&x<=80&&y>=10&&y<=70)terrain[i]=TT_SNOW; // Frostpeak (snow)
+else if(x>=10&&x<=85&&y>=150&&y<=210)terrain[i]=TT_VOLCANIC; // Scorchlands (volcanic)
+else if(x>=10&&x<=80&&y>=80&&y<=140)terrain[i]=TT_DARKFOREST; // Thornveil (darkforest)
+else if(x>=190&&x<=265&&y>=80&&y<=140)terrain[i]=TT_SHORE; // Crystalshore (shore)
+// Border water
+if(x<5||x>MW-6||y<4||y>MH-5)terrain[i]=TT_WATER;
 }
-for(let i=0;i<180;i++){const x=rand(9,37),y=rand(6,34);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'tree',variant:rand(0,2)})}
-for(let i=0;i<40;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==3)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
-for(let i=0;i<60;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===0||terrain[y*MW+x]===4)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
-for(let i=0;i<50;i++){const x=rand(10,36),y=rand(6,33);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
-for(let i=0;i<15;i++){const x=rand(65,92),y=rand(13,42);decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+// ── Major river: flows from Frostpeak (NW) southeast through center to Mirefen ──
+for(let t=0;t<1200;t++){const f=t/1200;const rx=Math.floor(30+f*120+Math.sin(f*8)*8);const ry=Math.floor(15+f*180+Math.cos(f*6)*6);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH)terrain[wy*MW+wx]=TT_WATER}}
+// ── Secondary river: from Frostpeak east to Crystalshore ──
+for(let t=0;t<800;t++){const f=t/800;const rx=Math.floor(70+f*160+Math.sin(f*10)*5);const ry=Math.floor(55+Math.sin(f*4)*15);for(let dy=-1;dy<=0;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==TT_DIRT&&terrain[wy*MW+wx]!==TT_STONE)terrain[wy*MW+wx]=TT_WATER}}
+// ── Lake in Crystalshore ──
+const lakeX=225,lakeY=100,lakeR=12;
+for(let y=lakeY-lakeR;y<=lakeY+lakeR;y++)for(let x=lakeX-lakeR;x<=lakeX+lakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lakeX,y-lakeY)<lakeR+Math.sin(x*0.5)*2)terrain[y*MW+x]=TT_WATER}
+// ── Lake in Frostpeak (frozen lake) ──
+const fLakeX=55,fLakeY=55,fLakeR=8;
+for(let y=fLakeY-fLakeR;y<=fLakeY+fLakeR;y++)for(let x=fLakeX-fLakeR;x<=fLakeX+fLakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-fLakeX,y-fLakeY)<fLakeR+Math.sin(x*0.3)*1.5)terrain[y*MW+x]=TT_WATER}
+// ── Lava pools in Scorchlands ──
+const lavaPools=[[35,170,5],[60,190,6],[25,195,4],[70,175,4]];
+lavaPools.forEach(([lx,ly,lr])=>{const adjustedR=lr+Math.random();for(let y=ly-lr;y<=ly+lr;y++)for(let x=lx-lr;x<=lx+lr;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lx,y-ly)<adjustedR)terrain[y*MW+x]=TT_LAVA}});// lava=15
+// ── Roads connecting towns ──
+// Road helper: carve a dirt road between two points
+function roadBetween(ax,ay,bx,by){const steps=Math.max(Math.abs(bx-ax),Math.abs(by-ay))*2;for(let t=0;t<=steps;t++){const f=t/steps;const rx=Math.round(ax+(bx-ax)*f);const ry=Math.round(ay+(by-ay)*f);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==TT_WATER&&terrain[wy*MW+wx]!==TT_LAVA)terrain[wy*MW+wx]=TT_ROAD}}}// road=12
+// Connect Cindergate hub to all biome towns
+roadBetween(140,100,130,32); // to Emberwood Camp
+roadBetween(140,100,50,38);  // to Frostpeak Village (via west)
+roadBetween(140,100,215,35); // to Ruins Outpost (via east)
+roadBetween(140,100,45,110); // to Thornveil Haven
+roadBetween(140,100,230,110);// to Crystal Harbor
+roadBetween(140,100,50,175); // to Scorchfort
+roadBetween(140,100,140,172);// to Mirefen Settlement
+// ── Biome town clearings (dirt terrain, no trees) ──
+const townCenters=[
+{cx:140,cy:100,r:12}, // Cindergate
+{cx:50,cy:38,r:8},    // Frostpeak Village
+{cx:130,cy:32,r:8},   // Emberwood Camp
+{cx:215,cy:35,r:8},   // Ruins Outpost
+{cx:45,cy:110,r:8},   // Thornveil Haven
+{cx:230,cy:110,r:8},  // Crystal Harbor
+{cx:50,cy:175,r:8},   // Scorchfort
+{cx:140,cy:172,r:8}   // Mirefen Settlement
+];
+townCenters.forEach(tc=>{for(let y=tc.cy-tc.r;y<=tc.cy+tc.r;y++)for(let x=tc.cx-tc.r;x<=tc.cx+tc.r;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-tc.cx,y-tc.cy)<tc.r)terrain[y*MW+x]=TT_DIRT}});
+// ── Decorations: trees, rocks, flora per biome ──
+// Emberwood: dense forest trees
+for(let i=0;i<400;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'tree',variant:rand(0,2)})}
+// Frostpeak: pine trees
+for(let i=0;i<300;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'pineTree',variant:rand(0,2)})}
+// Frostpeak: snow rocks, ice
+for(let i=0;i<50;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'snowRock',variant:rand(0,1)})}
+for(let i=0;i<20;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'iceFormation',variant:rand(0,1)})}
+// Glass Ruins: rocks
+for(let i=0;i<80;i++){const x=rand(187,263),y=rand(12,68);if(terrain[y*MW+x]===TT_RUINS||terrain[y*MW+x]===TT_STONE)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+// Thornveil: dark gnarled trees
+for(let i=0;i<350;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'darkTree',variant:rand(0,2)})}
+// Thornveil: mushrooms
+for(let i=0;i<60;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST)decorations.push({x,y,type:'mushroom',variant:rand(0,2)})}
+// Scorchlands: dead trees, cacti
+for(let i=0;i<100;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===TT_VOLCANIC&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'deadTree',variant:rand(0,1)})}
+for(let i=0;i<80;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===TT_VOLCANIC)decorations.push({x,y,type:'cactus',variant:rand(0,1)})}
+// Crystalshore: palm trees, rocks
+for(let i=0;i<200;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'palmTree',variant:rand(0,1)})}
+for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+// Mirefen: bushes
+for(let i=0;i<120;i++){const x=rand(97,178),y=rand(147,203);if(terrain[y*MW+x]===TT_MARSH)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
+// General scattered rocks
+for(let i=0;i<100;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==TT_WATER&&terrain[y*MW+x]!==TT_LAVA)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+// General scattered bushes
+for(let i=0;i<80;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===TT_GRASS||terrain[y*MW+x]===TT_MARSH)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
+// Flowers in forest and shore
+for(let i=0;i<80;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
+for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
 decorations.sort((a,b)=>a.y-b.y);
 }
 generateWorld();
@@ -1334,13 +1466,19 @@ generateWorld();
 // ═══ ITEM DEFINITIONS ═══
 const itemDefs={
 branch:{name:'Branch',type:'material',rarity:'common',desc:'Rough wood.'},fiber:{name:'Fiber',type:'material',rarity:'common',desc:'Plant fibers.'},herb:{name:'Herb',type:'material',rarity:'common',desc:'Restorative herb.'},scrap:{name:'Scrap Metal',type:'material',rarity:'common',desc:'Ruin salvage.'},hide:{name:'Hide',type:'material',rarity:'common',desc:'Tough beast hide.'},ore:{name:'Veil Ore',type:'material',rarity:'uncommon',desc:'Crystallized veil energy.'},ashCore:{name:'Ash Core',type:'material',rarity:'rare',desc:'Smolders with ancient heat.'},wraithEssence:{name:'Wraith Essence',type:'material',rarity:'epic',desc:'Condensed veil energy.'},drakeScale:{name:'Drake Scale',type:'material',rarity:'rare',desc:'Nearly indestructible.'},relicShard:{name:'Relic Shard',type:'material',rarity:'rare',desc:'Fragment of an ancient relic. Scholars covet these.'},voidFragment:{name:'Void Fragment',type:'material',rarity:'epic',desc:'A piece of nothingness. It hums.'},corruptedHeart:{name:'Corrupted Heart',type:'material',rarity:'epic',desc:'Pulses with dark energy.'},rawFish:{name:'Raw Fish',type:'material',rarity:'common',desc:'Fresh catch from Ashveil waters.'},log:{name:'Timber Log',type:'material',rarity:'common',desc:'Hewn from Ashveil forests.'},
+// New biome materials
+frostFur:{name:'Frost Fur',type:'material',rarity:'common',desc:'Thick fur from Frostpeak beasts.'},frostCore:{name:'Frost Core',type:'material',rarity:'rare',desc:'Frozen crystalline energy.'},magmaShard:{name:'Magma Shard',type:'material',rarity:'common',desc:'A fragment of cooled magma.'},magmaCore:{name:'Magma Core',type:'material',rarity:'rare',desc:'Blazing volcanic heart.'},silkThread:{name:'Silk Thread',type:'material',rarity:'common',desc:'Strong spider silk from Thornveil.'},venomSac:{name:'Venom Sac',type:'material',rarity:'uncommon',desc:'Potent spider venom.'},shellFragment:{name:'Shell Fragment',type:'material',rarity:'common',desc:'Tough crab shell from Crystalshore.'},crystalShard:{name:'Crystal Shard',type:'material',rarity:'rare',desc:'Resonating crystalline fragment.'},deepFang:{name:'Deep Fang',type:'material',rarity:'rare',desc:'A fang from the depths.'},
 woodblade:{name:'Woodblade',type:'weapon',slot:'weapon',atk:3,rarity:'common',desc:'Simple blade.'},ironblade:{name:'Iron Blade',type:'weapon',slot:'weapon',atk:6,rarity:'uncommon',desc:'Proper steel.'},veilEdge:{name:'Veil Edge',type:'weapon',slot:'weapon',atk:10,rarity:'rare',desc:'Hums with energy.'},ashfangBlade:{name:'Ashfang Blade',type:'weapon',slot:'weapon',atk:16,rarity:'epic',desc:'Forged from drake fang. Evolves with kills.',evolves:true,kills:0},wraithTouch:{name:'Wraith Touch',type:'weapon',slot:'weapon',atk:12,rarity:'epic',desc:'Phases through armor.',critBonus:15},relicBlade:{name:'Relic Blade',type:'weapon',slot:'weapon',atk:20,rarity:'legendary',desc:'An ancient weapon reformed from dungeon shards.'},voidreaper:{name:'Voidreaper',type:'weapon',slot:'weapon',atk:24,rarity:'legendary',desc:'Carved from pure void. Enemies flee.'},
+// New biome weapons
+frostBlade:{name:'Frost Blade',type:'weapon',slot:'weapon',atk:8,rarity:'uncommon',desc:'Chills on contact.'},magmaEdge:{name:'Magma Edge',type:'weapon',slot:'weapon',atk:14,rarity:'rare',desc:'Burns with volcanic fury.'},silkDagger:{name:'Silk Dagger',type:'weapon',slot:'weapon',atk:7,rarity:'uncommon',desc:'Light and deadly.'},crystalBlade:{name:'Crystal Blade',type:'weapon',slot:'weapon',atk:18,rarity:'epic',desc:'Resonates with pure energy.',critBonus:10},frostCrown:{name:'Frost Crown',type:'helm',slot:'helm',def:6,rarity:'rare',desc:'Crown of eternal ice.'},magmaPlate:{name:'Magma Plate',type:'armor',slot:'body',def:10,rarity:'rare',desc:'Forged in volcanic heat.'},
 wanderercoat:{name:'Wanderer Coat',type:'armor',slot:'body',def:2,rarity:'common',desc:'Basic protection.'},marshwraps:{name:'Marsh Wraps',type:'armor',slot:'body',def:4,rarity:'uncommon',desc:'Toxin resistant.'},veilcloak:{name:'Veilcloak',type:'armor',slot:'body',def:7,rarity:'rare',desc:'Shimmers at edges.'},drakemail:{name:'Drake Mail',type:'armor',slot:'body',def:12,rarity:'epic',desc:'Impossible toughness.'},relicArmor:{name:'Relic Plate',type:'armor',slot:'body',def:16,rarity:'legendary',desc:'Ancient protection reforged.'},
 charm:{name:'Veil Charm',type:'trinket',slot:'trinket',def:1,atk:1,rarity:'uncommon',desc:'Ward against beyond.'},huntersBadge:{name:"Hunter's Badge",type:'trinket',slot:'trinket',atk:3,rarity:'uncommon',desc:'Proven hunter.'},corruptionWard:{name:'Corruption Ward',type:'trinket',slot:'trinket',def:3,rarity:'rare',desc:'Shields the mind.'},scholarsPendant:{name:"Scholar's Pendant",type:'trinket',slot:'trinket',atk:2,def:2,rarity:'rare',desc:'Veil Scholars granted this.'},ashenSignet:{name:'Ashen Signet',type:'trinket',slot:'trinket',atk:4,def:1,rarity:'rare',desc:'Mark of the Ashen Order.'},
 leatherHood:{name:'Leather Hood',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A simple hooded cowl.'},ironHelm:{name:'Iron Helm',type:'helm',slot:'helm',def:3,rarity:'uncommon',desc:'Forged iron headpiece.'},veilCrown:{name:'Veil Crown',type:'helm',slot:'helm',def:5,rarity:'rare',desc:'Hums with Veil resonance.'},drakeVisage:{name:'Drake Visage',type:'helm',slot:'helm',def:8,rarity:'epic',desc:'Carved from drake skull.'},relicHelm:{name:'Relic Helm',type:'helm',slot:'helm',def:12,rarity:'legendary',desc:'An ancient crown reforged.'},
 wandererBoots:{name:'Wanderer Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Sturdy road boots.'},marshTreads:{name:'Marsh Treads',type:'boots',slot:'boots',def:2,rarity:'uncommon',desc:'Grip the mire.'},veilStriders:{name:'Veil Striders',type:'boots',slot:'boots',def:4,rarity:'rare',desc:'Step between worlds.'},drakeGreaves:{name:'Drake Greaves',type:'boots',slot:'boots',def:6,rarity:'epic',desc:'Scale-plated greaves.'},relicSabatons:{name:'Relic Sabatons',type:'boots',slot:'boots',def:10,rarity:'legendary',desc:'Ancient boots reforged.'},
 boneRing:{name:'Bone Ring',type:'ring',slot:'ring',atk:2,rarity:'uncommon',desc:'Carved from beast bone.'},emberBand:{name:'Ember Band',type:'ring',slot:'ring',atk:3,def:1,rarity:'rare',desc:'Warm to the touch.'},voidLoop:{name:'Void Loop',type:'ring',slot:'ring',atk:5,critBonus:5,rarity:'epic',desc:'Bends light around it.'},ashenCirclet:{name:'Ashen Circlet',type:'ring',slot:'ring',atk:4,def:3,critBonus:8,rarity:'legendary',desc:'Mark of the Ashbringer.'},
 tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},cookedFish:{name:'Cooked Fish',type:'consumable',heal:35,rarity:'common',desc:'Hearty meal. Restores 35 HP.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},timberShield:{name:'Timber Shield',type:'trinket',slot:'trinket',def:3,rarity:'common',desc:'Crude but sturdy shield hewn from Ashveil timber.'},
+// New biome consumables/trinkets
+frostTonic:{name:'Frost Tonic',type:'consumable',heal:40,rarity:'uncommon',desc:'Chilled brew. Restores 40 HP.'},venomFlask:{name:'Venom Flask',type:'consumable',buff:'atk',buffAmt:8,buffDur:45,rarity:'rare',desc:'+8 ATK for 45s.'},shellShield:{name:'Shell Shield',type:'trinket',slot:'trinket',def:4,rarity:'uncommon',desc:'Crab shell shield.'},
 };
 const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon(id)});
 
@@ -1380,6 +1518,16 @@ const recipes=[
 {id:'ashenCirclet',name:'Ashen Circlet',needs:{voidFragment:3,corruptedHeart:1,relicShard:2},makes:'ashenCirclet'},
 {id:'cookedFish',name:'Cooked Fish',needs:{rawFish:2,branch:1},makes:'cookedFish',count:2},
 {id:'timberShield',name:'Timber Shield',needs:{log:4,fiber:2},makes:'timberShield'},
+// New biome recipes
+{id:'frostBlade',name:'Frost Blade',needs:{ironblade:1,frostFur:3,ore:2},makes:'frostBlade',station:'forge'},
+{id:'frostTonic',name:'Frost Tonic',needs:{frostFur:2,herb:2},makes:'frostTonic',count:2},
+{id:'magmaEdge',name:'Magma Edge',needs:{ironblade:1,magmaShard:4,magmaCore:1},makes:'magmaEdge',station:'forge'},
+{id:'silkDagger',name:'Silk Dagger',needs:{scrap:2,silkThread:3,venomSac:1},makes:'silkDagger',station:'forge'},
+{id:'venomFlask',name:'Venom Flask',needs:{venomSac:2,herb:2},makes:'venomFlask'},
+{id:'shellShield',name:'Shell Shield',needs:{shellFragment:4,fiber:2},makes:'shellShield'},
+{id:'crystalBlade',name:'Crystal Blade',needs:{veilEdge:1,crystalShard:3,ore:4},makes:'crystalBlade',station:'forge'},
+{id:'magmaPlate',name:'Magma Plate',needs:{drakemail:1,magmaCore:2,magmaShard:4},makes:'magmaPlate',station:'forge'},
+{id:'frostCrown',name:'Frost Crown',needs:{ironHelm:1,frostCore:2,frostFur:3},makes:'frostCrown',station:'forge'},
 ];
 
 const enemyDefs={
@@ -1392,6 +1540,16 @@ veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,drops:['wraithEssence
 corruptWolf:{name:'Corrupt Wolf',hp:45,atk:10,exp:25,gold:8,drops:['corruptedHeart','hide','boneRing'],rarity:'uncommon'},
 voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,drops:['voidFragment','scrap','relicShard','voidLoop'],rarity:'uncommon'},
 dungeonGuardian:{name:'Dungeon Guardian',hp:200,atk:22,exp:120,gold:50,drops:['relicShard','voidFragment','relicShard','relicHelm','relicSabatons','ashenCirclet'],rarity:'rare'},
+// New biome enemies
+frostWolf:{name:'Frost Wolf',hp:35,atk:6,exp:16,gold:5,drops:['hide','frostFur','hide'],rarity:'common'},
+frostGolem:{name:'Frost Golem',hp:160,atk:20,exp:100,gold:35,drops:['frostCore','frostFur','frostCore','frostCrown'],rarity:'rare'},
+magmaBeetle:{name:'Magma Beetle',hp:38,atk:9,exp:18,gold:6,drops:['magmaShard','scrap','magmaShard'],rarity:'common'},
+magmaWyrm:{name:'Magma Wyrm',hp:180,atk:24,exp:110,gold:40,drops:['magmaCore','magmaShard','magmaCore','magmaPlate'],rarity:'rare'},
+thornweaver:{name:'Thornweaver Spider',hp:42,atk:8,exp:20,gold:7,drops:['silkThread','herb','venomSac'],rarity:'common'},
+caveSpider:{name:'Cave Spider',hp:55,atk:12,exp:30,gold:10,drops:['silkThread','venomSac','silkThread'],rarity:'uncommon'},
+deepLurker:{name:'Deep Lurker',hp:80,atk:15,exp:50,gold:18,drops:['venomSac','voidFragment','silkThread','deepFang'],rarity:'uncommon'},
+shoreCrab:{name:'Shore Crab',hp:28,atk:5,exp:12,gold:4,drops:['shellFragment','rawFish','shellFragment'],rarity:'common'},
+crystalGolem:{name:'Crystal Golem',hp:140,atk:18,exp:90,gold:32,drops:['crystalShard','ore','crystalShard','crystalBlade'],rarity:'rare'},
 };
 
 // ═══ PET DEFINITIONS ═══
@@ -1400,6 +1558,9 @@ ashPup:{name:'Ash Pup',desc:'A young wolf, tamed by the Veil.',source:'wolf',dro
 boglingKit:{name:'Bogling Kit',desc:'A curious creature from the marshes.',source:'bogling',dropChance:0.03,bonus:{def:2},color:'#3ddc84'},
 veilSprite:{name:'Veil Sprite',desc:'A shimmering fragment of Veil energy.',source:'veilWraith',dropChance:0.05,bonus:{crit:5},color:'#9b8afb'},
 emberDrakelet:{name:'Ember Drakelet',desc:'A fiery hatchling from the Ash Drake.',source:'ashDrake',dropChance:0.06,bonus:{atk:3,def:1},color:'#ff6b35'},
+frostPup:{name:'Frost Pup',desc:'A young frost wolf pup.',source:'frostWolf',dropChance:0.03,bonus:{def:3},color:'#a0d0ee'},
+spiderling:{name:'Spiderling',desc:'A tiny spider that rides your shoulder.',source:'thornweaver',dropChance:0.04,bonus:{atk:1,crit:3},color:'#cccccc'},
+shellCrab:{name:'Shell Crab',desc:'A small pet crab from the shore.',source:'shoreCrab',dropChance:0.04,bonus:{def:2,atk:1},color:'#cc6633'},
 };
 
 // ═══ FACTION SYSTEM (4 FACTIONS) ═══
@@ -1469,6 +1630,13 @@ const bountyTemplates=[
 {name:'Wraith Purge',desc:'Banish a Veil Wraith.',target:'veilWraith',count:1,reward:{gold:70,exp:55,item:'wraithEssence'},zone:'ruins'},
 {name:'Corruption Purge',desc:'Slay corrupted creatures.',target:'corruptWolf',count:3,reward:{gold:50,exp:40,item:'corruptedHeart'},zone:'forest'},
 {name:'Relic Recovery',desc:'Gather Relic Shards.',target:'relicShard',count:3,reward:{gold:60,exp:45},zone:'ruins',gather:true},
+{name:'Frost Wolf Hunt',desc:'Cull the frost wolf packs.',target:'frostWolf',count:5,reward:{gold:35,exp:25},zone:'frost'},
+{name:'Beetle Extermination',desc:'Crush the magma beetles.',target:'magmaBeetle',count:4,reward:{gold:40,exp:30},zone:'scorchlands'},
+{name:'Spider Silk Collection',desc:'Harvest spider silk.',target:'silkThread',count:6,reward:{gold:30,exp:20},zone:'thornveil',gather:true},
+{name:'Crab Clearing',desc:'Clear the shore crabs.',target:'shoreCrab',count:5,reward:{gold:30,exp:22},zone:'crystalshore'},
+{name:'Frost Golem Challenge',desc:'Defeat the Frost Golem.',target:'frostGolem',count:1,reward:{gold:90,exp:70,item:'frostCore'},zone:'frost'},
+{name:'Magma Wyrm Slaying',desc:'Slay the Magma Wyrm.',target:'magmaWyrm',count:1,reward:{gold:100,exp:80,item:'magmaCore'},zone:'scorchlands'},
+{name:'Crystal Golem Hunt',desc:'Defeat the Crystal Golem.',target:'crystalGolem',count:1,reward:{gold:85,exp:65,item:'crystalShard'},zone:'crystalshore'},
 ];
 
 const eventTemplates=[
@@ -1495,12 +1663,27 @@ const settlementLevels=[
 // ═══ DIALOGUE (expanded with new factions) ═══
 const dialogueDefs={
 elder:{start:{speaker:'Elder Maelin',text:'The Veil stirs, Walker. Every day it grows thinner. Four powers now compete for Cindergate\'s future. Which burden will you carry?',choices:[{text:'I stand with Cindergate.',next:'town'},{text:'I follow coin—the Roadwardens.',next:'merc'},{text:'Tell me about the Veils.',next:'lore'},{text:'Who are the Scholars and the Order?',next:'factions'}]},town:{speaker:'Elder Maelin',text:'Then let the frontier remember your name. The wilds will test you.',effect:s=>{s.faction.cindergate+=5;setQuestStage('first_steps',1)},choices:[{text:'I understand.',close:true}]},merc:{speaker:'Elder Maelin',text:'The Roadwardens pay well, but their hands are not always clean.',effect:s=>{s.faction.roadwardens+=5},choices:[{text:'Noted.',close:true}]},lore:{speaker:'Elder Maelin',text:'Living barriers called Veils once separated civilization from ancient forces. Now they weaken. Someone—or something—is training our world to live without them.',choices:[{text:'Who is causing this?',next:'cause'},{text:'I should go.',close:true}]},cause:{speaker:'Elder Maelin',text:'The Scholars say natural decay. The Ashen Order says divine will. I say: someone is deliberately tearing them down. Find the truth in the dungeons.',choices:[{text:'I will.',close:true}]},factions:{speaker:'Elder Maelin',text:'The Veil Scholars study the old barriers—seekers of forbidden knowledge. The Ashen Order believes the Veils are chains that must be burned away. Both are dangerous. Both might be right.',choices:[{text:'I\'ll judge for myself.',close:true}]}},
-quartermaster:{start:{speaker:'Quartermaster Sen',text:'Walker. What do you need?',choices:[{text:'Got work?',next:'work'},{text:'Settlement upgrades?',next:'settlement'},{text:'Show me the map.',next:'map'},{text:'Later.',close:true}]},work:{speaker:'Quartermaster Sen',text:'Gather from Emberwood, survive a hunt. The bounty board has standing contracts.',effect:s=>{if(getQuest('first_steps').stage===0)setQuestStage('first_steps',1)},choices:[{text:'On it.',close:true}]},settlement:{speaker:'Quartermaster Sen',text:'Cindergate grows with investment. Bring materials and gold for upgrades. A stronger settlement means better gear.',choices:[{text:'I\'ll contribute.',close:true}]},map:{speaker:'Quartermaster Sen',text:'West: Emberwood. South: Mirefen. East: Glass Ruins. Dungeon entrances have been found in each. None want you there.',choices:[{text:'Understood.',close:true}]}},
+quartermaster:{start:{speaker:'Quartermaster Sen',text:'Walker. What do you need?',choices:[{text:'Got work?',next:'work'},{text:'Settlement upgrades?',next:'settlement'},{text:'Show me the map.',next:'map'},{text:'Later.',close:true}]},work:{speaker:'Quartermaster Sen',text:'Gather from Emberwood, survive a hunt. The bounty board has standing contracts.',effect:s=>{if(getQuest('first_steps').stage===0)setQuestStage('first_steps',1)},choices:[{text:'On it.',close:true}]},settlement:{speaker:'Quartermaster Sen',text:'Cindergate grows with investment. Bring materials and gold for upgrades. A stronger settlement means better gear.',choices:[{text:'I\'ll contribute.',close:true}]},map:{speaker:'Quartermaster Sen',text:'Eight regions surround us. North: Emberwood forest. Northwest: Frostpeak mountains. Northeast: Glass Ruins. West: Thornveil dark forest. East: Crystalshore coast. Southwest: Scorchlands desert. South: Mirefen marshes. Each has a town, dungeons, and dangers.',choices:[{text:'Understood.',close:true}]}},
 herbalist:{start:{speaker:'Herbalist Yara',text:'A Walker with all their fingers still. I deal in remedies and awakenings.',choices:[{text:'Awakenings?',next:'awaken'},{text:'What do you sell?',next:'shop'},{text:'Not now.',close:true}]},awaken:{speaker:'Herbalist Yara',text:'Every Walker has a latent class waiting to emerge. At level 5, you will choose your path: Warden, Artificer, or Veilwalker. Your accumulated skill points will be invested in your chosen class, giving it a head start. Choose wisely—your first class will always lead.',choices:[{text:'I\'ll be ready.',close:true}]},shop:{speaker:'Herbalist Yara',text:'Three herbs and a fiber for two tonics. Five herbs and ore for a Veil Elixir.',choices:[{text:'Thanks.',close:true}]}},
 smuggler:{start:{speaker:'Kael the Smuggler',text:'*leans in* Laws are flexible. The Roadwardens and I have an arrangement. Want in?',choices:[{text:'What arrangement?',next:'deal'},{text:'I\'m loyal to Cindergate.',next:'refuse'},{text:'Not interested.',close:true}]},deal:{speaker:'Kael the Smuggler',text:'Bring me ruin materials—scrap, ore—I pay triple. Weakens Cindergate\'s supply chain. Gold is gold, right?',effect:s=>{s.faction.roadwardens+=3},choices:[{text:'I\'ll think about it.',close:true}]},refuse:{speaker:'Kael the Smuggler',text:'*shrugs* Loyalty is a luxury. When the Veil cracks and Cindergate starves, remember who offered an alternative.',effect:s=>{s.faction.cindergate+=3},choices:[{text:'We\'ll see.',close:true}]}},
 bountyMaster:{start:{speaker:'Bounty Master Rhett',text:'Board\'s full, Walker. Pick a contract, get it done, get paid.',choices:[{text:'Show me bounties.',next:'board'},{text:'Any rare targets?',next:'rare'},{text:'Later.',close:true}]},board:{speaker:'Bounty Master Rhett',text:'Check the Bounty tab. Active contracts listed there.',choices:[{text:'Got it.',close:true}]},rare:{speaker:'Bounty Master Rhett',text:'Ash Drakes, Veil Wraiths, and now Corrupted beasts—creatures warped by the failing Veils. Unique materials. Worth the risk.',choices:[{text:'I don\'t run.',close:true}]}},
 scholarLynn:{start:{speaker:'Scholar Lynn',text:'Ah, the Walker everyone is whispering about. I am Lynn of the Veil Scholars. We study the barriers between worlds. I suspect you have more connection to them than you realize.',choices:[{text:'What do you study?',next:'study'},{text:'What do you want from me?',next:'want'},{text:'I\'ve heard you attract Veil beasts.',next:'accusation'},{text:'Not now.',close:true}]},study:{speaker:'Scholar Lynn',text:'The Veils are organic—alive, in a sense. They breathe, flex, and communicate. When a dungeon forms, it\'s the Veil trying to... express something. We need those relics to understand the language.',effect:s=>{s.faction.veilScholars+=3},choices:[{text:'That\'s fascinating.',close:true}]},want:{speaker:'Scholar Lynn',text:'Relic Shards. The dungeons produce them—fragments of the Veil\'s memory. Bring them to me and I\'ll teach you to read the patterns. The rewards are... considerable. Both in knowledge and in power.',effect:s=>{s.faction.veilScholars+=5;if(!getQuest('scholar_quest'))state.quests.push({id:'scholar_quest',name:'The Scholar\'s Collection',stage:0,done:false,desc:'Bring 5 Relic Shards to Scholar Lynn.'})},choices:[{text:'I\'ll bring what I find.',close:true}]},accusation:{speaker:'Scholar Lynn',text:'*pauses* The beasts are not drawn to us. They are drawn to the knowledge we uncover. There is a difference. A subtle one, I grant you. But the Ashen Order\'s answer—burning everything—is no answer at all.',choices:[{text:'Fair point.',close:true},{text:'I\'m not sure I believe you.',close:true}]}},
 commanderVoss:{start:{speaker:'Commander Voss',text:'You. Walker. The Veils are a disease and the old world is dying of it. We are the cure. The Ashen Order burns what must be burned so something stronger can grow. Are you strong enough?',choices:[{text:'What does the Order believe?',next:'belief'},{text:'That sounds extreme.',next:'pushback'},{text:'I want to join.',next:'join'},{text:'Not interested.',close:true}]},belief:{speaker:'Commander Voss',text:'The Veils were cages. They kept humanity weak—dependent on barriers instead of strength. The ancient forces beyond? We should face them. Not hide behind crumbling walls. The Scholars want to rebuild the cage. We want to break it forever.',choices:[{text:'There\'s logic in that.',next:'join'},{text:'Or it destroys everything.',close:true}]},pushback:{speaker:'Commander Voss',text:'Extreme? Look around you. The Veil is failing regardless. We can burn it on our terms, prepared and armed. Or we can let it collapse on us while the Scholars argue about theories. Which is extreme?',effect:s=>{s.faction.ashenOrder+=2},choices:[{text:'You make a point.',close:true}]},join:{speaker:'Commander Voss',text:'Good. Prove yourself. Kill corrupted creatures—the mutants spawned by the failing Veils. Every one you destroy pushes back the tide. Do this and the Order remembers.',effect:s=>{s.faction.ashenOrder+=5;if(!getQuest('ashen_quest'))state.quests.push({id:'ashen_quest',name:'The Burning Path',stage:0,done:false,desc:'Destroy 5 corrupted creatures for Commander Voss.'})},choices:[{text:'It will be done.',close:true}]}},
+// ── Biome NPC dialogues ──
+frostMerchant:{start:{speaker:'Helga the Furrier',text:'The cold bites hard here, but Frostpeak furs are the finest. I buy and sell what the mountain provides.',choices:[{text:'What do you sell?',next:'shop'},{text:'Tell me about Frostpeak.',next:'lore'},{text:'Not now.',close:true}]},shop:{speaker:'Helga the Furrier',text:'Frost Fur from wolves, Frost Cores from the Golem. Bring me materials and I\'ll trade fairly.',choices:[{text:'Thanks.',close:true}]},lore:{speaker:'Helga the Furrier',text:'The Frost Caverns run deep beneath the peaks. Something ancient sleeps there. The Frost Golem guards the entrance—defeat it if you dare.',choices:[{text:'I\'ll be careful.',close:true}]}},
+frostElder:{start:{speaker:'Jarl Grimshaw',text:'Welcome to Frostpeak Village, outsider. We survive by strength and warmth. The mountain tests all who climb it.',choices:[{text:'What threats lurk here?',next:'threats'},{text:'How can I help?',next:'help'},{text:'Farewell.',close:true}]},threats:{speaker:'Jarl Grimshaw',text:'Frost Wolves roam the peaks in packs. The Frost Golem—an ancient ice construct—patrols the cavern entrance. And below, in the Frost Caverns, darker things dwell.',choices:[{text:'I\'ll handle them.',close:true}]},help:{speaker:'Jarl Grimshaw',text:'Clear the wolves from our hunting grounds. Bring back Frost Fur and we\'ll craft you proper cold-weather gear.',choices:[{text:'Consider it done.',close:true}]}},
+emberTrader:{start:{speaker:'Woodsman Briar',text:'The forest provides for those who respect it. I trade in timber, herbs, and forest goods.',choices:[{text:'What do you have?',next:'shop'},{text:'Any news?',next:'news'},{text:'Goodbye.',close:true}]},shop:{speaker:'Woodsman Briar',text:'Bring me branches and logs, I\'ll give fair trade. The Deep Root dungeon yields rare materials too.',choices:[{text:'Good to know.',close:true}]},news:{speaker:'Woodsman Briar',text:'The Ash Drake has been restless lately. Its territory expands. Be wary in the deeper woods.',choices:[{text:'I\'ll watch out.',close:true}]}},
+emberRanger:{start:{speaker:'Ranger Fen',text:'I patrol these woods. The balance between civilization and wilderness must be maintained.',choices:[{text:'What do you guard against?',next:'guard'},{text:'Any work?',next:'work'},{text:'Later.',close:true}]},guard:{speaker:'Ranger Fen',text:'Wolves, bandits, and the Ash Drake. But the real threat is the Veil weakening—corrupted beasts are starting to appear.',choices:[{text:'I\'ll help keep watch.',close:true}]},work:{speaker:'Ranger Fen',text:'Clear bandits from the trade roads and I\'ll share what I know about the forest\'s secrets.',choices:[{text:'On it.',close:true}]}},
+ruinKeeper:{start:{speaker:'Keeper Aldric',text:'The Glass Ruins hold secrets older than memory. I maintain what can be maintained.',choices:[{text:'What are the ruins?',next:'history'},{text:'What can I find here?',next:'loot'},{text:'Farewell.',close:true}]},history:{speaker:'Keeper Aldric',text:'Before the Veil, a great civilization built these structures. Glass Sentinels still patrol, following orders from a dead empire.',choices:[{text:'Fascinating.',close:true}]},loot:{speaker:'Keeper Aldric',text:'Scrap metal, Veil Ore, and if you\'re lucky, Relic Shards from the Shattered Reliquary below.',choices:[{text:'I\'ll explore.',close:true}]}},
+ruinScholar:{start:{speaker:'Archivist Nera',text:'Every stone here tells a story. The Glass Ruins are a library written in architecture.',choices:[{text:'What have you learned?',next:'learn'},{text:'Need any help?',next:'help'},{text:'Not now.',close:true}]},learn:{speaker:'Archivist Nera',text:'The Sentinels aren\'t hostile by nature—they\'re confused. Their programming has degraded over millennia. Some can be reasoned with... in theory.',choices:[{text:'Interesting theory.',close:true}]},help:{speaker:'Archivist Nera',text:'Bring me Relic Shards and I\'ll decode their memories. The knowledge within could change everything.',choices:[{text:'I\'ll see what I find.',close:true}]}},
+thornHermit:{start:{speaker:'Hermit Sable',text:'*eyes narrow* You shouldn\'t be here. Thornveil is no place for the unwary. The spiders... they\'re getting smarter.',choices:[{text:'Spiders?',next:'spiders'},{text:'I can handle myself.',next:'brave'},{text:'I\'ll leave.',close:true}]},spiders:{speaker:'Hermit Sable',text:'Thornweaver Spiders spin webs that can ensnare a grown man. The Cave Spiders below are worse. And the Deep Lurkers... don\'t ask about the Deep Lurkers.',choices:[{text:'I need to clear those caves.',next:'brave'},{text:'Maybe I\'ll come back later.',close:true}]},brave:{speaker:'Hermit Sable',text:'Brave or foolish, I can\'t tell. The Spider Caves entrance is to the south. Bring Silk Thread and Venom Sacs—I can make useful things from them.',choices:[{text:'Deal.',close:true}]}},
+thornAlchemist:{start:{speaker:'Alchemist Mira',text:'Thornveil\'s toxins are deadly, but properly refined, they become powerful elixirs.',choices:[{text:'What can you make?',next:'craft'},{text:'Tell me about the caves.',next:'caves'},{text:'Later.',close:true}]},craft:{speaker:'Alchemist Mira',text:'Venom Sacs make potent attack drafts. Silk Thread can be woven into light armor. Bring materials to the forge here.',choices:[{text:'I\'ll gather some.',close:true}]},caves:{speaker:'Alchemist Mira',text:'The Spider Caves are layered—shallow levels have Thornweavers, deeper levels hold Cave Spiders and Deep Lurkers. The deeper you go, the better the loot.',choices:[{text:'Noted.',close:true}]}},
+shoreFisher:{start:{speaker:'Captain Rowe',text:'Ahoy! Crystal Harbor\'s the finest port in Ashveil. Fish, shells, and crystal—the shore provides.',choices:[{text:'What\'s for sale?',next:'shop'},{text:'Tell me about the Crystal Grotto.',next:'grotto'},{text:'Fair winds.',close:true}]},shop:{speaker:'Captain Rowe',text:'Fresh fish, Shell Fragments for armor, and if you\'re lucky, Crystal Shards from the Grotto. Best fishing in all eight regions.',choices:[{text:'Thanks, Captain.',close:true}]},grotto:{speaker:'Captain Rowe',text:'The Crystal Grotto is an underwater cave system. Crystal Golems guard it—beautiful and deadly. The crystals there resonate with Veil energy.',choices:[{text:'I\'ll check it out.',close:true}]}},
+shoreSmith:{start:{speaker:'Smith Petra',text:'Crystal Harbor may look peaceful, but my forge stays busy. Shore Crabs aren\'t gentle creatures.',choices:[{text:'What can you forge?',next:'forge'},{text:'Any threats here?',next:'threats'},{text:'Goodbye.',close:true}]},forge:{speaker:'Smith Petra',text:'Shell Shields from crab fragments, Crystal Blades if you bring the shards. The Crystal Grotto materials make exceptional weapons.',choices:[{text:'I\'ll bring materials.',close:true}]},threats:{speaker:'Smith Petra',text:'Shore Crabs patrol the beaches. The Crystal Golem near the Grotto is the real danger—but the crystals it drops are priceless.',choices:[{text:'Good to know.',close:true}]}},
+scorchForger:{start:{speaker:'Forgemaster Kol',text:'*wipes soot* The Scorchlands forge the strongest steel. Volcanic heat does what no bellows can.',choices:[{text:'What do you craft?',next:'craft'},{text:'Tell me about the Magma Depths.',next:'depths'},{text:'Later.',close:true}]},craft:{speaker:'Forgemaster Kol',text:'Magma Edge blades, reinforced armor—anything forged in volcanic heat surpasses normal smithing. Bring Magma Shards and Cores.',choices:[{text:'I\'ll find them.',close:true}]},depths:{speaker:'Forgemaster Kol',text:'The Magma Depths are the hardest dungeon in Ashveil. The Magma Wyrm lurks at the entrance—a beast of living fire. Only the strongest survive down there.',choices:[{text:'I\'ll prepare.',close:true}]}},
+scorchNomad:{start:{speaker:'Nomad Ashira',text:'The desert reveals truth. In the Scorchlands, only the essential survives.',choices:[{text:'How do you survive here?',next:'survive'},{text:'What treasures are here?',next:'treasure'},{text:'Safe travels.',close:true}]},survive:{speaker:'Nomad Ashira',text:'Water is scarce but Magma Beetles can be hunted for shards. Dead trees provide fuel. And the lava pools... respect them or perish.',choices:[{text:'Wise words.',close:true}]},treasure:{speaker:'Nomad Ashira',text:'Magma Cores are the prize—volcanic crystals of immense power. The Magma Wyrm hoards the finest ones. Defeat it and the Scorchlands\' greatest treasures are yours.',choices:[{text:'I\'ll try.',close:true}]}},
+mireSage:{start:{speaker:'Sage Morwen',text:'The marshes remember what the world forgets. Every bubble rising from the mire carries ancient knowledge.',choices:[{text:'What knowledge?',next:'knowledge'},{text:'What grows here?',next:'herbs'},{text:'Farewell.',close:true}]},knowledge:{speaker:'Sage Morwen',text:'The Sunken Hollow beneath us was once a great library. Boglings are its last guardians—mindless now, but once they were scholars too.',choices:[{text:'A sad fate.',close:true}]},herbs:{speaker:'Sage Morwen',text:'The finest herbs in Ashveil grow in Mirefen. Tonics, elixirs, and poisons—all begin with marsh plants. I can teach you their uses.',choices:[{text:'Teach me.',close:true}]}},
+mireHunter:{start:{speaker:'Hunter Thane',text:'Boglings and wolves are thick in these marshes. Good hunting if you don\'t mind getting muddy.',choices:[{text:'What do you hunt?',next:'hunt'},{text:'Any rare catches?',next:'rare'},{text:'Not now.',close:true}]},hunt:{speaker:'Hunter Thane',text:'Boglings drop herbs and hide. Wolves give fur. The marsh fish are plentiful if you know where to cast.',choices:[{text:'Good tips.',close:true}]},rare:{speaker:'Hunter Thane',text:'Deep in the Sunken Hollow, there are creatures that haven\'t seen daylight in centuries. Their materials are... unique. Worth the risk if you\'re strong enough.',choices:[{text:'I\'m interested.',close:true}]}},
 };
 
 // ═══ GAME STATE ═══
@@ -1510,20 +1693,35 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:50*T*SCALE,y:36*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:140*T*SCALE,y:100*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
 {id:'roads_or_roots',name:'Roads or Roots',stage:0,done:false,desc:'Choose a faction to support.'},
 ],
 npcs:[
-{id:'elder',x:48*T*SCALE,y:33*T*SCALE,name:'Elder Maelin',zone:'town'},
-{id:'quartermaster',x:53*T*SCALE,y:35*T*SCALE,name:'Quartermaster Sen',zone:'town'},
-{id:'herbalist',x:45*T*SCALE,y:37*T*SCALE,name:'Herbalist Yara',zone:'town'},
-{id:'smuggler',x:57*T*SCALE,y:40*T*SCALE,name:'Kael the Smuggler',zone:'town'},
-{id:'bountyMaster',x:51*T*SCALE,y:31*T*SCALE,name:'Bounty Master Rhett',zone:'town'},
-{id:'scholarLynn',x:43*T*SCALE,y:32*T*SCALE,name:'Scholar Lynn',zone:'town'},
-{id:'commanderVoss',x:58*T*SCALE,y:32*T*SCALE,name:'Commander Voss',zone:'town'},
+{id:'elder',x:138*T*SCALE,y:98*T*SCALE,name:'Elder Maelin',zone:'town'},
+{id:'quartermaster',x:143*T*SCALE,y:100*T*SCALE,name:'Quartermaster Sen',zone:'town'},
+{id:'herbalist',x:135*T*SCALE,y:102*T*SCALE,name:'Herbalist Yara',zone:'town'},
+{id:'smuggler',x:147*T*SCALE,y:105*T*SCALE,name:'Kael the Smuggler',zone:'town'},
+{id:'bountyMaster',x:141*T*SCALE,y:96*T*SCALE,name:'Bounty Master Rhett',zone:'town'},
+{id:'scholarLynn',x:133*T*SCALE,y:97*T*SCALE,name:'Scholar Lynn',zone:'town'},
+{id:'commanderVoss',x:148*T*SCALE,y:97*T*SCALE,name:'Commander Voss',zone:'town'},
+// Biome town NPCs (merchants + quest givers)
+{id:'frostMerchant',x:48*T*SCALE,y:37*T*SCALE,name:'Helga the Furrier',zone:'frost'},
+{id:'frostElder',x:52*T*SCALE,y:39*T*SCALE,name:'Jarl Grimshaw',zone:'frost'},
+{id:'emberTrader',x:128*T*SCALE,y:31*T*SCALE,name:'Woodsman Briar',zone:'forest'},
+{id:'emberRanger',x:132*T*SCALE,y:33*T*SCALE,name:'Ranger Fen',zone:'forest'},
+{id:'ruinKeeper',x:213*T*SCALE,y:34*T*SCALE,name:'Keeper Aldric',zone:'ruins'},
+{id:'ruinScholar',x:217*T*SCALE,y:36*T*SCALE,name:'Archivist Nera',zone:'ruins'},
+{id:'thornHermit',x:43*T*SCALE,y:109*T*SCALE,name:'Hermit Sable',zone:'thornveil'},
+{id:'thornAlchemist',x:47*T*SCALE,y:111*T*SCALE,name:'Alchemist Mira',zone:'thornveil'},
+{id:'shoreFisher',x:228*T*SCALE,y:109*T*SCALE,name:'Captain Rowe',zone:'crystalshore'},
+{id:'shoreSmith',x:232*T*SCALE,y:111*T*SCALE,name:'Smith Petra',zone:'crystalshore'},
+{id:'scorchForger',x:48*T*SCALE,y:174*T*SCALE,name:'Forgemaster Kol',zone:'scorchlands'},
+{id:'scorchNomad',x:52*T*SCALE,y:176*T*SCALE,name:'Nomad Ashira',zone:'scorchlands'},
+{id:'mireSage',x:138*T*SCALE,y:171*T*SCALE,name:'Sage Morwen',zone:'marsh'},
+{id:'mireHunter',x:142*T*SCALE,y:173*T*SCALE,name:'Hunter Thane',zone:'marsh'},
 ],
 nodes:buildNodes(),enemies:buildEnemies(),currentDialogue:null,
 flags:{tutorialShown:false},
@@ -1537,28 +1735,71 @@ particles:[],
 }}
 
 function buildNodes(){const out=[],push=(tx,ty,zone,type,action)=>out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,ready:true,respawn:0,action:action||'gather'});
-for(let i=0;i<18;i++)push(rand(10,36),rand(7,33),'forest',sample(['branch','fiber','hide','branch','fiber']));
-for(let i=0;i<16;i++)push(rand(22,53),rand(47,70),'marsh',sample(['herb','fiber','hide','herb','herb']));
-for(let i=0;i<14;i++)push(rand(64,93),rand(12,43),'ruins',sample(['scrap','ore','scrap','ore','herb']));
-for(let i=0;i<8;i++)push(rand(41,59),rand(29,43),'town',sample(['branch','fiber','herb']));
+// Emberwood forest resources
+for(let i=0;i<24;i++)push(rand(92,168),rand(12,68),'forest',sample(['branch','fiber','hide','branch','fiber']));
+// Mirefen marsh resources
+for(let i=0;i<22;i++)push(rand(97,178),rand(147,203),'marsh',sample(['herb','fiber','hide','herb','herb']));
+// Glass Ruins resources
+for(let i=0;i<20;i++)push(rand(187,263),rand(12,68),'ruins',sample(['scrap','ore','scrap','ore','herb']));
+// Cindergate town resources
+for(let i=0;i<10;i++)push(rand(122,158),rand(87,118),'town',sample(['branch','fiber','herb']));
+// Frostpeak resources
+for(let i=0;i<20;i++)push(rand(12,78),rand(12,68),'frost',sample(['frostFur','hide','branch','frostFur','fiber']));
+// Scorchlands resources
+for(let i=0;i<18;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['magmaShard','scrap','ore','magmaShard','scrap']));
+// Thornveil resources
+for(let i=0;i<20;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['silkThread','herb','fiber','silkThread','venomSac']));
+// Crystalshore resources
+for(let i=0;i<18;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['shellFragment','fiber','branch','shellFragment','rawFish']));
 // Relic shard nodes near dungeon entrances
 dungeonEntrances.forEach(de=>{for(let i=0;i<3;i++)push(de.x+rand(-3,3),de.y+rand(-3,3),de.zone,'relicShard')});
 // Woodcutting nodes (forests)
-for(let i=0;i<6;i++)push(rand(10,36),rand(7,33),'forest','log','chop');
-for(let i=0;i<3;i++)push(rand(41,59),rand(29,43),'town','log','chop');
-// Mining nodes (ruins/caves)
-for(let i=0;i<6;i++)push(rand(64,93),rand(12,43),'ruins','ore','mine');
-// Fishing spots (marsh/water edges)
-for(let i=0;i<8;i++)push(rand(22,53),rand(47,70),'marsh','rawFish','fish');
-for(let i=0;i<3;i++)push(rand(41,59),rand(40,44),'town','rawFish','fish');
+for(let i=0;i<8;i++)push(rand(92,168),rand(12,68),'forest','log','chop');
+for(let i=0;i<4;i++)push(rand(122,158),rand(87,118),'town','log','chop');
+for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','log','chop');
+for(let i=0;i<4;i++)push(rand(12,78),rand(82,138),'thornveil','log','chop');
+// Mining nodes
+for(let i=0;i<8;i++)push(rand(187,263),rand(12,68),'ruins','ore','mine');
+for(let i=0;i<6;i++)push(rand(12,83),rand(152,208),'scorchlands','ore','mine');
+for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','ore','mine');
+// Crystal mining
+for(let i=0;i<6;i++)push(rand(192,263),rand(82,138),'crystalshore','crystalShard','mine');
+// Fishing spots
+for(let i=0;i<10;i++)push(rand(97,178),rand(147,203),'marsh','rawFish','fish');
+for(let i=0;i<4;i++)push(rand(122,158),rand(115,120),'town','rawFish','fish');
+for(let i=0;i<8;i++)push(rand(192,263),rand(82,138),'crystalshore','rawFish','fish');
+for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','rawFish','fish');
 return out}
 
 function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
-for(let i=0;i<8;i++)push(rand(10,36),rand(7,33),'forest',sample(['wolf','wolf','wolf','bandit']));
-for(let i=0;i<7;i++)push(rand(22,53),rand(47,70),'marsh',sample(['bogling','bogling','wolf']));
-for(let i=0;i<6;i++)push(rand(64,93),rand(12,43),'ruins',sample(['sentinel','sentinel','bandit']));
-push(rand(15,30),rand(12,28),'forest','ashDrake');
-push(rand(70,90),rand(18,38),'ruins','veilWraith');
+// Emberwood forest enemies
+for(let i=0;i<12;i++)push(rand(92,168),rand(12,68),'forest',sample(['wolf','wolf','wolf','bandit']));
+// Mirefen marsh enemies
+for(let i=0;i<10;i++)push(rand(97,178),rand(147,203),'marsh',sample(['bogling','bogling','wolf']));
+// Glass Ruins enemies
+for(let i=0;i<10;i++)push(rand(187,263),rand(12,68),'ruins',sample(['sentinel','sentinel','bandit']));
+// Frostpeak enemies
+for(let i=0;i<10;i++)push(rand(12,78),rand(12,68),'frost',sample(['frostWolf','frostWolf','wolf']));
+// Scorchlands enemies
+for(let i=0;i<10;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['magmaBeetle','magmaBeetle','bandit']));
+// Thornveil enemies
+for(let i=0;i<12;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['thornweaver','thornweaver','caveSpider']));
+// Crystalshore enemies
+for(let i=0;i<10;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['shoreCrab','shoreCrab','bogling']));
+// Underground cave enemies (near dungeon entrances, tougher)
+dungeonEntrances.forEach(de=>{
+const caveTypes=de.zone==='thornveil'?['caveSpider','caveSpider','deepLurker']:
+de.zone==='frost'?['frostWolf','frostWolf','deepLurker']:
+de.zone==='scorchlands'?['magmaBeetle','deepLurker','deepLurker']:
+de.zone==='crystalshore'?['shoreCrab','deepLurker','caveSpider']:['caveSpider','deepLurker'];
+for(let i=0;i<4;i++)push(de.x+rand(-5,5),de.y+rand(-5,5),de.zone,sample(caveTypes));
+});
+// Bosses
+push(rand(120,150),rand(25,50),'forest','ashDrake');
+push(rand(210,250),rand(25,55),'ruins','veilWraith');
+push(rand(30,60),rand(25,55),'frost','frostGolem');
+push(rand(30,70),rand(165,195),'scorchlands','magmaWyrm');
+push(rand(210,250),rand(95,125),'crystalshore','crystalGolem');
 return out}
 
 function generateBounties(){return[...bountyTemplates].sort(()=>Math.random()-0.5).slice(0,5).map(t=>({...t,progress:0,active:false,completed:false}))}
@@ -1595,7 +1836,7 @@ function performDash(){const p=state.player;if(p.dashCooldown>0||p.isDashing||st
 
 // ═══ DUST TRAIL PARTICLES ═══
 let dustTimer=0;
-function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
+function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850'],frost:['#d0d8e5','#c0c8d5'],scorchlands:['#4a2a20','#3a2018'],thornveil:['#0a2a0a','#1a2a0a'],crystalshore:['#c4b47e','#d4c48e']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
 
 // ═══ CLASS AWAKENING ═══
 function checkClassAwakening(){if(state.player.class||state.player.level<5)return;showClassAwakeningPopup()}
@@ -1657,19 +1898,19 @@ function updateWorldMutation(dt){
     const chance=dt*0.005*(r.corruption/100);
     if(Math.random()<chance){
       // Corrupt a random tile in a random zone
-      const zones=['forest','marsh','ruins'];
+      const zones=['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'];
       const z=zoneMap[sample(zones)];
       const tx=rand(z.x1,z.x2),ty=rand(z.y1,z.y2);
       const i=ty*MW+tx;
-      if(terrain[i]!==3&&terrain[i]!==7){// not water or already corrupt
+      if(terrain[i]!==TT_WATER&&terrain[i]!==TT_CORRUPT){// not water or already corrupt
         corruptionMap[i]=Math.min(1,corruptionMap[i]+0.3);
-        if(corruptionMap[i]>0.7)terrain[i]=7;// 7=corrupt terrain type
+        if(corruptionMap[i]>0.7)terrain[i]=TT_CORRUPT;// corrupt terrain type
       }
     }
   }
   // Spawn corrupted creatures based on corruption level
   if(r.corruption>40&&Math.random()<dt*0.001){
-    const z=zoneMap[sample(['forest','marsh','ruins'])];
+    const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];
     const type=r.corruption>70?'voidSentinel':'corruptWolf';
     const def=enemyDefs[type];
     state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2});
@@ -1822,7 +2063,7 @@ if(enemy.hp<=0){
 }else{
   let ret=Math.max(1,eDef.atk-totalDef()+rand(0,2));const eCrit=Math.random()<0.1;if(eCrit)ret=Math.floor(ret*1.8);
   if(p.invincible<=0){p.hp-=ret;state.stats.totalDamageReceived+=ret;spawnDamageNumber(p.x,p.y-20,eCrit?`CRIT ${ret}`:`${ret}`,eCrit?'#ff4444':'#dc2626');spawnParticle(p.x,p.y,eCrit?'#ff4444':'#dc2626',eCrit?6:3);triggerShake(eCrit?10:6,eCrit?0.25:0.15);if(eCrit)p.critFlash=0.3;p.lastCombatTime=state.time}
-  if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('💀 Fell.')}
+  if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('💀 Fell.')}
 }renderAll()}
 
 function gatherNearest(){const p=state.player;const node=state.nodes.filter(n=>n.ready&&dist(p,n)<50*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];
@@ -1863,7 +2104,7 @@ function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=tr
 function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
 if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
 if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}
-if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
+if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
 if(t.effect==='purge'){state.world.regionState.corruption=Math.max(0,state.world.regionState.corruption-10);state.world.regionState.stability=Math.min(100,state.world.regionState.stability+5)}}
 function updateEvent(dt){if(!state.activeEvent)return;state.activeEvent.timeLeft-=dt;if(state.activeEvent.timeLeft<=0){toast(`Event ended: ${state.activeEvent.name}`,'event');state.activeEvent=null}}
 
@@ -1926,7 +2167,7 @@ if(e.zone===state.world.activeZone){const d=dist(e,p);
 if(!e.engaged&&d<aRange){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>lRange){e.engaged=false;e.engagedBy=null}
-if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
+if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
 returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
 separateEnemies(state.enemies.filter(e=>e.alive&&e.zone===state.world.activeZone),dt);
 }else{
@@ -1936,7 +2177,7 @@ state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);
 if(!e.engaged&&d<DUNGEON_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>DUNGEON_LEASH_RANGE){e.engaged=false;e.engagedBy=null}
-if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}else{
+if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}else{
 returnToHomeOrPatrol(e,50*SCALE,dt)}});
 separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
@@ -1965,10 +2206,10 @@ const dayPhase=state.dayTime/240,nightAmount=Math.max(0,Math.sin(dayPhase*Math.P
 const stx=Math.max(0,Math.floor(state.camera.x/(T*SCALE))-1),sty=Math.max(0,Math.floor(state.camera.y/(T*SCALE))-1);
 const etx=Math.min(MW-1,Math.ceil((state.camera.x+cssW)/(T*SCALE))+1),ety=Math.min(MH-1,Math.ceil((state.camera.y+cssH)/(T*SCALE))+1);
 waterFrame.timer+=0.016;if(waterFrame.timer>0.4){waterFrame.timer=0;waterFrame.current=(waterFrame.current+1)%4}
-const tSpr=[sprites.tiles.grass,sprites.tiles.dirt,sprites.tiles.stone,sprites.tiles.water,sprites.tiles.marsh,sprites.tiles.ruins,sprites.tiles.sand,sprites.tiles.corrupt];
-for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=tt===3?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
+const tSpr=[sprites.tiles.grass,sprites.tiles.dirt,sprites.tiles.stone,sprites.tiles.water,sprites.tiles.marsh,sprites.tiles.ruins,sprites.tiles.sand,sprites.tiles.corrupt,sprites.tiles.snow,sprites.tiles.volcanic,sprites.tiles.darkforest,sprites.tiles.shore,sprites.tiles.road,sprites.tiles.deepwater,sprites.tiles.cave,sprites.tiles.lava];
+for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=(tt===TT_WATER||tt===TT_DEEPWATER||tt===TT_LAVA)?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
 // Corruption overlay
-const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==7){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
+const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==TT_CORRUPT){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
 // Buildings
 buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE,bsz=(b.sz||2.4)*T*SCALE;
 if(bx>state.camera.x-bsz&&bx<state.camera.x+cssW+bsz&&by>state.camera.y-bsz&&by<state.camera.y+cssH+bsz){
@@ -1988,7 +2229,7 @@ const drawables=[];
 decorations.forEach(d=>{const dx=d.x*T*SCALE,dy=d.y*T*SCALE;if(dx>state.camera.x-T*SCALE*2&&dx<state.camera.x+cssW+T*SCALE*2&&dy>state.camera.y-T*SCALE*2&&dy<state.camera.y+cssH+T*SCALE*2){const sa=sprites.objects[d.type];if(sa){const sp=sa[d.variant%sa.length];const sz=d.type==='tree'?T*SCALE*2:(d.type==='rock'?T*SCALE*1.5:T*SCALE);drawables.push({y:dy+sz,draw:()=>ctx.drawImage(sp,dx,dy,sz,sz)})}}});
 // Zone labels
 const lb=(name,x,y)=>drawables.push({y:y-100,draw:()=>{ctx.font=`bold ${14*SCALE}px Cinzel,serif`;ctx.textAlign='center';ctx.fillStyle='rgba(123,104,238,.4)';ctx.fillText(name,x,y);ctx.textAlign='left'}});
-lb('Cindergate',50*T*SCALE,30*T*SCALE);lb('Emberwood',22*T*SCALE,12*T*SCALE);lb('Mirefen',38*T*SCALE,55*T*SCALE);lb('Glass Ruins',78*T*SCALE,18*T*SCALE);
+lb('Cindergate',140*T*SCALE,88*T*SCALE);lb('Emberwood',130*T*SCALE,15*T*SCALE);lb('Mirefen',140*T*SCALE,148*T*SCALE);lb('Glass Ruins',225*T*SCALE,15*T*SCALE);lb('Frostpeak',45*T*SCALE,15*T*SCALE);lb('Scorchlands',50*T*SCALE,155*T*SCALE);lb('Thornveil',45*T*SCALE,83*T*SCALE);lb('Crystalshore',225*T*SCALE,83*T*SCALE);
 // Dungeon entrances
 dungeonEntrances.forEach(de=>{const dx=de.x*T*SCALE,dy=de.y*T*SCALE;drawables.push({y:dy,draw:()=>{ctx.globalAlpha=0.5+Math.sin(state.time*3)*0.2;ctx.fillStyle='#7b68ee';ctx.beginPath();ctx.arc(dx,dy,T*SCALE*0.8,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#ccbbff';ctx.beginPath();ctx.arc(dx,dy,T*SCALE*0.3,0,Math.PI*2);ctx.fill();ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='#9b8afb';ctx.fillText(`⬡ ${de.name}`,dx,dy-T*SCALE);ctx.textAlign='left'}})});
 // Resource nodes
@@ -2103,7 +2344,7 @@ ctx.restore()}
 
 // Minimap
 function drawMinimap(){if(!mmCtx)return;const mw=mmCanvas.width,mh=mmCanvas.height;mmCtx.fillStyle='#08090d';mmCtx.fillRect(0,0,mw,mh);const sx=mw/MW,sy=mh/MH;
-for(let y=0;y<MH;y+=2)for(let x=0;x<MW;x+=2){const t=terrain[y*MW+x];mmCtx.fillStyle=['#2d5a1e','#6b5233','#555f6e','#1a4a6e','#2a4a1e','#3a3850','#c4a86e','#3a1a3a'][t]||'#18202a';mmCtx.fillRect(x*sx,y*sy,sx*2+1,sy*2+1)}
+for(let y=0;y<MH;y+=2)for(let x=0;x<MW;x+=2){const t=terrain[y*MW+x];mmCtx.fillStyle=['#2d5a1e','#6b5233','#555f6e','#1a4a6e','#2a4a1e','#3a3850','#c4a86e','#3a1a3a','#d0d8e5','#4a2a20','#0a2a0a','#c4b47e','#7a6a4a','#0a3a5e','#1a1418','#ff4400'][t]||'#18202a';mmCtx.fillRect(x*sx,y*sy,sx*2+1,sy*2+1)}
 const px=(state.player.x/(MW*T*SCALE))*mw,py=(state.player.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#fff';mmCtx.fillRect(px-2,py-2,4,4);
 state.enemies.forEach(e=>{if(!e.alive)return;const ex=(e.x/(MW*T*SCALE))*mw,ey=(e.y/(MH*T*SCALE))*mh;mmCtx.fillStyle=enemyDefs[e.type]?.rarity==='rare'?'#f59e0b':'#dc2626';mmCtx.fillRect(ex-1,ey-1,2,2)});
 dungeonEntrances.forEach(de=>{const dx=(de.x/MW)*mw,dy=(de.y/MH)*mh;mmCtx.fillStyle='#7b68ee';mmCtx.fillRect(dx-2,dy-2,4,4)});
