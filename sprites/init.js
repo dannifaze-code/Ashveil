@@ -48,7 +48,7 @@ const sprites={
 };
 
 // Generate all enemy sprites
-['wolf','bogling','sentinel','bandit','ashDrake','veilWraith','corruptWolf','voidSentinel','dungeonGuardian','frostWolf','frostGolem','magmaBeetle','magmaWyrm','thornweaver','caveSpider','deepLurker','shoreCrab','crystalGolem'].forEach(t=>{sprites.enemies[t]=makeEnemySprite(t)});
+['wolf','bogling','sentinel','bandit','ashDrake','veilWraith','corruptWolf','voidSentinel','dungeonGuardian','frostWolf','frostGolem','magmaBeetle','magmaWyrm','thornweaver','caveSpider','deepLurker','shoreCrab','crystalGolem','emberFox','forestStag','swampToad','mireStalker','ruinShade','iceSprite','snowOwl','vineCreeper','poisonMoth','ashScarab','cinderElemental','tidalSerpent'].forEach(t=>{sprites.enemies[t]=makeEnemySprite(t)});
 
 // Rebuild player sprites from a saved appearance object (async)
 async function rebuildPlayerSprites(appearance){
