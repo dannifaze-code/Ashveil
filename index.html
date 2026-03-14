@@ -1948,33 +1948,23 @@ for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','rawFish','fish');
 return out}
 
 function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];if(!def){console.warn('Unknown enemy type:',type);return}out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
+// Fixed scaling: enemies placed by distance from center (Cindergate). Closer = weaker, farther = stronger.
+const CX=140,CY=102;
+const spawnBiome=(zone,x1,y1,x2,y2,types,bosses)=>{const sorted=[...types].sort((a,b)=>(enemyDefs[a].level||1)-(enemyDefs[b].level||1));const count=20;const positions=[];for(let i=0;i<count;i++){const tx=rand(x1,x2),ty=rand(y1,y2);positions.push({tx,ty,dist:Math.hypot(tx-CX,ty-CY)})}positions.sort((a,b)=>a.dist-b.dist);for(let i=0;i<count;i++){const typeIdx=Math.min(Math.floor(i/count*sorted.length),sorted.length-1);push(positions[i].tx,positions[i].ty,zone,sorted[typeIdx])}for(const boss of bosses){let bx=rand(x1,x2),by=rand(y1,y2),bd=Math.hypot(bx-CX,by-CY);for(let a=0;a<5;a++){const tx=rand(x1,x2),ty=rand(y1,y2),d=Math.hypot(tx-CX,ty-CY);if(d>bd){bx=tx;by=ty;bd=d}}push(bx,by,zone,boss)}};
 // Emberwood enemies
-for(let i=0;i<20;i++)push(rand(92,168),rand(12,68),'forest',sample(['forestRat','emberFox','wildBoar','forestSpider','wolf','bandit','forestStag','barkBeetle','timberSnake','thornBear','mossCrawler','woodlandSprite','elderStag','direWolf','banditCaptain','forestWraith','shadowPanther','emberSerpent','ancientBear','forestWarden','ironwoodTreant','primalStalker','verdantDrake','forestBehemoth','worldTreeant']));
-push(rand(102,158),rand(22,58),'forest','ashDrake');
+spawnBiome('forest',92,12,168,68,['forestRat','emberFox','wildBoar','forestSpider','wolf','bandit','forestStag','barkBeetle','timberSnake','thornBear','mossCrawler','woodlandSprite','elderStag','direWolf','banditCaptain','forestWraith','shadowPanther','emberSerpent','ancientBear','forestWarden','ironwoodTreant','primalStalker','verdantDrake','forestBehemoth','worldTreeant'],['ashDrake']);
 // Mirefen enemies
-for(let i=0;i<20;i++)push(rand(97,178),rand(147,203),'marsh',sample(['swampRat','bogling','mireLeech','swampToad','bogSpider','mudCrab','mireStalker','poisonFrog','swampAdder','marshTroll','fungalCreeper','bogWraith','mireSerpent','toxicBeetle','swampThing','marshWarden','plagueMoth','festeredBear','mireDrake','swampHydra','ancientToad','bogTitan','plagueElemental','mireBehemoth']));
-push(rand(107,168),rand(157,193),'marsh','rotLord');
-push(rand(107,168),rand(157,193),'marsh','swampLeviathan');
+spawnBiome('marsh',97,147,178,203,['swampRat','bogling','mireLeech','swampToad','bogSpider','mudCrab','mireStalker','poisonFrog','swampAdder','marshTroll','fungalCreeper','bogWraith','mireSerpent','toxicBeetle','swampThing','marshWarden','plagueMoth','festeredBear','mireDrake','swampHydra','ancientToad','bogTitan','plagueElemental','mireBehemoth'],['rotLord','swampLeviathan']);
 // Frostpeak enemies
-for(let i=0;i<20;i++)push(rand(12,78),rand(12,68),'frost',sample(['snowHare','iceSprite','frostWolf','snowCrab','snowOwl','iceSpider','frostBeetle','snowTroll','glacialSerpent','frostStalker','iceWraith','avalancheBear','frostElemental','blizzardWolf','iceboundSentinel','glacialDrake','frostWarden','snowSerpent','crystalIceSpider','winterWolf','frostTitan','blizzardDrake','iceLord','glacialBehemoth']));
-push(rand(22,68),rand(22,58),'frost','frostGolem');
-push(rand(22,68),rand(22,58),'frost','winterDragon');
+spawnBiome('frost',12,12,78,68,['snowHare','iceSprite','frostWolf','snowCrab','snowOwl','iceSpider','frostBeetle','snowTroll','glacialSerpent','frostStalker','iceWraith','avalancheBear','frostElemental','blizzardWolf','iceboundSentinel','glacialDrake','frostWarden','snowSerpent','crystalIceSpider','winterWolf','frostTitan','blizzardDrake','iceLord','glacialBehemoth'],['frostGolem','winterDragon']);
 // Glass Ruins enemies
-for(let i=0;i<20;i++)push(rand(187,263),rand(12,68),'ruins',sample(['ruinRat','ruinShade','sentinel','ancientSpider','ruinBandit','glassGolem','voidBeetle','arcaneWraith','ruinSerpent','crystalSentinel','voidStalker','arcaneBeetle','ruinWarden','glassWraith','ancientSentinel','voidElemental','ruinDrake','crystalWraith','voidBehemoth','ancientDrake','glassPhoenix','ruinTitan','voidLord','ancientBehemoth']));
-push(rand(197,253),rand(22,58),'ruins','veilWraith');
-push(rand(197,253),rand(22,58),'ruins','voidDragon');
+spawnBiome('ruins',187,12,263,68,['ruinRat','ruinShade','sentinel','ancientSpider','ruinBandit','glassGolem','voidBeetle','arcaneWraith','ruinSerpent','crystalSentinel','voidStalker','arcaneBeetle','ruinWarden','glassWraith','ancientSentinel','voidElemental','ruinDrake','crystalWraith','voidBehemoth','ancientDrake','glassPhoenix','ruinTitan','voidLord','ancientBehemoth'],['veilWraith','voidDragon']);
 // Scorchlands enemies
-for(let i=0;i<20;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['emberBeetle','fireCrab','magmaBeetle','ashScarab','lavaSerpent','cinderElemental','flameStalker','moltenSpider','scorchedBandit','fireWraith','lavaGolem','infernoMoth','magmaElemental','blazeTroll','volcanicDrake','scorchWarden','fireBehemoth','lavaWyrm','infernoElemental','blazePhoenix','magmaTitan','scorchDrake','infernalLord','volcanicBehemoth']));
-push(rand(22,73),rand(162,198),'scorchlands','magmaWyrm');
-push(rand(22,73),rand(162,198),'scorchlands','bloodDragon');
+spawnBiome('scorchlands',12,152,83,208,['emberBeetle','fireCrab','magmaBeetle','ashScarab','lavaSerpent','cinderElemental','flameStalker','moltenSpider','scorchedBandit','fireWraith','lavaGolem','infernoMoth','magmaElemental','blazeTroll','volcanicDrake','scorchWarden','fireBehemoth','lavaWyrm','infernoElemental','blazePhoenix','magmaTitan','scorchDrake','infernalLord','volcanicBehemoth'],['magmaWyrm','bloodDragon']);
 // Thornveil enemies
-for(let i=0;i<20;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['thornRat','vineCreeper','thornweaver','poisonMoth','thornStalker','sporeBloom','thornBeetle','venomSpider','briarGolem','thornWraith','toxicVine','thornWarden','giantMoth','sporeStalker','venomDrake','thornElemental','briarSerpent','toxicBear','sporeGolem','thornTitan','venomBehemoth','briarDrake','thornLord','toxicPhoenix']));
-push(rand(22,68),rand(92,128),'thornveil','thornBehemoth');
-push(rand(22,68),rand(92,128),'thornveil','venomDragon');
+spawnBiome('thornveil',12,82,78,138,['thornRat','vineCreeper','thornweaver','poisonMoth','thornStalker','sporeBloom','thornBeetle','venomSpider','briarGolem','thornWraith','toxicVine','thornWarden','giantMoth','sporeStalker','venomDrake','thornElemental','briarSerpent','toxicBear','sporeGolem','thornTitan','venomBehemoth','briarDrake','thornLord','toxicPhoenix'],['thornBehemoth','venomDragon']);
 // Crystalshore enemies
-for(let i=0;i<20;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['tidePool','shoreCrab','tidalSerpent','seaSpider','coralBeetle','pearlCrab','shoreWraith','tidalElemental','reefStalker','coralGolem','seaSerpent','shoreWarden','pearlElemental','tidalDrake','reefGolem','abyssSerpent','coralWarden','tidalBehemoth','seaDrake','abyssWraith','reefTitan','pearlDrake','tidalLord','abyssBehemoth']));
-push(rand(202,253),rand(92,128),'crystalshore','crystalGolem');
-push(rand(202,253),rand(92,128),'crystalshore','abyssDragon');
+spawnBiome('crystalshore',192,82,263,138,['tidePool','shoreCrab','tidalSerpent','seaSpider','coralBeetle','pearlCrab','shoreWraith','tidalElemental','reefStalker','coralGolem','seaSerpent','shoreWarden','pearlElemental','tidalDrake','reefGolem','abyssSerpent','coralWarden','tidalBehemoth','seaDrake','abyssWraith','reefTitan','pearlDrake','tidalLord','abyssBehemoth'],['crystalGolem','abyssDragon']);
 // Underground cave enemies (near dungeon entrances)
 dungeonEntrances.forEach(de=>{
 const caveTypes=['corruptWolf','voidSentinel','caveSpider','deepLurker'];
@@ -2342,15 +2332,15 @@ const nearDungeon=dungeonEntrances.some(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCAL
 btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
 // Nodes
 state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
-// Enemy AI (overworld) — static enemies, aggro on hit or proximity (higher-level enemies only)
+// Enemy AI (overworld) — fixed scaling, no personal scaling, aggro on hit or proximity
 if(!state.dungeon.active){
-const PROXIMITY_AGGRO=40*SCALE; // close range for higher-level enemy proximity aggro
+const PROXIMITY_AGGRO=40*SCALE; // close range for proximity aggro (no level check)
 state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax;e.engaged=false;e.engagedBy=null}if(!e.alive)return;
 const eDef=enemyDefs[e.type];if(!eDef)return;const isBoss=eDef.rarity==='rare';
 const lRange=isBoss?BOSS_LEASH_RANGE:LEASH_RANGE;
 const d=dist(e,p);
-// Proximity aggro: only if enemy level > player level AND player is very close
-if(!e.engaged&&(eDef.level||1)>p.level&&d<PROXIMITY_AGGRO){e.engaged=true;e.engagedBy='player'}
+// Proximity aggro: all enemies aggro when player is very close (no personal scaling)
+if(!e.engaged&&d<PROXIMITY_AGGRO){e.engaged=true;e.engagedBy='player'}
 // Boss proximity aggro at wider range
 if(!e.engaged&&isBoss&&d<BOSS_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
