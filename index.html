@@ -1947,7 +1947,7 @@ for(let i=0;i<8;i++)push(rand(192,263),rand(82,138),'crystalshore','rawFish','fi
 for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','rawFish','fish');
 return out}
 
-function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];if(!def)return;out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
+function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];if(!def){console.warn('Unknown enemy type:',type);return}out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
 // Emberwood enemies
 for(let i=0;i<20;i++)push(rand(92,168),rand(12,68),'forest',sample(['forestRat','emberFox','wildBoar','forestSpider','wolf','bandit','forestStag','barkBeetle','timberSnake','thornBear','mossCrawler','woodlandSprite','elderStag','direWolf','banditCaptain','forestWraith','shadowPanther','emberSerpent','ancientBear','forestWarden','ironwoodTreant','primalStalker','verdantDrake','forestBehemoth','worldTreeant']));
 push(rand(102,158),rand(22,58),'forest','ashDrake');
@@ -2193,7 +2193,8 @@ function deaggroAll(){state.enemies.forEach(e=>{e.engaged=false;e.engagedBy=null
 function attackNearest(silent){
 const p=state.player;if(p.attackCooldown>0||p.isBlocking)return;
 // In dungeon, attack dungeon enemies; overworld: same zone OR within attack range
-let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
+const pZone=currentZoneAt(p.x,p.y);
+let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===pZone||dist(p,e)<=ATTACK_RANGE));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>ATTACK_RANGE){if(!silent)toast('No enemy in range.');return}
 // Target locking: check if engaged by someone else (multiplayer-ready)
@@ -2282,9 +2283,9 @@ function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=tr
 
 // ═══ EVENTS ═══
 function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
-if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
-if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}
-if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
+if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}}
+if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}
+if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}}
 if(t.effect==='purge'){state.world.regionState.corruption=Math.max(0,state.world.regionState.corruption-10);state.world.regionState.stability=Math.min(100,state.world.regionState.stability+5)}}
 function updateEvent(dt){if(!state.activeEvent)return;state.activeEvent.timeLeft-=dt;if(state.activeEvent.timeLeft<=0){toast(`Event ended: ${state.activeEvent.name}`,'event');state.activeEvent=null}}
 
