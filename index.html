@@ -1532,39 +1532,39 @@ const recipes=[
 ];
 
 const enemyDefs={
-// Emberwood (forest, danger 1) — levels 1–4
+// Emberwood (forest, danger 1) — levels 1–4, boss 10
 wolf:{name:'Ash Wolf',hp:22,atk:4,exp:10,gold:3,level:2,drops:['hide','branch'],rarity:'common'},
 emberFox:{name:'Ember Fox',hp:18,atk:3,exp:8,gold:2,level:1,drops:['hide','fiber'],rarity:'common'},
 forestStag:{name:'Forest Stag',hp:28,atk:5,exp:12,gold:4,level:3,drops:['hide','branch','herb'],rarity:'common'},
 bandit:{name:'Bandit',hp:32,atk:7,exp:16,gold:8,level:4,drops:['scrap','fiber','hide'],rarity:'common'},
-ashDrake:{name:'Ash Drake',hp:120,atk:16,exp:80,gold:30,level:10,drops:['ashCore','drakeScale','drakeScale','drakeVisage','drakeGreaves'],rarity:'rare'},
+ashDrake:{name:'Ash Drake',hp:120,atk:16,exp:80,gold:30,level:10,drops:['ashCore','drakeScale','drakeScale','drakeVisage','drakeGreaves'],rarity:'rare'},// boss — intentionally above biome range
 // Mirefen (marsh, danger 2) — levels 3–6
 bogling:{name:'Bogling',hp:30,atk:6,exp:14,gold:4,level:3,drops:['herb','hide','fiber'],rarity:'common'},
 swampToad:{name:'Swamp Toad',hp:26,atk:5,exp:12,gold:3,level:3,drops:['herb','venomSac','fiber'],rarity:'common'},
 mireStalker:{name:'Mire Stalker',hp:48,atk:9,exp:24,gold:9,level:5,drops:['venomSac','hide','herb'],rarity:'uncommon'},
-// Glass Ruins (ruins, danger 3) — levels 6–9
+// Glass Ruins (ruins, danger 3) — levels 6–9, boss 12
 sentinel:{name:'Glass Sentinel',hp:40,atk:8,exp:20,gold:6,level:7,drops:['scrap','ore'],rarity:'common'},
 ruinShade:{name:'Ruin Shade',hp:44,atk:9,exp:22,gold:7,level:7,drops:['scrap','voidFragment','ore'],rarity:'common'},
-veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,level:12,drops:['wraithEssence','ore','wraithEssence','veilCrown','veilStriders'],rarity:'rare'},
-// Frostpeak (frost, danger 2) — levels 4–7
+veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,level:12,drops:['wraithEssence','ore','wraithEssence','veilCrown','veilStriders'],rarity:'rare'},// boss — intentionally above biome range
+// Frostpeak (frost, danger 2) — levels 4–7, boss 11
 frostWolf:{name:'Frost Wolf',hp:35,atk:6,exp:16,gold:5,level:5,drops:['hide','frostFur','hide'],rarity:'common'},
 iceSprite:{name:'Ice Sprite',hp:24,atk:5,exp:14,gold:4,level:4,drops:['frostFur','fiber','herb'],rarity:'common'},
 snowOwl:{name:'Snow Owl',hp:30,atk:7,exp:18,gold:6,level:6,drops:['hide','frostFur','branch'],rarity:'common'},
-frostGolem:{name:'Frost Golem',hp:160,atk:20,exp:100,gold:35,level:11,drops:['frostCore','frostFur','frostCore','frostCrown'],rarity:'rare'},
+frostGolem:{name:'Frost Golem',hp:160,atk:20,exp:100,gold:35,level:11,drops:['frostCore','frostFur','frostCore','frostCrown'],rarity:'rare'},// boss — intentionally above biome range
 // Thornveil (thornveil, danger 3) — levels 5–8
 thornweaver:{name:'Thornweaver Spider',hp:42,atk:8,exp:20,gold:7,level:6,drops:['silkThread','herb','venomSac'],rarity:'common'},
 vineCreeper:{name:'Vine Creeper',hp:38,atk:7,exp:18,gold:6,level:5,drops:['fiber','herb','branch'],rarity:'common'},
 poisonMoth:{name:'Poison Moth',hp:34,atk:8,exp:20,gold:7,level:6,drops:['venomSac','silkThread','fiber'],rarity:'common'},
-// Scorchlands (scorchlands, danger 3) — levels 7–10
+// Scorchlands (scorchlands, danger 3) — levels 7–10, boss 13
 magmaBeetle:{name:'Magma Beetle',hp:38,atk:9,exp:18,gold:6,level:8,drops:['magmaShard','scrap','magmaShard'],rarity:'common'},
 ashScarab:{name:'Ash Scarab',hp:42,atk:10,exp:22,gold:7,level:8,drops:['magmaShard','scrap','ore'],rarity:'common'},
 cinderElemental:{name:'Cinder Elemental',hp:56,atk:12,exp:32,gold:12,level:9,drops:['magmaShard','magmaCore','scrap'],rarity:'uncommon'},
-magmaWyrm:{name:'Magma Wyrm',hp:180,atk:24,exp:110,gold:40,level:13,drops:['magmaCore','magmaShard','magmaCore','magmaPlate'],rarity:'rare'},
-// Crystalshore (crystalshore, danger 2) — levels 4–7
+magmaWyrm:{name:'Magma Wyrm',hp:180,atk:24,exp:110,gold:40,level:13,drops:['magmaCore','magmaShard','magmaCore','magmaPlate'],rarity:'rare'},// boss — intentionally above biome range
+// Crystalshore (crystalshore, danger 2) — levels 4–7, boss 11
 shoreCrab:{name:'Shore Crab',hp:28,atk:5,exp:12,gold:4,level:4,drops:['shellFragment','rawFish','shellFragment'],rarity:'common'},
 tidalSerpent:{name:'Tidal Serpent',hp:36,atk:7,exp:18,gold:6,level:5,drops:['shellFragment','rawFish','hide'],rarity:'common'},
-crystalGolem:{name:'Crystal Golem',hp:140,atk:18,exp:90,gold:32,level:11,drops:['crystalShard','ore','crystalShard','crystalBlade'],rarity:'rare'},
-// Cross-biome / underground
+crystalGolem:{name:'Crystal Golem',hp:140,atk:18,exp:90,gold:32,level:11,drops:['crystalShard','ore','crystalShard','crystalBlade'],rarity:'rare'},// boss — intentionally above biome range
+// Cross-biome / underground — levels 5–15 (scale with dungeon depth)
 corruptWolf:{name:'Corrupt Wolf',hp:45,atk:10,exp:25,gold:8,level:5,drops:['corruptedHeart','hide','boneRing'],rarity:'uncommon'},
 voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,level:8,drops:['voidFragment','scrap','relicShard','voidLoop'],rarity:'uncommon'},
 caveSpider:{name:'Cave Spider',hp:55,atk:12,exp:30,gold:10,level:7,drops:['silkThread','venomSac','silkThread'],rarity:'uncommon'},
@@ -1795,7 +1795,7 @@ function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDef
 // Emberwood forest enemies (levels 1–4)
 for(let i=0;i<14;i++)push(rand(92,168),rand(12,68),'forest',sample(['wolf','wolf','emberFox','emberFox','forestStag','bandit']));
 // Mirefen marsh enemies (levels 3–6)
-for(let i=0;i<12;i++)push(rand(97,178),rand(147,203),'marsh',sample(['bogling','bogling','swampToad','swampToad','wolf','mireStalker']));
+for(let i=0;i<12;i++)push(rand(97,178),rand(147,203),'marsh',sample(['bogling','bogling','swampToad','swampToad','swampToad','mireStalker']));
 // Glass Ruins enemies (levels 6–9)
 for(let i=0;i<12;i++)push(rand(187,263),rand(12,68),'ruins',sample(['sentinel','sentinel','ruinShade','ruinShade','bandit']));
 // Frostpeak enemies (levels 4–7)
@@ -1805,7 +1805,7 @@ for(let i=0;i<12;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['magma
 // Thornveil enemies (levels 5–8)
 for(let i=0;i<14;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['thornweaver','thornweaver','vineCreeper','vineCreeper','poisonMoth','caveSpider']));
 // Crystalshore enemies (levels 4–7)
-for(let i=0;i<12;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['shoreCrab','shoreCrab','tidalSerpent','tidalSerpent','bogling']));
+for(let i=0;i<12;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['shoreCrab','shoreCrab','tidalSerpent','tidalSerpent','tidalSerpent']));
 // Underground cave enemies (near dungeon entrances, tougher)
 dungeonEntrances.forEach(de=>{
 const caveTypes=de.zone==='thornveil'?['caveSpider','caveSpider','deepLurker']:
