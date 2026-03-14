@@ -22,14 +22,22 @@ veilEdge:{color:'#9b8afb',glow:'#7b68ee',particles:'#b8a8ff',swing:0.28,arc:140,
 ashfangBlade:{color:'#ff9f1a',glow:'#ff6b35',particles:'#ffcc44',swing:0.25,arc:150,trail:'#ff6b35',name:'fire'},
 wraithTouch:{color:'#b088ee',glow:'#8060cc',particles:'#d0b8ff',swing:0.3,arc:120,trail:'#b088ee',name:'phase'},
 relicBlade:{color:'#f5c842',glow:'#c8a020',particles:'#ffe066',swing:0.22,arc:160,trail:'#f5c842',name:'relic'},
-voidreaper:{color:'#5020aa',glow:'#8844dd',particles:'#6633bb',swing:0.2,arc:180,trail:'#8844dd',name:'void'}
+voidreaper:{color:'#5020aa',glow:'#8844dd',particles:'#6633bb',swing:0.2,arc:180,trail:'#8844dd',name:'void'},
+// New biome weapons
+frostBlade:{color:'#a0d0ee',glow:'#80c0e0',particles:'#c0e8ff',swing:0.3,arc:130,trail:'#a0d0ee',name:'frost'},
+magmaEdge:{color:'#ff4400',glow:'#ff6600',particles:'#ffaa22',swing:0.25,arc:150,trail:'#ff6600',name:'fire'},
+silkDagger:{color:'#cccccc',glow:null,particles:'#eeeeee',swing:0.2,arc:100,trail:'#cccccc',name:'slash'},
+crystalBlade:{color:'#aa88ff',glow:'#cc44ff',particles:'#dd99ff',swing:0.22,arc:160,trail:'#cc44ff',name:'veil'}
 };
 
 const equipColors={
 wanderercoat:{body:'#8a6a3a',accent:'#a0804a'},marshwraps:{body:'#3a7a3a',accent:'#4a9a4a'},veilcloak:{body:'#7b68ee',accent:'#9b8afb'},drakemail:{body:'#cc4a1a',accent:'#ff6b35'},relicArmor:{body:'#c8a020',accent:'#f5c842'},
 leatherHood:{body:'#8a6a3a',accent:'#a0804a'},ironHelm:{body:'#aaaaaa',accent:'#cccccc'},veilCrown:{body:'#7b68ee',accent:'#9b8afb'},drakeVisage:{body:'#cc4a1a',accent:'#ff6b35'},relicHelm:{body:'#c8a020',accent:'#f5c842'},
 wandererBoots:{body:'#8a6a3a',accent:'#a0804a'},marshTreads:{body:'#3a7a3a',accent:'#4a9a4a'},veilStriders:{body:'#7b68ee',accent:'#9b8afb'},drakeGreaves:{body:'#cc4a1a',accent:'#ff6b35'},relicSabatons:{body:'#c8a020',accent:'#f5c842'},
-boneRing:{glow:'#c4a86e'},emberBand:{glow:'#ff6b35'},voidLoop:{glow:'#8844dd'},ashenCirclet:{glow:'#f5c842'}
+boneRing:{glow:'#c4a86e'},emberBand:{glow:'#ff6b35'},voidLoop:{glow:'#8844dd'},ashenCirclet:{glow:'#f5c842'},
+// New biome equipment
+magmaPlate:{body:'#ff4400',accent:'#ff6600'},frostCrown:{body:'#a0d0ee',accent:'#c0e8ff'},
+shellShield:{body:'#cc6633',accent:'#dd7744'}
 };
 
 // ═══ ARM DRAWING SYSTEM ═══

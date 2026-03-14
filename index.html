@@ -1130,7 +1130,7 @@ else if(type==='shellFragment'){for(let y=6;y<=10;y++)for(let x=5;x<=10;x++){if(
 else if(type==='crystalShard'){p(7,4,'#aa88ff');p(8,4,'#cc44ff');p(6,5,'#aa88ff');p(7,5,'#cc44ff');p(8,5,'#aa88ff');p(9,5,'#cc44ff');p(7,6,'#cc44ff');p(8,6,'#aa88ff');p(7,7,'#8866cc');p(8,7,'#aa88ff');p(7,8,'#6644aa')}
 return createSprite(s)}
 function makeItemIcon(id){
-const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log'];
+const matTypes=['branch','herb','ore','fiber','scrap','hide','relicShard','rawFish','log','frostFur','magmaShard','silkThread','venomSac','shellFragment','crystalShard'];
 if(matTypes.includes(id))return makeResourceSprite(id);
 const s=new Array(256).fill(0),p=(x,y,c)=>{if(x>=0&&x<16&&y>=0&&y<16)s[y*16+x]=c};
 const sword=(c1,c2,c3)=>{p(12,2,c3);p(11,3,c2);p(10,4,c1);p(9,5,c2);p(8,6,c1);p(7,7,c2);p(6,8,c1);p(5,9,c3);p(4,10,'#8a7050');p(3,11,'#6b5535');p(4,11,'#8a7050');p(3,12,'#8a7050');p(2,13,'#6b5535')};
@@ -1182,6 +1182,19 @@ else if(id==='boneRing')ring('#c4a86e','#a08050');
 else if(id==='emberBand')ring('#ff6b35','#ff9f1a');
 else if(id==='voidLoop')ring('#5020aa','#8844dd');
 else if(id==='ashenCirclet')ring('#f5c842','#ff9f1a');
+// New biome equipment icons
+else if(id==='frostBlade')sword('#a0d0ee','#c0e8ff','#80c0e0');
+else if(id==='magmaEdge')sword('#ff4400','#ff6600','#cc3300');
+else if(id==='silkDagger')sword('#cccccc','#eeeeee','#999999');
+else if(id==='crystalBlade')sword('#aa88ff','#cc44ff','#8866cc');
+else if(id==='frostCrown')helm('#a0d0ee','#c0e8ff','#80c0e0');
+else if(id==='magmaPlate')armor('#ff4400','#ff6600','#cc3300');
+else if(id==='shellShield'){for(let y=3;y<=12;y++)for(let x=4;x<=11;x++){if(Math.abs(x-7.5)+Math.abs(y-7.5)<6)p(x,y,'#cc6633')}p(7,7,'#dd7744');p(8,7,'#dd7744');p(7,8,'#eeaa88');p(8,8,'#eeaa88')}
+else if(id==='frostTonic')potion('#80c0e0','#a0d0ee');
+else if(id==='venomFlask')potion('#44aa44','#66ff66');
+else if(id==='frostCore'){p(7,6,'#a0d0ee');p(8,6,'#80c0e0');p(6,7,'#a0d0ee');p(7,7,'#c0e8ff');p(8,7,'#c0e8ff');p(9,7,'#a0d0ee');p(7,8,'#80c0e0');p(8,8,'#a0d0ee');p(7,5,'#60a0c0');p(8,9,'#60a0c0')}
+else if(id==='magmaCore'){p(7,6,'#ff4400');p(8,6,'#ff6600');p(6,7,'#ff4400');p(7,7,'#ffaa22');p(8,7,'#ffaa22');p(9,7,'#ff4400');p(7,8,'#ff6600');p(8,8,'#ff4400');p(7,5,'#cc3300');p(8,9,'#cc3300')}
+else if(id==='deepFang'){p(7,4,'#4a3a48');p(8,4,'#3a2a38');p(7,5,'#5a4a58');p(8,5,'#4a3a48');p(7,6,'#6a5a68');p(8,6,'#5a4a58');p(7,7,'#7a6a78');p(8,7,'#6a5a68');p(7,8,'#5a4a58');p(8,8,'#4a3a48');p(7,9,'#3a2a38');p(7,10,'#2a1a28')}
 else{p(7,7,'#888');p(8,7,'#888');p(7,8,'#888');p(8,8,'#888')}}
 return createSprite(s)}
 
@@ -1543,6 +1556,9 @@ ashPup:{name:'Ash Pup',desc:'A young wolf, tamed by the Veil.',source:'wolf',dro
 boglingKit:{name:'Bogling Kit',desc:'A curious creature from the marshes.',source:'bogling',dropChance:0.03,bonus:{def:2},color:'#3ddc84'},
 veilSprite:{name:'Veil Sprite',desc:'A shimmering fragment of Veil energy.',source:'veilWraith',dropChance:0.05,bonus:{crit:5},color:'#9b8afb'},
 emberDrakelet:{name:'Ember Drakelet',desc:'A fiery hatchling from the Ash Drake.',source:'ashDrake',dropChance:0.06,bonus:{atk:3,def:1},color:'#ff6b35'},
+frostPup:{name:'Frost Pup',desc:'A young frost wolf pup.',source:'frostWolf',dropChance:0.03,bonus:{def:3},color:'#a0d0ee'},
+spiderling:{name:'Spiderling',desc:'A tiny spider that rides your shoulder.',source:'thornweaver',dropChance:0.04,bonus:{atk:1,crit:3},color:'#cccccc'},
+shellCrab:{name:'Shell Crab',desc:'A small pet crab from the shore.',source:'shoreCrab',dropChance:0.04,bonus:{def:2,atk:1},color:'#cc6633'},
 };
 
 // ═══ FACTION SYSTEM (4 FACTIONS) ═══
@@ -1612,6 +1628,13 @@ const bountyTemplates=[
 {name:'Wraith Purge',desc:'Banish a Veil Wraith.',target:'veilWraith',count:1,reward:{gold:70,exp:55,item:'wraithEssence'},zone:'ruins'},
 {name:'Corruption Purge',desc:'Slay corrupted creatures.',target:'corruptWolf',count:3,reward:{gold:50,exp:40,item:'corruptedHeart'},zone:'forest'},
 {name:'Relic Recovery',desc:'Gather Relic Shards.',target:'relicShard',count:3,reward:{gold:60,exp:45},zone:'ruins',gather:true},
+{name:'Frost Wolf Hunt',desc:'Cull the frost wolf packs.',target:'frostWolf',count:5,reward:{gold:35,exp:25},zone:'frost'},
+{name:'Beetle Extermination',desc:'Crush the magma beetles.',target:'magmaBeetle',count:4,reward:{gold:40,exp:30},zone:'scorchlands'},
+{name:'Spider Silk Collection',desc:'Harvest spider silk.',target:'silkThread',count:6,reward:{gold:30,exp:20},zone:'thornveil',gather:true},
+{name:'Crab Clearing',desc:'Clear the shore crabs.',target:'shoreCrab',count:5,reward:{gold:30,exp:22},zone:'crystalshore'},
+{name:'Frost Golem Challenge',desc:'Defeat the Frost Golem.',target:'frostGolem',count:1,reward:{gold:90,exp:70,item:'frostCore'},zone:'frost'},
+{name:'Magma Wyrm Slaying',desc:'Slay the Magma Wyrm.',target:'magmaWyrm',count:1,reward:{gold:100,exp:80,item:'magmaCore'},zone:'scorchlands'},
+{name:'Crystal Golem Hunt',desc:'Defeat the Crystal Golem.',target:'crystalGolem',count:1,reward:{gold:85,exp:65,item:'crystalShard'},zone:'crystalshore'},
 ];
 
 const eventTemplates=[
@@ -1811,7 +1834,7 @@ function performDash(){const p=state.player;if(p.dashCooldown>0||p.isDashing||st
 
 // ═══ DUST TRAIL PARTICLES ═══
 let dustTimer=0;
-function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
+function spawnDustTrail(dt){const p=state.player;if(!p.isMoving)return;dustTimer+=dt;if(dustTimer<0.12)return;dustTimer=0;const zone=state.world.activeZone;const colors={town:['#6b5233','#7a6243'],forest:['#3a6e2a','#4a3728'],marsh:['#2a4a1e','#3a5a28'],ruins:['#555f6e','#3a3850'],frost:['#d0d8e5','#c0c8d5'],scorchlands:['#4a2a20','#3a2018'],thornveil:['#0a2a0a','#1a2a0a'],crystalshore:['#c4b47e','#d4c48e']}[zone]||['#6b5233','#7a6243'];const speed=Math.hypot(p.vx,p.vy);if(speed<20)return;for(let i=0;i<2;i++){state.particles.push({x:p.x+rand(-6,6),y:p.y+T*SCALE*0.4,vx:(Math.random()-0.5)*15,vy:-5-Math.random()*10,life:0.3+Math.random()*0.2,maxLife:0.5,color:sample(colors),size:1.5+Math.random()*2})}}
 
 // ═══ CLASS AWAKENING ═══
 function checkClassAwakening(){if(state.player.class||state.player.level<5)return;showClassAwakeningPopup()}
@@ -2142,7 +2165,7 @@ if(e.zone===state.world.activeZone){const d=dist(e,p);
 if(!e.engaged&&d<aRange){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>lRange){e.engaged=false;e.engagedBy=null}
-if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
+if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
 returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
 separateEnemies(state.enemies.filter(e=>e.alive&&e.zone===state.world.activeZone),dt);
 }else{
@@ -2152,7 +2175,7 @@ state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);
 if(!e.engaged&&d<DUNGEON_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>DUNGEON_LEASH_RANGE){e.engaged=false;e.engagedBy=null}
-if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=50*T*SCALE;p.y=36*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}else{
+if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=50*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*dSpd*dt;e.y+=(dy/len)*dSpd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*dSpd*0.3*dt*sign;e.y+=(dx/len)*dSpd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){const eDef=enemyDefs[e.type];let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,2));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();state.dungeon.active=false;toast('Fell in dungeon.','combat');addLog('💀 Ejected from dungeon.')}}}else{
 returnToHomeOrPatrol(e,50*SCALE,dt)}});
 separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
