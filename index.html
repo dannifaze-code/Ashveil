@@ -433,9 +433,8 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="subtitle">The Broken Veil</div>
 <div class="lore-text">The ancient barriers between worlds are failing. Ash falls from a sky that remembers fire. You are a Walker — one of the few who crossed a Veil tear and survived.</div>
 <div id="titleButtons">
-<button class="title-btn primary" id="btnPlay">Enter the Veil</button>
 <button class="title-btn" id="btnContinue" style="display:none">Continue Journey<span class="btn-sub">Load last save</span></button>
-<button class="title-btn" id="btnNewGame">New Game<span class="btn-sub">Start fresh</span></button>
+<button class="title-btn primary" id="btnNewGame">New Game<span class="btn-sub">Start fresh</span></button>
 <button class="title-btn" id="btnSettings">Settings</button>
 </div>
 </div>
@@ -452,7 +451,7 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <div class="cc-row"><label>Eyes</label><select id="ccEyes"></select></div>
 <div class="cc-row"><label>Build</label><select id="ccBody"></select></div>
 <div class="cc-row"><label>Mouth</label><select id="ccMouth"></select></div>
-<button id="ccConfirm">Enter the Veil</button>
+<button id="ccConfirm">Begin Journey</button>
 <button id="ccBack">← Back</button>
 </div>
 </div>
@@ -1532,44 +1531,201 @@ const recipes=[
 ];
 
 const enemyDefs={
-// Emberwood (forest, danger 1) — levels 1–4, boss 10
-wolf:{name:'Ash Wolf',hp:22,atk:4,exp:10,gold:3,level:2,drops:['hide','branch'],rarity:'common'},
-emberFox:{name:'Ember Fox',hp:18,atk:3,exp:8,gold:2,level:1,drops:['hide','fiber'],rarity:'common'},
-forestStag:{name:'Forest Stag',hp:28,atk:5,exp:12,gold:4,level:3,drops:['hide','branch','herb'],rarity:'common'},
-bandit:{name:'Bandit',hp:32,atk:7,exp:16,gold:8,level:4,drops:['scrap','fiber','hide'],rarity:'common'},
-ashDrake:{name:'Ash Drake',hp:120,atk:16,exp:80,gold:30,level:10,drops:['ashCore','drakeScale','drakeScale','drakeVisage','drakeGreaves'],rarity:'rare'},// boss — intentionally above biome range
-// Mirefen (marsh, danger 2) — levels 3–6
-bogling:{name:'Bogling',hp:30,atk:6,exp:14,gold:4,level:3,drops:['herb','hide','fiber'],rarity:'common'},
-swampToad:{name:'Swamp Toad',hp:26,atk:5,exp:12,gold:3,level:3,drops:['herb','venomSac','fiber'],rarity:'common'},
-mireStalker:{name:'Mire Stalker',hp:48,atk:9,exp:24,gold:9,level:5,drops:['venomSac','hide','herb'],rarity:'uncommon'},
-// Glass Ruins (ruins, danger 3) — levels 6–9, boss 12
-sentinel:{name:'Glass Sentinel',hp:40,atk:8,exp:20,gold:6,level:7,drops:['scrap','ore'],rarity:'common'},
-ruinShade:{name:'Ruin Shade',hp:44,atk:9,exp:22,gold:7,level:7,drops:['scrap','voidFragment','ore'],rarity:'common'},
-veilWraith:{name:'Veil Wraith',hp:90,atk:14,exp:65,gold:25,level:12,drops:['wraithEssence','ore','wraithEssence','veilCrown','veilStriders'],rarity:'rare'},// boss — intentionally above biome range
-// Frostpeak (frost, danger 2) — levels 4–7, boss 11
-frostWolf:{name:'Frost Wolf',hp:35,atk:6,exp:16,gold:5,level:5,drops:['hide','frostFur','hide'],rarity:'common'},
-iceSprite:{name:'Ice Sprite',hp:24,atk:5,exp:14,gold:4,level:4,drops:['frostFur','fiber','herb'],rarity:'common'},
-snowOwl:{name:'Snow Owl',hp:30,atk:7,exp:18,gold:6,level:6,drops:['hide','frostFur','branch'],rarity:'common'},
-frostGolem:{name:'Frost Golem',hp:160,atk:20,exp:100,gold:35,level:11,drops:['frostCore','frostFur','frostCore','frostCrown'],rarity:'rare'},// boss — intentionally above biome range
-// Thornveil (thornveil, danger 3) — levels 5–8
-thornweaver:{name:'Thornweaver Spider',hp:42,atk:8,exp:20,gold:7,level:6,drops:['silkThread','herb','venomSac'],rarity:'common'},
-vineCreeper:{name:'Vine Creeper',hp:38,atk:7,exp:18,gold:6,level:5,drops:['fiber','herb','branch'],rarity:'common'},
-poisonMoth:{name:'Poison Moth',hp:34,atk:8,exp:20,gold:7,level:6,drops:['venomSac','silkThread','fiber'],rarity:'common'},
-// Scorchlands (scorchlands, danger 3) — levels 7–10, boss 13
-magmaBeetle:{name:'Magma Beetle',hp:38,atk:9,exp:18,gold:6,level:8,drops:['magmaShard','scrap','magmaShard'],rarity:'common'},
-ashScarab:{name:'Ash Scarab',hp:42,atk:10,exp:22,gold:7,level:8,drops:['magmaShard','scrap','ore'],rarity:'common'},
-cinderElemental:{name:'Cinder Elemental',hp:56,atk:12,exp:32,gold:12,level:9,drops:['magmaShard','magmaCore','scrap'],rarity:'uncommon'},
-magmaWyrm:{name:'Magma Wyrm',hp:180,atk:24,exp:110,gold:40,level:13,drops:['magmaCore','magmaShard','magmaCore','magmaPlate'],rarity:'rare'},// boss — intentionally above biome range
-// Crystalshore (crystalshore, danger 2) — levels 4–7, boss 11
-shoreCrab:{name:'Shore Crab',hp:28,atk:5,exp:12,gold:4,level:4,drops:['shellFragment','rawFish','shellFragment'],rarity:'common'},
-tidalSerpent:{name:'Tidal Serpent',hp:36,atk:7,exp:18,gold:6,level:5,drops:['shellFragment','rawFish','hide'],rarity:'common'},
-crystalGolem:{name:'Crystal Golem',hp:140,atk:18,exp:90,gold:32,level:11,drops:['crystalShard','ore','crystalShard','crystalBlade'],rarity:'rare'},// boss — intentionally above biome range
-// Cross-biome / underground — levels 5–15 (scale with dungeon depth)
-corruptWolf:{name:'Corrupt Wolf',hp:45,atk:10,exp:25,gold:8,level:5,drops:['corruptedHeart','hide','boneRing'],rarity:'uncommon'},
-voidSentinel:{name:'Void Sentinel',hp:70,atk:13,exp:40,gold:15,level:8,drops:['voidFragment','scrap','relicShard','voidLoop'],rarity:'uncommon'},
-caveSpider:{name:'Cave Spider',hp:55,atk:12,exp:30,gold:10,level:7,drops:['silkThread','venomSac','silkThread'],rarity:'uncommon'},
-deepLurker:{name:'Deep Lurker',hp:80,atk:15,exp:50,gold:18,level:9,drops:['venomSac','voidFragment','silkThread','deepFang'],rarity:'uncommon'},
-dungeonGuardian:{name:'Dungeon Guardian',hp:200,atk:22,exp:120,gold:50,level:15,drops:['relicShard','voidFragment','relicShard','relicHelm','relicSabatons','ashenCirclet'],rarity:'rare'},
+// Emberwood (forest)
+forestRat:{name:'Forest Rat',hp:18,atk:2,exp:7,gold:1,level:1,drops:["hide", "branch"],rarity:'common'},
+emberFox:{name:'Ember Fox',hp:28,atk:4,exp:12,gold:2,level:3,drops:["hide", "branch"],rarity:'common'},
+wildBoar:{name:'Wild Boar',hp:41,atk:6,exp:17,gold:3,level:5,drops:["hide", "branch"],rarity:'common'},
+forestSpider:{name:'Forest Spider',hp:64,atk:8,exp:26,gold:5,level:8,drops:["hide", "branch"],rarity:'common'},
+wolf:{name:'Ash Wolf',hp:82,atk:10,exp:33,gold:6,level:10,drops:["hide", "branch"],rarity:'common'},
+bandit:{name:'Bandit',hp:110,atk:13,exp:43,gold:8,level:13,drops:["hide", "branch"],rarity:'common'},
+forestStag:{name:'Forest Stag',hp:141,atk:16,exp:53,gold:10,level:16,drops:["hide", "branch"],rarity:'common'},
+barkBeetle:{name:'Bark Beetle',hp:174,atk:19,exp:64,gold:12,level:19,drops:["hide", "branch"],rarity:'common'},
+timberSnake:{name:'Timber Snake',hp:209,atk:22,exp:74,gold:13,level:22,drops:["hide", "branch"],rarity:'common'},
+thornBear:{name:'Thorn Bear',hp:258,atk:27,exp:89,gold:16,level:26,drops:["hide", "branch"],rarity:'common'},
+mossCrawler:{name:'Moss Crawler',hp:310,atk:31,exp:104,gold:18,level:30,drops:["hide", "branch"],rarity:'common'},
+woodlandSprite:{name:'Woodland Sprite',hp:365,atk:35,exp:120,gold:21,level:34,drops:["hide", "branch"],rarity:'common'},
+elderStag:{name:'Elder Stag',hp:591,atk:48,exp:204,gold:35,level:38,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+direWolf:{name:'Dire Wolf',hp:673,atk:53,exp:228,gold:39,level:42,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+banditCaptain:{name:'Bandit Captain',hp:758,atk:59,exp:252,gold:43,level:46,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+forestWraith:{name:'Forest Wraith',hp:604,atk:53,exp:184,gold:31,level:50,drops:["hide", "branch"],rarity:'common'},
+shadowPanther:{name:'Shadow Panther',hp:685,atk:59,exp:205,gold:34,level:55,drops:["hide", "branch"],rarity:'common'},
+emberSerpent:{name:'Ember Serpent',hp:769,atk:65,exp:226,gold:37,level:60,drops:["hide", "branch"],rarity:'common'},
+ancientBear:{name:'Ancient Bear',hp:1197,atk:85,exp:372,gold:61,level:65,drops:["hide", "branch", "drakeScale"],rarity:'uncommon'},
+forestWarden:{name:'Forest Warden',hp:1321,atk:92,exp:404,gold:66,level:70,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+ironwoodTreant:{name:'Ironwood Treant',hp:1578,atk:106,exp:470,gold:76,level:80,drops:["hide", "branch", "ashCore"],rarity:'uncommon'},
+primalStalker:{name:'Primal Stalker',hp:1846,atk:120,exp:537,gold:86,level:90,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+verdantDrake:{name:'Verdant Drake',hp:2269,atk:142,exp:640,gold:100,level:105,drops:["hide", "branch", "drakeScale"],rarity:'uncommon'},
+forestBehemoth:{name:'Forest Behemoth',hp:2713,atk:165,exp:745,gold:115,level:120,drops:["hide", "branch", "ashCore"],rarity:'uncommon'},
+worldTreeant:{name:'World Treant',hp:3336,atk:195,exp:888,gold:135,level:140,drops:["hide", "branch", "ashCore"],rarity:'uncommon'},
+ashDrake:{name:'Ash Drake',hp:7127,atk:338,exp:2070,gold:416,level:160,drops:["hide", "branch", "ashCore"],rarity:'rare'},// boss
+// Mirefen (marsh)
+swampRat:{name:'Swamp Rat',hp:28,atk:4,exp:12,gold:2,level:3,drops:["herb", "hide"],rarity:'common'},
+bogling:{name:'Bogling',hp:48,atk:7,exp:20,gold:4,level:6,drops:["herb", "hide"],rarity:'common'},
+mireLeech:{name:'Mire Leech',hp:73,atk:9,exp:30,gold:6,level:9,drops:["herb", "hide"],rarity:'common'},
+swampToad:{name:'Swamp Toad',hp:100,atk:12,exp:39,gold:7,level:12,drops:["herb", "hide"],rarity:'common'},
+bogSpider:{name:'Bog Spider',hp:131,atk:15,exp:50,gold:9,level:15,drops:["herb", "hide"],rarity:'common'},
+mudCrab:{name:'Mud Crab',hp:163,atk:18,exp:60,gold:11,level:18,drops:["herb", "hide"],rarity:'common'},
+mireStalker:{name:'Mire Stalker',hp:293,atk:27,exp:112,gold:20,level:22,drops:["herb", "hide", "venomSac"],rarity:'uncommon'},
+poisonFrog:{name:'Poison Frog',hp:258,atk:27,exp:89,gold:16,level:26,drops:["herb", "hide"],rarity:'common'},
+swampAdder:{name:'Swamp Adder',hp:310,atk:31,exp:104,gold:18,level:30,drops:["herb", "hide"],rarity:'common'},
+marshTroll:{name:'Marsh Troll',hp:531,atk:44,exp:186,gold:32,level:35,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+fungalCreeper:{name:'Fungal Creeper',hp:451,atk:42,exp:144,gold:25,level:40,drops:["herb", "hide"],rarity:'common'},
+bogWraith:{name:'Bog Wraith',hp:526,atk:48,exp:164,gold:28,level:45,drops:["herb", "hide"],rarity:'common'},
+mireSerpent:{name:'Mire Serpent',hp:604,atk:53,exp:184,gold:31,level:50,drops:["herb", "hide"],rarity:'common'},
+toxicBeetle:{name:'Toxic Beetle',hp:685,atk:59,exp:205,gold:34,level:55,drops:["herb", "hide"],rarity:'common'},
+swampThing:{name:'Swamp Thing',hp:1077,atk:78,exp:340,gold:56,level:60,drops:["herb", "hide", "venomSac"],rarity:'uncommon'},
+marshWarden:{name:'Marsh Warden',hp:1222,atk:86,exp:378,gold:62,level:66,drops:["herb", "hide", "venomSac"],rarity:'uncommon'},
+plagueMoth:{name:'Plague Moth',hp:979,atk:79,exp:278,gold:45,level:72,drops:["herb", "hide"],rarity:'common'},
+festeredBear:{name:'Festered Bear',hp:1526,atk:103,exp:457,gold:74,level:78,drops:["herb", "hide", "venomSac"],rarity:'uncommon'},
+mireDrake:{name:'Mire Drake',hp:1711,atk:113,exp:504,gold:81,level:85,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+swampHydra:{name:'Swamp Hydra',hp:1985,atk:128,exp:571,gold:90,level:95,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+ancientToad:{name:'Ancient Toad',hp:2269,atk:142,exp:640,gold:100,level:105,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+bogTitan:{name:'Bog Titan',hp:2563,atk:157,exp:710,gold:110,level:115,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+plagueElemental:{name:'Plague Elemental',hp:3020,atk:180,exp:816,gold:125,level:130,drops:["herb", "hide", "venomSac"],rarity:'uncommon'},
+mireBehemoth:{name:'Mire Behemoth',hp:3497,atk:202,exp:925,gold:140,level:145,drops:["herb", "hide", "corruptedHeart"],rarity:'uncommon'},
+rotLord:{name:'Rot Lord',hp:7427,atk:350,exp:2144,gold:429,level:165,drops:["herb", "hide", "corruptedHeart"],rarity:'rare'},// boss
+swampLeviathan:{name:'Swamp Leviathan',hp:8348,atk:384,exp:2368,gold:470,level:180,drops:["herb", "hide", "venomSac"],rarity:'rare'},// boss
+// Frostpeak (frost)
+snowHare:{name:'Snow Hare',hp:41,atk:6,exp:17,gold:3,level:5,drops:["hide", "frostFur"],rarity:'common'},
+iceSprite:{name:'Ice Sprite',hp:64,atk:8,exp:26,gold:5,level:8,drops:["hide", "frostFur"],rarity:'common'},
+frostWolf:{name:'Frost Wolf',hp:100,atk:12,exp:39,gold:7,level:12,drops:["hide", "frostFur"],rarity:'common'},
+snowCrab:{name:'Snow Crab',hp:131,atk:15,exp:50,gold:9,level:15,drops:["hide", "frostFur"],rarity:'common'},
+snowOwl:{name:'Snow Owl',hp:163,atk:18,exp:60,gold:11,level:18,drops:["hide", "frostFur"],rarity:'common'},
+iceSpider:{name:'Ice Spider',hp:209,atk:22,exp:74,gold:13,level:22,drops:["hide", "frostFur"],rarity:'common'},
+frostBeetle:{name:'Frost Beetle',hp:258,atk:27,exp:89,gold:16,level:26,drops:["hide", "frostFur"],rarity:'common'},
+snowTroll:{name:'Snow Troll',hp:435,atk:37,exp:157,gold:28,level:30,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+glacialSerpent:{name:'Glacial Serpent',hp:379,atk:36,exp:124,gold:21,level:35,drops:["hide", "frostFur"],rarity:'common'},
+frostStalker:{name:'Frost Stalker',hp:631,atk:50,exp:216,gold:37,level:40,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+iceWraith:{name:'Ice Wraith',hp:526,atk:48,exp:164,gold:28,level:45,drops:["hide", "frostFur"],rarity:'common'},
+avalancheBear:{name:'Avalanche Bear',hp:846,atk:64,exp:277,gold:47,level:50,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+frostElemental:{name:'Frost Elemental',hp:702,atk:60,exp:209,gold:35,level:56,drops:["hide", "frostFur"],rarity:'common'},
+blizzardWolf:{name:'Blizzard Wolf',hp:1125,atk:81,exp:352,gold:58,level:62,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+iceboundSentinel:{name:'Icebound Sentinel',hp:1271,atk:89,exp:391,gold:64,level:68,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+glacialDrake:{name:'Glacial Drake',hp:1448,atk:99,exp:437,gold:71,level:75,drops:["hide", "frostFur", "frostCrown"],rarity:'uncommon'},
+frostWarden:{name:'Frost Warden',hp:1631,atk:109,exp:483,gold:78,level:82,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+snowSerpent:{name:'Snow Serpent',hp:1319,atk:100,exp:358,gold:57,level:90,drops:["hide", "frostFur"],rarity:'common'},
+crystalIceSpider:{name:'Crystal Ice Spider',hp:2069,atk:132,exp:592,gold:93,level:98,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+winterWolf:{name:'Winter Wolf',hp:2356,atk:147,exp:661,gold:103,level:108,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+frostTitan:{name:'Frost Titan',hp:2653,atk:162,exp:731,gold:113,level:118,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+blizzardDrake:{name:'Blizzard Drake',hp:3020,atk:180,exp:816,gold:125,level:130,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+iceLord:{name:'Ice Lord',hp:3497,atk:202,exp:925,gold:140,level:145,drops:["hide", "frostFur", "frostCrown"],rarity:'uncommon'},
+glacialBehemoth:{name:'Glacial Behemoth',hp:3991,atk:225,exp:1035,gold:156,level:160,drops:["hide", "frostFur", "frostCore"],rarity:'uncommon'},
+frostGolem:{name:'Frost Golem',hp:8348,atk:384,exp:2368,gold:470,level:180,drops:["hide", "frostFur", "frostCore"],rarity:'rare'},// boss
+winterDragon:{name:'Winter Dragon',hp:9619,atk:431,exp:2671,gold:525,level:200,drops:["hide", "frostFur", "frostCore"],rarity:'rare'},// boss
+// Glass Ruins (ruins)
+ruinRat:{name:'Ruin Rat',hp:64,atk:8,exp:26,gold:5,level:8,drops:["scrap", "ore"],rarity:'common'},
+ruinShade:{name:'Ruin Shade',hp:100,atk:12,exp:39,gold:7,level:12,drops:["scrap", "ore"],rarity:'common'},
+sentinel:{name:'Glass Sentinel',hp:141,atk:16,exp:53,gold:10,level:16,drops:["scrap", "ore"],rarity:'common'},
+ancientSpider:{name:'Ancient Spider',hp:186,atk:20,exp:67,gold:12,level:20,drops:["scrap", "ore"],rarity:'common'},
+ruinBandit:{name:'Ruin Bandit',hp:233,atk:25,exp:82,gold:15,level:24,drops:["scrap", "ore"],rarity:'common'},
+glassGolem:{name:'Glass Golem',hp:284,atk:29,exp:97,gold:17,level:28,drops:["scrap", "ore"],rarity:'common'},
+voidBeetle:{name:'Void Beetle',hp:337,atk:33,exp:112,gold:20,level:32,drops:["scrap", "ore"],rarity:'common'},
+arcaneWraith:{name:'Arcane Wraith',hp:407,atk:39,exp:132,gold:23,level:37,drops:["scrap", "ore"],rarity:'common'},
+ruinSerpent:{name:'Ruin Serpent',hp:481,atk:44,exp:152,gold:26,level:42,drops:["scrap", "ore"],rarity:'common'},
+crystalSentinel:{name:'Crystal Sentinel',hp:780,atk:60,exp:258,gold:44,level:47,drops:["scrap", "ore", "relicShard"],rarity:'uncommon'},
+voidStalker:{name:'Void Stalker',hp:914,atk:68,exp:295,gold:49,level:53,drops:["scrap", "ore", "veilCrown"],rarity:'uncommon'},
+arcaneBeetle:{name:'Arcane Beetle',hp:752,atk:64,exp:222,gold:37,level:59,drops:["scrap", "ore"],rarity:'common'},
+ruinWarden:{name:'Ruin Warden',hp:1197,atk:85,exp:372,gold:61,level:65,drops:["scrap", "ore", "veilCrown"],rarity:'uncommon'},
+glassWraith:{name:'Glass Wraith',hp:979,atk:79,exp:278,gold:45,level:72,drops:["scrap", "ore"],rarity:'common'},
+ancientSentinel:{name:'Ancient Sentinel',hp:1578,atk:106,exp:470,gold:76,level:80,drops:["scrap", "ore", "wraithEssence"],rarity:'uncommon'},
+voidElemental:{name:'Void Elemental',hp:1792,atk:118,exp:524,gold:84,level:88,drops:["scrap", "ore", "wraithEssence"],rarity:'uncommon'},
+ruinDrake:{name:'Ruin Drake',hp:2041,atk:131,exp:585,gold:92,level:97,drops:["scrap", "ore", "veilCrown"],rarity:'uncommon'},
+crystalWraith:{name:'Crystal Wraith',hp:2327,atk:145,exp:654,gold:102,level:107,drops:["scrap", "ore", "relicShard"],rarity:'uncommon'},
+voidBehemoth:{name:'Void Behemoth',hp:2653,atk:162,exp:731,gold:113,level:118,drops:["scrap", "ore", "veilStriders"],rarity:'uncommon'},
+ancientDrake:{name:'Ancient Drake',hp:3020,atk:180,exp:816,gold:125,level:130,drops:["scrap", "ore", "veilStriders"],rarity:'uncommon'},
+glassPhoenix:{name:'Glass Phoenix',hp:3432,atk:199,exp:910,gold:138,level:143,drops:["scrap", "ore", "relicShard"],rarity:'uncommon'},
+ruinTitan:{name:'Ruin Titan',hp:3924,atk:222,exp:1020,gold:154,level:158,drops:["scrap", "ore", "veilStriders"],rarity:'uncommon'},
+voidLord:{name:'Void Lord',hp:4501,atk:248,exp:1146,gold:171,level:175,drops:["scrap", "ore", "relicShard"],rarity:'uncommon'},
+ancientBehemoth:{name:'Ancient Behemoth',hp:5206,atk:279,exp:1297,gold:191,level:195,drops:["scrap", "ore", "relicShard"],rarity:'uncommon'},
+veilWraith:{name:'Veil Wraith',hp:10602,atk:467,exp:2902,gold:566,level:215,drops:["scrap", "ore", "relicShard"],rarity:'rare'},// boss
+voidDragon:{name:'Void Dragon',hp:11949,atk:514,exp:3213,gold:621,level:235,drops:["scrap", "ore", "relicShard"],rarity:'rare'},// boss
+// Scorchlands
+emberBeetle:{name:'Ember Beetle',hp:82,atk:10,exp:33,gold:6,level:10,drops:["magmaShard", "scrap"],rarity:'common'},
+fireCrab:{name:'Fire Crab',hp:120,atk:14,exp:46,gold:8,level:14,drops:["magmaShard", "scrap"],rarity:'common'},
+magmaBeetle:{name:'Magma Beetle',hp:163,atk:18,exp:60,gold:11,level:18,drops:["magmaShard", "scrap"],rarity:'common'},
+ashScarab:{name:'Ash Scarab',hp:209,atk:22,exp:74,gold:13,level:22,drops:["magmaShard", "scrap"],rarity:'common'},
+lavaSerpent:{name:'Lava Serpent',hp:258,atk:27,exp:89,gold:16,level:26,drops:["magmaShard", "scrap"],rarity:'common'},
+cinderElemental:{name:'Cinder Elemental',hp:435,atk:37,exp:157,gold:28,level:30,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+flameStalker:{name:'Flame Stalker',hp:379,atk:36,exp:124,gold:21,level:35,drops:["magmaShard", "scrap"],rarity:'common'},
+moltenSpider:{name:'Molten Spider',hp:451,atk:42,exp:144,gold:25,level:40,drops:["magmaShard", "scrap"],rarity:'common'},
+scorchedBandit:{name:'Scorched Bandit',hp:526,atk:48,exp:164,gold:28,level:45,drops:["magmaShard", "scrap"],rarity:'common'},
+fireWraith:{name:'Fire Wraith',hp:604,atk:53,exp:184,gold:31,level:50,drops:["magmaShard", "scrap"],rarity:'common'},
+lavaGolem:{name:'Lava Golem',hp:983,atk:72,exp:314,gold:52,level:56,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+infernoMoth:{name:'Inferno Moth',hp:803,atk:67,exp:235,gold:39,level:62,drops:["magmaShard", "scrap"],rarity:'common'},
+magmaElemental:{name:'Magma Elemental',hp:1271,atk:89,exp:391,gold:64,level:68,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+blazeTroll:{name:'Blaze Troll',hp:1448,atk:99,exp:437,gold:71,level:75,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+volcanicDrake:{name:'Volcanic Drake',hp:1657,atk:110,exp:490,gold:79,level:83,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+scorchWarden:{name:'Scorch Warden',hp:1901,atk:123,exp:551,gold:88,level:92,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+fireBehemoth:{name:'Fire Behemoth',hp:2183,atk:138,exp:619,gold:97,level:102,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+lavaWyrm:{name:'Lava Wyrm',hp:2503,atk:154,exp:696,gold:108,level:113,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+infernoElemental:{name:'Inferno Elemental',hp:2865,atk:172,exp:781,gold:120,level:125,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+blazePhoenix:{name:'Blaze Phoenix',hp:3272,atk:192,exp:874,gold:133,level:138,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+magmaTitan:{name:'Magma Titan',hp:3725,atk:213,exp:976,gold:148,level:152,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+scorchDrake:{name:'Scorch Drake',hp:4261,atk:237,exp:1094,gold:164,level:168,drops:["magmaShard", "scrap", "magmaCore"],rarity:'uncommon'},
+infernalLord:{name:'Infernal Lord',hp:4850,atk:264,exp:1221,gold:181,level:185,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+volcanicBehemoth:{name:'Volcanic Behemoth',hp:5568,atk:295,exp:1374,gold:202,level:205,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'uncommon'},
+magmaWyrm:{name:'Magma Wyrm',hp:11270,atk:490,exp:3057,gold:593,level:225,drops:["magmaShard", "scrap", "magmaPlate"],rarity:'rare'},// boss
+bloodDragon:{name:'Blood Dragon',hp:12848,atk:545,exp:3417,gold:657,level:248,drops:["magmaShard", "scrap", "magmaCore"],rarity:'rare'},// boss
+// Thornveil
+thornRat:{name:'Thorn Rat',hp:56,atk:7,exp:23,gold:4,level:7,drops:["silkThread", "herb"],rarity:'common'},
+vineCreeper:{name:'Vine Creeper',hp:91,atk:11,exp:36,gold:7,level:11,drops:["silkThread", "herb"],rarity:'common'},
+thornweaver:{name:'Thornweaver Spider',hp:131,atk:15,exp:50,gold:9,level:15,drops:["silkThread", "herb"],rarity:'common'},
+poisonMoth:{name:'Poison Moth',hp:174,atk:19,exp:64,gold:12,level:19,drops:["silkThread", "herb"],rarity:'common'},
+thornStalker:{name:'Thorn Stalker',hp:221,atk:24,exp:78,gold:14,level:23,drops:["silkThread", "herb"],rarity:'common'},
+sporeBloom:{name:'Spore Bloom',hp:271,atk:28,exp:93,gold:16,level:27,drops:["silkThread", "herb"],rarity:'common'},
+thornBeetle:{name:'Thorn Beetle',hp:337,atk:33,exp:112,gold:20,level:32,drops:["silkThread", "herb"],rarity:'common'},
+venomSpider:{name:'Venom Spider',hp:407,atk:39,exp:132,gold:23,level:37,drops:["silkThread", "herb"],rarity:'common'},
+briarGolem:{name:'Briar Golem',hp:673,atk:53,exp:228,gold:39,level:42,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+thornWraith:{name:'Thorn Wraith',hp:557,atk:50,exp:172,gold:29,level:47,drops:["silkThread", "herb"],rarity:'common'},
+toxicVine:{name:'Toxic Vine',hp:636,atk:56,exp:193,gold:32,level:52,drops:["silkThread", "herb"],rarity:'common'},
+thornWarden:{name:'Thorn Warden',hp:1029,atk:75,exp:327,gold:54,level:58,drops:["silkThread", "herb", "venomSac"],rarity:'uncommon'},
+giantMoth:{name:'Giant Moth',hp:838,atk:69,exp:243,gold:40,level:64,drops:["silkThread", "herb"],rarity:'common'},
+sporeStalker:{name:'Spore Stalker',hp:1321,atk:92,exp:404,gold:66,level:70,drops:["silkThread", "herb", "venomSac"],rarity:'uncommon'},
+venomDrake:{name:'Venom Drake',hp:1526,atk:103,exp:457,gold:74,level:78,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+thornElemental:{name:'Thorn Elemental',hp:1738,atk:115,exp:510,gold:82,level:86,drops:["silkThread", "herb", "deepFang"],rarity:'uncommon'},
+briarSerpent:{name:'Briar Serpent',hp:1417,atk:106,exp:381,gold:60,level:95,drops:["silkThread", "herb"],rarity:'common'},
+toxicBear:{name:'Toxic Bear',hp:2269,atk:142,exp:640,gold:100,level:105,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+sporeGolem:{name:'Spore Golem',hp:2563,atk:157,exp:710,gold:110,level:115,drops:["silkThread", "herb", "venomSac"],rarity:'uncommon'},
+thornTitan:{name:'Thorn Titan',hp:2896,atk:174,exp:788,gold:121,level:126,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+venomBehemoth:{name:'Venom Behemoth',hp:3272,atk:192,exp:874,gold:133,level:138,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+briarDrake:{name:'Briar Drake',hp:3725,atk:213,exp:976,gold:148,level:152,drops:["silkThread", "herb", "deepFang"],rarity:'uncommon'},
+thornLord:{name:'Thorn Lord',hp:4261,atk:237,exp:1094,gold:164,level:168,drops:["silkThread", "herb", "silkThread"],rarity:'uncommon'},
+toxicPhoenix:{name:'Toxic Phoenix',hp:4850,atk:264,exp:1221,gold:181,level:185,drops:["silkThread", "herb", "deepFang"],rarity:'uncommon'},
+thornBehemoth:{name:'Thorn Behemoth',hp:9944,atk:443,exp:2748,gold:539,level:205,drops:["silkThread", "herb", "venomSac"],rarity:'rare'},// boss
+venomDragon:{name:'Venom Dragon',hp:11609,atk:502,exp:3134,gold:607,level:230,drops:["silkThread", "herb", "deepFang"],rarity:'rare'},// boss
+// Crystalshore
+tidePool:{name:'Tide Pool Jelly',hp:34,atk:5,exp:14,gold:3,level:4,drops:["shellFragment", "rawFish"],rarity:'common'},
+shoreCrab:{name:'Shore Crab',hp:64,atk:8,exp:26,gold:5,level:8,drops:["shellFragment", "rawFish"],rarity:'common'},
+tidalSerpent:{name:'Tidal Serpent',hp:100,atk:12,exp:39,gold:7,level:12,drops:["shellFragment", "rawFish"],rarity:'common'},
+seaSpider:{name:'Sea Spider',hp:141,atk:16,exp:53,gold:10,level:16,drops:["shellFragment", "rawFish"],rarity:'common'},
+coralBeetle:{name:'Coral Beetle',hp:186,atk:20,exp:67,gold:12,level:20,drops:["shellFragment", "rawFish"],rarity:'common'},
+pearlCrab:{name:'Pearl Crab',hp:233,atk:25,exp:82,gold:15,level:24,drops:["shellFragment", "rawFish"],rarity:'common'},
+shoreWraith:{name:'Shore Wraith',hp:284,atk:29,exp:97,gold:17,level:28,drops:["shellFragment", "rawFish"],rarity:'common'},
+tidalElemental:{name:'Tidal Elemental',hp:351,atk:34,exp:116,gold:20,level:33,drops:["shellFragment", "rawFish"],rarity:'common'},
+reefStalker:{name:'Reef Stalker',hp:422,atk:40,exp:136,gold:23,level:38,drops:["shellFragment", "rawFish"],rarity:'common'},
+coralGolem:{name:'Coral Golem',hp:694,atk:55,exp:234,gold:40,level:43,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+seaSerpent:{name:'Sea Serpent',hp:588,atk:52,exp:180,gold:30,level:49,drops:["shellFragment", "rawFish"],rarity:'common'},
+shoreWarden:{name:'Shore Warden',hp:960,atk:71,exp:308,gold:51,level:55,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+pearlElemental:{name:'Pearl Elemental',hp:1101,atk:79,exp:346,gold:57,level:61,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+tidalDrake:{name:'Tidal Drake',hp:1271,atk:89,exp:391,gold:64,level:68,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+reefGolem:{name:'Reef Golem',hp:1448,atk:99,exp:437,gold:71,level:75,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+abyssSerpent:{name:'Abyss Serpent',hp:1657,atk:110,exp:490,gold:79,level:83,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+coralWarden:{name:'Coral Warden',hp:1874,atk:122,exp:544,gold:87,level:91,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+tidalBehemoth:{name:'Tidal Behemoth',hp:2125,atk:135,exp:606,gold:95,level:100,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+seaDrake:{name:'Sea Drake',hp:2415,atk:150,exp:675,gold:105,level:110,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+abyssWraith:{name:'Abyss Wraith',hp:2774,atk:168,exp:759,gold:117,level:122,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+reefTitan:{name:'Reef Titan',hp:3177,atk:187,exp:852,gold:130,level:135,drops:["shellFragment", "rawFish", "crystalBlade"],rarity:'uncommon'},
+pearlDrake:{name:'Pearl Drake',hp:3659,atk:210,exp:961,gold:146,level:150,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+tidalLord:{name:'Tidal Lord',hp:4329,atk:241,exp:1109,gold:166,level:170,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+abyssBehemoth:{name:'Abyss Behemoth',hp:5027,atk:272,exp:1259,gold:186,level:190,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'uncommon'},
+crystalGolem:{name:'Crystal Golem',hp:10271,atk:455,exp:2824,gold:552,level:210,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'rare'},// boss
+abyssDragon:{name:'Abyss Dragon',hp:12293,atk:526,exp:3291,gold:635,level:240,drops:["shellFragment", "rawFish", "crystalShard"],rarity:'rare'},// boss
+// Cross-biome / Underground
+corruptWolf:{name:'Corrupt Wolf',hp:260,atk:25,exp:101,gold:18,level:20,drops:["silkThread", "venomSac", "relicShard"],rarity:'uncommon'},
+voidSentinel:{name:'Void Sentinel',hp:631,atk:50,exp:216,gold:37,level:40,drops:["silkThread", "venomSac", "relicShard"],rarity:'uncommon'},
+caveSpider:{name:'Cave Spider',hp:435,atk:37,exp:157,gold:28,level:30,drops:["silkThread", "venomSac", "relicSabatons"],rarity:'uncommon'},
+deepLurker:{name:'Deep Lurker',hp:846,atk:64,exp:277,gold:47,level:50,drops:["silkThread", "venomSac", "relicSabatons"],rarity:'uncommon'},
+dungeonGuardian:{name:'Dungeon Guardian',hp:2818,atk:159,exp:941,gold:203,level:80,drops:["silkThread", "venomSac", "relicShard"],rarity:'rare'},// boss
 };
 
 // ═══ PET DEFINITIONS ═══
@@ -1791,35 +1947,39 @@ for(let i=0;i<8;i++)push(rand(192,263),rand(82,138),'crystalshore','rawFish','fi
 for(let i=0;i<4;i++)push(rand(12,78),rand(12,68),'frost','rawFish','fish');
 return out}
 
-function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
-// Emberwood forest enemies (levels 1–4)
-for(let i=0;i<14;i++)push(rand(92,168),rand(12,68),'forest',sample(['wolf','wolf','emberFox','emberFox','forestStag','bandit']));
-// Mirefen marsh enemies (levels 3–6)
-for(let i=0;i<12;i++)push(rand(97,178),rand(147,203),'marsh',sample(['bogling','bogling','swampToad','swampToad','swampToad','mireStalker']));
-// Glass Ruins enemies (levels 6–9)
-for(let i=0;i<12;i++)push(rand(187,263),rand(12,68),'ruins',sample(['sentinel','sentinel','ruinShade','ruinShade','bandit']));
-// Frostpeak enemies (levels 4–7)
-for(let i=0;i<12;i++)push(rand(12,78),rand(12,68),'frost',sample(['frostWolf','frostWolf','iceSprite','iceSprite','snowOwl']));
-// Scorchlands enemies (levels 7–10)
-for(let i=0;i<12;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['magmaBeetle','magmaBeetle','ashScarab','ashScarab','cinderElemental']));
-// Thornveil enemies (levels 5–8)
-for(let i=0;i<14;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['thornweaver','thornweaver','vineCreeper','vineCreeper','poisonMoth','caveSpider']));
-// Crystalshore enemies (levels 4–7)
-for(let i=0;i<12;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['shoreCrab','shoreCrab','tidalSerpent','tidalSerpent','tidalSerpent']));
-// Underground cave enemies (near dungeon entrances, tougher)
+function buildEnemies(){const out=[],push=(tx,ty,zone,type)=>{const def=enemyDefs[type];if(!def){console.warn('Unknown enemy type:',type);return}out.push({x:tx*T*SCALE,y:ty*T*SCALE,zone,type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:tx*T*SCALE,homeY:ty*T*SCALE,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})};
+// Emberwood enemies
+for(let i=0;i<20;i++)push(rand(92,168),rand(12,68),'forest',sample(['forestRat','emberFox','wildBoar','forestSpider','wolf','bandit','forestStag','barkBeetle','timberSnake','thornBear','mossCrawler','woodlandSprite','elderStag','direWolf','banditCaptain','forestWraith','shadowPanther','emberSerpent','ancientBear','forestWarden','ironwoodTreant','primalStalker','verdantDrake','forestBehemoth','worldTreeant']));
+push(rand(102,158),rand(22,58),'forest','ashDrake');
+// Mirefen enemies
+for(let i=0;i<20;i++)push(rand(97,178),rand(147,203),'marsh',sample(['swampRat','bogling','mireLeech','swampToad','bogSpider','mudCrab','mireStalker','poisonFrog','swampAdder','marshTroll','fungalCreeper','bogWraith','mireSerpent','toxicBeetle','swampThing','marshWarden','plagueMoth','festeredBear','mireDrake','swampHydra','ancientToad','bogTitan','plagueElemental','mireBehemoth']));
+push(rand(107,168),rand(157,193),'marsh','rotLord');
+push(rand(107,168),rand(157,193),'marsh','swampLeviathan');
+// Frostpeak enemies
+for(let i=0;i<20;i++)push(rand(12,78),rand(12,68),'frost',sample(['snowHare','iceSprite','frostWolf','snowCrab','snowOwl','iceSpider','frostBeetle','snowTroll','glacialSerpent','frostStalker','iceWraith','avalancheBear','frostElemental','blizzardWolf','iceboundSentinel','glacialDrake','frostWarden','snowSerpent','crystalIceSpider','winterWolf','frostTitan','blizzardDrake','iceLord','glacialBehemoth']));
+push(rand(22,68),rand(22,58),'frost','frostGolem');
+push(rand(22,68),rand(22,58),'frost','winterDragon');
+// Glass Ruins enemies
+for(let i=0;i<20;i++)push(rand(187,263),rand(12,68),'ruins',sample(['ruinRat','ruinShade','sentinel','ancientSpider','ruinBandit','glassGolem','voidBeetle','arcaneWraith','ruinSerpent','crystalSentinel','voidStalker','arcaneBeetle','ruinWarden','glassWraith','ancientSentinel','voidElemental','ruinDrake','crystalWraith','voidBehemoth','ancientDrake','glassPhoenix','ruinTitan','voidLord','ancientBehemoth']));
+push(rand(197,253),rand(22,58),'ruins','veilWraith');
+push(rand(197,253),rand(22,58),'ruins','voidDragon');
+// Scorchlands enemies
+for(let i=0;i<20;i++)push(rand(12,83),rand(152,208),'scorchlands',sample(['emberBeetle','fireCrab','magmaBeetle','ashScarab','lavaSerpent','cinderElemental','flameStalker','moltenSpider','scorchedBandit','fireWraith','lavaGolem','infernoMoth','magmaElemental','blazeTroll','volcanicDrake','scorchWarden','fireBehemoth','lavaWyrm','infernoElemental','blazePhoenix','magmaTitan','scorchDrake','infernalLord','volcanicBehemoth']));
+push(rand(22,73),rand(162,198),'scorchlands','magmaWyrm');
+push(rand(22,73),rand(162,198),'scorchlands','bloodDragon');
+// Thornveil enemies
+for(let i=0;i<20;i++)push(rand(12,78),rand(82,138),'thornveil',sample(['thornRat','vineCreeper','thornweaver','poisonMoth','thornStalker','sporeBloom','thornBeetle','venomSpider','briarGolem','thornWraith','toxicVine','thornWarden','giantMoth','sporeStalker','venomDrake','thornElemental','briarSerpent','toxicBear','sporeGolem','thornTitan','venomBehemoth','briarDrake','thornLord','toxicPhoenix']));
+push(rand(22,68),rand(92,128),'thornveil','thornBehemoth');
+push(rand(22,68),rand(92,128),'thornveil','venomDragon');
+// Crystalshore enemies
+for(let i=0;i<20;i++)push(rand(192,263),rand(82,138),'crystalshore',sample(['tidePool','shoreCrab','tidalSerpent','seaSpider','coralBeetle','pearlCrab','shoreWraith','tidalElemental','reefStalker','coralGolem','seaSerpent','shoreWarden','pearlElemental','tidalDrake','reefGolem','abyssSerpent','coralWarden','tidalBehemoth','seaDrake','abyssWraith','reefTitan','pearlDrake','tidalLord','abyssBehemoth']));
+push(rand(202,253),rand(92,128),'crystalshore','crystalGolem');
+push(rand(202,253),rand(92,128),'crystalshore','abyssDragon');
+// Underground cave enemies (near dungeon entrances)
 dungeonEntrances.forEach(de=>{
-const caveTypes=de.zone==='thornveil'?['caveSpider','caveSpider','deepLurker']:
-de.zone==='frost'?['frostWolf','frostWolf','deepLurker']:
-de.zone==='scorchlands'?['magmaBeetle','deepLurker','deepLurker']:
-de.zone==='crystalshore'?['shoreCrab','deepLurker','caveSpider']:['caveSpider','deepLurker'];
+const caveTypes=['corruptWolf','voidSentinel','caveSpider','deepLurker'];
 for(let i=0;i<4;i++)push(de.x+rand(-5,5),de.y+rand(-5,5),de.zone,sample(caveTypes));
 });
-// Bosses
-push(rand(120,150),rand(25,50),'forest','ashDrake');
-push(rand(210,250),rand(25,55),'ruins','veilWraith');
-push(rand(30,60),rand(25,55),'frost','frostGolem');
-push(rand(30,70),rand(165,195),'scorchlands','magmaWyrm');
-push(rand(210,250),rand(95,125),'crystalshore','crystalGolem');
 return out}
 
 function generateBounties(){return[...bountyTemplates].sort(()=>Math.random()-0.5).slice(0,5).map(t=>({...t,progress:0,active:false,completed:false}))}
@@ -1838,7 +1998,7 @@ function totalHpMax(){return state.player.hpMax+(state.player.allocStats?.vitali
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}}
+function gainExp(amt){if(state.player.level>=250)return;if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext&&state.player.level<250){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}if(state.player.level>=250){state.player.exp=0;state.player.expNext=0}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -2032,8 +2192,9 @@ function upgradeSettlement(){const next=settlementLevels[state.settlement.level]
 function deaggroAll(){state.enemies.forEach(e=>{e.engaged=false;e.engagedBy=null});if(state.dungeon.active)state.dungeon.enemies.forEach(e=>{e.engaged=false;e.engagedBy=null})}
 function attackNearest(silent){
 const p=state.player;if(p.attackCooldown>0||p.isBlocking)return;
-// In dungeon, attack dungeon enemies
-let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+// In dungeon, attack dungeon enemies; overworld: same zone OR within attack range
+const pZone=currentZoneAt(p.x,p.y);
+let enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===pZone||dist(p,e)<=ATTACK_RANGE));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>ATTACK_RANGE){if(!silent)toast('No enemy in range.');return}
 // Target locking: check if engaged by someone else (multiplayer-ready)
@@ -2122,9 +2283,9 @@ function completeBounty(){const b=state.activeBounty;if(!b)return;b.completed=tr
 
 // ═══ EVENTS ═══
 function trySpawnEvent(){if(state.activeEvent||Math.random()>0.002)return;const t=sample(eventTemplates);state.activeEvent={...t,timeLeft:t.duration,spawnedEnemies:[]};eventBanner.textContent=`⚡ ${t.name}: ${t.desc}`;eventBanner.style.display='block';toast(`⚡ ${t.name}`,'event');addLog(`⚡ ${t.name}`);setTimeout(()=>eventBanner.style.display='none',6000);
-if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
-if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}
-if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2})}}
+if(t.effect==='spawnExtra'&&t.zone){const z=zoneMap[t.zone];for(let i=0;i<(t.count||4);i++){const def=enemyDefs[t.target];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:t.zone,type:t.target,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}}
+if(t.effect==='spawnRare'){const rt=Math.random()>0.5?'ashDrake':'veilWraith';const z=zoneMap[rt==='ashDrake'?'forest':'ruins'];const def=enemyDefs[rt];state.enemies.push({x:rand(z.x1+5,z.x2-5)*T*SCALE,y:rand(z.y1+5,z.y2-5)*T*SCALE,zone:rt==='ashDrake'?'forest':'ruins',type:rt,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}
+if(t.effect==='spawnCorrupt'){for(let i=0;i<(t.count||3);i++){const z=zoneMap[sample(['forest','marsh','ruins','frost','scorchlands','thornveil','crystalshore'])];const type=Math.random()>0.5?'corruptWolf':'voidSentinel';const def=enemyDefs[type];state.enemies.push({x:rand(z.x1+2,z.x2-2)*T*SCALE,y:rand(z.y1+2,z.y2-2)*T*SCALE,zone:Object.keys(zoneMap).find(k=>zoneMap[k]===z),type,hp:def.hp,hpMax:def.hp,level:def.level||1,alive:true,respawn:0,homeX:0,homeY:0,patrolAngle:Math.random()*Math.PI*2,engaged:false,engagedBy:null})}}
 if(t.effect==='purge'){state.world.regionState.corruption=Math.max(0,state.world.regionState.corruption-10);state.world.regionState.stability=Math.min(100,state.world.regionState.stability+5)}}
 function updateEvent(dt){if(!state.activeEvent)return;state.activeEvent.timeLeft-=dt;if(state.activeEvent.timeLeft<=0){toast(`Event ended: ${state.activeEvent.name}`,'event');state.activeEvent=null}}
 
@@ -2139,7 +2300,12 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;
+// Always rebuild enemies from current definitions so new/updated enemies appear in old saves
+state.enemies=buildEnemies();
+// Rebuild nodes if missing action property
+if(!state.nodes||state.nodes.length===0)state.nodes=buildNodes();
+rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
 let autoSaveTimer=0;
 function autoSave(dt){if(gameSettings.autoSaveInterval<=0)return;autoSaveTimer+=dt;if(autoSaveTimer>=gameSettings.autoSaveInterval){autoSaveTimer=0;saveGame(0,true)}}
 
@@ -2176,20 +2342,22 @@ const nearDungeon=dungeonEntrances.some(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCAL
 btnDungeon.style.display=nearDungeon&&!state.dungeon.active?'flex':'none';
 // Nodes
 state.nodes.forEach(n=>{if(!n.ready&&state.time>=n.respawn)n.ready=true});
-// Enemy AI (overworld)
+// Enemy AI (overworld) — static enemies, aggro on hit or proximity (higher-level enemies only)
 if(!state.dungeon.active){
+const PROXIMITY_AGGRO=100*SCALE; // close range for higher-level enemy proximity aggro
 state.enemies.forEach((e,i)=>{if(!e.alive&&state.time>=e.respawn){e.alive=true;e.hp=e.hpMax;e.engaged=false;e.engagedBy=null}if(!e.alive)return;
-const eDef=enemyDefs[e.type];const isBoss=eDef.rarity==='rare';
-const aRange=isBoss?BOSS_AGGRO_RANGE:AGGRO_RANGE;
+const eDef=enemyDefs[e.type];if(!eDef)return;const isBoss=eDef.rarity==='rare';
 const lRange=isBoss?BOSS_LEASH_RANGE:LEASH_RANGE;
-const d=dist(e,p);if(e.zone===state.world.activeZone||d<aRange){
-// Aggro detection
-if(!e.engaged&&d<aRange){e.engaged=true;e.engagedBy='player'}
+const d=dist(e,p);
+// Proximity aggro: only if enemy level > player level AND player is very close
+if(!e.engaged&&(eDef.level||1)>p.level&&d<PROXIMITY_AGGRO){e.engaged=true;e.engagedBy='player'}
+// Boss proximity aggro at wider range
+if(!e.engaged&&isBoss&&d<BOSS_AGGRO_RANGE){e.engaged=true;e.engagedBy='player'}
 // De-aggro: leash range exceeded
 if(e.engaged&&d>lRange){e.engaged=false;e.engagedBy=null}
 if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const spd=(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE;if(d>ARMS_LENGTH){e.x+=(dx/len)*spd*dt;e.y+=(dy/len)*spd*dt}else{const pushOut=(ARMS_LENGTH-d)*2*dt;e.x-=(dx/len)*pushOut;e.y-=(dy/len)*pushOut;const sign=i%2===0?1:-1;e.x+=(-dy/len)*spd*0.3*dt*sign;e.y+=(dx/len)*spd*0.3*dt*sign}if(d<ARMS_LENGTH+5*SCALE&&p.invincible<=0){let dmg=Math.max(1,eDef.atk-totalDef()+rand(0,1));const ec=Math.random()<0.1;if(ec)dmg=Math.floor(dmg*1.8);if(p.isBlocking){dmg=Math.ceil(dmg*0.3);spawnDamageNumber(p.x,p.y-20,`🛡 ${dmg}`,'#60a5fa')}else{spawnDamageNumber(p.x,p.y-20,ec?`CRIT ${dmg}`:`${dmg}`,ec?'#ff4444':'#dc2626')}p.hp-=dmg;p.invincible=0.5;state.stats.totalDamageReceived+=dmg;spawnParticle(p.x,p.y,p.isBlocking?'#60a5fa':ec?'#ff4444':'#dc2626',ec?6:3);triggerShake(p.isBlocking?2:ec?10:6,p.isBlocking?0.05:ec?0.25:0.15);if(ec&&!p.isBlocking)p.critFlash=0.3;p.lastCombatTime=state.time;if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();toast('Fell.','combat');addLog('💀 Fell.')}}}else{
-returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}}else if(e.engaged){e.engaged=false;e.engagedBy=null;e.x=e.homeX;e.y=e.homeY}});
-separateEnemies(state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,p)<AGGRO_RANGE)),dt);
+returnToHomeOrPatrol(e,(45+(zoneMap[e.zone]?.danger||0)*4)*SCALE,dt)}});
+separateEnemies(state.enemies.filter(e=>e.alive&&(e.zone===state.world.activeZone||dist(e,p)<LEASH_RANGE)),dt);
 }else{
 // Dungeon enemy AI
 state.dungeon.enemies.forEach((e,i)=>{if(!e.alive)return;const d=dist(e,p);
@@ -2840,7 +3008,7 @@ const atk=totalAtk();
 p.abilityCooldowns[ab.id]=ab.cooldown;
 p.lastCombatTime=state.time;
 if(ab.type==='damage'){
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const enemy=enemies.sort((a,b)=>dist(p,a)-dist(p,b))[0];
 if(!enemy||dist(p,enemy)>80*SCALE){toast('No enemy in range.','info');p.abilityCooldowns[ab.id]=0;return}
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
@@ -2865,7 +3033,7 @@ spawnDamageNumber(p.x,p.y-30,`${ab.icon} +${amt} ${ab.buffType.toUpperCase()}`,p
 toast(`${ab.icon} ${ab.name}! +${amt} ${ab.buffType.toUpperCase()} for ${ab.buffDuration}s`,'quest');
 }else if(ab.type==='aoe'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const nearby=enemies.filter(e=>dist(p,e)<150*SCALE);
 if(nearby.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
 let totalDmg=0;
@@ -2879,7 +3047,7 @@ triggerShake(12,0.3);toast(`${ab.icon} ${ab.name}! ${totalDmg} total damage to $
 }else if(ab.type==='chain'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
 const maxTargets=ab.targets+(rank-1)*(ab.perRank.targets||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const sorted=enemies.filter(e=>dist(p,e)<150*SCALE).sort((a,b)=>dist(p,a)-dist(p,b)).slice(0,maxTargets);
 if(sorted.length===0){toast('No enemies nearby.','info');p.abilityCooldowns[ab.id]=0;return}
 sorted.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;state.stats.totalDamageDealt+=dmg;
@@ -2928,7 +3096,7 @@ triggerShake(12,0.4);
 toast(`${ab.icon} ${ab.name}! +10 ATK, +15% Crit for ${dur}s`,'achievement');
 }else if(ab.type==='ultimate_aoe'){
 const mult=ab.multiplier+(rank-1)*(ab.perRank.multiplier||0);
-const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&e.zone===currentZoneAt(p.x,p.y));
+const enemies=state.dungeon.active?state.dungeon.enemies.filter(e=>e.alive):state.enemies.filter(e=>e.alive&&(e.zone===currentZoneAt(p.x,p.y)||dist(p,e)<=ATTACK_RANGE));
 const nearby=enemies.filter(e=>dist(p,e)<200*SCALE);
 let totalDmg=0;
 nearby.forEach(enemy=>{const dmg=Math.max(1,Math.floor(atk*mult));enemy.hp-=dmg;totalDmg+=dmg;state.stats.totalDamageDealt+=dmg;
@@ -3407,8 +3575,7 @@ function openCharCreator(){
 }
 
 // Check for existing save
-if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block'}
-qs('#btnPlay').onclick=()=>startGame(false);
+if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block';qs('#btnContinue').classList.add('primary');qs('#btnNewGame').classList.remove('primary')}
 qs('#btnContinue').onclick=()=>startGame(true);
 qs('#btnNewGame').onclick=()=>openCharCreator();
 
