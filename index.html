@@ -737,6 +737,8 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 'use strict';
 const SAVE_KEY='ashveil_v5_save';
 const T=16,MW=280,MH=220,SCALE=3;
+// Terrain type indices (must match tSpr array order)
+const TT_GRASS=0,TT_DIRT=1,TT_STONE=2,TT_WATER=3,TT_MARSH=4,TT_RUINS=5,TT_SAND=6,TT_CORRUPT=7,TT_SNOW=8,TT_VOLCANIC=9,TT_DARKFOREST=10,TT_SHORE=11,TT_ROAD=12,TT_DEEPWATER=13,TT_CAVE=14,TT_LAVA=15;
 const gameSettings={autoSaveInterval:60,shakeEnabled:true,dustEnabled:true,regenEnabled:true};
 const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -1381,33 +1383,33 @@ function generateWorld(){
 // ── Base terrain fill ──
 for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;terrainVariant[i]=rand(0,3);corruptionMap[i]=0;terrain[i]=0;
 // Biome base terrain assignment
-if(x>=120&&x<=160&&y>=85&&y<=120)terrain[i]=Math.random()>0.4?1:2; // Cindergate town (dirt/stone)
-else if(x>=90&&x<=170&&y>=10&&y<=70)terrain[i]=0; // Emberwood (grass/forest)
-else if(x>=95&&x<=180&&y>=145&&y<=205)terrain[i]=Math.random()>0.3?4:(Math.random()>0.5?3:4); // Mirefen (marsh)
-else if(x>=185&&x<=265&&y>=10&&y<=70)terrain[i]=Math.random()>0.4?5:2; // Glass Ruins (ruins/stone)
-else if(x>=10&&x<=80&&y>=10&&y<=70)terrain[i]=8; // Frostpeak (snow=8)
-else if(x>=10&&x<=85&&y>=150&&y<=210)terrain[i]=9; // Scorchlands (volcanic=9)
-else if(x>=10&&x<=80&&y>=80&&y<=140)terrain[i]=10; // Thornveil (darkforest=10)
-else if(x>=190&&x<=265&&y>=80&&y<=140)terrain[i]=11; // Crystalshore (shore=11)
+if(x>=120&&x<=160&&y>=85&&y<=120)terrain[i]=Math.random()>0.4?TT_DIRT:TT_STONE; // Cindergate town (dirt/stone)
+else if(x>=90&&x<=170&&y>=10&&y<=70)terrain[i]=TT_GRASS; // Emberwood (grass/forest)
+else if(x>=95&&x<=180&&y>=145&&y<=205)terrain[i]=Math.random()>0.3?TT_MARSH:(Math.random()>0.5?TT_WATER:TT_MARSH); // Mirefen (marsh)
+else if(x>=185&&x<=265&&y>=10&&y<=70)terrain[i]=Math.random()>0.4?TT_RUINS:TT_STONE; // Glass Ruins (ruins/stone)
+else if(x>=10&&x<=80&&y>=10&&y<=70)terrain[i]=TT_SNOW; // Frostpeak (snow)
+else if(x>=10&&x<=85&&y>=150&&y<=210)terrain[i]=TT_VOLCANIC; // Scorchlands (volcanic)
+else if(x>=10&&x<=80&&y>=80&&y<=140)terrain[i]=TT_DARKFOREST; // Thornveil (darkforest)
+else if(x>=190&&x<=265&&y>=80&&y<=140)terrain[i]=TT_SHORE; // Crystalshore (shore)
 // Border water
-if(x<5||x>MW-6||y<4||y>MH-5)terrain[i]=3;
+if(x<5||x>MW-6||y<4||y>MH-5)terrain[i]=TT_WATER;
 }
 // ── Major river: flows from Frostpeak (NW) southeast through center to Mirefen ──
-for(let t=0;t<1200;t++){const f=t/1200;const rx=Math.floor(30+f*120+Math.sin(f*8)*8);const ry=Math.floor(15+f*180+Math.cos(f*6)*6);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH)terrain[wy*MW+wx]=3}}
+for(let t=0;t<1200;t++){const f=t/1200;const rx=Math.floor(30+f*120+Math.sin(f*8)*8);const ry=Math.floor(15+f*180+Math.cos(f*6)*6);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH)terrain[wy*MW+wx]=TT_WATER}}
 // ── Secondary river: from Frostpeak east to Crystalshore ──
-for(let t=0;t<800;t++){const f=t/800;const rx=Math.floor(70+f*160+Math.sin(f*10)*5);const ry=Math.floor(55+Math.sin(f*4)*15);for(let dy=-1;dy<=0;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==1&&terrain[wy*MW+wx]!==2)terrain[wy*MW+wx]=3}}
+for(let t=0;t<800;t++){const f=t/800;const rx=Math.floor(70+f*160+Math.sin(f*10)*5);const ry=Math.floor(55+Math.sin(f*4)*15);for(let dy=-1;dy<=0;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==TT_DIRT&&terrain[wy*MW+wx]!==TT_STONE)terrain[wy*MW+wx]=TT_WATER}}
 // ── Lake in Crystalshore ──
 const lakeX=225,lakeY=100,lakeR=12;
-for(let y=lakeY-lakeR;y<=lakeY+lakeR;y++)for(let x=lakeX-lakeR;x<=lakeX+lakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lakeX,y-lakeY)<lakeR+Math.sin(x*0.5)*2)terrain[y*MW+x]=3}
+for(let y=lakeY-lakeR;y<=lakeY+lakeR;y++)for(let x=lakeX-lakeR;x<=lakeX+lakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lakeX,y-lakeY)<lakeR+Math.sin(x*0.5)*2)terrain[y*MW+x]=TT_WATER}
 // ── Lake in Frostpeak (frozen lake) ──
 const fLakeX=55,fLakeY=55,fLakeR=8;
-for(let y=fLakeY-fLakeR;y<=fLakeY+fLakeR;y++)for(let x=fLakeX-fLakeR;x<=fLakeX+fLakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-fLakeX,y-fLakeY)<fLakeR+Math.sin(x*0.3)*1.5)terrain[y*MW+x]=3}
+for(let y=fLakeY-fLakeR;y<=fLakeY+fLakeR;y++)for(let x=fLakeX-fLakeR;x<=fLakeX+fLakeR;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-fLakeX,y-fLakeY)<fLakeR+Math.sin(x*0.3)*1.5)terrain[y*MW+x]=TT_WATER}
 // ── Lava pools in Scorchlands ──
 const lavaPools=[[35,170,5],[60,190,6],[25,195,4],[70,175,4]];
-lavaPools.forEach(([lx,ly,lr])=>{for(let y=ly-lr;y<=ly+lr;y++)for(let x=lx-lr;x<=lx+lr;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lx,y-ly)<lr+Math.random())terrain[y*MW+x]=15}});// lava=15
+lavaPools.forEach(([lx,ly,lr])=>{const adjustedR=lr+Math.random();for(let y=ly-lr;y<=ly+lr;y++)for(let x=lx-lr;x<=lx+lr;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-lx,y-ly)<adjustedR)terrain[y*MW+x]=TT_LAVA}});// lava=15
 // ── Roads connecting towns ──
 // Road helper: carve a dirt road between two points
-function roadBetween(ax,ay,bx,by){const steps=Math.max(Math.abs(bx-ax),Math.abs(by-ay))*2;for(let t=0;t<=steps;t++){const f=t/steps;const rx=Math.round(ax+(bx-ax)*f);const ry=Math.round(ay+(by-ay)*f);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==3&&terrain[wy*MW+wx]!==15)terrain[wy*MW+wx]=12}}}// road=12
+function roadBetween(ax,ay,bx,by){const steps=Math.max(Math.abs(bx-ax),Math.abs(by-ay))*2;for(let t=0;t<=steps;t++){const f=t/steps;const rx=Math.round(ax+(bx-ax)*f);const ry=Math.round(ay+(by-ay)*f);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const wx=rx+dx,wy=ry+dy;if(wx>=0&&wx<MW&&wy>=0&&wy<MH&&terrain[wy*MW+wx]!==TT_WATER&&terrain[wy*MW+wx]!==TT_LAVA)terrain[wy*MW+wx]=TT_ROAD}}}// road=12
 // Connect Cindergate hub to all biome towns
 roadBetween(140,100,130,32); // to Emberwood Camp
 roadBetween(140,100,50,38);  // to Frostpeak Village (via west)
@@ -1427,36 +1429,36 @@ const townCenters=[
 {cx:50,cy:175,r:8},   // Scorchfort
 {cx:140,cy:172,r:8}   // Mirefen Settlement
 ];
-townCenters.forEach(tc=>{for(let y=tc.cy-tc.r;y<=tc.cy+tc.r;y++)for(let x=tc.cx-tc.r;x<=tc.cx+tc.r;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-tc.cx,y-tc.cy)<tc.r)terrain[y*MW+x]=1}});
+townCenters.forEach(tc=>{for(let y=tc.cy-tc.r;y<=tc.cy+tc.r;y++)for(let x=tc.cx-tc.r;x<=tc.cx+tc.r;x++){if(x>=0&&x<MW&&y>=0&&y<MH&&Math.hypot(x-tc.cx,y-tc.cy)<tc.r)terrain[y*MW+x]=TT_DIRT}});
 // ── Decorations: trees, rocks, flora per biome ──
 // Emberwood: dense forest trees
-for(let i=0;i<400;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===0&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'tree',variant:rand(0,2)})}
+for(let i=0;i<400;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'tree',variant:rand(0,2)})}
 // Frostpeak: pine trees
-for(let i=0;i<300;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===8&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'pineTree',variant:rand(0,2)})}
+for(let i=0;i<300;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'pineTree',variant:rand(0,2)})}
 // Frostpeak: snow rocks, ice
-for(let i=0;i<50;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===8)decorations.push({x,y,type:'snowRock',variant:rand(0,1)})}
-for(let i=0;i<20;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===8)decorations.push({x,y,type:'iceFormation',variant:rand(0,1)})}
+for(let i=0;i<50;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'snowRock',variant:rand(0,1)})}
+for(let i=0;i<20;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'iceFormation',variant:rand(0,1)})}
 // Glass Ruins: rocks
-for(let i=0;i<80;i++){const x=rand(187,263),y=rand(12,68);if(terrain[y*MW+x]===5||terrain[y*MW+x]===2)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+for(let i=0;i<80;i++){const x=rand(187,263),y=rand(12,68);if(terrain[y*MW+x]===TT_RUINS||terrain[y*MW+x]===TT_STONE)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
 // Thornveil: dark gnarled trees
-for(let i=0;i<350;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===10&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'darkTree',variant:rand(0,2)})}
+for(let i=0;i<350;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'darkTree',variant:rand(0,2)})}
 // Thornveil: mushrooms
-for(let i=0;i<60;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===10)decorations.push({x,y,type:'mushroom',variant:rand(0,2)})}
+for(let i=0;i<60;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST)decorations.push({x,y,type:'mushroom',variant:rand(0,2)})}
 // Scorchlands: dead trees, cacti
-for(let i=0;i<100;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===9&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'deadTree',variant:rand(0,1)})}
-for(let i=0;i<80;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===9)decorations.push({x,y,type:'cactus',variant:rand(0,1)})}
+for(let i=0;i<100;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===TT_VOLCANIC&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'deadTree',variant:rand(0,1)})}
+for(let i=0;i<80;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===TT_VOLCANIC)decorations.push({x,y,type:'cactus',variant:rand(0,1)})}
 // Crystalshore: palm trees, rocks
-for(let i=0;i<200;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===11&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'palmTree',variant:rand(0,1)})}
-for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===11)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+for(let i=0;i<200;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE&&!townCenters.some(tc=>Math.hypot(x-tc.cx,y-tc.cy)<tc.r+3))decorations.push({x,y,type:'palmTree',variant:rand(0,1)})}
+for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
 // Mirefen: bushes
-for(let i=0;i<120;i++){const x=rand(97,178),y=rand(147,203);if(terrain[y*MW+x]===4)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
+for(let i=0;i<120;i++){const x=rand(97,178),y=rand(147,203);if(terrain[y*MW+x]===TT_MARSH)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
 // General scattered rocks
-for(let i=0;i<100;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==3&&terrain[y*MW+x]!==15)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
+for(let i=0;i<100;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==TT_WATER&&terrain[y*MW+x]!==TT_LAVA)decorations.push({x,y,type:'rock',variant:rand(0,1)})}
 // General scattered bushes
-for(let i=0;i<80;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===0||terrain[y*MW+x]===4)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
+for(let i=0;i<80;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===TT_GRASS||terrain[y*MW+x]===TT_MARSH)decorations.push({x,y,type:'bush',variant:rand(0,1)})}
 // Flowers in forest and shore
-for(let i=0;i<80;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===0)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
-for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===11)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
+for(let i=0;i<80;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
+for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
 decorations.sort((a,b)=>a.y-b.y);
 }
 generateWorld();
@@ -1900,9 +1902,9 @@ function updateWorldMutation(dt){
       const z=zoneMap[sample(zones)];
       const tx=rand(z.x1,z.x2),ty=rand(z.y1,z.y2);
       const i=ty*MW+tx;
-      if(terrain[i]!==3&&terrain[i]!==7){// not water or already corrupt
+      if(terrain[i]!==TT_WATER&&terrain[i]!==TT_CORRUPT){// not water or already corrupt
         corruptionMap[i]=Math.min(1,corruptionMap[i]+0.3);
-        if(corruptionMap[i]>0.7)terrain[i]=7;// 7=corrupt terrain type
+        if(corruptionMap[i]>0.7)terrain[i]=TT_CORRUPT;// corrupt terrain type
       }
     }
   }
@@ -2205,9 +2207,9 @@ const stx=Math.max(0,Math.floor(state.camera.x/(T*SCALE))-1),sty=Math.max(0,Math
 const etx=Math.min(MW-1,Math.ceil((state.camera.x+cssW)/(T*SCALE))+1),ety=Math.min(MH-1,Math.ceil((state.camera.y+cssH)/(T*SCALE))+1);
 waterFrame.timer+=0.016;if(waterFrame.timer>0.4){waterFrame.timer=0;waterFrame.current=(waterFrame.current+1)%4}
 const tSpr=[sprites.tiles.grass,sprites.tiles.dirt,sprites.tiles.stone,sprites.tiles.water,sprites.tiles.marsh,sprites.tiles.ruins,sprites.tiles.sand,sprites.tiles.corrupt,sprites.tiles.snow,sprites.tiles.volcanic,sprites.tiles.darkforest,sprites.tiles.shore,sprites.tiles.road,sprites.tiles.deepwater,sprites.tiles.cave,sprites.tiles.lava];
-for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=(tt===3||tt===13||tt===15)?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
+for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=(tt===TT_WATER||tt===TT_DEEPWATER||tt===TT_LAVA)?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
 // Corruption overlay
-const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==7){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
+const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==TT_CORRUPT){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
 // Buildings
 buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE,bsz=(b.sz||2.4)*T*SCALE;
 if(bx>state.camera.x-bsz&&bx<state.camera.x+cssW+bsz&&by>state.camera.y-bsz&&by<state.camera.y+cssH+bsz){
