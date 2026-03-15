@@ -243,7 +243,7 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
   const bW=sc*0.15,bH=sc*0.13;
-  const bY=py+sc*0.33+bob+sock.y;
+  const bY=py+sc*0.50+bob+sock.y;
   const isSide=dir==='right';
 
   if(isSide){
@@ -288,6 +288,109 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
     ctx.fillRect(px+sc*0.06+ro,bY,bW,sc*0.03);
     ctx.fillStyle=dk;
     ctx.fillRect(px+sc*0.05+ro,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+  }
+
+  ctx.restore();
+}
+
+/* ── Leggings ──
+   Draws leg armor panels between the belt and the boots.
+   Front/back view shows two leg panels side by side; side view shows a single panel.
+   Follows walk animation leg offsets (same as boots).
+   Uses feet socket offset per animation frame.
+   Left-facing is handled by ctx.scale(-1,1) via the flip parameter. */
+function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
+  const bc=colors.body,ac=colors.accent;
+  const dk=darkenHex(bc,0.35),lt=lightenHex(bc,0.25);
+  ctx.save();
+  if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
+
+  const sock=getSocketOffset('feet',sc,frame||0,!!isWalk);
+  px+=sock.x;
+  // Walk leg offsets (matching player sprite leg animation)
+  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
+  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
+  const isSide=dir==='right';
+  const isBack=dir==='up';
+
+  // Leggings sit between the belt and the boots
+  const lY=py+sc*0.24+bob+sock.y;
+  const lH=sc*0.28;
+
+  if(isSide){
+    // ── Side view: single leg panel (overlapping legs) ──
+    const lW=sc*0.24;
+    const lx=px-sc*0.10;
+    // Back leg (drawn first, partially hidden)
+    ctx.fillStyle=dk;
+    ctx.fillRect(lx+ro-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(lx+ro,lY,lW,lH);
+    // Side seam
+    ctx.fillStyle=ac;
+    ctx.fillRect(lx+lW*0.3+ro,lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    // Front leg (drawn on top, slightly offset)
+    ctx.fillStyle=dk;
+    ctx.fillRect(lx+sc*0.03+lo-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(lx+sc*0.03+lo,lY,lW,lH);
+    // Side seam on front leg
+    ctx.fillStyle=ac;
+    ctx.fillRect(lx+sc*0.03+lW*0.3+lo,lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    // Knee guard accent
+    ctx.fillStyle=ac;
+    ctx.fillRect(lx+sc*0.03+lo,lY+lH*0.35,lW,sc*0.04);
+    // Highlight
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.2;
+    ctx.fillRect(lx+sc*0.03+lW*0.55+lo,lY+sc*0.02,lW*0.25,lH*0.35);
+    ctx.globalAlpha=1;
+  } else {
+    // ── Front/back view: two leg panels side by side ──
+    const lW=sc*0.16;
+    // Left leg panel
+    const llx=px-sc*0.22;
+    ctx.fillStyle=dk;
+    ctx.fillRect(llx+lo-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(llx+lo,lY,lW,lH);
+    // Knee guard
+    ctx.fillStyle=ac;
+    ctx.fillRect(llx+lo,lY+lH*0.35,lW,sc*0.04);
+
+    // Right leg panel
+    const rlx=px+sc*0.06;
+    ctx.fillStyle=dk;
+    ctx.fillRect(rlx+ro-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(rlx+ro,lY,lW,lH);
+    // Knee guard
+    ctx.fillStyle=ac;
+    ctx.fillRect(rlx+ro,lY+lH*0.35,lW,sc*0.04);
+
+    if(isBack){
+      // Back detail: vertical seam on each leg
+      ctx.fillStyle=dk;
+      ctx.fillRect(llx+lW*0.45+lo,lY+sc*0.03,sc*0.02,lH-sc*0.08);
+      ctx.fillRect(rlx+lW*0.45+ro,lY+sc*0.03,sc*0.02,lH-sc*0.08);
+    } else {
+      // Front detail: center seam on each leg
+      ctx.fillStyle=ac;
+      ctx.fillRect(llx+lW*0.4+lo,lY+sc*0.03,sc*0.025,lH-sc*0.08);
+      ctx.fillRect(rlx+lW*0.4+ro,lY+sc*0.03,sc*0.025,lH-sc*0.08);
+    }
+
+    // Highlight
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.2;
+    if(isBack){
+      ctx.fillRect(llx+lW*0.6+lo,lY+sc*0.02,lW*0.25,lH*0.35);
+      ctx.fillRect(rlx+lW*0.6+ro,lY+sc*0.02,lW*0.25,lH*0.35);
+    } else {
+      ctx.fillRect(llx+sc*0.02+lo,lY+sc*0.02,lW*0.3,lH*0.35);
+      ctx.fillRect(rlx+sc*0.02+ro,lY+sc*0.02,lW*0.3,lH*0.35);
+    }
+    ctx.globalAlpha=1;
   }
 
   ctx.restore();
