@@ -44,7 +44,8 @@ function getSocketOffset(socket,sc,frame,isWalk){
 
 /* ── Body Armor ──
    Draws chest plate with shoulder pauldrons, center seam, and belt.
-   Covers the torso area, opaque with outline.
+   Renders differently for each direction: front (down), back (up), side (right).
+   Left-facing is handled by ctx.scale(-1,1) via the flip parameter.
    Uses chest socket offset per animation frame. */
 function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const bc=colors.body,ac=colors.accent;
@@ -54,7 +55,14 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 
   const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
   px+=sock.x;
-  const bx=px-sc*0.24,by=py-sc*0.16+bob+sock.y,bw=sc*0.48,bh=sc*0.42;
+  const isSide=dir==='right';
+  const isBack=dir==='up';
+
+  // Direction-dependent plate dimensions: side view is narrower
+  const bw=isSide?sc*0.34:sc*0.48;
+  const bh=sc*0.42;
+  const bx=isSide?px-sc*0.14:px-sc*0.24;
+  const by=py-sc*0.16+bob+sock.y;
 
   // Outline
   ctx.fillStyle=dk;
@@ -65,19 +73,38 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 
   // Shoulder pauldrons
   const sW=sc*0.09,sH=sc*0.13;
-  ctx.fillStyle=dk;
-  ctx.fillRect(bx-sW-1,by+sc*0.01-1,sW+2,sH+2);
-  ctx.fillRect(bx+bw-1,by+sc*0.01-1,sW+2,sH+2);
-  ctx.fillStyle=ac;
-  ctx.fillRect(bx-sW,by+sc*0.01,sW,sH);
-  ctx.fillRect(bx+bw,by+sc*0.01,sW,sH);
-  // Pauldron rivet
-  ctx.fillStyle=lt;
-  ctx.fillRect(bx-sW+sc*0.02,by+sc*0.04,sc*0.025,sc*0.025);
-  ctx.fillRect(bx+bw+sc*0.04,by+sc*0.04,sc*0.025,sc*0.025);
+  if(isSide){
+    // Side view: only the front-facing shoulder pauldron is visible
+    ctx.fillStyle=dk;
+    ctx.fillRect(bx+bw-1,by+sc*0.01-1,sW+2,sH+2);
+    ctx.fillStyle=ac;
+    ctx.fillRect(bx+bw,by+sc*0.01,sW,sH);
+    ctx.fillStyle=lt;
+    ctx.fillRect(bx+bw+sc*0.04,by+sc*0.04,sc*0.025,sc*0.025);
+  } else {
+    // Front/back: both shoulder pauldrons visible
+    ctx.fillStyle=dk;
+    ctx.fillRect(bx-sW-1,by+sc*0.01-1,sW+2,sH+2);
+    ctx.fillRect(bx+bw-1,by+sc*0.01-1,sW+2,sH+2);
+    ctx.fillStyle=ac;
+    ctx.fillRect(bx-sW,by+sc*0.01,sW,sH);
+    ctx.fillRect(bx+bw,by+sc*0.01,sW,sH);
+    ctx.fillStyle=lt;
+    ctx.fillRect(bx-sW+sc*0.02,by+sc*0.04,sc*0.025,sc*0.025);
+    ctx.fillRect(bx+bw+sc*0.04,by+sc*0.04,sc*0.025,sc*0.025);
+  }
 
-  // Center seam (front/side only)
-  if(dir!=='up'){
+  // Detail lines differ per direction
+  if(isBack){
+    // Back plate spine ridge
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.015,by+sc*0.06,sc*0.03,bh-sc*0.15);
+  } else if(isSide){
+    // Side edge seam
+    ctx.fillStyle=ac;
+    ctx.fillRect(bx+bw*0.15,by+sc*0.04,sc*0.03,bh-sc*0.12);
+  } else {
+    // Front center seam
     ctx.fillStyle=ac;
     ctx.fillRect(px-sc*0.02,by+sc*0.04,sc*0.04,bh-sc*0.12);
   }
@@ -87,14 +114,22 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   ctx.fillRect(bx-sc*0.01,by+bh-sc*0.055,bw+sc*0.02,sc*0.055);
   ctx.fillStyle=ac;
   ctx.fillRect(bx,by+bh-sc*0.045,bw,sc*0.035);
-  // Belt buckle
-  ctx.fillStyle=lt;
-  ctx.fillRect(px-sc*0.02,by+bh-sc*0.055,sc*0.04,sc*0.055);
+  // Belt buckle (front only)
+  if(!isBack&&!isSide){
+    ctx.fillStyle=lt;
+    ctx.fillRect(px-sc*0.02,by+bh-sc*0.055,sc*0.04,sc*0.055);
+  }
 
-  // Highlight strip (top-left)
+  // Highlight strip — position shifts with viewing angle
   ctx.fillStyle=lt;
   ctx.globalAlpha=0.25;
-  ctx.fillRect(bx+sc*0.02,by+sc*0.02,bw*0.25,bh*0.35);
+  if(isSide){
+    ctx.fillRect(bx+bw*0.55,by+sc*0.02,bw*0.25,bh*0.35);
+  } else if(isBack){
+    ctx.fillRect(bx+bw*0.65,by+sc*0.02,bw*0.25,bh*0.35);
+  } else {
+    ctx.fillRect(bx+sc*0.02,by+sc*0.02,bw*0.25,bh*0.35);
+  }
   ctx.globalAlpha=1;
 
   ctx.restore();
@@ -102,8 +137,9 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 
 /* ── Helmet ──
    Draws dome helmet with visor band and cheek guards.
-   Sits on the head using head socket offset per animation frame.
-   Pivot aligned to character base so helmet tracks head position. */
+   Renders differently for each direction: front (down), back (up), side (right).
+   Left-facing is handled by ctx.scale(-1,1) via the flip parameter.
+   Uses head socket offset per animation frame. */
 function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const bc=colors.body,ac=colors.accent;
   const dk=darkenHex(bc,0.35),lt=lightenHex(bc,0.25);
@@ -113,42 +149,86 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const sock=getSocketOffset('head',sc,frame||0,!!isWalk);
   const hx=px+sock.x,hy=py-sc*0.58+bob+sock.y;
   const hr=sc*0.20;
+  const isSide=dir==='right';
+  const isBack=dir==='up';
 
-  // Dome outline
-  ctx.fillStyle=dk;
-  ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr+1.5,Math.PI,0);ctx.fill();
-  ctx.fillRect(hx-hr-1.5,hy+hr*0.3,hr*2+3,sc*0.12);
-  // Dome body
-  ctx.fillStyle=bc;
-  ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr,Math.PI,0);ctx.fill();
-  ctx.fillRect(hx-hr,hy+hr*0.3,hr*2,sc*0.1);
-
-  // Visor band (front/side only)
-  if(dir!=='up'){
+  if(isSide){
+    // ── Side-view helmet: narrower dome, visor from side, one cheek guard ──
+    const shr=hr*0.85;
+    const cx=hx+sc*0.02;
+    // Dome outline
+    ctx.fillStyle=dk;
+    ctx.beginPath();ctx.arc(cx,hy+hr*0.3,shr+1.5,Math.PI,0);ctx.fill();
+    ctx.fillRect(cx-shr-1.5,hy+hr*0.3,shr*2+3,sc*0.12);
+    // Dome body
+    ctx.fillStyle=bc;
+    ctx.beginPath();ctx.arc(cx,hy+hr*0.3,shr,Math.PI,0);ctx.fill();
+    ctx.fillRect(cx-shr,hy+hr*0.3,shr*2,sc*0.1);
+    // Visor from side (narrower band)
     ctx.fillStyle=ac;
-    ctx.fillRect(hx-hr,hy+hr*0.3+sc*0.02,hr*2,sc*0.04);
+    ctx.fillRect(cx-shr,hy+hr*0.3+sc*0.02,shr*2,sc*0.04);
+    // Single cheek guard (front-facing side)
+    ctx.fillStyle=dk;
+    ctx.fillRect(cx+shr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
+    // Side crest
+    ctx.fillStyle=ac;
+    ctx.fillRect(cx-sc*0.02,hy-hr*0.1,sc*0.04,hr*0.4);
+    // Highlight
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.3;
+    ctx.beginPath();ctx.arc(cx+shr*0.2,hy+hr*0.05,hr*0.15,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  } else {
+    // ── Front or back-view helmet ──
+    // Dome outline
+    ctx.fillStyle=dk;
+    ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr+1.5,Math.PI,0);ctx.fill();
+    ctx.fillRect(hx-hr-1.5,hy+hr*0.3,hr*2+3,sc*0.12);
+    // Dome body
+    ctx.fillStyle=bc;
+    ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr,Math.PI,0);ctx.fill();
+    ctx.fillRect(hx-hr,hy+hr*0.3,hr*2,sc*0.1);
+
+    if(!isBack){
+      // Visor band (front only)
+      ctx.fillStyle=ac;
+      ctx.fillRect(hx-hr,hy+hr*0.3+sc*0.02,hr*2,sc*0.04);
+    }
+
+    // Cheek guards
+    ctx.fillStyle=dk;
+    ctx.fillRect(hx-hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
+    ctx.fillRect(hx+hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
+
+    if(isBack){
+      // Nape guard (back of helmet extending down)
+      ctx.fillStyle=dk;
+      ctx.fillRect(hx-sc*0.06,hy+hr*0.3+sc*0.08,sc*0.12,sc*0.06);
+      ctx.fillStyle=bc;
+      ctx.fillRect(hx-sc*0.05,hy+hr*0.3+sc*0.09,sc*0.10,sc*0.04);
+    } else {
+      // Top crest/ridge (front)
+      ctx.fillStyle=ac;
+      ctx.fillRect(hx-sc*0.02,hy-hr*0.1,sc*0.04,hr*0.4);
+    }
+
+    // Highlight — shifts to opposite side for back view
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.3;
+    if(isBack){
+      ctx.beginPath();ctx.arc(hx+hr*0.3,hy+hr*0.05,hr*0.2,0,Math.PI*2);ctx.fill();
+    } else {
+      ctx.beginPath();ctx.arc(hx-hr*0.3,hy+hr*0.05,hr*0.2,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
   }
-
-  // Cheek guards
-  ctx.fillStyle=dk;
-  ctx.fillRect(hx-hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
-  ctx.fillRect(hx+hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
-
-  // Top crest/ridge
-  ctx.fillStyle=ac;
-  ctx.fillRect(hx-sc*0.02,hy-hr*0.1,sc*0.04,hr*0.4);
-
-  // Highlight
-  ctx.fillStyle=lt;
-  ctx.globalAlpha=0.3;
-  ctx.beginPath();ctx.arc(hx-hr*0.3,hy+hr*0.05,hr*0.2,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
 
   ctx.restore();
 }
 
 /* ── Boots ──
    Draws armored boots at foot positions.
+   Front/back view shows boots side by side; side view stacks them front-to-back.
    Follows walk animation leg offsets.
    Uses feet socket offset per animation frame. */
 function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
@@ -164,26 +244,51 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
   const bW=sc*0.15,bH=sc*0.13;
   const bY=py+sc*0.33+bob+sock.y;
+  const isSide=dir==='right';
 
-  // Left boot
-  ctx.fillStyle=dk;
-  ctx.fillRect(px-sc*0.21+lo-1,bY-1,bW+2,bH+2);
-  ctx.fillStyle=bc;
-  ctx.fillRect(px-sc*0.21+lo,bY,bW,bH);
-  ctx.fillStyle=ac;
-  ctx.fillRect(px-sc*0.21+lo,bY,bW,sc*0.03);
-  ctx.fillStyle=dk;
-  ctx.fillRect(px-sc*0.22+lo,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+  if(isSide){
+    // ── Side view: boots stacked front-to-back ──
+    // Back boot (drawn first, partially hidden behind front boot)
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.06+ro-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(px-sc*0.06+ro,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(px-sc*0.06+ro,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.07+ro,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
 
-  // Right boot
-  ctx.fillStyle=dk;
-  ctx.fillRect(px+sc*0.06+ro-1,bY-1,bW+2,bH+2);
-  ctx.fillStyle=bc;
-  ctx.fillRect(px+sc*0.06+ro,bY,bW,bH);
-  ctx.fillStyle=ac;
-  ctx.fillRect(px+sc*0.06+ro,bY,bW,sc*0.03);
-  ctx.fillStyle=dk;
-  ctx.fillRect(px+sc*0.05+ro,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+    // Front boot (drawn on top, slightly offset)
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.03+lo-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(px-sc*0.03+lo,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(px-sc*0.03+lo,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.04+lo,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+  } else {
+    // ── Front/back view: boots side by side ──
+    // Left boot
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.21+lo-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(px-sc*0.21+lo,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(px-sc*0.21+lo,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(px-sc*0.22+lo,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+
+    // Right boot
+    ctx.fillStyle=dk;
+    ctx.fillRect(px+sc*0.06+ro-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(px+sc*0.06+ro,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(px+sc*0.06+ro,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(px+sc*0.05+ro,bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+  }
 
   ctx.restore();
 }
