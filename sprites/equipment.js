@@ -231,14 +231,16 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
    Front/back view shows boots side by side; side view stacks them front-to-back.
    Supports 'layer' param: 'back' draws only back boot (behind player), 'front' draws front.
    Follows walk animation leg offsets.
-   Uses feet socket offset per animation frame. */
+   Uses chest socket offset (same as leggings) so the entire lower half moves rigidly
+   and avoids a visible tear/gap at the knees during walk bob frames. */
 function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   const bc=colors.body,ac=colors.accent;
   const dk=darkenHex(bc,0.35);
   ctx.save();
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
-  const sock=getSocketOffset('feet',sc,frame||0,!!isWalk);
+  // Use chest socket (same as leggings) so the entire lower half moves as one rigid unit
+  const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
   px=px+sock.x;
   // Walk leg offsets (matching player sprite leg animation)
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
