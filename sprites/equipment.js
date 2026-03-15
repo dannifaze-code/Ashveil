@@ -239,13 +239,12 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 
   const sock=getSocketOffset('feet',sc,frame||0,!!isWalk);
   px+=sock.x;
-  const bW=sc*0.15,bH=sc*0.13;
-  const bY=py+sc*0.33+bob+sock.y;
-  const isSide=dir==='right';
-
   // Walk leg offsets (matching player sprite leg animation)
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
+  const bW=sc*0.15,bH=sc*0.13;
+  const bY=py+sc*0.33+bob+sock.y;
+  const isSide=dir==='right';
 
   if(isSide){
     // ── Side view: boots stacked front-to-back ──
