@@ -430,7 +430,8 @@ function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
   const handAX=(flip?px-sc*0.28:px+sc*0.28)+(flip?-1:1)*sock.x;
   const handAY=py+sc*0.08+bob+sock.y;
   const dirSign=flip?-1:1;
-  const restAng=flip?-Math.PI*0.25:Math.PI*0.25;
+  const bobTilt=bob*0.02;
+  const restAng=(flip?-Math.PI*0.25:Math.PI*0.25)+bobTilt;
   let swAngle=restAng;
   if(swingTimer>0){
     const prog=1-swingTimer/(wv.swing||0.3);
@@ -448,6 +449,7 @@ function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
   const hiltX=handAX-Math.cos(swAngle)*hiltLen;
   const hiltY=handAY-Math.sin(swAngle)*hiltLen;
   // Grip wrap
+  ctx.save();
   ctx.strokeStyle='#4a2a0a';ctx.lineWidth=4.5;ctx.lineCap='round';
   ctx.beginPath();ctx.moveTo(hiltX,hiltY);ctx.lineTo(handAX,handAY);ctx.stroke();
   ctx.strokeStyle='#6a4a2a';ctx.lineWidth=2.5;
@@ -503,5 +505,6 @@ function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
   }
 
   // Return data for trail/particles
+  ctx.restore();
   return{tipX,tipY,handAX,handAY,wLen,swAngle,restAng,dirSign};
 }
