@@ -38,6 +38,7 @@ const playerSockets={
 function getSocketOffset(socket,sc,frame,isWalk){
   const anim=isWalk?playerSockets.walk:playerSockets.idle;
   const s=anim[frame%anim.length][socket];
+  if(!s) return{x:0,y:0};
   return{x:s.x*sc,y:s.y*sc};
 }
 
