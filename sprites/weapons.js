@@ -34,6 +34,7 @@ const equipColors={
 wanderercoat:{body:'#8a6a3a',accent:'#a0804a'},marshwraps:{body:'#3a7a3a',accent:'#4a9a4a'},veilcloak:{body:'#7b68ee',accent:'#9b8afb'},drakemail:{body:'#cc4a1a',accent:'#ff6b35'},relicArmor:{body:'#c8a020',accent:'#f5c842'},
 leatherHood:{body:'#8a6a3a',accent:'#a0804a'},ironHelm:{body:'#aaaaaa',accent:'#cccccc'},veilCrown:{body:'#7b68ee',accent:'#9b8afb'},drakeVisage:{body:'#cc4a1a',accent:'#ff6b35'},relicHelm:{body:'#c8a020',accent:'#f5c842'},
 wandererBoots:{body:'#8a6a3a',accent:'#a0804a'},marshTreads:{body:'#3a7a3a',accent:'#4a9a4a'},veilStriders:{body:'#7b68ee',accent:'#9b8afb'},drakeGreaves:{body:'#cc4a1a',accent:'#ff6b35'},relicSabatons:{body:'#c8a020',accent:'#f5c842'},
+wandererLegs:{body:'#8a6a3a',accent:'#a0804a'},marshLeggings:{body:'#3a7a3a',accent:'#4a9a4a'},veilLeggings:{body:'#7b68ee',accent:'#9b8afb'},drakeLegs:{body:'#cc4a1a',accent:'#ff6b35'},relicLeggings:{body:'#c8a020',accent:'#f5c842'},
 boneRing:{glow:'#c4a86e'},emberBand:{glow:'#ff6b35'},voidLoop:{glow:'#8844dd'},ashenCirclet:{glow:'#f5c842'},
 // New biome equipment
 magmaPlate:{body:'#ff4400',accent:'#ff6600'},frostCrown:{body:'#a0d0ee',accent:'#c0e8ff'},
