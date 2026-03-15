@@ -23,16 +23,22 @@ function lightenHex(hex,factor){
    Defines per-frame attachment offsets (in sc units) for each body part.
    Equipment positions update every frame via: Player.Position + Socket_Offset.
    This ensures gear moves naturally with walk/idle animations instead of floating. */
+/* Socket Y offsets must match the player sprite's internal pixel shifts.
+   Walk: sprite has no internal vertical shift (bob=0) → all Y offsets are 0.
+   Idle: sprite shifts all pixels +1px on frame 1 → Y offset = 1px/20px ≈ 0.05 in sc units
+         (the sprite canvas is 20px tall, so 1 internal pixel = 0.05 of the normalised height;
+          actual screen shift = 0.05 * sc * (1.55/1.0) but we only need the ratio against the
+          sc-based positioning the equipment uses, which is ~0.0775 of sc).  */
 const playerSockets={
   idle:[
     {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
-    {head:{x:0,y:0.008},chest:{x:0,y:0.005},hand:{x:0,y:0.005},feet:{x:0,y:0}}
+    {head:{x:0,y:0.0775},chest:{x:0,y:0.0775},hand:{x:0,y:0.0775},feet:{x:0,y:0.0775}}
   ],
   walk:[
     {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
-    {head:{x:0,y:-0.015},chest:{x:0,y:-0.01},hand:{x:0,y:-0.008},feet:{x:0,y:0}},
     {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
-    {head:{x:0,y:-0.015},chest:{x:0,y:-0.01},hand:{x:0,y:-0.008},feet:{x:0,y:0}}
+    {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
+    {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}}
   ]
 };
 function getSocketOffset(socket,sc,frame,isWalk){
