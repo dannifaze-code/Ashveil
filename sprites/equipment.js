@@ -248,9 +248,9 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   // Use chest socket (same as leggings) so the entire lower half moves as one rigid unit
   const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
   px=px+sock.x;
-  // Walk leg offsets (matching player sprite leg animation)
-  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
-  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
+  // Walk leg offsets — each sprite pixel = sc*1.2/20 = sc*0.06 in screen space
+  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.06:0;
+  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.06:0;
   const bW=sc*0.15,bH=sc*0.13;
   // 0.50 positions boots at the player's actual feet (previously 0.33 placed them at knee level)
   const bY=Math.round(py+sc*0.50+bob+sock.y);
@@ -285,8 +285,9 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
     }
   } else if(!layer||layer==='front'){
     // ── Front/back view: boots side by side (drawn in front layer) ──
+    // Sprite left foot at pixels 8-9 → screen center px-sc*0.06; right at 10-11 → px+sc*0.06
     // Left boot
-    const llX=Math.round(px-sc*0.21+lo);
+    const llX=Math.round(px-sc*0.14+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(llX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
@@ -297,7 +298,7 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
     ctx.fillRect(llX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
 
     // Right boot
-    const rrX=Math.round(px+sc*0.06+ro);
+    const rrX=Math.round(px-sc*0.01+ro);
     ctx.fillStyle=dk;
     ctx.fillRect(rrX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
@@ -327,9 +328,9 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   // Use chest socket so leggings stay attached to the armor belt during walk bounce
   const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
   px=px+sock.x;
-  // Walk leg offsets (matching player sprite leg animation)
-  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
-  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
+  // Walk leg offsets — each sprite pixel = sc*1.2/20 = sc*0.06 in screen space
+  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.06:0;
+  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.06:0;
   const isSide=dir==='right';
   const isBack=dir==='up';
 
@@ -379,9 +380,10 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
     }
   } else if(!layer||layer==='front'){
     // ── Front/back view: two leg panels side by side (drawn in front layer) ──
+    // Sprite left leg at pixels 8-9 → screen center px-sc*0.06; right 10-11 → px+sc*0.06
     const lW=sc*0.16;
     // Left leg panel
-    const llx=Math.round(px-sc*0.22+lo);
+    const llx=Math.round(px-sc*0.14+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(llx-1,lY-1,lW+2,lH+2);
     ctx.fillStyle=bc;
@@ -391,7 +393,7 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
     ctx.fillRect(llx,lY+lH*0.35,lW,sc*0.04);
 
     // Right leg panel
-    const rlx=Math.round(px+sc*0.06+ro);
+    const rlx=Math.round(px-sc*0.02+ro);
     ctx.fillStyle=dk;
     ctx.fillRect(rlx-1,lY-1,lW+2,lH+2);
     ctx.fillStyle=bc;
