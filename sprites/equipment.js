@@ -54,7 +54,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
   const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
-  px=Math.round(px+sock.x);
+  px=px+sock.x;
   const isSide=dir==='right';
   const isBack=dir==='up';
 
@@ -98,7 +98,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   if(isBack){
     // Back plate spine ridge
     ctx.fillStyle=dk;
-    ctx.fillRect(px-sc*0.015,by+sc*0.06,sc*0.03,bh-sc*0.15);
+    ctx.fillRect(Math.round(px-sc*0.015),by+sc*0.06,sc*0.03,bh-sc*0.15);
   } else if(isSide){
     // Side edge seam
     ctx.fillStyle=ac;
@@ -106,7 +106,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   } else {
     // Front center seam
     ctx.fillStyle=ac;
-    ctx.fillRect(px-sc*0.02,by+sc*0.04,sc*0.04,bh-sc*0.12);
+    ctx.fillRect(Math.round(px-sc*0.02),by+sc*0.04,sc*0.04,bh-sc*0.12);
   }
 
   // Belt
@@ -117,7 +117,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   // Belt buckle (front only)
   if(!isBack&&!isSide){
     ctx.fillStyle=lt;
-    ctx.fillRect(px-sc*0.02,by+bh-sc*0.055,sc*0.04,sc*0.055);
+    ctx.fillRect(Math.round(px-sc*0.02),by+bh-sc*0.055,sc*0.04,sc*0.055);
   }
 
   // Highlight strip — position shifts with viewing angle
@@ -239,7 +239,7 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
   const sock=getSocketOffset('feet',sc,frame||0,!!isWalk);
-  px=Math.round(px+sock.x);
+  px=px+sock.x;
   // Walk leg offsets (matching player sprite leg animation)
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
@@ -318,7 +318,7 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
 
   // Use chest socket so leggings stay attached to the armor belt during walk bounce
   const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
-  px=Math.round(px+sock.x);
+  px=px+sock.x;
   // Walk leg offsets (matching player sprite leg animation)
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
