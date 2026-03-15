@@ -243,6 +243,7 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
   const bW=sc*0.15,bH=sc*0.13;
+  // 0.50 positions boots at the player's actual feet (previously 0.33 placed them at knee level)
   const bY=py+sc*0.50+bob+sock.y;
   const isSide=dir==='right';
 
@@ -314,6 +315,7 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const isBack=dir==='up';
 
   // Leggings sit between the belt and the boots
+  // 0.24 = just below armor belt bottom; 0.28 height = extends to boot tops
   const lY=py+sc*0.24+bob+sock.y;
   const lH=sc*0.28;
 
