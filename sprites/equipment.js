@@ -19,16 +19,41 @@ function lightenHex(hex,factor){
   return '#'+[r,g,b].map(c=>Math.min(255,Math.round(c+(255-c)*factor)).toString(16).padStart(2,'0')).join('');
 }
 
+/* ── Socket / Bone System ──
+   Defines per-frame attachment offsets (in sc units) for each body part.
+   Equipment positions update every frame via: Player.Position + Socket_Offset.
+   This ensures gear moves naturally with walk/idle animations instead of floating. */
+const playerSockets={
+  idle:[
+    {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
+    {head:{x:0,y:0.008},chest:{x:0,y:0.005},hand:{x:0,y:0.005},feet:{x:0,y:0}}
+  ],
+  walk:[
+    {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
+    {head:{x:0,y:-0.015},chest:{x:0,y:-0.01},hand:{x:0,y:-0.008},feet:{x:0,y:0}},
+    {head:{x:0,y:0},chest:{x:0,y:0},hand:{x:0,y:0},feet:{x:0,y:0}},
+    {head:{x:0,y:-0.015},chest:{x:0,y:-0.01},hand:{x:0,y:-0.008},feet:{x:0,y:0}}
+  ]
+};
+function getSocketOffset(socket,sc,frame,isWalk){
+  const anim=isWalk?playerSockets.walk:playerSockets.idle;
+  const s=anim[frame%anim.length][socket];
+  return{x:s.x*sc,y:s.y*sc};
+}
+
 /* ── Body Armor ──
    Draws chest plate with shoulder pauldrons, center seam, and belt.
-   Covers the torso area, opaque with outline. */
-function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors){
+   Covers the torso area, opaque with outline.
+   Uses chest socket offset per animation frame. */
+function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const bc=colors.body,ac=colors.accent;
   const dk=darkenHex(bc,0.35),lt=lightenHex(bc,0.25);
   ctx.save();
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
-  const bx=px-sc*0.24,by=py-sc*0.16+bob,bw=sc*0.48,bh=sc*0.42;
+  const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
+  px+=sock.x;
+  const bx=px-sc*0.24,by=py-sc*0.16+bob+sock.y,bw=sc*0.48,bh=sc*0.42;
 
   // Outline
   ctx.fillStyle=dk;
@@ -76,15 +101,17 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors){
 
 /* ── Helmet ──
    Draws dome helmet with visor band and cheek guards.
-   Covers the top of the head, leaves face visible. */
-function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors){
+   Sits on the head using head socket offset per animation frame.
+   Pivot aligned to character base so helmet tracks head position. */
+function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const bc=colors.body,ac=colors.accent;
   const dk=darkenHex(bc,0.35),lt=lightenHex(bc,0.25);
   ctx.save();
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
-  const hx=px,hy=py-sc*0.73+bob;
-  const hr=sc*0.23;
+  const sock=getSocketOffset('head',sc,frame||0,!!isWalk);
+  const hx=px+sock.x,hy=py-sc*0.58+bob+sock.y;
+  const hr=sc*0.20;
 
   // Dome outline
   ctx.fillStyle=dk;
@@ -121,18 +148,21 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors){
 
 /* ── Boots ──
    Draws armored boots at foot positions.
-   Follows walk animation leg offsets. */
+   Follows walk animation leg offsets.
+   Uses feet socket offset per animation frame. */
 function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const bc=colors.body,ac=colors.accent;
   const dk=darkenHex(bc,0.35);
   ctx.save();
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
+  const sock=getSocketOffset('feet',sc,frame||0,!!isWalk);
+  px+=sock.x;
   // Walk leg offsets (matching player sprite leg animation)
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.025:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.025:0;
   const bW=sc*0.15,bH=sc*0.13;
-  const bY=py+sc*0.33+bob;
+  const bY=py+sc*0.33+bob+sock.y;
 
   // Left boot
   ctx.fillStyle=dk;
@@ -160,10 +190,12 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 /* ── Weapon Blade ──
    Draws a proper tapered sword blade with crossguard and hilt.
    Returns tip position for trail/particle effects.
+   Uses hand socket offset per animation frame.
    The swing animation, trail, glow, and particles are handled by the caller. */
-function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time){
-  const handAX=flip?px-sc*0.28:px+sc*0.28;
-  const handAY=py+sc*0.08+bob;
+function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
+  const sock=getSocketOffset('hand',sc,frame||0,!!isWalk);
+  const handAX=(flip?px-sc*0.28:px+sc*0.28)+(flip?-1:1)*sock.x;
+  const handAY=py+sc*0.08+bob+sock.y;
   const dirSign=flip?-1:1;
   const restAng=flip?-Math.PI*0.25:Math.PI*0.25;
   let swAngle=restAng;
