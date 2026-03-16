@@ -47,21 +47,6 @@ function getSocketOffset(socket,sc,frame,isWalk){
   if(!s) return{x:0,y:0};
   return{x:s.x*sc,y:s.y*sc};
 }
-/* Maps equipment coordinates to the player sprite's 20×20 pixel grid.
-   The player sprite is drawn as a 20×20 logical grid scaled to:
-     width  = sc * 1.2   (the sprite canvas drawImage width)
-     height = sc * 1.55  (the sprite canvas drawImage height)
-   with its top-left corner at:
-     x0 = px - sc * 0.6   (centred horizontally on px)
-     y0 = py - sc * 0.85  (offset above py, which is the sprite's foot-level anchor) */
-function getPlayerSpriteMetrics(px, py, sc, bob){
-  return {
-    x0: px - sc * 0.6,
-    y0: py - sc * 0.85 + bob,
-    sx: sc * 1.2 / 20,   // 1 internal sprite pixel in screen X
-    sy: sc * 1.55 / 20   // 1 internal sprite pixel in screen Y
-  };
-}
 
 /* ── Body Armor ──
    Draws chest plate with shoulder pauldrons, center seam, and belt.
@@ -248,187 +233,198 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
 }
 
 /* ── Boots ──
-   Boots are drawn as the darker bottom rows of the same moving leg columns.
-   This keeps them locked to the exact same anatomy and walk offsets as the leggings.
+   Draws armored boots at foot positions.
+   Front/back view shows boots side by side; side view stacks them front-to-back.
    Supports 'layer' param: 'back' draws only back boot (behind player), 'front' draws front.
+   Follows walk animation leg offsets.
    Uses chest socket offset (same as leggings) so the entire lower half moves rigidly
    and avoids a visible tear/gap at the knees during walk bob frames. */
 function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
-  // Boots are now drawn as the darker bottom rows of the same moving leg columns.
-  // This keeps them locked to the exact same anatomy and walk offsets as the leggings.
-  const bc = colors.body, ac = colors.accent;
-  const dk = darkenHex(bc,0.35);
-
+  const bc=colors.body,ac=colors.accent;
+  const dk=darkenHex(bc,0.35);
   ctx.save();
-  if(flip){ ctx.translate(px,0); ctx.scale(-1,1); px = 0; }
+  if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
-  const sock = getSocketOffset('chest',sc,frame||0,!!isWalk);
-  px += sock.x;
-
-  const { x0, y0, sx, sy } = getPlayerSpriteMetrics(px, py, sc, bob + sock.y);
-  const lo = isWalk ? [0,1,0,-1][frame%4] : 0;
-  const ro = isWalk ? [0,-1,0,1][frame%4] : 0;
-  const isSide = dir === 'right';
-
-  // Base sprite anatomy:
-  // rows 16-17 are the darker foot/boot rows in idle
-  // during walk, row 16 is the visible darker foot row
-  // we draw the boot section to start at row 16 and extend 2 sprite rows tall
-  const bootTopRow = 16;
-  const bootRows = 2;
-  const bY = Math.round(y0 + bootTopRow * sy);
-  const bH = Math.max(2, Math.round(bootRows * sy));
-  const bW = Math.max(2, Math.round(2 * sx));
+  // Use chest socket (same as leggings) so the entire lower half moves as one rigid unit
+  const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
+  px=px+sock.x;
+  // Walk leg offsets — each sprite pixel = sc*1.2/20 = sc*0.06 in screen space
+  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.06:0;
+  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.06:0;
+  const bW=sc*0.15,bH=sc*0.13;
+  // 0.50 positions boots at the player's actual feet (previously 0.33 placed them at knee level)
+  const bY=Math.round(py+sc*0.50+bob+sock.y);
+  const isSide=dir==='right';
 
   if(isSide){
-    const backX  = Math.round(x0 + (10 + ro) * sx);
-    const frontX = Math.round(x0 + (8  + lo) * sx);
-
-    if(!layer || layer === 'back'){
-      ctx.fillStyle = dk;
-      ctx.fillRect(backX-1, bY-1, bW+2, bH+2);
-      ctx.fillStyle = bc;
-      ctx.fillRect(backX, bY, bW, bH);
-      ctx.fillStyle = ac;
-      ctx.fillRect(backX, bY, bW, Math.max(1, Math.round(sy*0.55)));
-      ctx.fillStyle = dk;
-      ctx.fillRect(backX, bY + bH - 1, bW, 1);
+    // ── Side view: boots stacked front-to-back ──
+    if(!layer||layer==='back'){
+    // Back boot (drawn behind player sprite)
+    const bkX=Math.round(px-sc*0.06+ro);
+    ctx.fillStyle=dk;
+    ctx.fillRect(bkX-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(bkX,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(bkX,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(bkX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
     }
 
-    if(!layer || layer === 'front'){
-      ctx.fillStyle = dk;
-      ctx.fillRect(frontX-1, bY-1, bW+2, bH+2);
-      ctx.fillStyle = bc;
-      ctx.fillRect(frontX, bY, bW, bH);
-      ctx.fillStyle = ac;
-      ctx.fillRect(frontX, bY, bW, Math.max(1, Math.round(sy*0.55)));
-      ctx.fillStyle = dk;
-      ctx.fillRect(frontX, bY + bH - 1, bW, 1);
+    if(!layer||layer==='front'){
+    // Front boot (drawn on top of player sprite)
+    const ftX=Math.round(px-sc*0.03+lo);
+    ctx.fillStyle=dk;
+    ctx.fillRect(ftX-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(ftX,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(ftX,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(ftX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
     }
-  } else if(!layer || layer === 'front'){
-    const leftX  = Math.round(x0 + (8  + lo) * sx);
-    const rightX = Math.round(x0 + (10 + ro) * sx);
+  } else if(!layer||layer==='front'){
+    // ── Front/back view: boots side by side (drawn in front layer) ──
+    // Sprite left foot at pixels 8-9 → screen center px-sc*0.06; right at 10-11 → px+sc*0.06
+    // Left boot
+    const llX=Math.round(px-sc*0.14+lo);
+    ctx.fillStyle=dk;
+    ctx.fillRect(llX-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(llX,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(llX,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(llX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
 
-    ctx.fillStyle = dk;
-    ctx.fillRect(leftX-1,  bY-1, bW+2, bH+2);
-    ctx.fillRect(rightX-1, bY-1, bW+2, bH+2);
-
-    ctx.fillStyle = bc;
-    ctx.fillRect(leftX,  bY, bW, bH);
-    ctx.fillRect(rightX, bY, bW, bH);
-
-    ctx.fillStyle = ac;
-    ctx.fillRect(leftX,  bY, bW, Math.max(1, Math.round(sy*0.55)));
-    ctx.fillRect(rightX, bY, bW, Math.max(1, Math.round(sy*0.55)));
-
-    ctx.fillStyle = dk;
-    ctx.fillRect(leftX,  bY + bH - 1, bW, 1);
-    ctx.fillRect(rightX, bY + bH - 1, bW, 1);
+    // Right boot
+    const rrX=Math.round(px-sc*0.01+ro);
+    ctx.fillStyle=dk;
+    ctx.fillRect(rrX-1,bY-1,bW+2,bH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(rrX,bY,bW,bH);
+    ctx.fillStyle=ac;
+    ctx.fillRect(rrX,bY,bW,sc*0.03);
+    ctx.fillStyle=dk;
+    ctx.fillRect(rrX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
   }
 
   ctx.restore();
 }
 
 /* ── Leggings ──
-   Leggings now cover the same moving leg columns as the player sprite.
-   The lower part is intentionally left to the boots overlay so both pieces stack cleanly.
+   Draws leg armor panels between the belt and the boots.
+   Front/back view shows two leg panels side by side; side view shows front-to-back panels.
    Supports 'layer' param: 'back' draws only back leg (behind player), 'front' draws front.
+   Follows walk animation leg offsets (same as boots).
    Uses chest socket offset so leggings stay attached to the armor belt during walk bounce.
    Left-facing is handled by ctx.scale(-1,1) via the flip parameter. */
 function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
-  // Leggings now cover the same moving leg columns as the player sprite.
-  // The lower part is intentionally left to the boots overlay so both pieces stack cleanly.
-  const bc = colors.body, ac = colors.accent;
-  const dk = darkenHex(bc,0.35), lt = lightenHex(bc,0.25);
-
+  const bc=colors.body,ac=colors.accent;
+  const dk=darkenHex(bc,0.35),lt=lightenHex(bc,0.25);
   ctx.save();
-  if(flip){ ctx.translate(px,0); ctx.scale(-1,1); px = 0; }
+  if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
-  const sock = getSocketOffset('chest',sc,frame||0,!!isWalk);
-  px += sock.x;
+  // Use chest socket so leggings stay attached to the armor belt during walk bounce
+  const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
+  px=px+sock.x;
+  // Walk leg offsets — each sprite pixel = sc*1.2/20 = sc*0.06 in screen space
+  const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.06:0;
+  const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.06:0;
+  const isSide=dir==='right';
+  const isBack=dir==='up';
 
-  const { x0, y0, sx, sy } = getPlayerSpriteMetrics(px, py, sc, bob + sock.y);
-  const lo = isWalk ? [0,1,0,-1][frame%4] : 0;
-  const ro = isWalk ? [0,-1,0,1][frame%4] : 0;
-  const isSide = dir === 'right';
-  const isBack = dir === 'up';
-
-  // Base sprite lower body:
-  // row 13 = waist/top of pants
-  // rows 14-15 = main leg body
-  // rows 16-17 = darker foot/boot base
-  //
-  // To avoid overlap fighting with boots, leggings start at row 13 and extend 4 rows (13-16).
-  // Row 16 intentionally overlaps with the boot top row to ensure a seamless visual connection.
-  const legTopRow = 13;
-  const legRows = 4;
-  const lY = Math.round(y0 + legTopRow * sy);
-  const lH = Math.max(3, Math.round(legRows * sy));
-  const lW = Math.max(2, Math.round(2 * sx));
-
-  function drawLegColumn(colX, style){
-    ctx.fillStyle = dk;
-    ctx.fillRect(colX-1, lY-1, lW+2, lH+2);
-
-    ctx.fillStyle = bc;
-    ctx.fillRect(colX, lY, lW, lH);
-
-    // Knee / shin band
-    ctx.fillStyle = ac;
-    ctx.fillRect(
-      colX,
-      Math.round(lY + lH * 0.38),
-      lW,
-      Math.max(1, Math.round(sy * 0.7))
-    );
-
-    if(style === 'back'){
-      // back view seam
-      ctx.fillStyle = dk;
-      ctx.fillRect(
-        colX + Math.max(1, Math.round(sx * 0.8)),
-        lY + 1,
-        1,
-        Math.max(1, lH - 2)
-      );
-    } else {
-      // front/side seam
-      ctx.fillStyle = ac;
-      ctx.fillRect(
-        colX + Math.max(1, Math.round(sx * 0.8)),
-        lY + 1,
-        1,
-        Math.max(1, lH - 2)
-      );
-
-      ctx.fillStyle = lt;
-      ctx.globalAlpha = 0.2;
-      ctx.fillRect(
-        colX + 1,
-        lY + 1,
-        Math.max(1, Math.round(sx * 0.6)),
-        Math.max(1, Math.round(lH * 0.28))
-      );
-      ctx.globalAlpha = 1;
-    }
-  }
+  // Leggings sit between the belt and the boots
+  // 0.24 = just below armor belt bottom; 0.28 height = extends to boot tops
+  const lY=Math.round(py+sc*0.24+bob+sock.y);
+  const lH=sc*0.28;
 
   if(isSide){
-    const backX  = Math.round(x0 + (10 + ro) * sx);
-    const frontX = Math.round(x0 + (8  + lo) * sx);
+    // ── Side view: leg panels front-to-back ──
+    const lW=sc*0.24;
+    const lx=px-sc*0.10;
 
-    if(!layer || layer === 'back'){
-      drawLegColumn(backX, 'back');
+    if(!layer||layer==='back'){
+    // Back leg (drawn behind player sprite)
+    const bkX=Math.round(lx+ro);
+    ctx.fillStyle=dk;
+    ctx.fillRect(bkX-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(bkX,lY,lW,lH);
+    // Side seam
+    ctx.fillStyle=ac;
+    ctx.fillRect(Math.round(lx+lW*0.3+ro),lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    // Knee guard accent on back leg
+    ctx.fillStyle=ac;
+    ctx.fillRect(bkX,lY+lH*0.35,lW,sc*0.04);
     }
-    if(!layer || layer === 'front'){
-      drawLegColumn(frontX, 'front');
-    }
-  } else if(!layer || layer === 'front'){
-    const leftX  = Math.round(x0 + (8  + lo) * sx);
-    const rightX = Math.round(x0 + (10 + ro) * sx);
 
-    drawLegColumn(leftX,  isBack ? 'back' : 'front');
-    drawLegColumn(rightX, isBack ? 'back' : 'front');
+    if(!layer||layer==='front'){
+    // Front leg (drawn on top of player sprite)
+    const ftX=Math.round(lx+sc*0.03+lo);
+    ctx.fillStyle=dk;
+    ctx.fillRect(ftX-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(ftX,lY,lW,lH);
+    // Side seam on front leg
+    ctx.fillStyle=ac;
+    ctx.fillRect(Math.round(lx+sc*0.03+lW*0.3+lo),lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    // Knee guard accent
+    ctx.fillStyle=ac;
+    ctx.fillRect(ftX,lY+lH*0.35,lW,sc*0.04);
+    // Highlight
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.2;
+    ctx.fillRect(Math.round(lx+sc*0.03+lW*0.55+lo),lY+sc*0.02,lW*0.25,lH*0.35);
+    ctx.globalAlpha=1;
+    }
+  } else if(!layer||layer==='front'){
+    // ── Front/back view: two leg panels side by side (drawn in front layer) ──
+    // Sprite left leg at pixels 8-9 → screen center px-sc*0.06; right 10-11 → px+sc*0.06
+    const lW=sc*0.16;
+    // Left leg panel
+    const llx=Math.round(px-sc*0.14+lo);
+    ctx.fillStyle=dk;
+    ctx.fillRect(llx-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(llx,lY,lW,lH);
+    // Knee guard
+    ctx.fillStyle=ac;
+    ctx.fillRect(llx,lY+lH*0.35,lW,sc*0.04);
+
+    // Right leg panel
+    const rlx=Math.round(px-sc*0.02+ro);
+    ctx.fillStyle=dk;
+    ctx.fillRect(rlx-1,lY-1,lW+2,lH+2);
+    ctx.fillStyle=bc;
+    ctx.fillRect(rlx,lY,lW,lH);
+    // Knee guard
+    ctx.fillStyle=ac;
+    ctx.fillRect(rlx,lY+lH*0.35,lW,sc*0.04);
+
+    if(isBack){
+      // Back detail: vertical seam on each leg
+      ctx.fillStyle=dk;
+      ctx.fillRect(Math.round(llx+lW*0.45),lY+sc*0.03,sc*0.02,lH-sc*0.08);
+      ctx.fillRect(Math.round(rlx+lW*0.45),lY+sc*0.03,sc*0.02,lH-sc*0.08);
+    } else {
+      // Front detail: center seam on each leg
+      ctx.fillStyle=ac;
+      ctx.fillRect(Math.round(llx+lW*0.4),lY+sc*0.03,sc*0.025,lH-sc*0.08);
+      ctx.fillRect(Math.round(rlx+lW*0.4),lY+sc*0.03,sc*0.025,lH-sc*0.08);
+    }
+
+    // Highlight
+    ctx.fillStyle=lt;
+    ctx.globalAlpha=0.2;
+    if(isBack){
+      ctx.fillRect(Math.round(llx+lW*0.6),lY+sc*0.02,lW*0.25,lH*0.35);
+      ctx.fillRect(Math.round(rlx+lW*0.6),lY+sc*0.02,lW*0.25,lH*0.35);
+    } else {
+      ctx.fillRect(llx+sc*0.02,lY+sc*0.02,lW*0.3,lH*0.35);
+      ctx.fillRect(rlx+sc*0.02,lY+sc*0.02,lW*0.3,lH*0.35);
+    }
+    ctx.globalAlpha=1;
   }
 
   ctx.restore();
