@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#08090d"/>
+<meta name="description" content="Ashveil — The Broken Veil. An open-world pixel-art RPG."/>
+<link rel="manifest" href="manifest.json"/>
 <title>Ashveil — The Broken Veil</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&family=Fira+Sans+Condensed:wght@400;600;800&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 <style>
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -417,9 +420,48 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 .plate-stats-row{display:flex;gap:10px;font-size:10px;font-family:'JetBrains Mono',monospace;color:#8a7a5a;margin-top:2px}
 .plate-stats-row span{color:#d4a84a}
 @media(max-width:920px){#chatBox{width:200px;max-height:120px;bottom:60px;left:8px}#spellBar{bottom:8px}#charPanel{right:10px;top:10px;transform:none;width:300px;max-height:80vh}#playerPlate{left:8px;top:8px}}
+/* ═══ Loading Screen ═══ */
+#loadingScreen{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#08090d;color:#d4dae8;font-family:'Cinzel',serif;gap:20px;transition:opacity .6s}
+#loadingScreen.fade-out{opacity:0;pointer-events:none}
+.load-title{font-size:28px;letter-spacing:4px;color:#f59e0b;text-shadow:0 0 20px rgba(245,158,11,.3)}
+.load-subtitle{font-size:14px;color:#7a8ba8;font-family:'Crimson Text',serif;font-style:italic}
+.load-bar-wrap{width:280px;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.load-bar-fill{height:100%;width:0%;border-radius:4px;background:linear-gradient(90deg,#5b4ecc,#9b8afb);transition:width .15s}
+.load-percent{font-size:12px;color:#7a8ba8;font-family:'JetBrains Mono',monospace}
+/* ═══ Tutorial Overlay ═══ */
+#tutorialOverlay{position:fixed;inset:0;z-index:10005;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(6px)}
+.tut-box{width:400px;max-width:90vw;background:linear-gradient(180deg,#1a1520,#0e0a14);border:2px solid rgba(90,60,20,.6);border-radius:16px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,.7);padding:20px;text-align:center}
+.tut-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.tut-step-label{font-size:11px;color:#7a8ba8;font-family:'JetBrains Mono',monospace}
+.tut-skip{appearance:none;background:none;border:1px solid rgba(123,104,238,.3);color:#9b8afb;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'Crimson Text',serif}
+.tut-skip:hover{border-color:#9b8afb;background:rgba(123,104,238,.1)}
+.tut-img-wrap{margin:12px 0;border-radius:8px;overflow:hidden;border:1px solid rgba(42,51,71,.6)}
+.tut-img{width:100%;display:block;image-rendering:pixelated}
+.tut-title{font-family:'Cinzel',serif;font-size:16px;color:#f59e0b;margin:12px 0 6px;letter-spacing:1px}
+.tut-text{font-size:13px;color:#7a8ba8;line-height:1.6;font-family:'Crimson Text',serif}
+.tut-nav{display:flex;justify-content:space-between;margin-top:16px;gap:8px}
+.tut-nav button{flex:1;appearance:none;border:1px solid rgba(90,60,20,.5);background:rgba(40,30,10,.4);color:#d4dae8;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;font-family:'Cinzel',serif;transition:all .2s}
+.tut-nav button:hover:not(:disabled){border-color:#f59e0b;background:rgba(245,158,11,.1)}
+.tut-nav button:disabled{opacity:.3;cursor:default}
+/* ═══ Equipment Slot Icons (Character Panel) ═══ */
+.eq-slot-icon{width:32px;height:32px;border-radius:6px;border:1px solid rgba(42,51,71,.6);background:rgba(14,17,23,.7);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.eq-slot-icon img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+/* ═══ Shortcut Bar Icons ═══ */
+.shortcut-icon-img{width:28px;height:28px;image-rendering:pixelated;display:block}
+/* ═══ Item Icon in Inventory ═══ */
+.inv-item-icon{width:24px;height:24px;image-rendering:pixelated;margin-right:6px;flex-shrink:0}
+/* ═══ Currency Display ═══ */
+.currency-icon{width:14px;height:14px;vertical-align:middle;image-rendering:pixelated;margin-right:2px}
 </style>
 </head>
 <body>
+<!-- ═══ LOADING SCREEN ═══ -->
+<div id="loadingScreen">
+  <div class="load-title">ASHVEIL</div>
+  <div class="load-subtitle">Loading the world beyond the Veil…</div>
+  <div class="load-bar-wrap"><div class="load-bar-fill" id="loadBarFill"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+</div>
 <div id="portraitOverlay">
 <div class="rotate-icon">📱</div>
 <h2>Rotate Your Device</h2>
@@ -731,6 +773,10 @@ border:2px solid rgba(120,80,20,.5);background:linear-gradient(180deg,rgba(100,6
 <script src="sprites/equipment.js"></script>
 <script src="sprites/creator.js"></script>
 <script src="sprites/init.js"></script>
+<!-- New Asset Systems -->
+<script src="sprites/assets.js"></script>
+<script src="sprites/effects.js"></script>
+<script src="sprites/tutorial.js"></script>
 
 <script>
 (()=>{
@@ -1196,6 +1242,13 @@ else if(id==='magmaPlate')armor('#ff4400','#ff6600','#cc3300');
 else if(id==='shellShield'){for(let y=3;y<=12;y++)for(let x=4;x<=11;x++){if(Math.abs(x-7.5)+Math.abs(y-7.5)<6)p(x,y,'#cc6633')}p(7,7,'#dd7744');p(8,7,'#dd7744');p(7,8,'#eeaa88');p(8,8,'#eeaa88')}
 else if(id==='frostTonic')potion('#80c0e0','#a0d0ee');
 else if(id==='venomFlask')potion('#44aa44','#66ff66');
+// Shoulder equipment icons
+else if(id==='banditLeatherPauldrons'){for(let y=4;y<=8;y++){p(4,y,'#6b5535');p(5,y,'#8a6a3a');p(10,y,'#8a6a3a');p(11,y,'#6b5535')}p(6,5,'#8a6a3a');p(9,5,'#8a6a3a');p(6,4,'#6b5535');p(9,4,'#6b5535');p(7,6,'#a0804a');p(8,6,'#a0804a')}
+else if(id==='guardMetalPauldrons'){for(let y=4;y<=8;y++){p(4,y,'#888');p(5,y,'#aaa');p(10,y,'#aaa');p(11,y,'#888')}p(6,5,'#aaa');p(9,5,'#aaa');p(6,4,'#888');p(9,4,'#888');p(7,6,'#ccc');p(8,6,'#ccc');p(5,5,'#ffd700');p(10,5,'#ffd700')}
+// Hand equipment icons
+else if(id==='banditGloves'){p(5,6,'#6b5535');p(6,6,'#8a6a3a');p(7,7,'#8a6a3a');p(5,7,'#8a6a3a');p(6,7,'#a0804a');p(5,8,'#6b5535');p(6,8,'#8a6a3a');p(9,6,'#6b5535');p(10,6,'#8a6a3a');p(9,7,'#8a6a3a');p(10,7,'#a0804a');p(11,7,'#8a6a3a');p(9,8,'#6b5535');p(10,8,'#8a6a3a')}
+else if(id==='clothGloves'){p(5,6,'#c4a040');p(6,6,'#ddb850');p(7,7,'#ddb850');p(5,7,'#ddb850');p(6,7,'#eecc66');p(5,8,'#c4a040');p(6,8,'#ddb850');p(9,6,'#c4a040');p(10,6,'#ddb850');p(9,7,'#ddb850');p(10,7,'#eecc66');p(11,7,'#ddb850');p(9,8,'#c4a040');p(10,8,'#ddb850')}
+else if(id==='guardGauntlets'){p(5,6,'#888');p(6,6,'#aaa');p(7,7,'#aaa');p(5,7,'#aaa');p(6,7,'#ccc');p(5,8,'#888');p(6,8,'#aaa');p(9,6,'#888');p(10,6,'#aaa');p(9,7,'#aaa');p(10,7,'#ccc');p(11,7,'#aaa');p(9,8,'#888');p(10,8,'#aaa');p(6,5,'#ffd700');p(10,5,'#ffd700')}
 else if(id==='frostCore'){p(7,6,'#a0d0ee');p(8,6,'#80c0e0');p(6,7,'#a0d0ee');p(7,7,'#c0e8ff');p(8,7,'#c0e8ff');p(9,7,'#a0d0ee');p(7,8,'#80c0e0');p(8,8,'#a0d0ee');p(7,5,'#60a0c0');p(8,9,'#60a0c0')}
 else if(id==='magmaCore'){p(7,6,'#ff4400');p(8,6,'#ff6600');p(6,7,'#ff4400');p(7,7,'#ffaa22');p(8,7,'#ffaa22');p(9,7,'#ff4400');p(7,8,'#ff6600');p(8,8,'#ff4400');p(7,5,'#cc3300');p(8,9,'#cc3300')}
 else if(id==='deepFang'){p(7,4,'#4a3a48');p(8,4,'#3a2a38');p(7,5,'#5a4a58');p(8,5,'#4a3a48');p(7,6,'#6a5a68');p(8,6,'#5a4a58');p(7,7,'#7a6a78');p(8,7,'#6a5a68');p(7,8,'#5a4a58');p(8,8,'#4a3a48');p(7,9,'#3a2a38');p(7,10,'#2a1a28')}
@@ -1482,6 +1535,10 @@ boneRing:{name:'Bone Ring',type:'ring',slot:'ring',atk:2,rarity:'uncommon',desc:
 tonic:{name:'Field Tonic',type:'consumable',heal:25,rarity:'common',desc:'Restores 25 HP.'},veilElixir:{name:'Veil Elixir',type:'consumable',heal:60,rarity:'uncommon',desc:'Restores 60 HP.'},strengthDraft:{name:'Strength Draft',type:'consumable',buff:'atk',buffAmt:5,buffDur:60,rarity:'uncommon',desc:'+5 ATK for 60s.'},cookedFish:{name:'Cooked Fish',type:'consumable',heal:35,rarity:'common',desc:'Hearty meal. Restores 35 HP.'},dungeonMap:{name:'Dungeon Map',type:'consumable',rarity:'rare',desc:'Reveals dungeon layout for one run.'},timberShield:{name:'Timber Shield',type:'trinket',slot:'trinket',def:3,rarity:'common',desc:'Crude but sturdy shield hewn from Ashveil timber.'},
 // New biome consumables/trinkets
 frostTonic:{name:'Frost Tonic',type:'consumable',heal:40,rarity:'uncommon',desc:'Chilled brew. Restores 40 HP.'},venomFlask:{name:'Venom Flask',type:'consumable',buff:'atk',buffAmt:8,buffDur:45,rarity:'rare',desc:'+8 ATK for 45s.'},shellShield:{name:'Shell Shield',type:'trinket',slot:'trinket',def:4,rarity:'uncommon',desc:'Crab shell shield.'},
+// Shoulder equipment
+banditLeatherPauldrons:{name:'Bandit Pauldrons',type:'shoulders',slot:'shoulders',def:2,rarity:'common',desc:'Rough leather shoulder guards.',assetKey:'bandit_leather_big'},guardMetalPauldrons:{name:'Guard Pauldrons',type:'shoulders',slot:'shoulders',def:5,rarity:'uncommon',desc:'Polished metal shoulder plates.',assetKey:'guard_metal_big'},
+// Hand equipment
+banditGloves:{name:'Bandit Gloves',type:'hands',slot:'hands',atk:1,rarity:'common',desc:'Reinforced leather gloves.',assetKey:'bandit_leather'},clothGloves:{name:'Cloth Gloves',type:'hands',slot:'hands',def:1,rarity:'common',desc:'Simple cloth gloves.',assetKey:'cloth_yellow'},guardGauntlets:{name:'Guard Gauntlets',type:'hands',slot:'hands',atk:2,def:2,rarity:'uncommon',desc:'Metal-plated gauntlets.',assetKey:'guard_metal'},
 };
 const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon(id)});
 
@@ -1877,7 +1934,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:140*T*SCALE,y:100*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,legs:null,boots:null,ring:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:140*T*SCALE,y:100*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,legs:null,boots:null,ring:null,shoulders:null,hands:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1996,7 +2053,7 @@ function totalHpMax(){return state.player.hpMax+(state.player.allocStats?.vitali
 function getQuest(id){return state.quests.find(q=>q.id===id)}
 function setQuestStage(id,stage){const q=getQuest(id);if(q)q.stage=stage}
 function completeQuest(id,rewards={}){const q=getQuest(id);if(!q||q.done)return;q.done=true;if(rewards.gold)state.player.gold+=rewards.gold;if(rewards.exp)gainExp(rewards.exp);if(rewards.item)addItem(rewards.item,1);toast(`Quest complete: ${q.name}`,'quest');addLog(`✦ Completed: ${q.name}`)}
-function gainExp(amt){if(state.player.level>=250)return;if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext&&state.player.level<250){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}if(state.player.level>=250){state.player.exp=0;state.player.expNext=0}}
+function gainExp(amt){if(state.player.level>=250)return;if(state.activeEvent?.effect==='doubleXP')amt*=2;state.player.exp+=amt;while(state.player.exp>=state.player.expNext&&state.player.level<250){state.player.exp-=state.player.expNext;state.player.level++;state.player.expNext=Math.floor(state.player.expNext*1.35);state.player.hpMax+=8;state.player.hp=totalHpMax();state.player.atkBase+=1;state.player.defBase+=1;state.player.skillPoints+=2;state.player.allocStatPoints+=3;toast(`Level up! Now level ${state.player.level} — 3 stat points!`,'quest');addLog(`⭐ Level ${state.player.level}`);triggerShake(8,0.3);spawnParticle(state.player.x,state.player.y,'#f59e0b',15,100);spawnParticle(state.player.x,state.player.y,'#9b8afb',12,80);spawnParticle(state.player.x,state.player.y,'#ffcc44',10,60);spawnDamageNumber(state.player.x,state.player.y-40,`LEVEL ${state.player.level}!`,'#f59e0b');SpriteEffects.spawn({key:'level_up',x:state.player.x,y:state.player.y-20,scale:1.5,speed:0.1});checkClassAwakening();if(state.player.level>=10){state.player.abilityPoints++;checkAbilityAwakening()}}if(state.player.level>=250){state.player.exp=0;state.player.expNext=0}}
 function gainSkill(skill,xp){if(!state.player.skillXp[skill]&&state.player.skillXp[skill]!==0)return;state.player.skillXp[skill]+=xp;const need=state.player.skills[skill]*20;while(state.player.skillXp[skill]>=need){state.player.skillXp[skill]-=need;state.player.skills[skill]++;toast(`${cap(skill)} → ${state.player.skills[skill]}`,'loot')}}
 function addLog(msg){state.logs.unshift(msg);if(state.logs.length>50)state.logs.pop()}
 function currentZoneAt(x,y){const tx=x/(T*SCALE),ty=y/(T*SCALE);for(const[id,z]of Object.entries(zoneMap))if(tx>=z.x1&&tx<=z.x2&&ty>=z.y1&&ty<=z.y2)return id;return'forest'}
@@ -2222,6 +2279,7 @@ if(enemy.hp<=0){
   if(loot.length===0)loot.push(sample(eDef.drops));
   enemy.loot=loot;enemy.lootable=true;enemy.lootTimer=state.time+LOOT_DESPAWN_TIME;
   spawnParticle(enemy.x,enemy.y,'#3ddc84',10,80);
+  SpriteEffects.spawn({key:'blood_'+((1+rand(0,2))),x:enemy.x,y:enemy.y,scale:1.2,speed:0.08});
   toast(`${eDef.name} defeated! +${goldDrop}g — loot available`,'combat');
   addLog(`⚔ Defeated ${eDef.name}.`);
   // Bounty
@@ -2298,7 +2356,7 @@ function checkAchievements(){if(!(state.stats.zonesVisited instanceof Set))state
 
 // ═══ SAVE/LOAD ═══
 function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state));sd.stats.zonesVisited=[...state.stats.zonesVisited];sd.saveTime=Date.now();const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;localStorage.setItem(key,JSON.stringify(sd));if(!silent)toast(`Saved${slot?' (Slot '+slot+')':''}.`,'info')}
-function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.equipment.legs===undefined)p.equipment.legs=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;
+function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.equipment.legs===undefined)p.equipment.legs=null;if(p.equipment.shoulders===undefined)p.equipment.shoulders=null;if(p.equipment.hands===undefined)p.equipment.hands=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;
 // Always rebuild enemies from current definitions so new/updated enemies appear in old saves
 state.enemies=buildEnemies();
 // Rebuild nodes if missing action property
@@ -2525,6 +2583,8 @@ if(state.player.pet&&petDefs[state.player.pet]){const px=state.player._petX||sta
 drawables.sort((a,b)=>a.y-b.y);drawables.forEach(d=>d.draw());
 // Particles
 state.particles.forEach(pt=>{ctx.globalAlpha=pt.life/pt.maxLife;if(pt.isText){ctx.font='bold 12px "JetBrains Mono",monospace';ctx.fillStyle=pt.color;ctx.textAlign='center';ctx.fillText(pt.text,pt.x,pt.y);ctx.textAlign='left'}else{ctx.fillStyle=pt.color;ctx.fillRect(pt.x-pt.size/2,pt.y-pt.size/2,pt.size,pt.size)}ctx.globalAlpha=1});
+// Sprite-sheet effects (entity/target animations from new assets)
+SpriteEffects.draw(ctx,state.camera.x-screenShake.x,state.camera.y-screenShake.y);
 // Night overlay
 if(nightAmount>0.01){ctx.fillStyle=`rgba(5,5,20,${nightAmount})`;ctx.fillRect(state.camera.x,state.camera.y,cssW,cssH);const grd=ctx.createRadialGradient(p.x,p.y,10,p.x,p.y,200*SCALE);grd.addColorStop(0,`rgba(255,170,80,${nightAmount*0.15})`);grd.addColorStop(1,'transparent');ctx.fillStyle=grd;ctx.fillRect(p.x-200*SCALE,p.y-200*SCALE,400*SCALE,400*SCALE)}
 // Corruption/Dungeon overlay
@@ -2676,7 +2736,7 @@ if(!def)return;
 if(def.type==='consumable'){useItem(id);renderInventoryGrid();renderPanels()}
 else if(def.slot){equipItem(id);renderInventoryGrid();renderPanels()}}}
 grid.appendChild(slot)}
-qs('#invGold').textContent='💰 '+state.player.gold}
+qs('#invGold').innerHTML=(GameAssets.get('fx.currency_gold')?'<img class="currency-icon" src="'+GameAssets.get('fx.currency_gold').src+'" alt="Gold"> ':'\uD83D\uDCB0 ')+state.player.gold}
 function openInventory(){const io=qs('#inventoryOverlay');io.classList.add('open');renderInventoryGrid()}
 function closeInventory(){qs('#inventoryOverlay').classList.remove('open')}
 qs('#inventoryBtn').onclick=()=>openInventory();
@@ -3263,21 +3323,24 @@ const p=state.player;
 qs('#charName').textContent='Walker';
 qs('#charSubtitle').textContent=`Level ${p.level}${p.class?', '+cap(p.class):''}`;
 const slotDefs=[
-{key:'weapon',label:'Weapon',icon:'⚔',span:2},
-{key:'body',label:'Armor',icon:'🛡',span:2},
-{key:'trinket',label:'Trinket',icon:'◈',span:1},
-{key:'helm',label:'Helm',icon:'⛑',span:1},
-{key:'legs',label:'Legs',icon:'👖',span:1},
-{key:'boots',label:'Boots',icon:'👢',span:1},
-{key:'ring',label:'Ring',icon:'💍',span:1},
+{key:'weapon',label:'Weapon',icon:'⚔',imgKey:null,span:2},
+{key:'body',label:'Armor',icon:'🛡',imgKey:'icon.inv_chest',span:2},
+{key:'trinket',label:'Trinket',icon:'◈',imgKey:null,span:1},
+{key:'helm',label:'Helm',icon:'⛑',imgKey:'icon.inv_head',span:1},
+{key:'legs',label:'Legs',icon:'👖',imgKey:'icon.inv_legs',span:1},
+{key:'boots',label:'Boots',icon:'👢',imgKey:'icon.inv_feet',span:1},
+{key:'ring',label:'Ring',icon:'💍',imgKey:null,span:1},
+{key:'shoulders',label:'Shoulders',icon:'🛡',imgKey:'icon.inv_shoulders',span:1},
+{key:'hands',label:'Hands',icon:'🧤',imgKey:'icon.inv_hands',span:1},
 ];
 qs('#charSlots').innerHTML=slotDefs.map(s=>{
 const id=p.equipment[s.key];
 const it=id?itemDefs[id]:null;
 const rc=it?'rarity-'+(it.rarity||'common'):'';
 const spanStyle=s.span===2?'grid-column:span 2;':'';
+const slotImg=s.imgKey&&GameAssets.get(s.imgKey)?`<img class="eq-slot-icon" src="${GameAssets.get(s.imgKey).src}" alt="${s.label}">`:`<div class="slot-icon">${s.icon}</div>`;
 return`<div class="char-slot" style="${spanStyle}">
-<div class="slot-icon">${s.icon}</div>
+${slotImg}
 <div class="slot-label">${s.label}</div>
 <div class="slot-item ${rc}">${it?it.name:'—'}</div>
 ${it?`<div style="font-size:9px;color:#8a7a5a;margin-top:2px">${it.atk?'+'+it.atk+' ATK ':''}${it.def?'+'+it.def+' DEF ':''}${it.critBonus?'+'+it.critBonus+'% Crit ':''}</div>`:''}
@@ -3528,6 +3591,8 @@ function startGame(fromSave=false){
   resize();renderAll();drawMinimap();
   last=performance.now();
   requestAnimationFrame(loop);
+  // Show tutorial for new games
+  if(!fromSave&&!state.flags.tutorialShown){state.flags.tutorialShown=true;Tutorial.open()}
 }
 
 // ═══ CHARACTER CREATOR UI ═══
@@ -3570,16 +3635,35 @@ if(localStorage.getItem(SAVE_KEY)){qs('#btnContinue').style.display='block';qs('
 qs('#btnContinue').onclick=()=>startGame(true);
 qs('#btnNewGame').onclick=()=>openCharCreator();
 
-// Start title loop
-resizeTitleCanvas();
-window.addEventListener('resize',()=>{if(titleActive)resizeTitleCanvas();else{resize();renderAll()}});
-requestAnimationFrame(titleLoop);
+// ═══ ASSET LOADING & STARTUP ═══
+(async function initAssets(){
+  const loadBar=document.getElementById('loadBarFill');
+  const loadPct=document.getElementById('loadPercent');
+  const loadScreen=document.getElementById('loadingScreen');
+  try{
+    await GameAssets.loadAll((done,total)=>{
+      const pct=Math.round((done/total)*100);
+      if(loadBar)loadBar.style.width=pct+'%';
+      if(loadPct)loadPct.textContent=pct+'%';
+    });
+  }catch(e){console.warn('[Assets] Partial load:',e)}
+  // Fade out loading screen
+  if(loadScreen){loadScreen.classList.add('fade-out');setTimeout(()=>{loadScreen.style.display='none'},700)}
+  // Start title loop
+  resizeTitleCanvas();
+  window.addEventListener('resize',()=>{if(titleActive)resizeTitleCanvas();else{resize();renderAll()}});
+  requestAnimationFrame(titleLoop);
+})();
 
 // ═══ GAME LOOP ═══
 let last=performance.now();
-function loop(now){const dt=Math.min(0.033,(now-last)/1000);last=now;update(dt);drawMap();renderHud();if(Math.floor(state.time)%2===0&&Math.floor(state.time)!==Math.floor(state.time-dt))drawMinimap();requestAnimationFrame(loop)}
+function loop(now){const dt=Math.min(0.033,(now-last)/1000);last=now;update(dt);SpriteEffects.update(dt);drawMap();renderHud();if(Math.floor(state.time)%2===0&&Math.floor(state.time)!==Math.floor(state.time-dt))drawMinimap();requestAnimationFrame(loop)}
 
 })();
+</script>
+<!-- Service Worker Registration -->
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').then(function(r){console.log('[SW] Registered:',r.scope)},function(e){console.warn('[SW] Registration failed:',e)})})}
 </script>
 </body>
 </html>
