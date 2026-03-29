@@ -1593,6 +1593,12 @@ const recipes=[
 {id:'crystalBlade',name:'Crystal Blade',needs:{veilEdge:1,crystalShard:3,ore:4},makes:'crystalBlade',station:'forge'},
 {id:'magmaPlate',name:'Magma Plate',needs:{drakemail:1,magmaCore:2,magmaShard:4},makes:'magmaPlate',station:'forge'},
 {id:'frostCrown',name:'Frost Crown',needs:{ironHelm:1,frostCore:2,frostFur:3},makes:'frostCrown',station:'forge'},
+// Shoulder & Hand equipment recipes
+{id:'banditLeatherPauldrons',name:'Bandit Pauldrons',needs:{hide:3,fiber:2},makes:'banditLeatherPauldrons'},
+{id:'guardMetalPauldrons',name:'Guard Pauldrons',needs:{scrap:4,ore:2,hide:2},makes:'guardMetalPauldrons',station:'forge'},
+{id:'banditGloves',name:'Bandit Gloves',needs:{hide:2,fiber:1},makes:'banditGloves'},
+{id:'clothGloves',name:'Cloth Gloves',needs:{fiber:3},makes:'clothGloves'},
+{id:'guardGauntlets',name:'Guard Gauntlets',needs:{scrap:3,ore:2,hide:1},makes:'guardGauntlets',station:'forge'},
 ];
 
 const enemyDefs={
@@ -1602,7 +1608,7 @@ emberFox:{name:'Ember Fox',hp:28,atk:4,exp:12,gold:2,level:3,drops:["hide", "bra
 wildBoar:{name:'Wild Boar',hp:41,atk:6,exp:17,gold:3,level:5,drops:["hide", "branch"],rarity:'common'},
 forestSpider:{name:'Forest Spider',hp:64,atk:8,exp:26,gold:5,level:8,drops:["hide", "branch"],rarity:'common'},
 wolf:{name:'Ash Wolf',hp:82,atk:10,exp:33,gold:6,level:10,drops:["hide", "branch"],rarity:'common'},
-bandit:{name:'Bandit',hp:110,atk:13,exp:43,gold:8,level:13,drops:["hide", "branch"],rarity:'common'},
+bandit:{name:'Bandit',hp:110,atk:13,exp:43,gold:8,level:13,drops:["hide", "branch", "banditGloves"],rarity:'common'},
 forestStag:{name:'Forest Stag',hp:141,atk:16,exp:53,gold:10,level:16,drops:["hide", "branch"],rarity:'common'},
 barkBeetle:{name:'Bark Beetle',hp:174,atk:19,exp:64,gold:12,level:19,drops:["hide", "branch"],rarity:'common'},
 timberSnake:{name:'Timber Snake',hp:209,atk:22,exp:74,gold:13,level:22,drops:["hide", "branch"],rarity:'common'},
@@ -1611,7 +1617,7 @@ mossCrawler:{name:'Moss Crawler',hp:310,atk:31,exp:104,gold:18,level:30,drops:["
 woodlandSprite:{name:'Woodland Sprite',hp:365,atk:35,exp:120,gold:21,level:34,drops:["hide", "branch"],rarity:'common'},
 elderStag:{name:'Elder Stag',hp:591,atk:48,exp:204,gold:35,level:38,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
 direWolf:{name:'Dire Wolf',hp:673,atk:53,exp:228,gold:39,level:42,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
-banditCaptain:{name:'Bandit Captain',hp:758,atk:59,exp:252,gold:43,level:46,drops:["hide", "branch", "drakeVisage"],rarity:'uncommon'},
+banditCaptain:{name:'Bandit Captain',hp:758,atk:59,exp:252,gold:43,level:46,drops:["hide", "branch", "drakeVisage", "banditLeatherPauldrons", "guardGauntlets"],rarity:'uncommon'},
 forestWraith:{name:'Forest Wraith',hp:604,atk:53,exp:184,gold:31,level:50,drops:["hide", "branch"],rarity:'common'},
 shadowPanther:{name:'Shadow Panther',hp:685,atk:59,exp:205,gold:34,level:55,drops:["hide", "branch"],rarity:'common'},
 emberSerpent:{name:'Ember Serpent',hp:769,atk:65,exp:226,gold:37,level:60,drops:["hide", "branch"],rarity:'common'},
@@ -2265,6 +2271,11 @@ let dmg=Math.max(1,totalAtk()+rand(0,3)-1);if(crit)dmg=Math.floor(dmg*1.8);
 if(getFactionTier(state.faction.ashenOrder)>=1&&(enemy.type==='corruptWolf'||enemy.type==='voidSentinel'))dmg+=3;
 enemy.hp-=dmg;gainSkill('combat',4);state.stats.totalDamageDealt+=dmg;state.stats.pacifistStreak=0;
 const pColor=wv?wv.particles:(crit?'#ffcc44':'#ff6b35');spawnParticle(enemy.x,enemy.y,pColor,crit?10:6,crit?80:50);
+// Weapon-specific sprite effects on hit
+if(wv&&wv.name==='fire')SpriteEffects.spawnTarget({key:'fire',x:enemy.x,y:enemy.y,scale:0.8,speed:0.06});
+else if(wv&&wv.name==='frost')SpriteEffects.spawnTarget({key:'water',x:enemy.x,y:enemy.y,scale:0.8,speed:0.06});
+else if(wv&&wv.name==='veil')SpriteEffects.spawnTarget({key:'whirlwind_white',x:enemy.x,y:enemy.y,scale:0.7,speed:0.05});
+else if(wv&&wv.name==='void')SpriteEffects.spawnTarget({key:'skulls_purple',x:enemy.x,y:enemy.y,scale:0.8,speed:0.06});
 if(wv&&(itemDefs[p.equipment.weapon]?.rarity==='epic'||itemDefs[p.equipment.weapon]?.rarity==='legendary')){spawnParticle(enemy.x+rand(-10,10),enemy.y+rand(-10,10),wv.glow||wv.color,4,40)}
 spawnDamageNumber(enemy.x,enemy.y-20,crit?`CRIT ${dmg}`:`${dmg}`,crit?'#ffcc44':'#ff6b35');
 triggerShake(crit?10:4,crit?0.2:0.1);p.lastCombatTime=state.time;
@@ -2300,7 +2311,7 @@ if(enemy.hp<=0){
 }else{
   let ret=Math.max(1,eDef.atk-totalDef()+rand(0,2));const eCrit=Math.random()<0.1;if(eCrit)ret=Math.floor(ret*1.8);
   if(p.invincible<=0){p.hp-=ret;state.stats.totalDamageReceived+=ret;spawnDamageNumber(p.x,p.y-20,eCrit?`CRIT ${ret}`:`${ret}`,eCrit?'#ff4444':'#dc2626');spawnParticle(p.x,p.y,eCrit?'#ff4444':'#dc2626',eCrit?6:3);triggerShake(eCrit?10:6,eCrit?0.25:0.15);if(eCrit)p.critFlash=0.3;p.lastCombatTime=state.time}
-  if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('💀 Fell.')}
+  if(p.hp<=0){p.hp=p.hpMax;p.x=140*T*SCALE;p.y=100*T*SCALE;p.gold=Math.max(0,p.gold-12);state.stats.deaths++;deaggroAll();SpriteEffects.spawn({key:'spawn',x:p.x,y:p.y,scale:2,speed:0.12});if(state.dungeon.active){state.dungeon.active=false;toast('Fell in the dungeon. Ejected.','combat')}else{toast('Fell. Returned to Cindergate.','combat')}addLog('\uD83D\uDC80 Fell.')}
 }renderAll()}
 
 function gatherNearest(){const p=state.player;const node=state.nodes.filter(n=>n.ready&&dist(p,n)<50*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];
@@ -2325,12 +2336,12 @@ toast('Nothing nearby.')}
 function openDialogue(id,nk){const tree=dialogueDefs[id];if(!tree)return;const node=tree[nk];if(!node)return;state.currentDialogue={id,node:nk};if(typeof node.effect==='function')node.effect(state);gainSkill('influence',3);dialogueSpeaker.textContent=node.speaker;dialogueText.textContent=node.text;dialogueChoices.innerHTML='';const faceEl=qs('#dialogueFace');if(faceEl){if(sprites.npcFaces[id]){faceEl.innerHTML='';faceEl.appendChild(sprites.npcFaces[id].cloneNode(true));faceEl.style.display='block'}else{faceEl.style.display='none'}}node.choices.forEach(ch=>{const b=document.createElement('button');b.textContent=ch.text;b.onclick=()=>{if(ch.close)return closeDialogue();if(ch.next)openDialogue(id,ch.next)};dialogueChoices.appendChild(b)});dialogueEl.style.display='block';renderAll()}
 function closeDialogue(){state.currentDialogue=null;dialogueEl.style.display='none';const faceEl=qs('#dialogueFace');if(faceEl)faceEl.style.display='none'}
 
-function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe)return;if(recipe.station&&!nearStation(recipe.station)){toast(`Requires a ${recipe.station} — visit the settlement forge.`,'info');return}if(!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
+function craft(rid){const recipe=recipes.find(r=>r.id===rid);if(!recipe)return;if(recipe.station&&!nearStation(recipe.station)){toast(`Requires a ${recipe.station} — visit the settlement forge.`,'info');return}if(!canCraft(recipe))return;Object.entries(recipe.needs).forEach(([id,n])=>removeItem(id,n));addItem(recipe.makes,recipe.count||1);gainSkill('crafting',6);state.stats.crafts++;SpriteEffects.spawn({key:'crafting',x:state.player.x,y:state.player.y-10,scale:1,speed:0.1});toast(`Crafted ${recipe.name}`,'loot');addLog(`⚒ Crafted ${recipe.name}.`);renderPanels()}
 function nearStation(type){const p=state.player;return buildings.some(b=>b.type===type&&Math.hypot(b.x*T*SCALE-p.x,b.y*T*SCALE-p.y)<80*SCALE)}
 function canCraft(r){if(!Object.entries(r.needs).every(([id,n])=>itemCount(id)>=n))return false;if(r.station&&!nearStation(r.station))return false;return true}
 function equipItem(id){const def=itemDefs[id];if(!def||!def.slot)return;const prev=state.player.equipment[def.slot];if(prev)addItem(prev,1);state.player.equipment[def.slot]=id;removeItem(id,1);toast(`Equipped ${def.name}`);renderPanels()}
 function unequip(slot){const id=state.player.equipment[slot];if(!id)return;addItem(id,1);state.player.equipment[slot]=null;renderPanels()}
-function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal)state.player.hp=clamp(state.player.hp+def.heal,0,totalHpMax());if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
+function useItem(id){const def=itemDefs[id];if(!def)return;if(def.type==='consumable'){if(def.heal){state.player.hp=clamp(state.player.hp+def.heal,0,totalHpMax());SpriteEffects.spawnTarget({key:'heal_1',x:state.player.x,y:state.player.y-10,scale:1.2,speed:0.08})}if(def.buff)state.player.buffs.push({type:def.buff,amount:def.buffAmt,remaining:def.buffDur});removeItem(id,1);toast(`Used ${def.name}`,'loot');renderAll()}}
 
 function chooseFaction(side){state.faction[side]+=10;gainSkill('influence',6);toast(`+10 ${factionDefs[side]?.name||side} standing`,'quest');addLog(`Supported ${factionDefs[side]?.name||side}.`);renderPanels()}
 
@@ -2597,7 +2608,7 @@ ctx.restore()}
 // Minimap
 function drawMinimap(){if(!mmCtx)return;const mw=mmCanvas.width,mh=mmCanvas.height;mmCtx.fillStyle='#08090d';mmCtx.fillRect(0,0,mw,mh);const sx=mw/MW,sy=mh/MH;
 for(let y=0;y<MH;y+=2)for(let x=0;x<MW;x+=2){const t=terrain[y*MW+x];mmCtx.fillStyle=['#2d5a1e','#6b5233','#555f6e','#1a4a6e','#2a4a1e','#3a3850','#c4a86e','#3a1a3a','#d0d8e5','#4a2a20','#0a2a0a','#c4b47e','#7a6a4a','#0a3a5e','#1a1418','#ff4400'][t]||'#18202a';mmCtx.fillRect(x*sx,y*sy,sx*2+1,sy*2+1)}
-const px=(state.player.x/(MW*T*SCALE))*mw,py=(state.player.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#fff';mmCtx.fillRect(px-2,py-2,4,4);
+const px=(state.player.x/(MW*T*SCALE))*mw,py=(state.player.y/(MH*T*SCALE))*mh;const pMarker=typeof GameAssets!=='undefined'?GameAssets.get('icon.map_marker_player'):null;if(pMarker){mmCtx.drawImage(pMarker,px-4,py-4,8,8)}else{mmCtx.fillStyle='#fff';mmCtx.fillRect(px-2,py-2,4,4)}
 state.enemies.forEach(e=>{if(!e.alive)return;const ex=(e.x/(MW*T*SCALE))*mw,ey=(e.y/(MH*T*SCALE))*mh;mmCtx.fillStyle=enemyDefs[e.type]?.rarity==='rare'?'#f59e0b':'#dc2626';mmCtx.fillRect(ex-1,ey-1,2,2)});
 dungeonEntrances.forEach(de=>{const dx=(de.x/MW)*mw,dy=(de.y/MH)*mh;mmCtx.fillStyle='#7b68ee';mmCtx.fillRect(dx-2,dy-2,4,4)});
 state.npcs.forEach(n=>{const nx=(n.x/(MW*T*SCALE))*mw,ny=(n.y/(MH*T*SCALE))*mh;mmCtx.fillStyle='#f59e0b';mmCtx.fillRect(nx-1,ny-1,3,3)})}
@@ -2715,6 +2726,7 @@ else openLootUI(enemy)}
 function lootAll(enemy){
 if(!enemy||!enemy.loot)return;
 const names=[];enemy.loot.forEach(id=>{addItem(id,1);names.push(itemDefs[id]?.name||id)});
+SpriteEffects.spawn({key:'loot_crate',x:enemy.x,y:enemy.y,scale:1,speed:0.08});
 toast(`Looted: ${names.join(', ')}`,'loot');
 enemy.loot=[];enemy.lootable=false;closeLootUI()}
 function lootAllNearby(){const p=state.player;const allEnemies=state.dungeon.active?state.dungeon.enemies:state.enemies;const nearby=allEnemies.filter(en=>en.lootable&&en.loot&&en.loot.length>0&&Math.hypot(en.x-p.x,en.y-p.y)<LOOT_HITBOX*2);if(nearby.length===0)return toast('No loot nearby.');const names=[];nearby.forEach(en=>{en.loot.forEach(id=>{addItem(id,1);names.push(itemDefs[id]?.name||id)});en.loot=[];en.lootable=false});closeLootUI();toast(`Looted: ${names.join(', ')}`,'loot')}
@@ -3224,7 +3236,7 @@ let mouseHeld=false; // Track mouse hold for auto-attack
 // Left click to attack
 canvas.addEventListener('mousedown',e=>{
 if(e.button===0){mouseHeld=true;attackNearest()}
-if(e.button===2){state.player.isBlocking=true}
+if(e.button===2){state.player.isBlocking=true;SpriteEffects.spawn({key:'shield_glow',x:state.player.x,y:state.player.y,scale:1.5,speed:0.1,loop:false,followTarget:state.player})}
 });
 canvas.addEventListener('mouseup',e=>{
 if(e.button===0){mouseHeld=false}
@@ -3457,6 +3469,16 @@ function drawTitleScreen(dt){
   titleTime+=dt;
   const w=window.innerWidth,h=window.innerHeight;
   titleCtx.clearRect(0,0,w,h);
+
+  // Draw login background image if loaded
+  const bgImg=typeof GameAssets!=='undefined'?GameAssets.get('fx.login_background'):null;
+  if(bgImg){
+    const iw=bgImg.width,ih=bgImg.height,scale=Math.max(w/iw,h/ih);
+    const dw=iw*scale,dh=ih*scale;
+    titleCtx.globalAlpha=0.35;
+    titleCtx.drawImage(bgImg,(w-dw)/2,(h-dh)/2,dw,dh);
+    titleCtx.globalAlpha=1;
+  }
 
   // Background gradient - dark sky with veil corruption hues
   const skyGrad=titleCtx.createLinearGradient(0,0,0,h);
