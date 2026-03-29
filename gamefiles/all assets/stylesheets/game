@@ -1,0 +1,2429 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html lang="en" id="stein-game-html">
+    <head>
+            <!-- GENERAL METADATA -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, viewport-fit=cover"/>
+        <title>Free to play MMORPG - stein.world - online browser RPG</title>
+        <meta name="description" content="The fantasy MMO game stein.world is one of the first F2P multiplayer action browser based games with no download for PC, Android, MAC and Linux">
+        <meta name="keywords" content="free mmorpg, free online rpg, free online mmorpg no download, web mmorpg, browser based rpg, fantasy mmorpg, rpg online browser, pixel mmorpg, web based mmorpg, no download mmorpg">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="color-scheme" content="light only">
+            <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9HP207P4Q9"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-9HP207P4Q9');
+        </script>
+            <!-- MOBILE ANDROID -->
+        <meta name="application-name" content="Stein">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#000000">
+            <!-- MOBILE IOS -->
+        <meta name="apple-mobile-web-app-title" content="Free to play MMORPG - stein.world - online browser RPG">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+            <!-- LINKS -->
+        <link rel="stylesheet" media="screen" href="/assets/stylesheets/39a3557a04142baeb395b6c48466ea0a-main.css">
+        <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/socialmedia/stein_16x16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/socialmedia/stein_32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/socialmedia/stein_96x96.png">
+        <link rel="icon" type="image/png" sizes="128x128" href="/assets/images/socialmedia/stein_128x128.png">
+        <link rel="icon" type="image/png" sizes="196x196" href="/assets/images/socialmedia/stein_196x196.png">
+
+        <script type="text/javascript" src="/register-sw.js"></script>
+        <script async src="https://js.stripe.com/v3/"></script>
+    </head>
+    <body id="stein-game-body" style="width: 100%; height: 100%;">
+        <script id="chunkVS" type="x-shader/x-vertex">
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            </script>
+        <script id="chunkFS" type="x-shader/x-fragment">
+                    uniform sampler2D tilesets[$tilesetsize$];
+                    uniform sampler2D data;
+                    varying vec2 vUv;
+
+                    vec2 tilePos(int tile, int columns) {
+                        float textureRatio = float($chunksize$) / float(columns);
+                        int y = tile / columns;
+                        int x = tile - (columns * y);
+                        vec2 pos = (vUv.xy - (floor(vUv.xy * float($chunksize$)) / float($chunksize$))) * textureRatio;
+                        float posX = float(x) / float(columns) +                          pos.x;
+                        float posY = float(y) / float(columns) + (1.0 / float(columns)) - pos.y;
+                        return vec2(posX, 1.0 - posY);
+                    }
+                    void main() {
+                        ivec4 bytes = ivec4(floor((texture2D(data, vUv) * 255.0) + 0.5));
+                        int tile = ((bytes.b * 256) + bytes.g) * 256 + bytes.r;
+                        vec4 color = vec4(0, 0, 0, 0);
+                        $tiletest$
+                        gl_FragColor = color;
+                    }
+                </script>
+        <div id="stein-errors">
+        </div>
+        <div id="stein-login-screen">
+            <div id="stein-login-content">
+                <div id="stein-connecting" class="stein-text-border">
+                    <div class="stein-connecting-content-container stein-window">
+                        Connecting<br />
+                        <span class="stein-connecting-spinner-center">🌍</span>
+                        <span class="stein-connecting-spinner">🍺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-respawn-screen" style="display: none;">
+            <div id="stein-respawn-screen-content" class="stein-text-border">
+                <h2>You are dead!</h2>
+                <div id="stein-respawn-screen-skull"></div>
+                <div id="stein-respawn-screen-text" class="stein-text-border">
+                    <span id="stein-respawn-screen-timer">Respawn in 99.9 seconds</span>
+                    <span id="stein-respawn-screen-respawn-button" class="stein-respawn-screen-respawn-button">
+                    Respawn at graveyard
+                    </span>
+                    <span id="stein-respawn-screen-respawn-button-premium" class="stein-respawn-screen-respawn-button" style="display: none;">
+                        Respawn at death location (<span style="color: #4ae9ef;">2</span><span class="stein-gem-icon" style="margin-bottom: -3px;"></span>)
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div id="stein-map-window">
+            <div id="stein-map-window-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-map-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">WORLD MAP</span>
+                </div>
+                <div class="stein-window-container stein-map-window-container stein-text-border">
+                    <div id="stein-map-container">
+                        <div id="stein-map-root-zone-name" class="stein-text-border">Unknown</div>
+                        <div id="stein-map-zone-name" class="stein-text-border">Unknown</div>
+                        <div id="stein-map-compass"></div>
+                        <div id="stein-map-buttons">
+                            <button id="stein-map-button-zoom-in">+</button><br />
+                            <button id="stein-map-button-zoom-out">-</button>
+                        </div>
+                        <div id="stein-map-container-inner">
+                            <div id="stein-map-marker-player" class="stein-map-marker"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-hub-window">
+            <div id="stein-hub-window-container" class="stein-window">
+                <div class="stein-window-top" style="flex: 0 1 auto">
+                    <span id="stein-hub-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">PLAYER HUB</span>
+                </div>
+                <div class="stein-hub-window-content stein-text-border">
+                    <div style="flex: 1 1 auto; display: flex; flex-direction: column;overflow: hidden;">
+                        <div id="stein-hub-frame-news">
+                            <div id="stein-hub-login-rewards-info" class="stein-window-container stein-text-border">
+                                <div class="stein-login-reward-info-title">Login Rewards</div>
+                                <div class="stein-table" style="flex: 0 1 auto;">
+                                    <div class="stein-table-header" style="justify-content: center;">
+                                        <div id="stein-login-reward-info-day-normal" class="stein-table-column stein-login-reward-normal">Normal</div>
+                                        <div id="stein-login-reward-info-day-premium" class="stein-table-column stein-login-reward-premium">Stein.Account</div>
+                                    </div>
+                                    <div class="stein-table-entries" style="flex: 1 1 auto;">
+                                        <div class="stein-table-entry" style="flex: 1 1 auto; justify-content: center;">
+                                            <div id="stein-login-reward-info-normal" class="stein-table-column stein-login-reward-normal"></div>
+                                            <div id="stein-login-reward-info-premium" class="stein-table-column stein-login-reward-premium"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="stein-hub-frame-news-list">
+                                <div class="stein-login-news-content stein-hub-frame-news-entry stein-window-container stein-text-border">
+                                    <div class="stein-login-news-content-inner">
+                                        <div class="stein-login-news-entry-image" style="background-image: url(/assets/images/news_support.png)"></div>
+                                        <div class="stein-login-news-information">
+                                            <div class="stein-login-news-header">
+                                                <div class="stein-login-news-title">Title</div>
+                                                <div class="stein-login-news-category">News</div>
+                                            </div>
+                                            <div class="stein-login-news-summary">
+                                            Summary
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="stein-login-news-arrow"></div>
+                                </div>
+                            </div>
+                            <div id="stein-hub-news-page-previous-container" style="">
+                                <button id="stein-hub-news-page-previous">« Previous Page</button>
+                            </div>
+                            <div id="stein-hub-news-page-next-container"
+                                style="text-align: right;
+                                margin-right: 3px;
+                                margin-top: 5px;
+                                margin-bottom: 3px;">
+                                <button id="stein-hub-news-page-next">Next Page »</button>
+                            </div>
+                            <div id="stein-hub-frame-news-display" class="stein-window-container stein-news-content stein-text-border">
+                            </div>
+                            <div id="stein-hub-frame-news-loading" class="stein-window-container">
+                            Loading...
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div id="stein-hub-frame-guild">
+                            <div class="stein-window-container" id="stein-hub-frame-guild-member">
+                                <div id="stein-guild-member-tabs">
+                                    <div class="stein-tabs">
+                                        <div id="stein-guild-tab-button-info" class="stein-tab stein-window stein-text-border">
+                                        Info
+                                        </div>
+                                        <div id="stein-guild-tab-button-members" class="stein-tab stein-window stein-text-border">
+                                        Members
+                                        </div>
+                                        <div id="stein-guild-tab-button-chat" class="stein-tab stein-window stein-text-border">
+                                        Chat
+                                        </div>
+                                        <div id="stein-guild-tab-button-search" class="stein-tab stein-window stein-text-border">
+                                        Search
+                                        </div>
+                                        <div id="stein-guild-tab-button-create" class="stein-tab stein-window stein-text-border">
+                                        Create
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-tab-guild-name">TAG - Name</div>
+                                </div>
+                                <div class="stein-window-container" id="stein-guild-member-tab-content">
+                                    <div id="stein-guild-info">
+                                        <div id="stein-guild-info-guild-name">TAG - Name</div>
+                                        <div id="stein-guild-info-header">
+                                            <div id="stein-guild-description-label">Description:</div>
+                                            <div id="stein-guild-info-level">Level 1</div>
+                                            <button id="stein-guild-info-actions">...</button>
+                                        </div>
+                                        <textarea id="stein-guild-info-description" maxlength="2000"></textarea>
+                                        <div id="stein-guild-note-label">Note</div>
+                                        <textarea id="stein-guild-info-note" maxlength="4000"></textarea>
+                                        <div>
+                                            <input type="checkbox" id="stein-guild-info-search-members" />
+                                            <label for="stein-guild-info-search-members" class="checkbox-label"></label>
+                                            <span>Show guild in search</span>
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-members">
+                                        <div id="stein-guild-members-member-count">Member list (0/10):</div>
+                                        <div class="stein-table">
+                                            <div class="stein-table-header">
+                                                <div class="stein-table-column stein-guild-member-name">Name</div>
+                                                <div class="stein-table-column stein-guild-member-level">Level</div>
+                                                <div class="stein-table-column stein-guild-member-rank">Rank</div>
+                                                <div class="stein-table-column stein-guild-member-actions"></div>
+                                            </div>
+                                            <div class="stein-table-entries" id="stein-guild-members-member-list">
+                                                <div class="stein-table-entry">
+                                                    <div class="stein-table-column stein-guild-member-name">Name</div>
+                                                    <div class="stein-table-column stein-guild-member-level">
+                                                        <span class="stein-guild-member-online" style="background-image: url(/assets/images/icons/dot_green.png);"></span>
+                                                        <span class="stein-guild-member-level-amount">30</span>
+                                                    </div>
+                                                    <div class="stein-table-column stein-guild-member-rank">Owner</div>
+                                                    <div class="stein-table-column stein-guild-member-actions"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-chat">
+                                        <div id="stein-guild-member-chat-content-container" class="stein-window-container stein-text-border">
+                                            <div class="stein-chat-content">
+                                            </div>
+                                        </div>
+                                        <div id="stein-guild-member-chat-container-input">
+                                            <input autocomplete="off" type="text" id="stein-guild-member-chat-input" maxlength="256" placeholder="Message"/>
+                                            <button id="stein-guild-member-chat-send">Send</button>
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-search">
+                                        <div id="stein-guild-search-header">
+                                            <input autocomplete="off" id="stein-guild-search-input" /><button id="stein-guild-search-submit">Search</button>
+                                        </div>
+                                        <div id="stein-guild-search-results">
+                                            <div class="stein-guild-search-result stein-window-container">
+                                                <div class="stein-guild-search-result-info">
+                                                    <div class="stein-guild-search-result-tag">Tag</div>
+                                                    <div class="stein-guild-search-result-name">Name</div>
+                                                    <div class="stein-guild-search-result-members">0/0</div>
+                                                </div>
+                                                <div class="stein-guild-search-result-description">Description</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-search-details">
+                                        <div id="stein-guild-search-header">
+                                            <div id="stein-guild-search-details-guild-name">TAG - Name</div>
+                                            <button id="stein-guild-search-back">Back to Search</button>
+                                        </div>
+                                        <div id="stein-guild-info-header">
+                                            <div id="stein-guild-description-label">Description:</div>
+                                            <div id="stein-guild-search-details-level">Level 1</div>
+                                        </div>
+                                        <div id="stein-guild-search-details-description" class="stein-window-container"></div>
+                                        <div id="stein-guild-search-details-member-count">Member list (0/10):</div>
+                                        <div class="stein-table">
+                                            <div class="stein-table-header">
+                                                <div class="stein-table-column stein-guild-member-name">Name</div>
+                                                <div class="stein-table-column stein-guild-member-level">Level</div>
+                                                <div class="stein-table-column stein-guild-member-rank">Rank</div>
+                                            </div>
+                                            <div class="stein-table-entries" id="stein-guild-search-details-member-list">
+                                                <div class="stein-table-entry">
+                                                    <div class="stein-table-column stein-guild-member-name">Name</div>
+                                                    <div class="stein-table-column stein-guild-member-level">30</div>
+                                                    <div class="stein-table-column stein-guild-member-rank">Owner</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-guild-create">
+                                        <div style="color: #efba17;">
+                                        Create Guild:
+                                        </div>
+                                        <div id="stein-guild-create-form">
+                                            <div>
+                                                <span class="stein-guild-create-label">Tag: </span>
+                                                <input autocomplete="guild-tag" id="stein-guild-create-tag" />
+                                            </div>
+                                            <div>
+                                                <span class="stein-guild-create-label">Name: </span>
+                                                <input autocomplete="guild-name" id="stein-guild-create-name" />
+                                            </div>
+                                            <div>
+                                                <span class="stein-guild-create-label"></span>
+                                                <button id="stein-guild-create-submit">10000 <span class="stein-gold-icon" style="margin-bottom: -3px;"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stein-window-container" id="stein-hub-frame-login-rewards">
+                            <div class="stein-table">
+                                <div class="stein-table-header">
+                                    <div class="stein-table-column stein-login-reward-day">Day</div>
+                                    <div class="stein-table-column stein-login-reward-normal">Normal</div>
+                                    <div class="stein-table-column stein-login-reward-premium">Stein.Account</div>
+                                </div>
+                                <div class="stein-table-entries" id="stein-login-rewards-list">
+                                    <div class="stein-table-entry">
+                                        <div class="stein-table-column stein-login-reward-day">1</div>
+                                        <div class="stein-table-column stein-login-reward-normal"></div>
+                                        <div class="stein-table-column stein-login-reward-premium"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stein-window-container" id="stein-hub-frame-rankings">
+                            <div class="stein-shop-entry-title-info" style="flex: 0 1 auto;">
+                            RANKINGS
+                            </div>
+                            <div id="stein-hub-ranking-container">
+                                <div id="stein-hub-ranking-header-container">
+                                    <div class="stein-hub-ranking-pagination">
+                                        <button id="stein-hub-ranking-page-previous">&lt;</button>
+                                        <span id="stein-hub-ranking-page-display">-/-</span>
+                                        <button id="stein-hub-ranking-page-next">&gt;</button>
+                                    </div>
+                                    <select id="stein-hub-ranking-type" style="margin-bottom: 4px;">
+                                    </select>
+                                </div>
+                                <div id="stein-hub-ranking-detail-container">
+                                    <div id="stein-hub-ranking-wave-dungeon">
+                                        <div id="stein-hub-ranking-wave-dungeon-strengths">
+                                            <button id="stein-hub-ranking-wave-dungeon-strength-1" class="selected-button">1 Player</button>
+                                            <button id="stein-hub-ranking-wave-dungeon-strength-2">2 Player</button>
+                                            <button id="stein-hub-ranking-wave-dungeon-strength-3">3 Player</button>
+                                            <button id="stein-hub-ranking-wave-dungeon-strength-4">4 Player</button>
+                                            <button id="stein-hub-ranking-wave-dungeon-strength-5">5 Player</button>
+                                        </div>
+                                        <div id="stein-hub-ranking-wave-dungeon-table">
+                                            <div id="stein-hub-ranking-wave-dungeon-table-header">
+                                                <div class="stein-hub-ranking-wave-dungeon-rank">Rank</div>
+                                                <div class="stein-hub-ranking-wave-dungeon-player">Player</div>
+                                                <div class="stein-hub-ranking-wave-dungeon-wave">Wave</div>
+                                                <div class="stein-hub-ranking-wave-dungeon-time">Time</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-wave-dungeon-table-entries">
+                                                <div class="stein-hub-ranking-wave-dungeon-table-entry">
+                                                    <div class="stein-hub-ranking-wave-dungeon-rank">1</div>
+                                                    <div class="stein-hub-ranking-wave-dungeon-player">Player</div>
+                                                    <div class="stein-hub-ranking-wave-dungeon-wave">12</div>
+                                                    <div class="stein-hub-ranking-wave-dungeon-time">12:34.567</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-dungeon">
+                                        <div id="stein-hub-ranking-dungeon-table">
+                                            <div id="stein-hub-ranking-dungeon-table-header">
+                                                <div class="stein-hub-ranking-dungeon-rank">Rank</div>
+                                                <div class="stein-hub-ranking-dungeon-player">Player</div>
+                                                <div class="stein-hub-ranking-dungeon-time">Time</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-dungeon-table-entries">
+                                                <div class="stein-hub-ranking-dungeon-table-entry">
+                                                    <div class="stein-hub-ranking-dungeon-rank">1</div>
+                                                    <div class="stein-hub-ranking-dungeon-player">Player</div>
+                                                    <div class="stein-hub-ranking-dungeon-time">12:34:567</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-level">
+                                        <div id="stein-hub-ranking-level-table">
+                                            <div id="stein-hub-ranking-level-table-header">
+                                                <div class="stein-hub-ranking-level-rank">Rank</div>
+                                                <div class="stein-hub-ranking-level-player">Player</div>
+                                                <div class="stein-hub-ranking-level-level">Level</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-level-table-entries">
+                                                <div class="stein-hub-ranking-level-table-entry">
+                                                    <div class="stein-hub-ranking-level-rank">1</div>
+                                                    <div class="stein-hub-ranking-level-player">Player</div>
+                                                    <div class="stein-hub-ranking-level-level">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-profession-level">
+                                        <div id="stein-hub-ranking-profession-level-types">
+                                            <button class="stein-hub-ranking-profession-level-type">Name</button>
+                                        </div>
+                                        <div id="stein-hub-ranking-profession-level-table">
+                                            <div id="stein-hub-ranking-profession-level-table-header">
+                                                <div class="stein-hub-ranking-profession-level-rank">Rank</div>
+                                                <div class="stein-hub-ranking-profession-level-player">Player</div>
+                                                <div class="stein-hub-ranking-profession-level-level">Level</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-profession-level-table-entries">
+                                                <div class="stein-hub-ranking-profession-level-table-entry">
+                                                    <div class="stein-hub-ranking-profession-level-rank">1</div>
+                                                    <div class="stein-hub-ranking-profession-level-player">Player</div>
+                                                    <div class="stein-hub-ranking-profession-level-level">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-blocks-traveled">
+                                        <div id="stein-hub-ranking-blocks-traveled-table">
+                                            <div id="stein-hub-ranking-blocks-traveled-table-header">
+                                                <div class="stein-hub-ranking-blocks-traveled-rank">Rank</div>
+                                                <div class="stein-hub-ranking-blocks-traveled-player">Player</div>
+                                                <div class="stein-hub-ranking-blocks-traveled-blocks">Blocks</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-blocks-traveled-table-entries">
+                                                <div class="stein-hub-ranking-blocks-traveled-table-entry">
+                                                    <div class="stein-hub-ranking-blocks-traveled-rank">1</div>
+                                                    <div class="stein-hub-ranking-blocks-traveled-player">Player</div>
+                                                    <div class="stein-hub-ranking-blocks-traveled-blocks">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-damage-done">
+                                        <div id="stein-hub-ranking-damage-done-table">
+                                            <div id="stein-hub-ranking-damage-done-table-header">
+                                                <div class="stein-hub-ranking-damage-done-rank">Rank</div>
+                                                <div class="stein-hub-ranking-damage-done-player">Player</div>
+                                                <div class="stein-hub-ranking-damage-done-damage">Damage</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-damage-done-table-entries">
+                                                <div class="stein-hub-ranking-damage-done-table-entry">
+                                                    <div class="stein-hub-ranking-damage-done-rank">1</div>
+                                                    <div class="stein-hub-ranking-damage-done-player">Player</div>
+                                                    <div class="stein-hub-ranking-damage-done-damage">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-damage-received">
+                                        <div id="stein-hub-ranking-damage-received-table">
+                                            <div id="stein-hub-ranking-damage-received-table-header">
+                                                <div class="stein-hub-ranking-damage-received-rank">Rank</div>
+                                                <div class="stein-hub-ranking-damage-received-player">Player</div>
+                                                <div class="stein-hub-ranking-damage-received-damage">Damage</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-damage-received-table-entries">
+                                                <div class="stein-hub-ranking-damage-received-table-entry">
+                                                    <div class="stein-hub-ranking-damage-received-rank">1</div>
+                                                    <div class="stein-hub-ranking-damage-received-player">Player</div>
+                                                    <div class="stein-hub-ranking-damage-received-damage">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-healing-done">
+                                        <div id="stein-hub-ranking-healing-done-table">
+                                            <div id="stein-hub-ranking-healing-done-table-header">
+                                                <div class="stein-hub-ranking-healing-done-rank">Rank</div>
+                                                <div class="stein-hub-ranking-healing-done-player">Player</div>
+                                                <div class="stein-hub-ranking-healing-done-healing">Healing</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-healing-done-table-entries">
+                                                <div class="stein-hub-ranking-healing-done-table-entry">
+                                                    <div class="stein-hub-ranking-healing-done-rank">1</div>
+                                                    <div class="stein-hub-ranking-healing-done-player">Player</div>
+                                                    <div class="stein-hub-ranking-healing-done-healing">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-healing-received">
+                                        <div id="stein-hub-ranking-healing-received-table">
+                                            <div id="stein-hub-ranking-healing-received-table-header">
+                                                <div class="stein-hub-ranking-healing-received-rank">Rank</div>
+                                                <div class="stein-hub-ranking-healing-received-player">Player</div>
+                                                <div class="stein-hub-ranking-healing-received-healing">Healing</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-healing-received-table-entries">
+                                                <div class="stein-hub-ranking-healing-received-table-entry">
+                                                    <div class="stein-hub-ranking-healing-received-rank">1</div>
+                                                    <div class="stein-hub-ranking-healing-received-player">Player</div>
+                                                    <div class="stein-hub-ranking-healing-received-healing">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-enemies-killed">
+                                        <div id="stein-hub-ranking-enemies-killed-table">
+                                            <div id="stein-hub-ranking-enemies-killed-table-header">
+                                                <div class="stein-hub-ranking-enemies-killed-rank">Rank</div>
+                                                <div class="stein-hub-ranking-enemies-killed-player">Player</div>
+                                                <div class="stein-hub-ranking-enemies-killed-amount">Amount</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-enemies-killed-table-entries">
+                                                <div class="stein-hub-ranking-enemies-killed-table-entry">
+                                                    <div class="stein-hub-ranking-enemies-killed-rank">1</div>
+                                                    <div class="stein-hub-ranking-enemies-killed-player">Player</div>
+                                                    <div class="stein-hub-ranking-enemies-killed-amount">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-highest-damage">
+                                        <div id="stein-hub-ranking-highest-damage-table">
+                                            <div id="stein-hub-ranking-damage-done-table-header">
+                                                <div class="stein-hub-ranking-highest-damage-rank">Rank</div>
+                                                <div class="stein-hub-ranking-highest-damage-player">Player</div>
+                                                <div class="stein-hub-ranking-highest-damage-damage">Damage</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-highest-damage-table-entries">
+                                                <div class="stein-hub-ranking-highest-damage-table-entry">
+                                                    <div class="stein-hub-ranking-highest-damage-rank">1</div>
+                                                    <div class="stein-hub-ranking-highest-damage-player">Player</div>
+                                                    <div class="stein-hub-ranking-highest-damage-damage">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stein-hub-ranking-highest-heal">
+                                        <div id="stein-hub-ranking-highest-heal-table">
+                                            <div id="stein-hub-ranking-highest-heal-table-header">
+                                                <div class="stein-hub-ranking-highest-heal-rank">Rank</div>
+                                                <div class="stein-hub-ranking-highest-heal-player">Player</div>
+                                                <div class="stein-hub-ranking-highest-heal-heal">Heal</div>
+                                            </div>
+                                            <div id="stein-hub-ranking-highest-heal-table-entries">
+                                                <div class="stein-hub-ranking-highest-heal-table-entry">
+                                                    <div class="stein-hub-ranking-highest-heal-rank">1</div>
+                                                    <div class="stein-hub-ranking-highest-heal-player">Player</div>
+                                                    <div class="stein-hub-ranking-highest-heal-heal">10</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stein-window-container" id="stein-hub-frame-friends">
+                            <div class="stein-shop-entry-title-info" style="flex: 0 1 auto;">
+                            FRIEND LIST
+                            </div>
+                            <div style="flex: 0 1 auto">
+                                Add Friend: <input autocomplete="off" type="text" id="stein-hub-friend-list-add-name">
+                                    <button id="stein-hub-friend-list-add">+</button>
+                                    <span id="stein-hub-friend-list-count">0/0</span>
+                            </div>
+                            <div id="stein-hub-friend-list">
+                                <div class="stein-hub-friend-list-entry">
+                                    <button class="friend-list-entry-options">...</button>
+                                    <span class="friend-list-entry-name">Unknown</span>
+                                    <span class="friend-list-entry-state">Online</span>
+                                </div>
+                            </div>
+                            <datalist id="stein-hub-friend-list-datalist"></datalist>
+                        </div>
+                        <div class="stein-window-container" id="stein-hub-frame-block-list">
+                            <div class="stein-shop-entry-title-info" style="flex: 0 1 auto;">
+                            BLOCK LIST
+                            </div>
+                            <div style="flex: 0 1 auto">
+                                Block Player: <input autocomplete="off" type="text" id="stein-hub-block-list-add-name">
+                                    <button id="stein-hub-block-list-add">+</button>
+                                    <span id="stein-hub-block-list-count">0/0</span>
+                            </div>
+                            <div id="stein-hub-block-list">
+                                <div class="stein-hub-block-list-entry">
+                                    <button class="block-list-entry-options">...</button>
+                                    <span class="block-list-entry-name">Unknown</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="stein-hub-frame-help">
+                            <div style="" class="stein-window-container stein-hub-frame-help-entry">
+                                <h2>Movement:</h2>
+<p><b>Desktop:</b> Use [WASD] Keys or your Arrow-Keys to move your character around the world</p>
+<p><b>Mobile:</b> Tap on the spot you want to walk to. Make sure you are in interact mode for this.</p>
+                                <img src="/assets/images/tutorial/tut_movement.png" style="max-width: 100%;display: block;margin-left: auto;margin-right: auto;">
+                            </div>
+                            <div class="stein-window-container stein-hub-frame-help-entry" style="">
+                                <h2>Interaction:</h2>
+<p><b>Desktop:</b> Press [E] in front of a NPC to interact with him</p>
+<p><b>Mobile:</b> Select Interact Mode [Hand Button] (left bottom corner) and tap on an NPC or the object you want to interact with</p>
+                                <img src="/assets/images/tutorial/tut_interaction.png" style="max-width: 100%;display: block;margin-left: auto;margin-right: auto;">
+                            </div>
+                            <div class="stein-window-container stein-hub-frame-help-entry" style="">
+                                <h2>Combat:</h2>
+<p><b>Desktop:</b> To attack enemies, you need to select a weapon in your Quickbar (Bottom Bar). If you have selected a weapon you can attack opponents with the left mouse button.</p>
+<p><b>Mobile:</b> On mobile devices and tablets, switch into Fight Mode [Sword Icon] (Bottom Left), tap on the enemy or target and activate the weapon by taping on your Quickbar. To move around in this mode, use the [Arrow Buttons] (Bottom Right). There are also other Control options for the fight mode you can select in the Interface Options.</p>
+                                <img src="/assets/images/tutorial/tut_fight.png" style="max-width: 100%;display: block;margin-left: auto;margin-right: auto;">
+                            </div>
+                            <div class="stein-window-container stein-hub-frame-help-entry" style="">
+                                <h2>Quest:</h2>
+<p>An exclamation mark above an NPC means that he has a quest for you.</p>
+<p><b>YELLOW:</b>  He has a new quest for you.</p>
+<p><b>GRAY:</b>  You have an unfinished quest for the NPC</p>
+<p><b>GREEN:</b>  You have a finished quest and can pick up your reward.</p>
+                                <img src="/assets/images/tutorial/tut_quests.png" style="max-width: 100%;display: block;margin-left: auto;margin-right: auto;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stein-window-frame-navigation">
+                        <button id="stein-hub-news" class="stein-navigation-button selected-button">News</button>
+                        <button id="stein-hub-guild" class="stein-navigation-button">Guild</button>
+                        <button id="stein-hub-login-rewards" class="stein-navigation-button">Login Rewards</button>
+                        <button id="stein-hub-rankings" class="stein-navigation-button">Rankings</button>
+                        <button id="stein-hub-friends" class="stein-navigation-button">Friend List</button>
+                        <button id="stein-hub-blocked" class="stein-navigation-button">Block List</button>
+                        <button id="stein-hub-help" class="stein-navigation-button">Help</button>
+                        <div class="stein-navigation-button" id="stein-hub-links">
+                            <a target="_blank" href="https://twitter.com/pg5_studio"><img src="/assets/images/icons/icon_twitter.png" alt="icon_twitter" style="width: 26px;
+                                height: 26px;
+                                cursor: pointer;"></a>
+                            <a target="_blank" href="https://www.facebook.com/steingame/"><img src="/assets/images/icons/icon_facebook.png" alt="icon_facebook" style="width: 26px;
+                                height: 26px;
+                                cursor: pointer;"></a>
+                            <a target="_blank" href="https://www.reddit.com/r/stein_world/"><img src="/assets/images/icons/icon_reddit.png" alt="icon_reddit" style="width: 26px;
+                                height: 26px;
+                                cursor: pointer;"></a>
+                            <a target="_blank" href="https://discord.gg/YcJGgnxWzd"><img src="/assets/images/icons/icon_discord.png" alt="icon_discord" style="width: 26px;
+                                height: 26px;
+                                cursor: pointer;"></a>
+                        </div>
+                        <div class="stein-version-info">v0.3.29</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-moderator-panel-window" style="display: none;">
+            <div id="stein-moderator-panel-container">
+            <div id="stein-moderator-panel-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-moderator-panel-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">Moderator Panel</div>
+                </div>
+                <div id="stein-moderator-panel-window-content" class="stein-text-border">
+                    <div id="stein-moderator-panel-content-entities" class="stein-window-container">
+                        <div class="stein-professions-side-bar-title" style="margin-bottom: 5px;">ENTITIES:</div>
+                        <div id="stein-moderator-panel-entities-list"  class="stein-window-container">
+                            <div class="stein-moderator-panel-entities-entry">
+                                <div class="stein-moderator-panel-entities-entry-world-id">WorldID</div>
+                                <div class="stein-moderator-panel-entities-entry-entity-type">EntityType</div>
+                                <div class="stein-moderator-panel-entities-entry-name">Name</div>
+                                <div class="stein-moderator-panel-entities-entry-level">Level</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-moderator-panel-content-spawn-entity" class="stein-window-container">
+                        <button id="stein-moderator-panel-content-spawn-entity-spawn">Spawn Entity</button>
+                        <textarea id="stein-moderator-panel-content-spawn-entity-input"></textarea>
+                    </div>
+                    <div class="stein-window-frame-navigation">
+                        <button class="stein-navigation-button" id="stein-moderator-panel-select-entities">Entities</button>
+                        <button class="stein-navigation-button" id="stein-moderator-panel-select-spawn-entity">Spawn Entity</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="stein-translation-panel-window">
+            <div id="stein-translation-panel-container">
+            <div id="stein-translation-panel-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-translation-panel-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">Translation</div>
+                </div>
+                <div id="stein-translation-panel-window-content" class="stein-window-container stein-text-border">
+                    <div>
+                        <input autocomplete="off" id="stein-translation-key-search-text" placeholder="Search key"> |
+                        <input autocomplete="off" id="stein-translation-text-search-text" placeholder="Search text"> |
+                        Target: <select id="stein-translation-language"></select> |
+                        State: <select id="stein-translation-state"></select>
+                        <button id="stein-translation-approve-visible">Approve visible</button>
+                    </div>
+                    <div id="stein-translation-content">
+                        <div class="stein-table">
+                            <div class="stein-table-header">
+                                <div class="stein-table-column stein-translation-table-key">Key</div>
+                                <div class="stein-table-column stein-translation-table-source" id="stein-translation-table-language-source">English</div>
+                                <div class="stein-table-column stein-translation-table-target" id="stein-translation-table-language-target">Target</div>
+                                <div class="stein-table-column stein-translation-table-actions"></div>
+                            </div>
+                            <div id="stein-translation-table-entries" class="stein-table-entries">
+                                <div class="stein-table-entry">
+                                    <div class="stein-table-column stein-translation-table-key">Key</div>
+                                    <div class="stein-table-column stein-translation-table-source">Source</div>
+                                    <div class="stein-table-column stein-translation-table-target">Target</div>
+                                    <div class="stein-table-column stein-translation-table-actions"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="stein-translation-edit" class="stein-window-container">
+                            <div>
+                                Key: <input autocomplete="off" id="stein-translation-edit-key" type="text" readonly="readonly" />
+                            </div>
+                            <div>
+                                Source:<br />
+                                <textarea id="stein-translation-edit-source" readonly="readonly"></textarea>
+                            </div>
+                            <div>
+                                Description: <button id="stein-translation-description-save">Save</button><br />
+                                <textarea id="stein-translation-edit-description"></textarea>
+                            </div>
+                            <div>
+                                Edit:
+                                <button id="stein-translation-edit-save">Save</button>
+                                <button id="stein-translation-edit-save-next">Save + Next</button>
+                                <button id="stein-translation-edit-approve">Approve</button>
+                                <button id="stein-translation-edit-approve-next">Approve + Next</button>
+                                <button id="stein-translation-edit-reject">Reject</button>
+                                <button id="stein-translation-edit-reject-next">Reject + Next</button>
+                                <button id="stein-translation-edit-save-new">Save as new</button><br />
+                                <textarea id="stein-translation-edit-edit"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="stein-wave-dungeon-reward-window">
+            <div id="stein-wave-dungeon-reward-window-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-wave-dungeon-reward-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border"><span id="stein-wave-dungeon-name">Dungeon</span></span>
+                </div>
+                <div class="stein-wave-dungeon-reward-window-content stein-text-border stein-window-container">
+                    <div id="stein-wave-dungeon-reward-game-over-container" style="display: flex;justify-content: center;">
+                        <img src="/assets/images/icon_death_skull.png" alt="icon_death_skull" style="padding-right: 20px;">
+                        <span id="stein-wave-dungeon-reward-game-over-text">Game Over</span>
+                        <img src="/assets/images/icon_death_skull.png" alt="icon_death_skull" style="padding-left: 20px;">
+                    </div>
+                    <div id="stein-wave-dungeon-result">You finished Wave 0 of Dungeon.</div>
+                    <div>Last wave time: <span id="stein-wave-dungeon-time">00:00.00</span></div>
+                    <div>Rewards:</div>
+                    <div id="stein-wave-dungeon-reward-list"></div>
+                    <div>
+                        <span id="stein-wave-dungeon-reward-gold">00</span><span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                    </div>
+                    <button id="stein-wave-dungeon-reward-claim">Claim</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-shop-window">
+            <div id="stein-shop-window-container" class="stein-window">
+                <div class="stein-window-top" style="flex: 0 1 auto;">
+                    <span id="stein-shop-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div class="stein-shop-window-content stein-text-border">
+                    <div id="stein-shop-entry-information" class="stein-window-container">
+                        <div id="stein-shop-entry-information-scroll-container">
+                            <div id="stein-shop-entry-information-image" class="stein-window-container"></div>
+                            <div id="stein-shop-entry-information-title"></div>
+                            <div id="stein-shop-entry-information-description"></div>
+                        </div>
+                        <div id="stein-shop-entry-information-price">
+                            <div id="stein-shop-entry-information-price-gems">
+                                <span id="stein-shop-entry-information-price-gems-amount">000</span>
+                                <span class="stein-gem-icon" style="margin-bottom: -4px;"></span>
+                            </div>
+                            <div id="stein-shop-entry-information-price-currency">
+                                0,00 €
+                            </div>
+                        </div>
+                        <button id="stein-shop-entry-information-purchase">Purchase</button>
+                    </div>
+                    <div id="stein-shop-entry-list-container" class="stein-window-container">
+                        <div id="stein-shop-entry-list">
+                            <div class="stein-shop-entry stein-window-container" style="background-image: url(/assets/images/shop_icon_30days.png)">
+                                <div class="stein-shop-entry-title">Title<br><span class="stein-shop-entry-short-description">Description</span></div>
+                                <div class="stein-shop-entry-price">
+                                    <div class="stein-shop-entry-price-gems">
+                                        <span class="stein-shop-entry-price-gems-amount">000</span>
+                                        <span class="stein-gem-icon" style="margin-bottom: -4px;"></span>
+                                    </div>
+                                    <div class="stein-shop-entry-price-currency">
+                                        0,00 €
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-shop-redeem-code" class="stein-window-container" style="display: none;">
+                        <div style="width: 100%;">
+                            <div class="stein-shop-redeem-code-title">
+                            Enter code
+                            </div>
+                            <div>
+                                <hr color="#262119" size="2" align="center" style="margin-top: 5px;margin-bottom: 6px;margin-left: -2px;width: calc(100% + 2px);">
+                            </div>
+                            <div class="stein-shop-redeem-code-description">
+                            Enter your code below and click on Redeem!
+                            </div>
+                            <div style="padding-bottom: 11px;text-align: center;">
+                                <input autocomplete="off" id="stein-shop-redeem-code-code" autocomplete="off" type="text" placeholder="Enter code here"/>
+                            </div>
+                            <div>
+                                <button id="stein-shop-redeem-code-submit" class="stein-shop-entry-button">Redeem</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stein-shop-navigation">
+                        <button id="stein-shop-all" class="stein-navigation-button selected-button">All</button>
+                        <button id="stein-shop-redeem-code-button" class="stein-navigation-button-special">Redeem code</button>
+                        <div id="stein-shop-window-gems-container">
+                            <span class="stein-gem-icon"></span>
+                            <span id="stein-inventory-store-gems">0</span>
+                        </div>
+                        <div id="stein-shop-window-premium-container">
+                            <span class="stein-premium-icon"></span>
+                            <div id="stein-shop-window-premium">0 days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-processing-payment-overlay">
+            <div id="stein-processing-payment-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div id="stein-processing-payment-overlay-content" class="stein-window-container stein-text-border">
+                Processing payment ...
+                </div>
+            </div>
+        </div>
+        <div id="stein-initializing-payment-overlay">
+            <div id="stein-initializing-payment-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div id="stein-initializing-payment-overlay-content" class="stein-window-container stein-text-border">
+                Initializing payment ...
+                </div>
+            </div>
+        </div>
+        <div id="stein-payment-success-overlay">
+            <div id="stein-payment-success-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div id="stein-payment-success-overlay-content" class="stein-window-container stein-text-border">
+                    <span id="stein-payment-success-text">Successfully bought: unknown</span><br />
+                    <button id="stein-payment-success-ok">Ok</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-redeeming-code-overlay">
+            <div id="stein-redeeming-code-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div id="stein-redeeming-code-overlay-content" class="stein-window-container stein-text-border">
+                Redeeming code ...
+                </div>
+            </div>
+        </div>
+        <div id="stein-redeeming-code-success-overlay">
+            <div id="stein-redeeming-code-success-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div id="stein-redeeming-code-success-overlay-content" class="stein-window-container stein-text-border">
+                    <span id="stein-redeeming-code-success-text">Successful redeemed code: unknown</span><br />
+                    <div>You received:</div>
+                    <div>
+                        <span id="stein-redeeming-code-success-gold">
+                            <span id="stein-redeeming-code-success-gold-amount">0</span>
+                            <span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                        </span>
+                        <span id="stein-redeeming-code-success-gems">
+                            <span id="stein-redeeming-code-success-gems-amount">0</span>
+                            <span class="stein-gem-icon" style="margin-bottom: -3px;"></span>
+                        </span>
+                        <span id="stein-redeeming-code-success-premium"><span id="stein-redeeming-code-success-premium-amount">0</span> day(s) Stein.Account</span>
+                    </div>
+                    <div id="stein-redeeming-code-success-items"></div>
+                    <button id="stein-redeeming-code-success-ok">Ok</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-payment-confirm-payment-overlay">
+            <div id="stein-payment-confirm-payment-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-payment-confirm-payment-overlay-container-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">SHOP</span>
+                </div>
+                <div class="stein-window-container stein-text-border">
+                    <div id="stein-payment-confirm-option">Buy <span id="stein-payment-confirm-payment-product-name">Something</span> for <span id="stein-payment-confirm-payment-product-price">0,00</span> <span class="stein-payment-confirm-highlight">€</span>:</div>
+                    <div id="stein-payment-legal-text" class="stein-window-container">
+                    With proceeding to click on "Buy now" you accept the <a href="/tos" target="_blank">Terms of Service</a> and give consent that pg5-Studio begins immediately with the execution of the service, by which you lose your right of withdrawal.
+                    </div>
+                    <div class="stein-payment-options-container">
+                        <div id="stein-payment-confirm-unavailable" style="display: none;">No payment service available.</div>
+                        <button id="stein-payment-confirm-payment" class="stein-shop-entry-button" style="display: none;">Buy now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-logout-overlay">
+            <div id="stein-logout-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-logout-dialog-title" class="stein-text-border">LOGOUT</span>
+                </div>
+                <div id="stein-logout-overlay-content" class="stein-window-container stein-text-border">
+                    <div id="stein-logout-timer"></div>
+                    <div id="stein-logout-buttons">
+                        <button id="stein-logout-cancel-button" class="button-red">Cancel Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-generic-dialog-overlay">
+            <div id="stein-generic-dialog-overlay-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-generic-dialog-title" class="stein-text-border">TITLE</span>
+                </div>
+                <div id="stein-generic-dialog-overlay-content" class="stein-window-container stein-text-border">
+                    <div id="stein-generic-dialog-content">Content</div>
+                    <div id="stein-generic-dialog-buttons">
+                        <button class="stein-generic-dialog-button">Button</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-options-screen">
+            <div id="stein-options-form" class="stein-window">
+                <div class="stein-window-top" style="flex: 0 1 auto;">
+                    <span id="stein-options-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">OPTIONS</span>
+                </div>
+                <div id="stein-options-screen-options" class="stein-text-border">
+                    <div id="stein-options-screen-container">
+                        <div class="stein-window-container" id="stein-options-frame-global">
+                            <div class="stein-options-screen-links">
+                                <a href="/credits" target="_blank" id="stein-options-tos" class="button stein-navigation-button">Credits</a>
+                                <a href="/tos" target="_blank" id="stein-options-tos" class="button stein-navigation-button">Conditions</a>
+                                <a href="/privacypolicy" target="_blank" id="stein-options-imprint" class="button stein-navigation-button">Privacy Policy</a>
+                                <a href="/imprint" target="_blank" id="stein-options-imprint" class="button stein-navigation-button">Imprint</a>
+                            </div>
+                            <div class="stein-window-header-2">Global</div>
+                            <div class="stein-options-legal">
+                                <div class="stein-options-legal-block">
+                                    <div>
+                                        <span class="stein-form-label-options">Current Password: </span>
+                                        <input autocomplete="off" type="password" id="stein-options-current-password" /><br />
+                                        <span class="stein-form-label-options">New Password: </span>
+                                        <input autocomplete="off" type="password" id="stein-options-new-password" /><br />
+                                        <span class="stein-form-label-options">Repeat Password: </span>
+                                        <input autocomplete="off" type="password" id="stein-options-repeat-password" /><br />
+                                    </div>
+                                    <span class="stein-form-label-options"></span>
+                                    <button type="submit" id="stein-options-change-password">Change Password</button>
+                                </div>
+                                <div class="stein-options-legal-block">
+                                    <div>
+                                        <span class="stein-form-label-options">Current Password: </span>
+                                        <input autocomplete="off" type="password" id="stein-options-change-mail-current-password" /><br />
+                                        <span class="stein-form-label-options">New Email: </span>
+                                        <input autocomplete="email" type="email" id="stein-options-change-mail-new-mail" /><br />
+                                    </div>
+                                    <span class="stein-form-label-options"></span>
+                                    <button type="submit" id="stein-options-change-mail">Change Email</button>
+                                </div>
+                                <div class="stein-options-legal-block" id="stein-options-delete-account-container">
+                                    <div>
+                                        <span class="stein-form-label-options">Current Password:  </span>
+                                        <input autocomplete="off" type="password" id="stein-options-delete-account-current-password" /><br />
+                                    </div>
+                                    <span class="stein-form-label-options"></span>
+                                    <button type="submit" id="stein-options-delete-account">Delete Account</button>
+                                </div>
+                                <div class="stein-options-legal-block" id="stein-options-cancel-delete-account-container">
+                                    <button type="submit" id="stein-options-cancel-delete-account" class="button-red">Cancel Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stein-window-container" id="stein-options-frame-keybindings">
+                            <div class="stein-window-header-2">Keybindings</div>
+                            <div class="stein-options-screen-keybinding-entries">
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Move Up: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-move-up" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-move-up-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Move Down: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-move-down" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-move-down-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Move Left: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-move-left" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-move-left-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Move Right: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-move-right" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-move-right-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Interact: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-interact" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-interact-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Use: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-use" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-use-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Inventory: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-inventory" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-inventory-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Collection: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-collection" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-collection-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quest-Log: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quest-log" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quest-log-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">World Map: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-map" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-map-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Options: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-options" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-options-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Player Hub: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-hub" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-hub-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Guild: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-guild" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-guild-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Player Stats: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-stats" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-stats-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Professions: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-professions" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-professions-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Open Chat: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-open-chat" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-open-chat-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Reply Whisper: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-reply-whisper" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-reply-whisper-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Close All: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-close-all" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-close-all-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 1: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-1" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-1-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 2: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-2" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-2-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 3: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-3" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-3-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 4: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-4" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-4-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 5: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-5" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-5-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 6: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-6" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-6-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 7: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-7" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-7-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 8: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-8" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-8-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 9: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-9" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-9-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Quickbar-Slot 10: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-quick-bar-10" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-quick-bar-10-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 1: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-1" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-1-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 2: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-2" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-2-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 3: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-3" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-3-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 4: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-4" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-4-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 5: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-5" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-5-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 6: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-6" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-6-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 7: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-7" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-7-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 8: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-8" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-8-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 9: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-9" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-9-clear"></button>
+                                </div>
+                                <div class="stein-options-keybinding">
+                                    <span class="stein-form-label-keybinding">Activate Slot 10: </span>
+                                    <input autocomplete="off" type="text" id="stein-options-key-activate-quick-bar-10" />
+                                    <button class="stein-options-clear-keybinding" id="stein-options-key-activate-quick-bar-10-clear"></button>
+                                </div>
+                            </div>
+                            <span class="stein-form-label-options"></span>
+                            <button type="submit" id="stein-options-reset-key-bindings">Reset Keybindings</button>
+                        </div>
+                        <div class="stein-window-container" id="stein-options-frame-interface">
+                            <div class="stein-window-header-2">Interface</div>
+                            <div class="stein-options-screen-interface-entries">
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-players-life-bar-not-full" />
+                                    <label for="stein-options-show-players-life-bar-not-full" class="checkbox-label"></label>
+                                    <span>Show players' life bars when not full</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-players-life-bar-full" />
+                                    <label for="stein-options-show-players-life-bar-full" class="checkbox-label"></label>
+                                    <span>Show players' life bars when full</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-enemies-life-bar-not-full" />
+                                    <label for="stein-options-show-enemies-life-bar-not-full" class="checkbox-label"></label>
+                                    <span>Show enemies' life bars when not full</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-enemies-life-bar-full" />
+                                    <label for="stein-options-show-enemies-life-bar-full" class="checkbox-label"></label>
+                                    <span>Show enemies' life bars when full</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-damage-player" />
+                                    <label for="stein-options-show-damage-player" class="checkbox-label"></label>
+                                    <span>Show damage taken by players</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-damage-enemy" />
+                                    <label for="stein-options-show-damage-enemy" class="checkbox-label"></label>
+                                    <span>Show others damage</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-damage-enemy-own" />
+                                    <label for="stein-options-show-damage-enemy-own" class="checkbox-label"></label>
+                                    <span>Show own damage</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-damage-self" />
+                                    <label for="stein-options-show-damage-self" class="checkbox-label"></label>
+                                    <span>Show damage taken by yourself</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-heal-player" />
+                                    <label for="stein-options-show-heal-player" class="checkbox-label"></label>
+                                    <span>Show others heal</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-heal-player-own" />
+                                    <label for="stein-options-show-heal-player-own" class="checkbox-label"></label>
+                                    <span>Show own heal</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-heal-enemy" />
+                                    <label for="stein-options-show-heal-enemy" class="checkbox-label"></label>
+                                    <span>Show heal received by enemies</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-heal-self" />
+                                    <label for="stein-options-show-heal-self" class="checkbox-label"></label>
+                                    <span>Show heal received by Yourself</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-name-own" />
+                                    <label for="stein-options-show-name-own" class="checkbox-label"></label>
+                                    <span>Show own name</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-name-players" />
+                                    <label for="stein-options-show-name-players" class="checkbox-label"></label>
+                                    <span>Show player names</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-name-enemies" />
+                                    <label for="stein-options-show-name-enemies" class="checkbox-label"></label>
+                                    <span>Show enemy names</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-name-npcs" />
+                                    <label for="stein-options-show-name-npcs" class="checkbox-label"></label>
+                                    <span>Show NPC names</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-show-quest-log-overlay" />
+                                    <label for="stein-options-show-quest-log-overlay" class="checkbox-label"></label>
+                                    <span>Show Questlog Overlay</span>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="stein-options-quest-tracked-default" />
+                                    <label for="stein-options-quest-tracked-default" class="checkbox-label"></label>
+                                    <span>Track new quests</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="stein-form-label-options">Name Scaling: </span>
+                                <input type="range" id="stein-options-interface-overlay-scale" min="0.25" max="4" step="0.01" /> <button id="stein-options-interface-overlay-scale-reset">Reset</button>
+                            </div>
+                            <div>
+                                <select id="stein-options-lifebar-guild-display"></select>
+                                <span>Guild display on life bar</span>
+                            </div>
+                            <div>
+                                <select id="stein-options-language"></select>
+                                <span>Language</span>
+                            </div>
+                            <div>
+                                <select id="stein-options-joystick">
+                                    <option value="fixed">Fixed</option>
+                                    <option value="ontouch">Tap Location</option>
+                                </select>
+                                <span>Touch Joystick Position</span>
+                            </div>
+                            <div>
+                                <select id="stein-options-touch-fight-mode">
+                                    <option value="quickbar">Quickbar</option>
+                                    <option value="target">Target</option>
+                                </select>
+                                <span>Touch Attack</span>
+                            </div>
+                            <div>
+                                <button id="stein-options-toggle-fullscreen">Toggle Fullscreen</button>
+                            </div>
+                        </div>
+                        <div class="stein-window-container" id="stein-options-frame-sound">
+                            <div class="stein-window-header-2">Sound</div>
+                            <span class="stein-form-label-options" style="width: 90px;">Overall: </span>
+                            <input type="range" id="stein-options-sound-overall-volume" min="0" max="1" step="0.01" />
+                            <input type="checkbox" id="stein-options-sound-overall-muted" />
+                            <label for="stein-options-sound-overall-muted" class="checkbox-label"></label>
+                            <span>Mute</span>
+                            <br />
+                            <span class="stein-form-label-options" style="width: 90px;">Music: </span>
+                            <input type="range" id="stein-options-sound-music-volume" min="0" max="1" step="0.01" />
+                            <input type="checkbox" id="stein-options-sound-music-muted" />
+                            <label for="stein-options-sound-music-muted" class="checkbox-label"></label>
+                            <span>Mute</span>
+                            <br />
+                            <span class="stein-form-label-options" style="width: 90px;">Ambience </span>
+                            <input type="range" id="stein-options-sound-ambience-volume" min="0" max="1" step="0.01" />
+                            <input type="checkbox" id="stein-options-sound-ambience-muted" />
+                            <label for="stein-options-sound-ambience-muted" class="checkbox-label"></label>
+                            <span>Mute</span>
+                            <br />
+                            <span class="stein-form-label-options" style="width: 90px;">Effects: </span>
+                            <input type="range" id="stein-options-sound-effect-volume" min="0" max="1" step="0.01" />
+                            <input type="checkbox" id="stein-options-sound-effect-muted" />
+                            <label for="stein-options-sound-effect-muted" class="checkbox-label"></label>
+                            <span>Mute</span>
+                            <br />
+                        </div>
+                        <div class="stein-window-container" id="stein-options-frame-chat">
+                            <div class="stein-window-header-2">Chat</div>
+                            <div>
+                                <select id="stein-options-chat-font-size"></select>
+                                <span>Chat Font Size</span>
+                                <br />
+                                <input type="checkbox" id="stein-options-chat-show-time" />
+                                <label for="stein-options-chat-show-time" class="checkbox-label"></label>
+                                <span>Show Timestamp</span>
+                                <br />
+                                <input type="checkbox" id="stein-options-chat-filter-swear-words" />
+                                <label for="stein-options-chat-filter-swear-words" class="checkbox-label"></label>
+                                <span>Filter swear words</span>
+                                <br />
+                                <input type="checkbox" id="stein-options-chat-show-chat-icon" />
+                                <label for="stein-options-chat-show-chat-icon" class="checkbox-label"></label>
+                                <span>Show Stein.Account Icon</span>
+                                <br />
+                            </div>
+                            <div class="stein-window-header-2" style="margin-top:10px;">Chat-Tabs</div>
+                            <div>
+                                <button type="submit" id="stein-options-chat-tab-add">Add</button>
+                                <button type="submit" id="stein-options-chat-tab-reset">Reset</button>
+                            </div>
+                            <div id="stein-options-chat-tabs">
+                                <div class="stein-options-chat-tab stein-window-container">
+                                    <div>
+                                        <span class="stein-window-header-2 stein-options-chat-tab-title">Chat Tab 1</span>
+                                        <button type="submit" class="stein-options-chat-tab-remove">Remove</button>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <span>Name: </span>
+                                    <input autocomplete="off" type="text" class="stein-options-chat-tab-name" />
+                                    <br />
+                                    <input type="checkbox" class="stein-options-chat-tab-zone-chat" />
+                                    <label class="checkbox-label stein-options-chat-tab-zone-chat-label"></label>
+                                    <span>Zone Chat</span>
+                                    <br />
+                                    <input type="checkbox" class="stein-options-chat-tab-guild-chat" />
+                                    <label class="checkbox-label stein-options-chat-tab-guild-chat-label"></label>
+                                    <span>Guild</span>
+                                    <br />
+                                    <input type="checkbox" class="stein-options-chat-tab-party-chat" />
+                                    <label class="checkbox-label stein-options-chat-tab-party-chat-label"></label>
+                                    <span>Party Chat</span>
+                                    <br />
+                                    <input type="checkbox" class="stein-options-chat-tab-whisper-chat" />
+                                    <label class="checkbox-label stein-options-chat-tab-whisper-chat-label"></label>
+                                    <span>Whisper Chat</span>
+                                    <br />
+                                    <span>Service Messages:</span>
+                                    <br />
+                                    <input type="checkbox" class="stein-options-chat-tab-service-all" />
+                                    <label class="checkbox-label stein-options-chat-tab-service-all-label"></label>
+                                    <span>All</span>
+                                    <br />
+                                    <div style="padding-left:30px;">
+                                        <input type="checkbox" class="stein-options-chat-tab-service-friend-list" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-friend-list-label"></label>
+                                        <span>Friendlist</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-party" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-party-label"></label>
+                                        <span>Party</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-wave-dungeon" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-wave-dungeon-label"></label>
+                                        <span>Wave Dungeon</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-motd" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-motd-label"></label>
+                                        <span>Message of the Day</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-whisper" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-whisper-label"></label>
+                                        <span>Whisper</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-inventory" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-inventory-label"></label>
+                                        <span>Inventory</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-quest-log" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-quest-log-label"></label>
+                                        <span>Quest Log</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-trader" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-trader-label"></label>
+                                        <span>Trader</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-professions" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-professions-label"></label>
+                                        <span>Professions</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-player-trade" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-player-trade-label"></label>
+                                        <span>Player Trade</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-experience" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-experience-label"></label>
+                                        <span>Experience</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-shop" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-shop-label"></label>
+                                        <span>Shop</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-bank" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-bank-label"></label>
+                                        <span>Bank</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-guild" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-guild-label"></label>
+                                        <span>Guild</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-collection" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-collection-label"></label>
+                                        <span>Collection</span>
+                                        <br />
+                                        <input type="checkbox" class="stein-options-chat-tab-service-duel" />
+                                        <label class="checkbox-label stein-options-chat-tab-service-duel-label"></label>
+                                        <span>Duel</span>
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="submit" id="stein-options-chat-tabs-save">Save Chat-Tab Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stein-window-frame-navigation">
+                        <button id="stein-options-all" class="stein-navigation-button selected-button">All</button>
+                        <button id="stein-options-global" class="stein-navigation-button">Global</button>
+                        <button id="stein-options-keybindings" class="stein-navigation-button">Keybindings</button>
+                        <button id="stein-options-interface" class="stein-navigation-button">Interface</button>
+                        <button id="stein-options-sound" class="stein-navigation-button">Sound</button>
+                        <button id="stein-options-chat" class="stein-navigation-button">Chat</button>
+                        <button id="stein-options-report" class="stein-navigation-button">Report <span class="stein-options-report-icon"></span></button>
+                        <button id="stein-options-leave" class="stein-navigation-button button-red">Leave server</button>
+                        <button id="stein-options-logout" class="stein-navigation-button button-red">Logout</button>
+                        <button id="stein-options-exit" class="stein-navigation-button button-red" style="display: none;">Exit</button>
+                        <div class="stein-version-info">v0.3.29</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-overlay"></div>
+        <div id="stein-chat-shortcuts-container" class="stein-text-border">
+            <div id="stein-chat-shortcuts-forms" class="stein-window">
+                <div id="stein-chat-shortcuts-button-container" class="stein-window-container">
+                    <div class="stein-toggle-button" id="stein-chat-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-interact-button" style="display: none;"></div>
+                    <div class="stein-toggle-button disabled-button" id="stein-fight-button" style="display: none;"></div>
+                </div>
+            </div>
+            <div id="stein-chat-container">
+                <div id="stein-chat-tabs" class="stein-tabs">
+                    <div class="stein-tab stein-window stein-text-border"><span class="stein-chat-tab-name">General</span></div>
+                    <div class="stein-tab stein-window stein-chat-tab-edit"></div>
+                </div>
+                <div id="stein-chat-content-container" class="stein-window-container stein-text-border">
+                </div>
+                <div id="stein-chat-container-input" class="stein-window">
+                    <select id="stein-chat-type"></select>
+                    <input autocomplete="off" type="text" id="stein-chat-input" maxlength="256" placeholder="Message"/>
+                    <button id="stein-chat-send">Send</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-chat-window">
+            <div id="stein-chat-window-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-chat-window-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">CHAT</span>
+                </div>
+                <div id="stein-chat-window-content" class="stein-window-container stein-text-border">
+                    <div id="stein-chat-window-options">
+                        <input type="checkbox" id="stein-options-show-chat-overlay" />
+                        <label for="stein-options-show-chat-overlay" class="checkbox-label"></label>
+                        <span>Show chat overlay ingame</span>
+                    </div>
+                    <div id="stein-window-chat-tabs" class="stein-tabs">
+                        <div class="stein-tab stein-window stein-text-border"><span class="stein-chat-tab-name">General</span></div>
+                        <div class="stein-tab stein-window stein-chat-tab-edit"></div>
+                    </div>
+                    <div id="stein-window-chat-content-container" class="stein-window-container stein-text-border">
+                    </div>
+                    <div id="stein-window-chat-container-input">
+                        <select id="stein-window-chat-type"></select>
+                        <input autocomplete="off" type="text" id="stein-window-chat-input" maxlength="256" placeholder="Message"/>
+                        <button id="stein-window-chat-send">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-chat-overlay" class="stein-text-border">
+        </div>
+        <div id="stein-quest-log-overlay" class="stein-text-border">
+        </div>
+        <div id="stein-quick-bar-container">
+            <div id="stein-quick-bar-frame" class="stein-window">
+                <div id="stein-experience-bar" class="stein-window-container"></div>
+                <div id="stein-quick-bar" class="stein-window-container">
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-0">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-1">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-2">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-3">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-4">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-5">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-6">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-7">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-8">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                    <div class="stein-quick-bar-slot" id="stein-quick-bar-slot-9">
+                        <span class="stein-item-hotkey stein-text-border"></span>
+                        <span class="stein-item-amount stein-text-border"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stein-player-container" class="stein-text-border">
+            <div id="stein-player-forms" class="stein-window">
+                <div class="stein-name-panel stein-window-container">
+                    <div id="stein-player-party-leader"></div>
+                    <div id="stein-player-name-panel">
+                        Username
+                    </div>
+                    <div id="stein-player-level-panel">
+                        1
+                    </div>
+                </div>
+                <div id="stein-player-resources">
+                </div>
+                <div id="stein-player-buffs"></div>
+            </div>
+            <div class="stein-text-border">
+                <div id="stein-party-container">
+                    <div id="stein-party-member-list" class="stein-window">
+                        <div class="stein-party-member">
+                            <div class="stein-party-member-name-panel stein-window-container">
+                                <div class="stein-party-member-leader"></div>
+                                <div class="stein-party-member-name">
+                                    Name
+                                </div>
+                                <div class="stein-party-member-level">
+                                    0
+                                </div>
+                            </div>
+                            <div class="stein-party-member-resources"></div>
+                        </div>
+                    </div>
+                    <div id="stein-party-invite-member-container" class="stein-window">
+                        <input autocomplete="off" type="text" placeholder="Playername" id="stein-party-invite-member-player-name" list="stein-hub-friend-list-datalist"/><br/>
+                        <button id="stein-party-invite-member-invite-button">+</button>
+                        <button id="stein-party-invite-member-cancel-button">X</button>
+                    </div>
+                    <div id="stein-party-invite-accept-container" class="stein-window">
+                        <div id="stein-party-invite-accept-invite-player">Unknown invited you to join party</div>
+                        <button id="stein-party-invite-accept-accept-button">+</button>
+                        <button id="stein-party-invite-accept-decline-button">X</button>
+                    </div>
+                    <div id="stein-party-invite" class="stein-window">
+                        <button id="stein-party-invite-button">+</button>
+                        <button id="stein-party-leave-button">X</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-target-container" class="stein-text-border">
+            <div id="stein-target-forms" class="stein-window">
+                <div class="stein-name-panel stein-window-container">
+                    <div id="stein-target-name">Unknown</div>
+                    <div id="stein-target-level">0</div>
+                </div>
+                <div id="stein-target-resources">
+                </div>
+                <div id="stein-target-buffs"></div>
+            </div>
+        </div>
+        <div id="stein-shortcuts-container" class="stein-text-border">
+            <div id="stein-shortcuts-forms" class="stein-window">
+                <div id="stein-shortcuts-button-container" class="stein-window-container">
+                    <div class="stein-toggle-button" id="stein-inventory-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-quest-log-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-map-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-hub-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-shop-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-plus-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-minus-toggle-button"></div>
+                </div>
+                <div id="stein-shortcuts-button-popup-container" class="stein-window-container">
+                    <div class="stein-toggle-button" id="stein-mod-panel-toggle-button" style="display: none;"></div>
+                    <div class="stein-toggle-button" id="stein-professions-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-collection-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-stats-toggle-button"></div>
+                    <div class="stein-toggle-button" id="stein-options-toggle-button"></div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-window-container-hidden"></div>
+        <div id="stein-window-container-left">
+            <div id="stein-trade-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-trade-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">TRADE</div>
+                </div>
+                <div id="stein-trade-window" class="stein-text-border stein-window-container">
+                    <div id="stein-trade-window-buy">
+                        <div id="stein-trade-window-buy-pagination">
+                            <button id="stein-trade-window-buy-previous-page">&lt;</button>
+                            <span id="stein-trade-window-buy-page-display">0/0</span>
+                            <button id="stein-trade-window-buy-next-page">&gt;</button>
+                        </div>
+                        <div>BUY</div>
+                        <div class="clear"></div>
+                        <div id="stein-trade-window-buyable-items">
+                            <div class="stein-trade-window-buyable-item">
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-trade-window-buyable-item-decorator">
+                                    <div class="stein-trade-window-buyable-item-name">Item Name</div>
+                                    <div class="stein-trade-window-buyable-item-price">0 Gold</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-trade-window-sell">
+                        <div id="stein-trade-window-sell-title" style="padding-top: 4px;
+                            padding-bottom: 2px;">SELL</div>
+                        <div id="stein-trade-window-sell-area" class="stein-window-container">Drop items from inventory in here to sell.</div>
+                    </div>
+                    <div style="display: flex;align-items: center;margin-top: 2px;">
+                        <button id="stein-trade-window-sell-all-trash">Sell trash</button>
+                        <button id="stein-trade-window-buy-gems" class="button-special">Buy <span class="stein-gem-icon" style="margin-bottom: -3px; height: 16px; width: 16px; background-size: contain;"></span></button>
+                        <button id="stein-trade-window-buy-back">Buyback</button>
+                        <button id="stein-trade-window-buy-regular">Buy items</button>
+                        <div style="flex: 1 1 auto; text-align: right;">
+                            <div id="stein-trade-gems-container">
+                                <span id="stein-trade-gems">0</span>
+                                <span class="stein-gem-icon" style="margin-bottom: -4px; height: 18px; width: 18px; background-size: contain;"></span>
+                            </div>
+                            <div id="stein-trade-gold-container">
+                                <span id="stein-trade-gold">0</span>
+                                <span class="stein-gold-icon" style="margin-bottom: -4px; height: 18px; width: 18px; background-size: contain;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-stats-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-stats-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border" id="stats-player-name">Name</div>
+                </div>
+                <div id="stein-stats-window" class="stein-text-border stein-window-container">
+                    <div class="stein-stats-title">
+                    GLOBAL
+                    </div>
+                    <div>
+                        <hr color="#262119" size="2" align="center" style="margin-top: 5px; margin-bottom: 6px;width: calc(100% + 2px);margin-left: -2px;">
+                    </div>
+                    <table width="100%">
+                        <tr>
+                            <td class="stat-name">Level</td>
+                            <td class="stat-value" id="stats-player-level">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Experience</td>
+                            <td class="stat-value" id="stats-player-experience">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Speed</td>
+                            <td class="stat-value" id="stats-player-speed">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Life Regeneration</td>
+                            <td class="stat-value" id="stats-player-life-regen">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Energy Regeneration</td>
+                            <td class="stat-value" id="stats-player-energy-regen">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Mana Regeneration</td>
+                            <td class="stat-value" id="stats-player-mana-regen">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Cooldown Reduction</td>
+                            <td class="stat-value" id="stats-player-cooldown-reduction">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Bonus Heal</td>
+                            <td class="stat-value" id="stats-player-holy-damage-multiplier">0</td>
+                        </tr>
+                    </table>
+                    <div class="stein-stats-title">
+                    OFFENSE
+                    </div>
+                    <div>
+                        <hr color="#262119" size="2" align="center" style="margin-top: 5px; margin-bottom: 6px;width: calc(100% + 2px);margin-left: -2px;">
+                    </div>
+                    <table width="100%">
+                        <tr>
+                            <td class="stat-name">Threat</td>
+                            <td class="stat-value" id="stats-player-threat-multiplier">100%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Threat per Hit</td>
+                            <td class="stat-value" id="stats-player-threat-bonus">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Critical Bonus</td>
+                            <td class="stat-value" id="stats-player-critical-damage">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Critical Chance</td>
+                            <td class="stat-value" id="stats-player-critical-chance">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Physical Damage</td>
+                            <td class="stat-value" id="stats-player-physical-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Magic Damage</td>
+                            <td class="stat-value" id="stats-player-magic-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Fire Damage</td>
+                            <td class="stat-value" id="stats-player-fire-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Water Damage</td>
+                            <td class="stat-value" id="stats-player-water-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Earth Damage</td>
+                            <td class="stat-value" id="stats-player-earth-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Death Damage</td>
+                            <td class="stat-value" id="stats-player-death-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Soul Damage</td>
+                            <td class="stat-value" id="stats-player-soul-damage-multiplier">0</td>
+                        </tr>
+                    </table>
+                    <div class="stein-stats-title">
+                    DEFENSE
+                    </div>
+                    <div>
+                        <hr color="#262119" size="2" align="center" style="margin-top: 5px; margin-bottom: 6px;width: calc(100% + 2px);margin-left: -2px;">
+                    </div>
+                    <table width="100%">
+                        <tr>
+                            <td class="stat-name">Armor</td>
+                            <td class="stat-value" id="stats-player-incoming-physical-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Fire Resistance</td>
+                            <td class="stat-value" id="stats-player-incoming-fire-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Water Resistance</td>
+                            <td class="stat-value" id="stats-player-incoming-water-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Earth Resistance</td>
+                            <td class="stat-value" id="stats-player-incoming-earth-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Death Resistance</td>
+                            <td class="stat-value" id="stats-player-incoming-death-damage-multiplier">0</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-name">Soul Resistance</td>
+                            <td class="stat-value" id="stats-player-incoming-soul-damage-multiplier">0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="stein-collection-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-collection-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">Collection</div>
+                </div>
+                <div id="stein-collection-window" class="stein-text-border stein-window-container">
+                    <div>
+                        Group By:
+                        <button id="stein-collection-group-by-nothing">Nothing</button>
+                        <button id="stein-collection-group-by-item-type">Item Type</button>
+                        <button id="stein-collection-group-by-collection">Collection</button>
+                    </div>
+                    <hr color="#262119" size="2" align="center" style="margin-top: 5px; margin-bottom: 6px;width: calc(100% + 2px);margin-left: -2px;">
+                    <div id="stein-collection-group-container">
+                    </div>
+                </div>
+            </div>
+            <div id="stein-professions-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-professions-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">PROFESSIONS</div>
+                </div>
+                <div id="stein-professions-window" class="stein-text-border stein-window-container">
+                    <div id="stein-professions-side-bar">
+                        <div class="stein-professions-side-bar-title">EDUCATION:</div>
+                        <div id="stein-professions-current-skills-side-bar">
+                            <div class="stein-item-inventory-slot stein-professions-skill-slot"></div><div class="stein-item-inventory-slot stein-professions-skill-slot"></div><div class="stein-item-inventory-slot stein-professions-skill-slot"></div>
+                        </div>
+                        <div class="stein-professions-side-bar-title">PRODUCTION:</div>
+                        <div id="stein-professions-entries">
+                            <div class="stein-professions-side-bar-entry button">
+                                <span class="stein-professions-side-bar-entry-name">Name</span>
+                                <span class="stein-professions-side-bar-entry-level">1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-professions-main-view">
+                        <div id="stein-professions-overview">
+                            <div id="stein-professions-current-skills-overview">
+                                <div class="stein-item-inventory-slot stein-professions-skill-slot"></div><div class="stein-item-inventory-slot stein-professions-skill-slot"></div><div class="stein-item-inventory-slot stein-professions-skill-slot"></div>
+                            </div>
+                            <div class="stein-professions-main-view-title">OVERVIEW</div>
+                            <div id="stein-professions-overview-container" class="stein-window-container">
+                                <div id="stein-professions-overview-icon">
+                                    <div id="stein-professions-overview-icon-level">1</div>
+                                </div>
+                                <div id="stein-professions-overview-info">
+                                    <div id="stein-professions-overview-header">
+                                        <div id="stein-professions-overview-name">WEAPONSMITH</div>
+                                        <div id="stein-professions-overview-level-label">Level: </div>
+                                        <div id="stein-professions-overview-level">1</div>
+                                    </div>
+                                    <div id="stein-professions-overview-experience" class="stein-window-container">100/100</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="stein-professions-recipe-list-container">
+                            <div class="stein-professions-main-view-title">RECIPE LIST</div>
+                            <div id="stein-professions-recipe-list" class="stein-window-container">
+                                <div class="stein-professions-recipe-entry">
+                                    <span class="stein-professions-recipe-entry-level">[0]</span>
+                                    <span class="stein-professions-recipe-entry-divider">-</span>
+                                    <span class="stein-professions-recipe-entry-name">Name</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="stein-professions-workbench-container">
+                            <div class="stein-professions-main-view-title">WORKBENCH</div>
+                            <div id="stein-professions-workbench" class="stein-window-container">
+                                <div id="stein-professions-workbench-header">
+                                    <div id="stein-professions-workbench-reward-item" class="stein-item-inventory-slot"></div>
+                                    <div id="stein-professions-workbench-info">
+                                        <div id="stein-professions-workbench-item-name">Itemname</div>
+                                        <div id="stein-professions-workbench-craft-progress" class="stein-window-container">
+                                            <span id="stein-professions-workbench-item-level">Required Level: 1</span>
+                                            <span id="stein-professions-workbench-production-time">5 Sec.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="stein-professions-workbench-description"></div>
+                                <div id="stein-professions-workbench-resource-title">Resources</div>
+                                <div id="stein-professions-workbench-resource-items">
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                    <div class="stein-professions-workbench-resource-item stein-item-inventory-slot"></div>
+                                </div>
+                                <div id="stein-professions-workbench-actions">
+                                    <button id="stein-professions-workbench-craft-max">Craft MAX</button>
+                                    <button id="stein-professions-workbench-craft-x">Craft X</button>
+                                    <input autocomplete="off" id="stein-professions-workbench-craft-amount" type="number" min="1" max="999" step="1" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="stein-professions-gather-container">
+                            <div class="stein-professions-main-view-title">GATHER</div>
+                            <div id="stein-professions-gather" class="stein-window-container">
+                                <div id="stein-professions-gather-header">
+                                    <div id="stein-professions-gather-item" class="stein-item-inventory-slot"></div>
+                                    <div id="stein-professions-gather-info">
+                                        <div id="stein-professions-gather-item-name">Itemname</div>
+                                        <div id="stein-professions-gather-sub-text"></div>
+                                    </div>
+                                </div>
+                                <div id="stein-professions-gather-description"></div>
+                            </div>
+                        </div>
+                        <div id="stein-professions-loading-container">
+                            <div class="stein-professions-main-view-title">LOADING</div>
+                            <div id="stein-professions-loading" class="stein-window-container">
+                            Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-mailbox-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-mailbox-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">MAILBOX</div>
+                </div>
+                <div id="stein-mailbox-mail-list-container" class="stein-window-container stein-text-border">
+                    <div id="stein-mailbox-actions"><button id="stein-mailbox-action-new">New Mail</button></div>
+                    <div id="stein-mailbox-mail-list" class="stein-window-container">
+                        <div class="stein-window-container stein-mailbox-mail-entry">
+                            <div class="stein-item-inventory-slot stein-mailbox-mail-icon"></div>
+                            <div class="stein-mailbox-mail-context">
+                                <div class="stein-mailbox-mail-subject">Subject</div>
+                                <div class="stein-mailbox-mail-info">
+                                    <div class="stein-mailbox-mail-sender">Sender</div>
+                                    <div class="stein-mailbox-mail-info-spacer"></div>
+                                    <div class="stein-mailbox-mail-gems-container">
+                                        <span class="stein-mailbox-mail-gems-amount">1000</span>
+                                        <span class="stein-gem-icon" style="margin-bottom: -3px;"></span>
+                                    </div>
+                                    <div class="stein-mailbox-mail-gold-container">
+                                        <span class="stein-mailbox-mail-gold-amount">1000</span>
+                                        <span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                                    </div>
+                                    <div class="stein-mailbox-mail-attachments-container">
+                                        <span class="stein-mailbox-mail-attachments-amount">6</span>
+                                        <span class="stein-mailbox-mail-attachments-icon"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="stein-mailbox-mail-edit-container" class="stein-window-container stein-text-border">
+                    <div id="stein-mail-actions">
+                        <button id="stein-mail-action-back">Back</button>
+                        <div id="stein-mail-action-spacer"></div>
+                        <div id="stein-mail-cost">Cost: <span id="stein-mail-cost-amount">1234</span> <span class="stein-gold-icon" style="margin-bottom: -3px;"></span></div>
+                        <button id="stein-mail-action-reply">Reply</button>
+                        <button id="stein-mail-action-delete">Delete</button>
+                        <button id="stein-mail-action-send">Send</button>
+                    </div>
+                    <div id="stein-mail-sender-container"><span id="stein-mail-sender-label">Sender: </span><input autocomplete="off" id="stein-mail-sender" type="text" /></div>
+                    <div id="stein-mail-receiver-container"><span id="stein-mail-receiver-label">Receiver: </span><input autocomplete="off" id="stein-mail-receiver" type="text" list="stein-hub-friend-list-datalist"/></div>
+                    <div id="stein-mail-subject-container"><span id="stein-mail-subject-label">Subject: </span><input autocomplete="off" id="stein-mail-subject" type="text" maxlength="128"/></div>
+                    <textarea id="stein-mail-text" maxlength="8192"></textarea>
+                    <div id="stein-mail-attachment-container">
+                        <div id="stein-mail-attachment-items">
+                            <div class="stein-item-inventory-slot"></div>
+                            <div class="stein-item-inventory-slot"></div>
+                            <div class="stein-item-inventory-slot"></div>
+                            <div class="stein-item-inventory-slot"></div>
+                            <div class="stein-item-inventory-slot"></div>
+                            <div class="stein-item-inventory-slot"></div>
+                        </div>
+                        <div id="stein-mail-attachment-gold-container">
+                            <input autocomplete="off" id="stein-mail-attachment-gold" type="number" min="0" />
+                            <span class="stein-gold-icon" style="margin-left: 3px;"></span>
+                        </div>
+                        <div id="stein-mail-attachment-claim-gold-container">
+                            <button id="stein-mail-attachment-gold-claim">
+                                <span id="stein-mail-attachment-gold-amount">10000000</span> <span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                            </button>
+                        </div>
+                        <div id="stein-mail-attachment-claim-gems-container">
+                            <button id="stein-mail-attachment-gems-claim">
+                                <span id="stein-mail-attachment-gems-amount">10000000</span> <span class="stein-gem-icon" style="margin-bottom: -3px;"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-bank-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-bank-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">BANK</div>
+                </div>
+                <div id="stein-bank-window" class="stein-text-border stein-window-container">
+                    <div id="stein-bank-items">
+                    </div>
+                    <div class="stein-bank-description">
+                    You can store items from your inventory in the bank by drag and dropping them over.
+The bank's content is shared between all banks in the world, so you can access your items from any other bank.
+                    </div>
+                    <div id="stein-bank-actions">
+                        <div id="stein-bank-extend-gold-container">
+                            <div class="stein-bank-actions-description">
+                            Add 10 additional slots to the bank:
+                            </div>
+                            <div class="stein-bank-actions-buttons">
+                                <button id="stein-bank-extend-gold">10000 Gold</button>
+                            </div>
+                        </div>
+                        <div id="stein-bank-extend-gems-container">
+                            <div class="stein-bank-actions-description">
+                            Add 10 additional slots to the bank:
+                            </div>
+                            <div class="stein-bank-actions-buttons">
+                                <button id="stein-bank-extend-gems">200 Gems</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-player-trade-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-player-trade-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">TRADE</div>
+                </div>
+                <div class="stein-text-border stein-window-container" id="stein-player-trade-window">
+                    <div id="stein-player-trade-partner">
+                        <div id="stein-player-trade-partner-name">Partner</div>
+                        <div id="stein-player-trade-partner-content" class="stein-window-container">
+                            <div id="stein-player-trade-partner-items">
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                                <div class="stein-item-inventory-slot"></div>
+                            </div>
+                            <div id="stein-player-trade-partner-gold">
+                                <span id="stein-player-trade-partner-gold-amount">0</span>
+                                <span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-player-trade-player">
+                        <div id="stein-player-trade-player-name">You</div>
+                        <div id="stein-player-trade-player-content" class="stein-window-container">
+                            <div id="stein-player-trade-player-items">
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                                <div class="stein-item-inventory-slot" draggable="true"></div>
+                            </div>
+                            <div id="stein-player-trade-player-gold">
+                                <input autocomplete="off" type="number" min="0" step="1" id="stein-player-trade-player-gold-amount" />
+                                <span class="stein-gold-icon" style="margin-bottom: -3px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-player-trade-player-actions">
+                        <button id="stein-player-trade-cancel">Cancel</button>
+                        <button id="stein-player-trade-accept">Accept</button>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-quest-log-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-quest-log-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">QUESTLOG <span id="stein-quest-log-count">(0/0)</span></div>
+                </div>
+                <div class="stein-window-container stein-text-border" id="stein-quest-log-window">
+                    <div id="quest-log-options">
+                        <input type="checkbox" id="quest-log-options-show-quest-log-overlay" />
+                        <label for="quest-log-options-show-quest-log-overlay" class="checkbox-label" style="margin-bottom: -3px;"></label>
+                        <span>Show Questlog Overlay</span>
+                    </div>
+                    <div id="quest-log-entries">
+                        <div class="quest-log-entry">
+                            <p class="quest-log-quest-name">Questname</p>
+                            <p class="quest-log-quest-description">Quest Description</p>
+                            <div class="quest-log-quest-objectives">
+                                <div class="quest-log-quest-objective">0/0 Objective</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-window-container-right">
+            <div id="stein-inventory-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-inventory-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border">INVENTORY</div>
+                </div>
+                <div id="stein-inventory-window" class="stein-window-container stein-text-border">
+                    <div id="stein-inventory-title-equipment">EQUIPMENT:</div>
+                    <div id="stein-inventory-additional-infos">
+                        <div id="stein-inventory-additional-infos-left">
+                        </div>
+                        <div id="stein-inventory-additional-infos-right">
+                            <div id="stein-inventory-gems-container">
+                                <div id="stein-inventory-gems">0</div>
+                                <span class="stein-gem-icon"></span>
+                            </div>
+                            <div id="stein-inventory-gold-container">
+                                <div id="stein-inventory-gold">0</div>
+                                <span class="stein-gold-icon"></span>
+                            </div>
+                            <div id="stein-inventory-premium-container">
+                                <div id="stein-inventory-premium">0 days</div>
+                                <span class="stein-premium-icon"></span>
+                            </div>
+                            <div id="stein-inventory-trash-slot" class="stein-item-inventory-slot"></div>
+                        </div>
+                    </div>
+                    <div id="stein-inventory-equipment-container">
+                        <div id="stein-inventory-equipment-container-left">
+                            <div id="stein-inventory-equipment-head-container">
+                                <div class="stein-inventory-equipment-slot-description">Head</div>
+                                <div id="stein-inventory-head-damage-points"></div>
+                                <div id="stein-inventory-head-item" class="stein-item-inventory-slot"></div>
+                            </div>
+                            <div id="stein-inventory-equipment-chest-container">
+                                <div class="stein-inventory-equipment-slot-description">Chest</div>
+                                <div id="stein-inventory-chest-damage-points"></div>
+                                <div id="stein-inventory-chest-item" class="stein-item-inventory-slot"></div>
+                            </div>
+                            <div id="stein-inventory-equipment-legs-container">
+                                <div class="stein-inventory-equipment-slot-description">Legs</div>
+                                <div id="stein-inventory-legs-damage-points"></div>
+                                <div id="stein-inventory-legs-item" class="stein-item-inventory-slot"></div>
+                            </div>
+                        </div>
+                        <div id="stein-inventory-equipment-guide"></div>
+                        <div id="stein-inventory-equipment-container-right">
+                            <div id="stein-inventory-equipment-shoulders-container">
+                                <div id="stein-inventory-shoulders-damage-points"></div>
+                                <div id="stein-inventory-shoulders-item" class="stein-item-inventory-slot"></div>
+                                <div class="stein-inventory-equipment-slot-description">Shoulders</div>
+                            </div>
+                            <div id="stein-inventory-equipment-hands-container">
+                                <div id="stein-inventory-hands-damage-points"></div>
+                                <div id="stein-inventory-hands-item" class="stein-item-inventory-slot"></div>
+                                <div class="stein-inventory-equipment-slot-description">Hands</div>
+                            </div>
+                            <div id="stein-inventory-equipment-feet-container">
+                                <div id="stein-inventory-feet-damage-points"></div>
+                                <div id="stein-inventory-feet-item" class="stein-item-inventory-slot"></div>
+                                <div class="stein-inventory-equipment-slot-description">Feet</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stein-inventory-scroll-container">
+                        <div id="stein-inventory-title-quickbar">QUICKBAR:</div>
+                        <div id="stein-inventory-quick-bar-slots">
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                        </div>
+                        <div id="stein-inventory-title-backpack">BACKPACK:</div>
+                        <div id="stein-inventory-slots">
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                            <li><div class="stein-item-inventory-slot"></div></li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-inventory-trash-confirm-container-frame">
+            <div id="stein-inventory-trash-confirm-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">TRASH ITEM</span>
+                </div>
+                <div id="stein-inventory-trash-confirm-content" class="stein-window-container stein-text-border">
+                    <span>Are you sure you want to trash:</span><br />
+                    <div id="stein-inventory-trash-confirm-item" class="stein-item-inventory-slot"></div><br />
+                    <button id="stein-inventory-trash-confirm-button-trash">Trash item</button>
+                    <button id="stein-inventory-trash-confirm-button-keep">Keep item</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-profession-reduce-time-container-frame">
+            <div id="stein-profession-reduce-time-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">HALVE LEARNING TIME</span>
+                </div>
+                <div class="stein-window-container stein-text-border">
+                    <span>Are you sure you want to halve the remaining learn time for "</span><span id="stein-profession-reduce-time-name">Skillbook Name</span>"?<br />
+                    <span>This will cost </span><span id="stein-profession-reduce-time-premium-currency">00</span><span class="stein-gem-icon" style="margin-bottom: -3px;"></span>
+                    <span>and the Gems will not be refunded if you cancel the learning process.</span><br />
+                    <button id="stein-profession-reduce-time-button-cancel">Cancel</button>
+                    <button id="stein-profession-reduce-time-button-confirm">Halve learning time</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-item-amount-container-frame">
+            <div id="stein-item-amount-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span class="stein-text-border">ITEM AMOUNT</span>
+                </div>
+                <div class="stein-window-container stein-text-border">
+                    <span id="stein-item-amount-action">Select amount to action:</span><br />
+                    <input autocomplete="off" type="range" id="stein-item-amount-slider" min="1" max="10" step="1" /><br />
+                    <input autocomplete="off" type="number" min="1" max="10" step="1" id="stein-item-amount-value"> / <span id="stein-item-amount-max">1</span><br />
+                    <div id="stein-item-amount-gold-calculation">
+                        = <span id="stein-item-amount-gold-amount">0</span> <span class="stein-gold-icon" style="margin-bottom: -3px"></span>
+                    </div>
+                    <div id="stein-item-amount-gem-calculation">
+                        = <span id="stein-item-amount-gem-amount">0</span> <span class="stein-gem-icon" style="margin-bottom: -3px"></span>
+                    </div>
+                    <button id="stein-item-amount-cancel">Cancel</button>
+                    <button id="stein-item-amount-all-confirm">Action all</button>
+                    <button id="stein-item-amount-confirm">Action</button>
+                </div>
+            </div>
+        </div>
+        <div id="stein-feedback-container-frame">
+            <div id="stein-feedback-container" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-feedback-close-button" class="window-close-button">x</span>
+                    <span class="stein-text-border">FEEDBACK</span>
+                </div>
+                <div id="stein-feedback-submitting-content" class="stein-window-container stein-text-border" style="display: none;">
+                Submitting ...
+                </div>
+                <div id="stein-feedback-content" class="stein-window-container stein-text-border">
+                    <button id="stein-feedback-select-feedback">Feedback</button>
+                    <button id="stein-feedback-select-report-bug">Report Bug</button>
+                    <button id="stein-feedback-select-report-player">Report Player</button><br />
+                    <div id="stein-feedback-feedback-content" class="stein-window-container">
+                        Feedback<br />
+                            <div class="stein-feedback-happiness-container">
+                                <div id="stein-feedback-happiness-1" class="stein-feedback-happiness"></div>
+                                <div id="stein-feedback-happiness-2" class="stein-feedback-happiness"></div>
+                                <div id="stein-feedback-happiness-3" class="stein-feedback-happiness"></div>
+                                <div id="stein-feedback-happiness-4" class="stein-feedback-happiness"></div>
+                                <div id="stein-feedback-happiness-5" class="stein-feedback-happiness"></div>
+                            </div>
+                        <textarea id="stein-feedback-feedback-text" maxlength="4000"></textarea><br />
+                        <button id="stein-feedback-submit-feedback">Submit</button>
+                    </div>
+                    <div id="stein-feedback-bug-content" class="stein-window-container">
+                        Report Bug<br />
+                        Type: <select id="stein-feedback-bug-type"></select><br />
+                        <textarea id="stein-feedback-bug-text" maxlength="4000"></textarea><br />
+                        <button id="stein-feedback-submit-bug">Submit</button>
+                    </div>
+                    <div id="stein-feedback-report-content" class="stein-window-container">
+                        Report Player<br />
+                        Player Name: <input autocomplete="off" id="stein-feedback-report-name"/><br />
+                        Reason: <select id="stein-feedback-report-reason"></select><br />
+                        <textarea id="stein-feedback-report-text" maxlength="4000"></textarea><br />
+                        <button id="stein-feedback-submit-report">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stein-dialog-window-container">
+            <div class="stein-need-or-greed">
+                <div class="stein-need-or-greed-window stein-window">
+                    <div>
+                        <div class="need-or-greed-time"></div>
+                        <span class="window-close-button need-or-greed-pass">x</span>
+                    </div>
+                    <div style="display: flex;margin: 2px;">
+                        <div class="stein-item-inventory-slot need-or-greed-item"></div>
+                        <div class="need-or-greed-info">
+                            <div class="need-or-greed-item-name stein-text-border">Item Name</div>
+                            <button class="need-or-greed-need">Need</button>
+                            <button class="need-or-greed-greed">Greed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="stein-dialog-window-frame" class="stein-window">
+                <div class="stein-window-top">
+                    <span id="stein-dialog-window-close-button" class="window-close-button">x</span>
+                    <div class="stein-text-border" id="stein-dialog-source-name">Source Name</div>
+                </div>
+                <div id="stein-dialog-window" class="stein-window-container stein-text-border">
+                    <ul id="stein-dialog-items">
+                        <li class="stein-dialog-item">Dialog text</li>
+                        <li class="stein-dialog-item stein-dialog-selectable-item">Selectable dialog text</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="stein-zone-overlay" class="stein-text-border stein-scale">
+            <div id="stein-root-zone-name">Unknown Zone</div>
+            <div id="stein-zone-name">Unknown Zone</div>
+            <div id="stein-zone-level-range">(1-10)</div>
+        </div>
+        <div id="stein-rewards-overlay" class="stein-text-border">
+        </div>
+        <div id="stein-quest-complete-overlay" style="display: none;opacity: 0;">
+            <div id="stein-quest-complete-decoration">
+                <div id="stein-quest-complete-icon-left"></div>
+                <div id="stein-quest-complete-icon-center" class="stein-text-border-2">!</div>
+                <div id="stein-quest-complete-icon-right"></div>
+            </div>
+            <div id="stein-quest-complete-text-container" class="stein-text-border">
+                <div id="stein-quest-complete-quest-name">Quest name</div>
+                <div id="stein-quest-complete-sub-text">Completed</div>
+            </div>
+        </div>
+        <div id="stein-cast-bar-container">
+            <div id="stein-cast-bar" class="stein-window-container stein-text-border" style="opacity: 0;">Weapon Name</div>
+        </div>
+        <div id="stein-joystick">
+            <div id="stein-joystick-up"></div>
+            <div id="stein-joystick-right"></div>
+            <div id="stein-joystick-down"></div>
+            <div id="stein-joystick-left"></div>
+            <div id="stein-joystick-indicator" class="stein-window"></div>
+        </div>
+        <div id="stein-texture-loading-info" class="stein-text-border">Loading textures...</div>
+        <div id="stein-tooltip-background" style="display: none;">
+
+        </div>
+        <div id="stein-tooltip" style="display: none;">
+
+        </div>
+        <div id="stein-context-menu" style="display: none; padding: 0;" class="stein-window-container">
+
+        </div>
+        <div id="stein-ui-overlay-container"></div>
+        
+
+
+  
+
+
+
+
+  
+<script src="/assets/be141efd6a659a598704af42e58943cd-gameclient-opt-bundle.js" type="text/javascript" ></script>
+
+
+
+
+
+  
+
+
+
+    </body>
+</html>

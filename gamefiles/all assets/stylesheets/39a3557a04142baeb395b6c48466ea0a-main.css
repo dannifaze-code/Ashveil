@@ -1,0 +1,6140 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Fira Sans Condensed', "Arial Narrow";
+    font-weight: 800;
+    background-color: #0c0a08;
+    font-size: 16px;
+}
+
+#stein-game-html {
+    overflow: hidden;
+}
+
+.stein-scale {
+    transform: scale(1);
+}
+
+input[type=text], input[type=password], input[type=email] {
+    padding: 0 3px;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    padding: 1px;
+    height: 20px;
+    vertical-align: bottom;
+    margin-bottom: 0;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #000000;
+    border: 0px solid #000000;
+    height: 18px;
+    width: 25px;
+    border-radius: 3px;
+    background: rgb(38, 33, 25);
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px #000000;
+    border: 0px solid #000000;
+    height: 18px;
+    width: 25px;
+    border-radius: 3px;
+    background: rgb(38, 33, 25);
+    cursor: pointer;
+}
+input[type=range]::-ms-thumb {
+    box-shadow: 0px 0px 0px #000000;
+    border: 0px solid #000000;
+    height: 18px;
+    width: 25px;
+    border-radius: 3px;
+    background: rgb(38, 33, 25);
+    cursor: pointer;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: black;
+    opacity: 0.4;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black;
+    opacity: 0.4;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: black;
+    opacity: 0.4;
+}
+
+select {
+    background-color: rgb(237, 220, 160);
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    height: 26px;
+    color: rgb(38, 33, 25);
+    font-size: 14px;
+    width: 180px;
+    font-family: 'Fira Sans Condensed';
+    font-weight: 800;
+    margin: 1px 0;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(182, 220, 135);
+}
+
+button, .button {
+    background-color: #dbbb83;
+    color: rgb(38, 33, 25);
+    cursor: pointer;
+    margin: 2px;
+    text-shadow: none;
+    padding: 1px 6px;
+    box-shadow: 0 0 0 2px rgb(38, 33, 25);
+    border-radius: 1px;
+    border: 1px solid rgba(107, 81, 53, 0.4);
+    font-size: 14px;
+    height: 22px;
+    box-sizing: border-box;
+    display: inline-block;
+    font-family: 'Fira Sans Condensed';
+    font-weight: 800;
+    text-align: center;
+    align-items: flex-start;
+    line-height: 20px;
+}
+
+button:hover, .button:hover {
+    color: rgb(38, 33, 25);
+    background-color: #eddca0;
+}
+
+.selected-button {
+    background-color: #b6dc87;
+}
+
+.button-special {
+    background-color: #87dcc3;
+}
+
+.button-red {
+    background-color: #dc8787;
+}
+
+button:disabled, button:disabled:hover {
+    cursor: default;
+    background-color: #948c84;
+}
+
+input, textarea {
+    background-color: rgb(237, 220, 160);
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    height: 22px;
+    color: rgb(38, 33, 25);
+    font-size: 14px;
+    width: 170px;
+    font-family: 'Fira Sans Condensed';
+    font-weight: 800;
+    margin: 1px 0;
+    padding: 0;
+}
+
+input:read-only {
+    background-color: rgb(219 187 131);;
+}
+
+input.error, textarea.error {
+    box-shadow: 0 0 0 1px rgb(239, 23, 38);
+}
+
+input[type=date], input[type=time], input[type=datetime-local] {
+    width: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
+    color: #efba17;
+    font-family: 'Fira Sans Condensed';
+    font-weight: 800;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h3, h4, h5, h6 {
+    font-size: 16px;
+}
+
+h4, h5, h6 {
+    color: white;
+}
+
+p {
+    margin: 0.5em 0;
+}
+
+pre {
+    text-shadow: none;
+    color: black;
+    background-color: #dbbb83;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 0 2px;
+    overflow: auto;
+}
+
+code {
+    text-shadow: none;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 0 2px;
+    color: black;
+    background-color: #dbbb83;
+}
+
+pre code {
+    border: none;
+    padding: 0;
+}
+
+code .comment {
+    color: #888888;
+}
+
+code .keyword {
+    color: #333;
+    font-weight: bold;
+}
+
+code .boolean-literal, code .number-literal, code .xml-dtd-tag-name, code .identifier, code .literal-value, code .symbol-literal {
+    color: #008080;
+}
+
+code .string-literal, code .char-literal {
+    color: #d14;
+}
+
+code .regex-literal {
+    color: #009926;
+}
+
+code .escape-sequence {
+
+}
+
+code .substitution {
+
+}
+
+code .type-name {
+    color: #458;
+    font-weight: bold
+}
+
+code .attribute-name, code .tag-name {
+    color: #000080;
+    font-weight: normal
+}
+
+code .tag-punctuation {
+
+}
+
+code .xml-processing-instruction {
+
+}
+
+code .xml-cdata {
+
+}
+
+code .markup-fence {
+
+}
+
+code .markup-headline {
+
+}
+
+code .markup-emphasized {
+
+}
+
+code .markup-quote {
+
+}
+
+code .markup-link-text {
+
+}
+
+code .markup-link-target {
+
+}
+
+
+ul, ul ul, ul ul ul {
+    list-style-type: disc;
+    margin: 0;
+    padding-left: 25px;
+}
+
+.stein-window {
+    background: #bc9266;
+    box-shadow: inset 0px 0px 0 2px rgba(255, 234, 169, 0.5);
+    border-radius: 5px;
+    border: 2px solid rgb(38, 33, 25);
+    padding: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.stein-fullscreen-window {
+    background: #bc9266;
+    box-shadow: inset 0px 0px 0 2px rgba(255, 234, 169, 0.5);
+    border-radius: 5px;
+    border: 2px solid rgb(38, 33, 25);
+    padding: 4px;
+    color: #fff;
+    font-size: 16px;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100% - 10px);
+    gap: 2px;
+}
+
+.stein-window-top {
+    color: rgb(182, 220, 135);
+    font-size: 20px;
+    text-align: center;
+    font-weight: 900;
+    height: 22px;
+    margin-bottom: 2px;
+}
+
+.stein-window-container {
+    background: #9a7753;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.stein-fullscreen-window-container {
+    background: #9a7753;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 2px;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.stein-window-header-2 {
+    color: #efba17;
+    font-size: 18px;
+}
+
+.stein-window-frame-navigation {
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: -1px;
+    margin-top: 2px;
+    margin-right: -1px;
+
+}
+
+.stein-navigation-button {
+    width: 110px;
+    margin: 3px;
+}
+
+.stein-navigation-button-special {
+    width: 110px;
+    margin: 3px;
+    background-color: #87dcc3;
+}
+
+.stein-news-content {
+    padding: 0 4px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    user-select: text;
+}
+
+.stein-news-content a {
+    color: rgb(182, 220, 135);
+}
+
+#stein-hub-frame-news-list {
+    user-select: text;
+}
+
+#stein-errors {
+    z-index: 2000;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 40px;
+    touch-action: none;
+    pointer-events: none;
+}
+
+.stein-error {
+    margin: auto;
+    max-width: 600px;
+    background: rgba(239, 23, 38, 1);
+    padding: 2px;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 5px;
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+.stein-error-message {
+    flex: 1 1 auto;
+}
+
+.stein-error-close-button {
+    flex: 0 0 auto;
+    color: rgb(38, 33, 25);
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.stein-error-button {
+    display: block;
+    margin: auto;
+    background-color: #b6dc87;
+    margin-top: 10px;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-options-screen, #stein-processing-payment-overlay, #stein-payment-success-overlay,
+#stein-payment-confirm-payment-overlay, #stein-initializing-payment-overlay,
+#stein-redeeming-code-overlay, #stein-redeeming-code-success-overlay, #stein-logout-overlay,
+#stein-shop-window {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stein-container {
+    margin-bottom: 10px;
+    user-select: text;
+}
+
+.stein-news-container {
+    min-height: calc(100vh - 85px);
+}
+
+.stein-login-news-arrow {
+    width: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.stein-login-news-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.stein-login-news-content:not(:first-child) {
+    margin-top: 2px;
+}
+
+.stein-login-news-content-inner {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: calc(100% - 32px);
+}
+
+.stein-login-news-content:hover {
+    background: #bc9266;
+    color: #fff;
+    cursor: pointer;
+}
+
+.stein-login-news-entry-image {
+    width: 144px;
+    height: 144px;
+}
+
+.stein-login-news-information {
+    min-width: 270px;
+    width: calc(100% - 154px);
+    margin-left: 10px;
+}
+
+.stein-login-news-header {
+    color: #efba17;
+    font-size: 18px;
+}
+
+.stein-login-news-title {
+    font-size: 20px;
+}
+
+.stein-login-news-summary {
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+}
+
+#stein-options-screen-options, .stein-shop-window-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: calc(100% - 30px);
+}
+
+.stein-options-screen-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stein-options-screen-links > * {
+    width: auto;
+}
+
+.stein-options-screen-keybinding-entries, .stein-options-screen-interface-entries {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-options-screen-keybinding-entries > * {
+    max-width: 350px;
+}
+
+.stein-options-screen-interface-entries > * {
+    width: 320px;
+}
+
+.stein-map-window-container {
+    height: calc(100% - 26px);
+    padding: 0;
+}
+
+.stein-hub-window-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#stein-hub-frame-rankings, #stein-hub-frame-friends, #stein-hub-frame-block-list, #stein-hub-frame-guild, #stein-hub-frame-login-rewards {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#stein-hub-frame-news {
+    flex: 1 1 0;
+    overflow: auto;
+}
+
+#stein-hub-frame-help {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    overflow: auto;
+}
+
+.stein-hub-frame-help-entry {
+    margin: 1px;
+    padding: 0 4px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    user-select: text;
+}
+
+#stein-hub-links {
+    margin: 1px;
+    width: 114px;
+    display: flex;
+    justify-content: space-between;
+    height: 26px;
+}
+
+#stein-hub-frame-guild-search {
+    flex: 1 1 0;
+    overflow: hidden;
+    margin-top: 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-guild-create-tag {
+    width: 50px;
+}
+
+#stein-guild-create-submit {
+    margin-top: 3px;
+}
+
+.stein-guild-create-label {
+    width: 70px;
+    text-align: right;
+    display: inline-block;
+}
+
+#stein-guild-search-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1px;
+}
+
+#stein-guild-search-submit {
+    margin-left: 4px;
+}
+
+.stein-guild-search-result:not(:first-child) {
+    margin-top: 3px;
+}
+
+.stein-guild-search-result:hover {
+    background: #bc9266;
+    cursor: pointer;
+}
+
+#stein-guild-search-results {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.stein-guild-search-result-info {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.stein-guild-search-result-tag {
+    width: 40px;
+    color: #efba17;
+}
+
+.stein-guild-search-result-name {
+    width: 220px;
+    color: #efba17;
+}
+
+.stein-guild-search-result-members {
+    width: 60px;
+    text-align: right;
+}
+
+.stein-guild-search-result-description {
+    height: 54px;
+    overflow: hidden;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    white-space: break-spaces;
+}
+
+#stein-guild-member-tabs {
+    display: flex;
+    align-items: center;
+}
+
+#stein-guild-tab-button-info, #stein-guild-tab-button-chat, #stein-guild-tab-button-members,
+#stein-guild-tab-button-search, #stein-guild-tab-button-create {
+    min-width: 55px;
+}
+
+#stein-guild-tab-guild-name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    padding: 0 3px;
+    white-space: nowrap;
+}
+
+#stein-guild-info-guild-name, #stein-guild-search-details-guild-name {
+    color: #efba17;
+    text-align: center;
+}
+
+#stein-guild-search-details-guild-name {
+    flex: 1 1 auto;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#stein-guild-search-back {
+    flex: 0 0 auto;
+}
+
+#stein-guild-search-details-description {
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    max-height: 15%;
+    overflow: auto;
+}
+
+#stein-hub-frame-guild-member, #stein-guild-member-tab-content, #stein-guild-info,
+#stein-guild-chat, #stein-guild-members, #stein-guild-search, #stein-guild-create,
+#stein-guild-search-details {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#stein-guild-info-header {
+    display: flex;
+    align-items: flex-end;
+}
+
+#stein-guild-description-label {
+    flex: 1 1 auto;
+}
+
+#stein-guild-info-level {
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+#stein-guild-info-description {
+    width: calc(100% - 4px);
+    max-width: 700px;
+    height: 51px;
+}
+
+#stein-guild-info-note {
+    width: calc(100% - 4px);
+    max-width: 700px;
+    height: 51px;
+}
+
+.stein-guild-member-name {
+    width: 150px;
+}
+
+.stein-guild-member-level {
+    width: 50px;
+}
+
+.stein-guild-member-rank {
+    width: 80px;
+}
+
+.stein-guild-member-online {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-size: cover;
+    margin-right: 2px;
+}
+
+.stein-login-reward-day {
+    width: 50px;
+    justify-content: center;
+}
+
+.stein-login-reward-normal, .stein-login-reward-premium {
+    max-width: 200px;
+    min-width: 134px;
+    width: 30vw;
+    justify-content: center;
+}
+
+.stein-table-entry > .stein-login-reward-normal,
+.stein-table-entry > .stein-login-reward-premium {
+    display: flex;
+    flex-direction: column;
+}
+
+.stein-table-entry > .stein-login-reward-normal > .stein-item-inventory-slot,
+.stein-table-entry > .stein-login-reward-premium > .stein-item-inventory-slot {
+    margin: 6px;
+}
+
+.stein-login-reward-timer {
+    white-space: normal;
+    text-align: center;
+}
+
+#stein-hub-frame-login-rewards {
+    align-items: center;
+}
+
+#stein-hub-login-rewards-info {
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stein-login-reward-info-title {
+    color: #efba17;
+    font-size: 18px;
+}
+
+#stein-processing-payment-overlay-container, #stein-initializing-payment-overlay-container, #stein-redeeming-code-overlay-container,
+#stein-payment-success-overlay-container, #stein-generic-dialog-overlay-container, #stein-redeeming-code-success-overlay-container,
+#stein-logout-overlay-container {
+    width: 400px;
+}
+
+#stein-payment-confirm-payment-overlay-container {
+    width: 360px;
+}
+
+.stein-payment-options-container {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.stein-payment-options-container button {
+    display: inline-block;
+    width: 152px;
+    margin-bottom: 2px;
+}
+
+#stein-options-chat-tabs {
+    margin: 0 -1px;
+}
+
+.stein-options-chat-tab {
+    display: inline-block;
+    margin: 1px;
+}
+
+.stein-options-chat-tab-remove {
+    float: right;
+    margin: 3px 3px 8px;
+}
+
+#stein-payment-legal-text {
+    background: rgb(177, 140, 103);
+    overflow-y: auto;
+    text-shadow: none;
+    color: #262119;
+    text-align: center;
+}
+
+#stein-payment-confirm-payment-methods {
+    text-align: center;
+}
+
+#stein-payment-confirm-payment-product-name {
+    color: rgb(182, 220, 135);
+}
+
+#stein-payment-confirm-payment-product-price, .stein-payment-confirm-highlight {
+    color: rgb(182, 220, 135);
+}
+
+#stein-tooltip-highlight {
+
+}
+
+.stein-payment-confirm-option {
+    text-align: center;
+}
+
+#stein-payment-paypal-dummy {
+    padding: 3px 0 4px 0;
+}
+
+#stein-wave-dungeon-reward-window {
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-wave-dungeon-reward-list > * {
+    margin: 4px;
+}
+
+.stein-wave-dungeon-reward-window-content {
+    text-align: center;
+}
+
+#stein-wave-dungeon-reward-game-over-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+#stein-wave-dungeon-reward-game-over-text {
+    color: #efba17;
+    font-family: "Fira Sans Condensed";
+    font-weight: 800;
+    font-size: 1.5em;
+}
+
+
+.stein-wave-dungeon-name, .stein-wave-dungeon-wave, #stein-wave-dungeon-time {
+    color: rgb(182, 220, 135);
+}
+
+#stein-wave-dungeon-reward-claim {
+    margin-top: 6px;
+}
+
+#stein-map-window {
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+}
+
+#stein-hub-window, #stein-moderator-panel-window, #stein-translation-panel-window {
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+}
+
+#stein-hub-window-container, #stein-options-form, #stein-map-window-container, #stein-chat-window-container,
+#stein-translation-panel-container, #stein-moderator-panel-container {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    max-width: 1500px;
+    max-height: 1000px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.stein-version-info {
+    padding: 5px 0 0 5px;
+}
+
+.stein-login-screen-version-info {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #fff;
+    font-size: 23px;
+    padding: 5px;
+}
+
+#stein-login-logo {
+
+}
+
+#stein-body {
+    background: url("/assets/images/login-background.png") fixed;
+    background-size: cover;
+}
+
+#stein-game-body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: hidden;
+    position: relative;
+}
+
+#stein-landing-page-login {
+    min-height: 100vh;
+    position: relative;
+}
+
+#stein-login-screen {
+    position: absolute;
+    z-index: 199;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: black url("/assets/images/login-background.png") center;
+    background-size: cover;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#stein-login-screen-forms {
+    padding-top: 40px;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#stein-connecting, #stein-logging-in {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 350px;
+    height: 100px;
+    z-index: 101;
+}
+
+.stein-maintenance-window {
+    overflow: auto;
+    text-align: center;
+    margin: auto;
+ }
+
+.stein-maintenance-window-images {
+    display: inline-flex;
+}
+
+#stein-maintenance {
+    margin: auto;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    height: 268px;
+    text-align: center;
+    user-select: none;
+    z-index: 100;
+    top: 0;
+    width: 330px;
+}
+
+.stein-connecting-content-container, .stein-logging-in-content-container {
+    text-align: center;
+    padding: 10px 0 20px 0;
+    position: relative;
+    height: 132px;
+}
+
+.stein-maintenance-window-top {
+    color: rgb(182, 220, 135);
+    font-size: 26px;
+    text-align: center;
+    line-height: 26px;
+    margin: -3px;
+    height: 26px;
+    padding-bottom: 10px;
+}
+
+.stein-maintenance-window {
+    background: #9a7753;
+    color: #fff;
+    user-select: none;
+    padding: 5px;
+    display: inline-block;
+    float: right;
+    box-shadow: 0 0 0 3px rgb(38, 33, 25);
+    border-radius: 3px;
+    border: 2px solid rgba(38, 24, 8, 0.4);
+}
+
+.stein-connecting-spinner-center, .stein-logging-in-spinner-center {
+    text-shadow: none;
+    display: inline-block;
+    font-size: 31px;
+    margin-left: -16px;
+    position: absolute;
+    margin-top: 36px;
+}
+
+.stein-connecting-spinner, .stein-logging-in-spinner {
+    text-shadow: none;
+    animation-name: stein-spinner-animation;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    display: inline-block;
+    font-size: 31px;
+    margin-left: 22px;
+    margin-top: 34px;
+    position: absolute;
+    transform-origin: -16px 24px;
+}
+
+#stein-login-language {
+    width: 80px;
+    height: 26px;
+    margin: 0 0 0 2px;
+}
+
+.stein-login-screen-header-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    text-align: center;
+}
+
+.stein-header-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.stein-header {
+    display: inline-flex;
+    border-radius: 0 0 5px 5px;
+    border-top: 0;
+}
+
+.stein-header > * {
+    margin-left: 2px;
+}
+
+.stein-header > *:first-child {
+    margin-left: 0;
+}
+
+.stein-login-screen-header-icon {
+    cursor: pointer;
+}
+
+.stein-icon-twitter {
+    width: 26px;
+    height: 26px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: 0 0;
+}
+
+.stein-icon-facebook {
+    width: 26px;
+    height: 26px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: -26px 0;
+}
+
+.stein-icon-reddit {
+    width: 26px;
+    height: 26px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: -52px 0;
+}
+
+.stein-icon-discord {
+    width: 26px;
+    height: 26px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: -104px -26px;
+}
+
+.stein-icon-pg5 {
+    width: 26px;
+    height: 26px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: -104px -52px;
+}
+
+.stein-icon-arrow {
+    width: 30px;
+    height: 10px;
+    background-image: url("/assets/images/icons/icon-map.png");
+    background-position: -100px 0;
+}
+
+.stein-footer-container {
+    width: 100%;
+    text-align: center;
+}
+
+.stein-footer {
+    display: inline-flex;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stein-options-legal a, .stein-footer a {
+    margin: 0 5px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.stein-window-top-loginscreen {
+    width: 150px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
+.stein-login-tab-container {
+    z-index: 9;
+}
+
+.stein-login-tab-content-container {
+    z-index: 10;
+    width: 335px;
+    margin-bottom: 30px;
+}
+
+#stein-login-screen-server-select {
+    width: 180px;
+}
+
+#stein-login-screen-register-character-head {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    z-index: -1;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    transform: scale(3);
+    transform-origin: top left;
+    background-position-x: -192px;
+    background-position-y: -3px;
+}
+
+#stein-login-screen-register-character-body {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    z-index: -2;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    transform: scale(3);
+    transform-origin: top left;
+    background-position-x: -192px;
+    background-position-y: -3px;
+}
+
+#stein-login-screen-register-character-display {
+    width: 144px;
+    height: 100px;
+    margin: auto;
+    position: relative;
+}
+
+#stein-login-screen-register-character-gender {
+    width: 100%;
+    text-align: center;
+}
+
+#stein-login-screen-register-character-head-prev {
+    position: absolute;
+    left: 115px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+#stein-login-screen-register-character-head-next {
+    position: absolute;
+    right: 115px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+#stein-login-screen-register-character-body-prev {
+    position: absolute;
+    left: 115px;
+    top: 60px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+#stein-login-screen-register-character-body-next {
+    position: absolute;
+    right: 115px;
+    top: 60px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.unselected-tab {
+    color: rgb(147, 179, 107);
+    background: #9a7753;
+    box-shadow: inset 0px 0px 0 2px #6b5135;
+}
+
+#stein-login-screen-register {
+    display: none;
+    position: relative;
+}
+
+.stein-text-border {
+    text-shadow: 1px 1px 0 #262119,
+    -1px 1px 0 #262119,
+    1px -1px 0 #262119,
+    -1px -1px 0 #262119,
+    0 1px 0 #262119,
+    0 -1px 0 #262119,
+    -1px 0 0 #262119,
+    1px 0 0 #262119;
+}
+
+.stein-text-border-2 {
+    text-shadow: 2px 2px 0 #262119,
+    -2px 2px 0 #262119,
+    2px -2px 0 #262119,
+    -2px -2px 0 #262119,
+    0 2px 0 #262119,
+    0 -2px 0 #262119,
+    -2px 0 0 #262119,
+    2px 0 0 #262119;
+}
+
+.stein-form-label {
+    width: 130px;
+    display: inline-block;
+    text-align: right;
+}
+
+.stein-form-label-options {
+    width: 135px;
+    display: inline-block;
+    text-align: right;
+}
+
+.stein-form-label-keybinding {
+    width: 198px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 3px;
+}
+
+.stein-options-keybinding {
+    display: flex;
+    align-items: center;
+}
+
+.stein-options-keybinding input {
+    width: 100px;
+}
+
+.stein-options-clear-keybinding {
+    background-image: url(/assets/images/icons/icon_trash.png);
+    background-size: cover;
+    width: 22px;
+    margin-left: 4px;
+}
+
+#stein-respawn-screen {
+    position: absolute;
+    z-index: 90;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-respawn-screen-content {
+    text-align: center;
+}
+
+#stein-respawn-screen-skull {
+    background-image: url(/assets/images/icon_death_skull.png);
+    width: 39px;
+    height: 51px;
+    display: inline-block;
+    margin: 15px;
+}
+
+#stein-respawn-screen-text {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.stein-respawn-screen-respawn-button {
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #3ac100;
+    background-color: #2c9200;
+    border-radius: 2px;
+    margin: 5px;
+}
+
+.stein-respawn-screen-respawn-button:hover {
+    background-color: #5ede26;
+}
+
+#stein-canvas {
+    z-index: 0;
+    position: absolute;
+    touch-action: none;
+}
+
+#stein-ui-canvas {
+    z-index: 1;
+    position: absolute;
+    touch-action: none;
+}
+
+#stein-overlay {
+    z-index: 2;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+#stein-chat-container {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(50vw - 290px);
+    max-height: 250px;
+}
+
+#stein-chat-content-container {
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0 5px 0 0;
+    border-bottom: 0;
+    border-left: 0;
+    flex: 1 1 auto;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-window-chat-content-container, #stein-guild-member-chat-content-container {
+    background-color: rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    flex: 1 1 auto;
+    border-radius: 2px
+}
+
+.stein-tabs {
+    white-space: nowrap;
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap-reverse;
+}
+
+.stein-tabs > *  {
+    margin-left: 4px;
+}
+
+.stein-tab {
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 0;
+    cursor: pointer;
+    padding: 4px 6px;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+.stein-chat-tab-edit {
+    background: url("/assets/images/icons/shortcuts_button_options.png"), #bc9266;
+    height: 20px;
+    width: 20px;
+    background-size: cover;
+    padding: 4px;
+}
+
+.stein-tab-selected {
+    color: rgb(182, 220, 135);
+}
+
+.stein-tab:hover {
+    color: #efba17;
+}
+
+.stein-chat-content {
+    word-wrap: break-word;
+    font-family: 'Roboto Condensed';
+    padding: 3px;
+    color: white;
+    font-weight: 500;
+}
+
+#stein-chat-container-input {
+    display: flex;
+    border-radius: 0;
+    border-bottom: 0;
+    border-left: 0;
+    flex: 0 0 auto;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-window-chat-container-input, #stein-guild-member-chat-container-input {
+    display: flex;
+    flex: 0 0 auto;
+    padding-top: 2px;
+    align-items: center;
+}
+
+#stein-chat-type, #stein-window-chat-type {
+    width: 90px;
+    flex: 0 1 auto;
+    margin: 0;
+}
+
+#stein-chat-input, #stein-window-chat-input {
+    flex: 1 1 auto;
+    margin: 0 2px;
+    width: 0;
+}
+
+#stein-guild-member-chat-input {
+    flex: 1 1 auto;
+    margin-right: 2px;
+    width: 0;
+}
+
+#stein-chat-send, #stein-window-chat-send, #stein-guild-member-chat-send {
+    flex: 0 1 auto;
+}
+
+.stein-chat-message-service {
+    color: #efba17;
+}
+
+.stein-chat-message-global {
+}
+
+.stein-chat-message-party {
+    color: #b6dc87;
+}
+
+.stein-chat-message-guild {
+    color: #afd4f5;
+}
+
+.stein-chat-message-whisper-from, .stein-chat-message-whisper-to {
+    color: #f7a0f3;
+}
+
+.stein-chat-message-global-name, .stein-chat-message-zone-name, .stein-chat-message-party-name,
+.stein-chat-message-whisper-name, .stein-chat-message-guild-name {
+    cursor: pointer;
+}
+
+.stein-chat-message-global-name:hover, .stein-chat-message-zone-name:hover, .stein-chat-message-party-name:hover,
+.stein-chat-message-whisper-name:hover, .stein-chat-message-guild-name:hover {
+    text-decoration: underline;
+}
+
+.stein-chat-message {
+    overflow: hidden;
+    display: flex;
+    line-height: 1.2em;
+}
+
+.stein-chat-message > * {
+    margin-right: 2px;
+    flex: 0 1 auto;
+    text-align: left;
+}
+
+.stein-chat-message-content {
+    display: block;
+    flex: 1 1 auto;
+}
+
+.stein-chat-message-zone-text, .stein-chat-message-party-text, .stein-chat-message-whisper-text,
+.stein-chat-message-global-text, .stein-chat-message-guild-text {
+    flex: 1 1 auto;
+    word-break: break-word;
+}
+
+.stein-chat-message-time {
+    white-space: nowrap;
+}
+
+#stein-chat-shortcuts-container {
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    touch-action: none;
+    pointer-events: none;
+}
+
+#stein-chat-shortcuts-forms {
+    user-select: none;
+    list-style: none;
+    border-radius: 0 5px 5px 0;
+    border-left: 0;
+    display: inline-block;
+    margin-bottom: 2px;
+}
+
+#stein-chat-shortcuts-button-container {
+    user-select: none;
+    list-style: none;
+    padding: 1px;
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-chat-toggle-button {
+    background-image: url("/assets/images/icons/button_chat.png");
+    width: 32px;
+    height: 32px;
+}
+
+#stein-interact-button {
+    background-image: url("/assets/images/icons/button_use.png");
+    width: 32px;
+    height: 32px;
+    z-index: 1;
+}
+
+#stein-fight-button {
+    background-image: url("/assets/images/icons/button_fight.png");
+    width: 32px;
+    height: 32px;
+    margin-left: -10px;
+    z-index: 1;
+}
+
+#stein-fight-button.disabled-button, #stein-interact-button.disabled-button {
+    z-index: 0;
+    background-color: #948c84;
+}
+
+#stein-chat-overlay {
+    position: absolute;
+    width: 80%;
+    top: 10%;
+    touch-action: none;
+    pointer-events: none;
+    z-index: 101;
+    margin: 0 10%;
+    display: flex;
+    flex-direction: column-reverse;
+    color: white;
+    font-family: 'Roboto Condensed';
+    font-weight: 500;
+    align-items: center;
+}
+
+#stein-chat-overlay > * {
+    opacity: 0;
+    animation-name: stein-chat-overlay-animation;
+    animation-duration: 5s;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    display: flex;
+    flex: 0 1 auto;
+}
+
+.stein-chat-new {
+    position: relative;
+}
+
+.stein-chat-new::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    height: 8px;
+    width: 8px;
+    background-color: rgb(239, 186, 23);
+    z-index: 200;
+    border-radius: 8px;
+    border: 1px solid #262119;
+}
+
+#stein-chat-window-options {
+    margin: -4px 2px 6px 0px;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-chat-container {
+        max-width: calc(50vw - 260px);
+        max-height: 170px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    #stein-chat-container {
+        display: none;
+    }
+    #stein-chat-shortcuts-forms {
+        margin-bottom: 0;
+        border-bottom: 0;
+        border-radius: 0 5px 0 0;
+        display: block;
+    }
+}
+
+@media screen and (min-width: 1051px) {
+    #stein-chat-overlay {
+        display: none;
+    }
+    #stein-chat-window-options {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    #stein-chat-shortcuts-forms {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+    }
+    #stein-chat-shortcuts-button-container {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+    }
+}
+
+
+@media screen and (max-width: 900px) {
+    #stein-fight-button {
+        margin-left: 1px;
+        margin-bottom: -10px;
+    }
+}
+
+#stein-chat-window {
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+}
+
+#stein-chat-window-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#stein-quick-bar-container {
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    touch-action: none;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+}
+
+#stein-quick-bar {
+    user-select: none;
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+    padding: 1px;
+}
+
+.stein-quick-bar-slot {
+    cursor: pointer;
+    display: table-cell;
+    height: calc((100vw - 112px) / 10);
+    width: calc((100vw - 112px) / 10);
+    border: 1px solid #eddca0;
+    border-radius: 3px;
+    position: relative;
+    max-height: 48px;
+    max-width: 48px;
+    min-height: 32px;
+    min-width: 32px;
+    background-color: #ccae7a;
+    box-shadow: 0px 0px 0 2px #262119;
+    margin: 3px;
+    background-size: cover;
+}
+
+#stein-quick-bar-frame {
+    display: flex;
+    flex-direction: column;
+    touch-action: auto;
+    pointer-events: auto;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 0;
+}
+
+#stein-experience-bar {
+    touch-action: auto;
+    pointer-events: auto;
+    user-select: none;
+    padding: 0;
+    height: 5px;
+    margin-bottom: -2px;
+}
+
+#stein-cast-bar-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 200px;
+    z-index: 105;
+    pointer-events: none;
+}
+
+#stein-cast-bar {
+    width: 200px;
+    height: 15px;
+    text-align: center;
+    background-color: rgba(255,255,255,0.5);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    background: linear-gradient(90deg, rgb(23, 109, 239) 50%, rgba(255,255,255,0.5) 50%);
+    margin: auto;
+    line-height: 14px;
+    font-size: 12px;
+    font-family: 'Roboto Condensed';
+    font-weight: 400;
+    padding: 1px 3px;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-quick-bar-frame {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+    }
+    #stein-experience-bar {
+        height: 3px;
+        margin: -1px;
+        border-radius: 3px 3px 0 0;
+    }
+    #stein-cast-bar {
+        text-shadow: 0px 0px;
+        color: rgb(38, 33, 25);
+        height: 9px;
+        line-height: 10px;
+        width: 150px;
+    }
+    .stein-quick-bar-slot {
+        margin: 1px;
+        border-radius: 1px;
+    }
+    #stein-cast-bar-container {
+        bottom: 150px;
+    }
+    #stein-quick-bar {
+        border: 0;
+        background: none;
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-cast-bar {
+        height: 7px;
+        line-height: 7px;
+        width: 100px;
+        font-size: 10px;
+        border-width: 1px;
+        font-weight: 300;
+        border-radius: 2px;
+    }
+    #stein-cast-bar-container {
+        bottom: 100px;
+    }
+}
+
+
+#stein-shortcuts-container {
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#stein-shortcuts-forms {
+    user-select: none;
+    list-style: none;
+    border-radius: 5px 0 0 0;
+    border-bottom: 0;
+    border-right: 0;
+}
+
+.stein-item-inventory-slot {
+    cursor: pointer;
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+    border-radius: 2px;
+    position: relative;
+    background-color: #ccae7a;
+    background-size: cover;
+    box-shadow: 0 0 0 1px #eddca0, 0 0 0 3px #262119;
+    flex: 0 0 auto;
+}
+.stein-item-damage-type {
+    height: 8px;
+    width: 8px;
+    box-shadow: 0 0 0 1px #262119;
+    border-radius: 1px;
+}
+
+.stein-item-damage-types {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    bottom: 1px;
+    left: 1px;
+    width: calc(100% - 2px);
+    flex-wrap: wrap-reverse;
+}
+
+.stein-item-damage-type {
+    height: 8px;
+    width: 8px;
+    box-shadow: 0 0 0 1px #262119;
+    border-radius: 2px;
+    margin-right: 1px;
+    margin-top: 1px;
+}
+
+.stein-item-inactive {
+    filter: contrast(0.5);
+}
+
+.stein-item-highlight-gold {
+    box-shadow: 0 0 0 1px #eddca0, 0 0 0 3px #262119, 0 0 3px 5px #ffc000
+}
+
+.stein-item-amount {
+    bottom: 0;
+    right: 2px;
+    position: absolute;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stein-item-hotkey {
+    top: 0;
+    right: 0;
+    position: absolute;
+    font-weight: 700;
+    font-size: 14px;
+    max-width: 90%;
+    overflow: hidden;
+    padding: 0 2px;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-item-inventory-slot {
+        width: 32px;
+        height: 32px;
+        border-radius: 1px;
+    }
+    .stein-item-amount {
+        font-size: 12px;
+    }
+    .stein-item-damage-type {
+        border-radius: 1px;
+        height: 5px;
+        width: 5px;
+    }
+}
+
+#stein-player-container {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    transform-origin: top left;
+    touch-action: none;
+    pointer-events: none;
+}
+
+#stein-player-forms {
+    border-radius: 0 0 5px 0;
+    border-top: 0;
+    border-left: 0;
+    touch-action: auto;
+    pointer-events: auto;
+    width: 200px;
+}
+
+#stein-target-container {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform-origin: top right;
+}
+
+#stein-target-forms {
+    border-radius: 0 0 0 5px;
+    border-top: 0;
+    border-right: 0;
+    touch-action: auto;
+    pointer-events: auto;
+    width: 200px;
+}
+
+.stein-player-resource, .stein-target-resource {
+    z-index: 100;
+    text-align: left;
+    line-height: 14px;
+    font-size: 12px;
+    user-select: none;
+    font-family: 'Roboto Condensed';
+    font-weight: 400;
+    margin-top: 2px;
+    padding: 1px 3px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.stein-name-panel {
+    box-shadow: inset 0 0 0 1px rgba(107, 81, 53, 0.4);
+    z-index: 100;
+    height: 18px;
+    font-size: 14px;
+    line-height: 18px;
+    user-select: none;
+    text-align: left;
+    display: flex;
+    padding: 1px;
+}
+
+#stein-party-invite-accept-invite-player {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#stein-player-name-panel, #stein-target-name {
+    user-select: none;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 2px;
+    flex: 1 1 auto;
+}
+
+#stein-player-level-panel, #stein-target-level {
+    z-index: 100;
+    left: 2px;
+    text-align: right;
+    padding-right: 2px;
+    flex: 0 1 auto;
+}
+
+#stein-player-party-leader {
+    width: 16px;
+    height: 16px;
+    background-size: contain;
+    background-image: url("/assets/images/party_leader_16_old.png");
+    z-index: 110;
+    display: inline-table;
+    background-repeat: no-repeat;
+    margin-top: -1px;
+    flex: 0 1 auto;
+}
+
+.stein-buff-time-text {
+    text-align: center;
+    font-family: 'Roboto Condensed';
+    font-weight: 400;
+    font-size: 14px;
+}
+
+#stein-player-buffs {
+    position: absolute;
+    left: 215px;
+    width: calc(50vw - 215px);
+    top: 3px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-player-buff {
+    width: 32px;
+    height: 32px;
+    background-image: url("/assets/images/buffs/default.png");
+    background-size: cover;
+    margin-right: 3px;
+    position: relative;
+}
+
+.stein-buff-stack-amount {
+    bottom: 0;
+    right: 3px;
+    position: absolute;
+}
+
+#stein-target-buffs {
+    position: absolute;
+    right: 215px;
+    width: calc(50vw - 215px);
+    top: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+}
+
+.stein-target-buff {
+    width: 32px;
+    height: 32px;
+    background-image: url("/assets/images/buffs/default.png");
+    background-size: cover;
+    margin-left: 3px;
+    position: relative;
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-player-resource, .stein-target-resource {
+        text-shadow: 0px 0px;
+        color: rgb(38, 33, 25);
+        height: 9px;
+        line-height: 10px;
+    }
+    .stein-name-panel {
+        height: 16px;
+        line-height: 16px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    .stein-buff-time-text {
+        font-size: 9px;
+    }
+    .stein-player-buff, .stein-target-buff {
+        width: 16px;
+        height: 16px;
+    }
+    #stein-player-buffs {
+        left: 132px;
+        width: calc(50vw - 132px);
+    }
+    #stein-target-buffs {
+        right: 132px;
+        width: calc(50vw - 132px);
+    }
+    #stein-player-forms, #stein-target-forms {
+        width: 130px;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        background: none;
+        margin-top: 0px;
+    }
+    #stein-player-forms {
+        margin-left: -2px;
+    }
+    #stein-target-forms {
+        margin-right: -2px;
+    }
+    .stein-player-resource, .stein-target-resource {
+        margin-top: -2px;
+    }
+}
+
+#stein-party-container {
+    border-top: 0;
+    border-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.stein-party-member {
+    user-select: none;
+    list-style: none;
+}
+
+.stein-party-member:not(:first-child) {
+    margin-top: 2px;
+}
+
+#stein-party-member-list {
+    width: 150px;
+}
+
+#stein-party-member-list, #stein-party-invite, #stein-party-invite-member-container, #stein-party-invite-accept-container {
+    border-radius: 0 0 5px 0;
+    border-top: 0;
+    border-left: 0;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-party-invite-button, #stein-party-leave-button,
+#stein-party-invite-member-invite-button, #stein-party-invite-member-cancel-button,
+#stein-party-invite-accept-accept-button, #stein-party-invite-accept-decline-button{
+    line-height: 14px;
+}
+
+#stein-party-invite {
+    display: inline-block;
+}
+
+#stein-party-invite-member-container, #stein-party-invite-accept-container {
+    display: block;
+}
+
+#stein-party-invite-member-player-name {
+    width: 130px;
+}
+
+#stein-party-invite-accept-container {
+    width: 150px;
+}
+
+#stein-login-screen-login-button, #stein-login-screen-register-button, #stein-login-screen-join-button,
+#stein-login-screen-logout-button {
+    margin-top: 3px;
+    margin-right: 4px;
+    min-width: 50px;
+}
+
+.stein-party-member-resource {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    text-align: left;
+    font-size: 12px;
+    user-select: none;
+    line-height: 14px;
+    font-weight: 400;
+    font-family: 'Roboto Condensed';
+    margin-top: 2px;
+    padding: 1px 3px;
+}
+.stein-party-member-resource:not(:first-child) {
+    height: 5px;
+    font-size: 0;
+}
+
+.stein-party-member-name-panel {
+    box-shadow: inset 0 0 0 1px rgba(107, 81, 53, 0.4);
+    line-height: 14px;
+    user-select: none;
+    text-align: left;
+    display: flex;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stein-party-member-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 2px;
+    flex: 1 1 auto;
+}
+
+.stein-party-member-level {
+    user-select: none;
+    text-align: right;
+    padding-right: 2px;
+    flex: 0 1 auto;
+}
+
+.stein-party-member-leader {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    background-image: url("/assets/images/party_leader_16_old.png");
+    flex: 0 1 auto;
+    margin-top: -2px;
+}
+
+#stein-party-invite-window-invite-button, #stein-party-invite-window-cancel-button {
+    margin: 6px 0 0;
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-party-member-resource {
+        text-shadow: 0px 0px;
+        color: rgb(38, 33, 25);
+        height: 9px;
+        line-height: 10px;
+    }
+    .stein-party-member-name-panel {
+        padding: 1px;
+    }
+    .stein-party-member-resource:not(:first-child) {
+        height: 2px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-party-member-list {
+        width: 90px;
+    }
+    #stein-party-member-list, #stein-party-invite, #stein-party-invite-member-container,
+    #stein-party-invite-accept-container {
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin-top: -2px;
+        margin-left: -2px;
+    }
+    .stein-party-member-name-panel {
+        font-size: 12px;
+        line-height: 12px;
+    }
+    .stein-party-member-resource {
+        margin-top: -2px;
+    }
+    .stein-party-member-resource:not(:first-child) {
+        height: 0px;
+    }
+    .stein-party-member:not(:first-child) {
+        margin-top: -2px;
+    }
+    #stein-party-container > button {
+        margin: 0;
+    }
+    #stein-party-invite-button, #stein-party-invite-member-invite-button, #stein-party-invite-accept-accept-button {
+        margin-right: -3px;
+    }
+    #stein-party-invite-member-player-name {
+        margin-bottom: -2px;
+    }
+    #stein-party-invite-accept-invite-player {
+        margin-left: 5px;
+        margin-top: 3px;
+    }
+}
+
+#stein-shortcuts-button-container {
+    user-select: none;
+    list-style: none;
+    padding: 1px;
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-shortcuts-button-popup-container {
+    position: absolute;
+    right: 4px;
+    bottom: 58px;
+    user-select: none;
+    list-style: none;
+    padding: 1px;
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+    flex-direction: column;
+}
+
+.stein-toggle-button {
+    cursor: pointer;
+    user-select: none;
+    height: 42px;
+    width: 42px;
+    border: 1px solid #eddca0;
+    border-radius: 1px;
+    box-shadow: 0px 0px 0 2px #262119;
+    margin: 3px;
+    background-color: rgb(219, 187, 131);
+    background-size: contain;
+}
+
+#stein-stats-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_stats.png");
+}
+
+#stein-professions-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_professions.png");
+}
+
+#stein-mod-panel-toggle-button {
+    background-image: url("/assets/images/icons/moderator.png");
+}
+
+#stein-collection-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_collection.png");
+}
+
+#stein-professions-help-button {
+    background-image: url("/assets/images/items/fragezeichen.png");
+    width: 48px;
+    height: 48px;
+}
+
+#stein-inventory-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_inventory.png");
+}
+
+#stein-map-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_map.png");
+}
+
+#stein-hub-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_hub.png");
+}
+
+#stein-quest-log-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_questlog.png");
+}
+
+#stein-options-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_options.png");
+}
+
+#stein-plus-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_plus.png");
+}
+
+#stein-minus-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_minus.png");
+}
+
+#stein-shop-toggle-button {
+    background-image: url("/assets/images/icons/shortcuts_button_store.png");
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-toggle-button {
+        width: 28px;
+        height: 28px;
+    }
+    #stein-shortcuts-button-popup-container {
+        bottom: 44px;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    #stein-shortcuts-forms {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+    }
+    #stein-shortcuts-button-container {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+    }
+    #stein-shortcuts-button-popup-container {
+        border: none;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+        right: 0;
+        bottom: 32px;
+    }
+    .stein-toggle-button {
+        margin: 1px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    #stein-shortcuts-button-container {
+        flex-direction: column;
+    }
+    #stein-chat-shortcuts-button-container {
+        flex-direction: column-reverse;
+    }
+    #stein-shortcuts-button-popup-container {
+        right: 32px;
+        bottom: 0;
+        flex-direction: row;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    #stein-shortcuts-container, #stein-chat-shortcuts-container {
+        bottom: 41px;
+    }
+}
+
+#stein-stats-window-frame {
+    display: flex;
+    flex-direction: column;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-stats-window {
+    overflow: auto;
+    font-size: 16px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+}
+
+#stein-inventory-window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#stein-inventory-window-frame {
+    user-select: none;
+    touch-action: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-bank-window-frame {
+    touch-action: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-bank-window {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-bank-items {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 560px;
+}
+
+#stein-bank-items > .stein-item-inventory-slot {
+    margin: 4px;
+}
+
+#stein-bank-extend-gold, #stein-bank-extend-gems {
+    width: 110px;
+    margin: 5px;
+}
+
+.stein-bank-description {
+    margin: 2px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    max-width: 556px;
+}
+
+#stein-bank-actions {
+    margin: 5px 2px 2px;
+}
+
+.stein-bank-actions-buttons {
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+}
+
+.stein-bank-actions-description {
+    display: inline-block;
+    font-size: 16px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-bank-window {
+        max-width: 420px;
+    }
+}
+
+#stein-mailbox-window-frame {
+    touch-action: auto;
+    pointer-events: auto;
+    width: 460px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-mailbox-mail-list-container, #stein-mailbox-mail-edit-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.stein-mailbox-mail-entry {
+    cursor: pointer;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.stein-mailbox-mail-entry:hover {
+    background: rgb(219, 187, 131);
+}
+
+.stein-mailbox-mail-subject {
+    color: #efba17;
+    border-bottom: 2px solid black;
+    vertical-align: top;
+    padding-bottom: 2px;
+}
+
+.stein-mailbox-mail-info {
+    display: flex;
+}
+
+.stein-mailbox-mail-info-spacer {
+    flex: 1;
+}
+
+.stein-mailbox-mail-gems-container, .stein-mailbox-mail-gold-container, .stein-mailbox-mail-attachments-container {
+    margin-left: 8px;
+}
+
+.stein-mailbox-mail-attachments-icon {
+    width: 16px;
+    height: 16px;
+    background-image: url(/assets/images/icons/mail_attachments.png);
+    display: inline-block;
+    background-size: cover;
+    margin-bottom: -2px;
+}
+
+.stein-mailbox-mail-context {
+    display: inline-block;
+    vertical-align: top;
+    margin: 4px;
+    flex: 1 1 auto;
+}
+
+.stein-mailbox-mail-actions {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 8px;
+}
+
+.stein-mailbox-mail-delete {
+    width: 40px;
+    height: 40px;
+    background-image: url("/assets/images/icons/icon_trash.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#stein-mailbox-mail-list {
+    margin-top: 2px;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+.stein-mailbox-mail-entry > .stein-item-inventory-slot {
+    margin: 2px;
+}
+
+.stein-mailbox-mail-entry:not(:last-child) {
+    margin-bottom: 2px;
+}
+
+#stein-mail-actions {
+    display: flex;
+    align-items: center;
+}
+
+#stein-mail-actions > *:not(:first-child) {
+    margin-left: 4px;
+}
+
+#stein-mail-action-spacer {
+    flex: 1 1 auto;
+}
+
+#stein-mail-cost {
+    text-align: right;
+}
+
+#stein-mail-sender-container, #stein-mail-receiver-container, #stein-mail-subject-container {
+    display: flex;
+    align-items: center;
+}
+
+#stein-mail-sender-label, #stein-mail-receiver-label, #stein-mail-subject-label {
+    width: 75px;
+}
+
+#stein-mail-sender, #stein-mail-receiver, #stein-mail-subject {
+    flex: 1 1 auto;
+}
+
+#stein-mail-text {
+    flex: 1 1 auto;
+    width: calc(100% - 4px);
+    resize: none;
+}
+
+#stein-mail-attachment-container {
+    display: flex;
+}
+
+#stein-mail-attachment-items > .stein-item-inventory-slot {
+    margin: 3px 5px -1px 3px;
+}
+
+#stein-mail-attachment-gold-container {
+    display: flex;
+    align-items: center;
+}
+
+#stein-mail-attachment-gold {
+    width: 75px;
+    margin-left: 3px;
+}
+
+#stein-mail-attachment-claim-gold-container, #stein-mail-attachment-claim-gems-container {
+    display: flex;
+    align-items: center;
+    margin-left: 3px;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-mailbox-mail-list-container, #stein-mailbox-mail-edit-container {
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-mailbox-mail-list-container, #stein-mailbox-mail-edit-container {
+
+    }
+}
+
+#stein-professions-window-frame {
+    touch-action: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    height: min(600px, 100vh - 12px);
+    width: min(577px, 100vw - 12px);
+}
+
+#stein-professions-window {
+    user-select: none;
+    display: flex;
+    overflow: hidden;
+    flex: 1 1 auto;
+}
+
+#stein-professions-side-bar {
+    margin-right: 2px;
+}
+
+#stein-professions-main-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#stein-professions-recipe-list-container {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.stein-professions-skill-slot {
+    margin: 4px;
+}
+
+.stein-professions-side-bar-title {
+    color: #efba17;
+    margin-left: 3px;
+}
+
+.stein-professions-main-view-title {
+    text-align: center;
+}
+
+#stein-professions-entries {
+    display: flex;
+    flex-direction: column;
+    margin: 0 2px;
+}
+
+.stein-professions-side-bar-entry {
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 2px);
+    background-position-y: calc(50% - 1px);
+    margin: 3px 0;
+    text-align: left;
+    width: 164px;
+}
+
+.stein-professions-side-bar-entry-level{
+    float: right;
+    margin-right: 16px;
+}
+
+#stein-professions-current-skills {
+}
+
+#stein-professions-overview-container {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+#stein-professions-overview-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    justify-content: space-between;
+    margin-left: 4px;
+}
+
+#stein-professions-overview-header {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 2px;
+}
+
+#stein-professions-overview-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    background-size: cover;
+    text-align: right;
+    flex-direction: column-reverse;
+}
+
+#stein-professions-overview-name {
+    color: #efba17;
+    flex: 1 1 auto;
+}
+
+#stein-professions-overview-level, #stein-professions-overview-level-label {
+    text-shadow: none;
+    color: rgb(38, 33, 25);
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    margin-right: 2px;
+    flex: 0 1 auto;
+}
+
+#stein-professions-overview-icon-level {
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    display: none;
+}
+
+#stein-professions-overview-experience {
+    text-shadow: none;
+    color: rgb(38, 33, 25);
+    text-align: center;
+    background: linear-gradient(90deg, #4ae9ef 70%, #dbbb83 70%);
+    font-family: "Roboto Condensed";
+    font-size: 12px;
+}
+
+#stein-professions-recipe-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 0;
+    height: 100%;
+}
+
+.stein-professions-recipe-entry-level {
+    width: 32px;
+    display: inline-block;
+}
+
+.stein-professions-recipe-entry-experience {
+    float: right;
+}
+
+.stein-professions-recipe-entry {
+    cursor: pointer;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-weight: 600;
+    padding: 1px 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.stein-professions-recipe-entry:hover {
+    background-color: #dbbb83;
+}
+
+.professions-level-high {
+    color: rgb(239, 23, 38);
+}
+
+.professions-level-medium {
+    color: rgb(239, 186, 23);
+}
+
+.professions-level-normal {
+    color: rgb(95, 216, 36);
+}
+
+#stein-professions-workbench, #stein-professions-gather, #stein-professions-loading {
+}
+
+#stein-professions-workbench-item-name, #stein-professions-gather-item-name {
+    color: #efba17;
+    width: 100%;
+    vertical-align: top;
+    margin-left: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#stein-professions-workbench-item-level, #stein-professions-gather-sub-text {
+    margin: 3px;
+    text-shadow: none;
+    color: rgb(38, 33, 25);
+    font-size: 12px;
+}
+
+#stein-professions-gather-description, #stein-professions-workbench-description {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    text-shadow: none;
+    color: rgb(38, 33, 25);
+    font-size: 12px;
+}
+
+#stein-professions-workbench-production-time {
+    text-shadow: none;
+    color: rgb(38, 33, 25);
+    float: right;
+}
+
+#stein-professions-workbench-reward-item, #stein-professions-gather-item {
+    margin: 4px 3px;
+}
+
+#stein-professions-workbench-resource-items {
+    margin: -1px;
+    margin-bottom: 1px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-professions-workbench-resource-item {
+    margin: 4px;
+}
+
+#stein-professions-workbench-actions {
+    display: flex;
+    align-items: center;
+    margin: -1px 0;
+}
+
+#stein-professions-workbench-actions > *:not(:first-child) {
+    margin-left: 2px;
+}
+
+#stein-professions-workbench-craft-amount {
+    width: 45px;
+    padding-left: 5px;
+    height: 20px;
+}
+
+#stein-professions-workbench-craft-max {
+    margin-right: 4px;
+}
+
+#stein-professions-workbench-craft-progress {
+    background-color: rgb(219, 187, 131);
+    font-weight: 800;
+    font-size: 12px;
+    font-family: 'Roboto Condensed';
+}
+
+#stein-professions-workbench-header, #stein-professions-gather-header {
+    display: flex;
+}
+
+#stein-professions-workbench-info, #stein-professions-gather-info {
+    flex: 1 1 auto;
+    margin-left: 3px;
+    display: flex;
+    flex-direction: column;
+    width: 0;
+}
+
+#stein-professions-current-skills-overview {
+    display: none;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-professions-window-frame {
+        width: min(416px, 100vw - 12px);
+    }
+    #stein-professions-entries {
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        flex-wrap: wrap;
+        width: 120px;
+    }
+    .stein-professions-side-bar-entry {
+        width: 34px;
+        height: 34px;
+        margin: 3px;
+        background-size: 32px;
+        background-position: center;
+        position: relative;
+    }
+    .stein-professions-side-bar-entry-level {
+        position: absolute;
+        bottom: -4px;
+        right: 2px;
+        color: white;
+        text-shadow: 1px 1px 0 #262119, -1px 1px 0 #262119, 1px -1px 0 #262119, -1px -1px 0 #262119, 0 1px 0 #262119, 0 -1px 0 #262119, -1px 0 0 #262119, 1px 0 0 #262119;
+        font-family: "Roboto Condensed";
+        font-weight: 500;
+        font-size: 12px;
+        margin-right: 0;
+        float: none;
+    }
+    .stein-professions-side-bar-entry-name {
+        display: none;
+    }
+    #stein-professions-workbench-craft-progress {
+        line-height: 11px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-professions-window {
+        flex-direction: column;
+    }
+    #stein-professions-entries {
+        width: 100%;
+        justify-content: center;
+    }
+    #stein-professions-side-bar {
+        margin-right: 0px;
+        margin-top: -1px;
+    }
+    .stein-professions-side-bar-entry {
+        width: 31px;
+        height: 20px;
+        background-size: 16px;
+        background-position: left;
+        line-height: 24px;
+    }
+    .stein-professions-side-bar-title {
+        display: none;
+    }
+    .stein-professions-main-view-title {
+        display: none;
+    }
+    #stein-professions-current-skills-side-bar {
+        display: none;
+    }
+    #stein-professions-recipe-list-container, #stein-professions-workbench-container,
+    #stein-professions-gather-container, #stein-professions-loading-container {
+        margin-top: 2px;
+    }
+    #stein-professions-overview-icon {
+        width: 32px;
+        height: 32px;
+    }
+    #stein-professions-overview-info {
+        margin-top: -2px;
+    }
+    #stein-professions-overview-experience {
+        line-height: 8px;
+        margin-top: -1px;
+    }
+    #stein-professions-workbench-resource-title {
+        display: none;
+    }
+    #stein-professions-workbench-resource-items {
+        margin-top: 1px;
+    }
+    #stein-professions-current-skills-overview {
+        margin: 0 1px -4px 0;
+        display: block;
+    }
+    #stein-professions-overview {
+        display: flex;
+    }
+    #stein-professions-overview-name {
+        font-size: 14px;
+    }
+    #stein-professions-overview-level-label {
+        display: none;
+    }
+    #stein-professions-overview-level {
+        display: none;
+    }
+    #stein-professions-overview-icon-level {
+        display: initial;
+    }
+}
+
+#stein-collection-window-frame {
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+    touch-action: auto;
+}
+
+#stein-collection-window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#stein-collection-group-container {
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.stein-collection-group-item-container {
+    margin: -1px;
+    margin-bottom: 1px;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 560px;
+}
+
+.stein-collection-group-item {
+    margin: 4px;
+    filter: contrast(0.7) grayscale(1);
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-collection-group-item-container {
+        max-width: 400px;
+    }
+}
+
+#stein-moderator-panel-window-frame {
+    display: flex;
+    touch-action: auto;
+    pointer-events: auto;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+#stein-moderator-panel-window-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#stein-moderator-panel-content-entities, #stein-moderator-panel-content-spawn-entity {
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+#stein-moderator-panel-entities-list {
+    overflow: auto;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: 'Roboto Condensed';
+}
+
+.stein-moderator-panel-entities-entry {
+    display: flex;
+}
+
+.stein-moderator-panel-entities-entry-world-id {
+    width: 250px;
+}
+
+.stein-moderator-panel-entities-entry-entity-type {
+    width: 100px;
+}
+
+.stein-moderator-panel-entities-entry-name {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stein-moderator-panel-entities-entry:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#stein-moderator-panel-content-spawn-entity-input {
+    flex: 1 1 auto;
+    width: calc(100% - 4px);
+}
+
+@media screen and (max-width: 600px) {
+    .stein-moderator-panel-entities-entry-world-id  {
+        display: none;
+    }
+}
+
+.stein-chat-message-muted {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-size: cover;
+    background-image: url("/assets/images/icons/muted.png");
+    margin: 0px 5px -2px 0;
+}
+
+.stein-chat-message-icon-account, .stein-chat-message-icon-moderator, .stein-chat-message-icon-admin {
+    width: 1em;
+    height: 1em;
+    background-size: contain;
+    margin-top: 0.1em;
+    margin-right: 0.2em;
+    margin-bottom: -0.2em;
+    display: inline-block;
+    filter: drop-shadow(1px 0px 0 white) drop-shadow(-1px 0px 0 white) drop-shadow(0px -1px 0 white) drop-shadow(0px 1px 0 white);
+}
+
+.stein-chat-message-icon-account {
+    background-image: url(/assets/images/icons/account.png);
+}
+
+.stein-chat-message-icon-moderator {
+    background-image: url(/assets/images/icons/moderator.png);
+}
+
+.stein-chat-message-icon-admin {
+    background-image: url(/assets/images/icons/admin.png);
+}
+
+#stein-translation-panel-window-frame {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+#stein-translation-panel-window-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+#stein-translation-content {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+#stein-translation-edit {
+    margin-left: 2px;
+}
+
+#stein-translation-edit-key {
+    width: 300px;
+}
+
+#stein-translation-edit-source, #stein-translation-edit-edit {
+    width: 500px;
+    height: 100px;
+}
+
+#stein-translation-edit-description {
+    width: 500px;
+    height: 50px;
+}
+
+#stein-trade-window-frame {
+    display: flex;
+    flex-direction: column;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-trade-window {
+    overflow: auto;
+}
+
+#stein-player-trade-window-frame {
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-player-trade-window {
+    max-width: 391px;
+}
+
+#stein-player-trade-partner, #stein-player-trade-player {
+    display: inline-block;
+    width: 176px;
+}
+
+#stein-player-trade-partner-content.stein-player-trade-content-locked,
+#stein-player-trade-player-content.stein-player-trade-content-locked {
+    border-color: #84b13d;
+    background-color: #a5df48;
+}
+
+#stein-player-trade-partner-gold, #stein-player-trade-player-gold {
+    text-align: right;
+    display: inline-block;
+    width: 100%;
+    line-height: 29px;
+}
+
+#stein-player-trade-player-gold-amount {
+    width: calc(100% - 32px);
+    text-align: right;
+    padding: 0 3px;
+}
+
+#stein-player-trade-player-items > *, #stein-player-trade-partner-items > * {
+    margin: 4px;
+}
+
+#stein-player-trade-player-items, #stein-player-trade-partner-items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-gold-icon {
+    width: 18px;
+    height: 18px;
+    background-image: url("/assets/images/currency_gold.png");
+    display: inline-block;
+    background-size: cover;
+}
+
+.stein-gem-icon {
+    width: 18px;
+    height: 18px;
+    background-image: url("/assets/images/currency_gem.png");
+    display: inline-block;
+    background-size: cover;
+}
+
+.stein-premium-icon {
+    width: 18px;
+    height: 18px;
+    background-image: url("/assets/images/premium.png");
+    display: inline-block;
+    background-size: cover;
+}
+
+#stein-player-trade-player-actions {
+    text-align: right;
+    margin-top: 2px;
+}
+
+#stein-player-trade-player-name {
+    text-align: right;
+}
+
+#stein-player-trade-partner-name, #stein-player-trade-player-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-player-trade-partner, #stein-player-trade-player {
+        width: 128px;
+    }
+}
+
+#stein-quest-log-window-frame {
+    user-select: none;
+    touch-action: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-quest-log-window {
+    user-select: none;
+    overflow: auto;
+    flex: 1 1 auto;
+    max-width: 500px;
+}
+
+#stein-window-container-left {
+    z-index: 100;
+    position: absolute;
+    touch-action: none;
+    pointer-events: none;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#stein-window-container-right {
+    z-index: 100;
+    position: absolute;
+    touch-action: none;
+    pointer-events: none;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+#stein-window-container-right > *, #stein-window-container-left > * {
+    max-width: calc(100% - 12px);
+    max-height: calc(100% - 12px);
+}
+
+#stein-window-container-hidden {
+    display: none;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    #stein-window-container-left {
+        top: 0;
+        width: 100%;
+        height: 50%;
+        flex-direction: column;
+    }
+    #stein-window-container-right {
+        bottom: 0;
+        width: 100%;
+        height: 50%;
+        flex-direction: column-reverse;
+    }
+}
+
+#stein-tooltip {
+    z-index: 200;
+    position: absolute;
+    color: #262119;
+    user-select: none;
+    padding: 2px;
+    background-color: #dbbb83;
+    border: 2px solid #262119;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#stein-tooltip-background {
+    z-index: 199;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#stein-texture-loading-info {
+    position: absolute;
+    margin: auto;
+    width: 100vw;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+    touch-action: none;
+    color: white;
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    transition: opacity 500ms 1562.23ms;
+}
+
+.stein-tooltip-buttons {
+    position: absolute;
+    top: calc(100% + 4px);
+    width: calc(100% - 4px);
+    display: flex;
+    justify-content: center;
+}
+
+.stein-tooltip-button {
+    margin: 2px 3px;
+}
+
+#stein-context-menu {
+    z-index: 199;
+    position: absolute;
+    color: #262119;
+    user-select: none;
+    background-color: #dbbb83;
+}
+
+.stein-context-menu-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.stein-context-menu-item:hover {
+    background-color: #eddca0;
+}
+
+.window-close-button {
+    cursor: pointer;
+    float: right;
+    font-size: 22px;
+    background-color: #ef1726;
+    border-radius: 3px;
+    border: 2px solid #262119;
+    width: 18px;
+    color: #262119;
+    height: 18px;
+    line-height: 15px;
+    box-shadow: inset 0px 0px 0 1px rgba(255, 234, 169, 0.3);
+    font-weight: 700;
+    font-family: 'Fira Sans Condensed';
+}
+
+#stein-login-screen-app-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+    display: flex;
+}
+
+#stein-login-screen-app-buttons > * {
+    margin-left: 4px;
+}
+
+.stein-login-screen-logo {
+    background-size: contain;
+    height: 30vh;
+    width: 85vw;
+    background-image: url("/assets/images/login-logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.stein-dialog-quest-reward-selected {
+    box-shadow: 0 0 0 1px #eddca0, 0 0 0 3px #efba17;
+}
+
+.stein-dialog-quest-reward-missing {
+    box-shadow: 0 0 0 1px #eddca0, 0 0 0 3px #ef1726;
+}
+
+.stein-dialog-quest-reward-items > * {
+    margin: 3px;
+}
+
+.stein-dialog-quest-reward-items > .stein-item-inventory-slot:not(:first-child) {
+    margin-left: 5px;
+}
+
+.quest-log-quest-reward-items {
+    margin-top: 5px;
+}
+
+.quest-log-quest-reward-items > * {
+    display: inline-block;
+    margin: 4px;
+}
+
+.quest-log-quest-objectives-items {
+    display: flex;
+    margin-left: 5px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+
+.quest-log-quest-objective-item {
+    display: flex;
+    align-items: center;
+}
+
+.quest-log-quest-actions {
+    float: right;
+}
+
+.quest-log-quest-track-label {
+    margin-bottom: -3px;
+}
+
+.quest-log-quest-track-text {
+    margin: 3px 5px 3px 3px;
+}
+
+#quest-log-options {
+    margin-bottom: 8px;
+    margin-top: -4px;
+}
+
+#stein-quest-log-cancel-container-frame, #stein-inventory-trash-confirm-container-frame {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    touch-action: none;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-inventory-trash-confirm-item {
+    margin: 4px;
+}
+
+#stein-quest-log-cancel-button-cancel, #stein-inventory-trash-confirm-button-trash {
+    margin-right: 3px;
+    margin-top: 5px;
+}
+
+#stein-quest-log-cancel-container, #stein-inventory-trash-confirm-container {
+    touch-action: auto;
+    pointer-events: auto;
+    text-align: center;
+}
+
+#stein-profession-reduce-time-container-frame {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    touch-action: none;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-profession-reduce-time-button-cancel {
+    margin-right: 3px;
+    margin-top: 5px;
+}
+
+#stein-profession-reduce-time-container {
+    max-width: 400px;
+    touch-action: auto;
+    pointer-events: auto;
+    text-align: center;
+}
+
+#stein-profession-reduce-time-premium-currency {
+    color: #4ae9ef;
+    padding-right: 3px;
+}
+
+#stein-item-amount-container-frame {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    touch-action: none;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-item-amount-container {
+    max-width: 400px;
+    touch-action: auto;
+    pointer-events: auto;
+    text-align: center;
+}
+
+#stein-item-amount-value {
+    width: 50px;
+    padding: 0 4px;
+}
+
+#stein-item-amount-cancel, #stein-item-amount-confirm, #stein-item-amount-all-confirm {
+    margin-top: 5px;
+    margin-right: 3px;
+}
+
+#stein-feedback-container-frame, #stein-generic-dialog-overlay {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    touch-action: none;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-feedback-container {
+    text-align: center;
+    flex: 0 1 auto;
+    touch-action: auto;
+    pointer-events: auto;
+    min-width: 200px;
+}
+
+#stein-feedback-select-feedback, #stein-feedback-select-report-bug, #stein-feedback-select-report-player {
+    margin-bottom: 6px;
+}
+
+#stein-feedback-feedback-text, #stein-feedback-bug-text, #stein-feedback-report-text {
+    width: 318px;
+    min-width: 318px;
+    max-width: 318px;
+    height: 140px;
+    min-height: 22px;
+    max-height: 300px;
+}
+
+.stein-feedback-happiness-container {
+    margin-top: 5px;
+}
+
+.stein-feedback-happiness {
+    width: 48px;
+    height: 48px;
+    background-image: url("/assets/images/icons/happiness.png");
+    display: inline-block;
+    cursor: pointer;
+    background-position-y: 48px;
+}
+
+.stein-feedback-happiness:hover, .stein-feedback-happiness-selected {
+    background-position-y: 0;
+}
+
+#stein-feedback-happiness-1 {
+    background-position-x: 0;
+}
+
+#stein-feedback-happiness-2 {
+    background-position-x: -48px;
+}
+
+#stein-feedback-happiness-3 {
+    background-position-x: -96px;
+}
+
+#stein-feedback-happiness-4 {
+    background-position-x: -144px;
+}
+
+#stein-feedback-happiness-5 {
+    background-position-x: -192px;
+}
+
+#stein-dialog-window-container {
+    z-index: 104;
+    position: absolute;
+    bottom: 81px;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    touch-action: none;
+    pointer-events: none;
+}
+
+#stein-dialog-window-frame {
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-dialog-window {
+    max-width: 500px;
+    max-height: min(500px, 100vh - 125px);
+    overflow-y: auto;
+    width: calc(100vw - 20px);
+}
+
+#stein-dialog-items {
+    list-style: none;
+    padding: 2px;
+    margin: 0;
+}
+
+.stein-dialog-item {
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+}
+
+.stein-dialog-item-text, .stein-dialog-item-quest {
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.stein-dialog-item-header {
+    font-size: 1.3em;
+    color: #efba17;
+    font-family: "Fira Sans Condensed";
+    font-weight: 800;
+}
+
+.stein-dialog-icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: url("/assets/images/npc_head_icons.png");
+    vertical-align: bottom;
+    margin: -6px -1px -6px -6px;
+}
+
+.stein-dialog-icon-accept, .stein-dialog-icon-finish {
+    background-position: -32px -32px;
+}
+
+.stein-dialog-icon-decline {
+    background-position: 0px -32px;
+}
+
+.stein-dialog-icon-shop, .stein-dialog-icon-trade {
+    background-position: 0px 0px;
+}
+
+.stein-dialog-icon-startquest {
+    background-position: -32px 0px;
+}
+
+.stein-dialog-icon-finishquest {
+    background-position: -96px 0px;
+}
+
+.stein-dialog-icon-highquest, .stein-dialog-icon-activequest {
+    background-position: -64px 0px;
+}
+
+.stein-dialog-icon-talkto {
+    background-position: -64px -32px;
+}
+
+.stein-dialog-icon-bank {
+    background-position: -96px -32px;
+}
+
+.stein-dialog-icon-premium-shop {
+    background-position: 0px -64px;
+}
+
+.stein-dialog-icon-mailbox {
+    background-position: -32px -64px;
+}
+
+.stein-dialog-icon-duel {
+    background-position: -64px -64px;
+}
+
+.stein-dialog-icon-teleport {
+    background-position: -96px -64px;
+}
+
+.stein-dialog-disabled-item {
+    color: #dad6cf;
+    background-color: #dbbb83b8;
+    margin: 5px 2px 2px;
+    padding: 1px 6px;
+    box-shadow: 0 0 0 2px rgb(38 33 25 / 50%);
+    border-radius: 1px;
+    border: 1px solid rgba(107, 81, 53, 0.2);
+    min-height: 22px;
+    box-sizing: border-box;
+    display: inline-block;
+    font-weight: 800;
+    text-align: center;
+    align-items: flex-start;
+    line-height: 20px;
+    width: calc(100% - 4px);
+    text-shadow: 1px 1px 0 #26211980,
+    -1px 1px 0 #26211980,
+    1px -1px 0 #26211980,
+    -1px -1px 0 #26211980,
+    0 1px 0 #26211980,
+    0 -1px 0 #26211980,
+    -1px 0 0 #26211980,
+    1px 0 0 #26211980;
+}
+
+.stein-dialog-selectable-item {
+    cursor: pointer;
+    color: #d7f5b1;
+    background-color: #dbbb83;
+    margin: 5px 2px 2px;
+    padding: 1px 6px;
+    box-shadow: 0 0 0 2px rgb(38 33 25);
+    border-radius: 1px;
+    border: 1px solid rgba(107, 81, 53, 0.4);
+    min-height: 22px;
+    box-sizing: border-box;
+    display: inline-block;
+    font-weight: 800;
+    text-align: center;
+    align-items: flex-start;
+    line-height: 20px;
+    width: calc(100% - 4px);
+}
+
+.stein-dialog-selectable-item:hover  {
+    background-color: #eddca0;
+}
+
+.stein-dialog-item-accept {
+    width: calc(50% - 6px);
+    margin-right: 6px;
+}
+
+.stein-dialog-item-decline {
+    width: calc(50% - 6px);
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-dialog-window-container {
+        bottom: 63px;
+    }
+    #stein-dialog-window {
+        max-height: min(500px, 100vh - 107px);
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-dialog-window-container {
+        bottom: 44px;
+    }
+    #stein-dialog-window {
+        max-height: min(500px, 100vh - 88px);
+    }
+}
+
+#stein-trade-window-sell-area {
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+}
+
+#stein-trade-window-buyable-items {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2px 2px 0 2px;
+    width: min(440px, 50vw - 22px);
+    height: 282px;
+    align-content: flex-start;
+}
+
+.stein-trade-window-buyable-item-decorator {
+    display: flex;
+    margin-left: 5px;
+    vertical-align: top;
+    flex: 1 1 auto;
+    flex-direction: column;
+    width: 0px;
+}
+
+.stein-trade-window-buyable-item-name {
+    white-space: nowrap;
+    max-width: 150px;
+    text-overflow: ellipsis;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0 2px;
+}
+
+.stein-trade-window-buyable-item-price-item {
+    color: lightgray;
+    margin-left: 3px;
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 12px;
+    font-family: 'Roboto Condensed';
+}
+
+.stein-trade-window-buyable-item-price-item-icon {
+    background-size: cover;
+    width: 16px;
+    height: 16px;
+    margin-bottom: -4px;
+    margin-left: 3px;
+    border-width: 1px;
+    border-radius: 1px;
+    box-shadow: 0px 0px 0 1px #262119;
+}
+
+.stein-trade-window-buyable-item-price-gold {
+    color: #efba17;
+    margin-left: 3px;
+    display: inline-block;
+    font-size: 14px;
+    font-family: 'Roboto Condensed';
+}
+
+.stein-trade-window-buyable-item-price-gems {
+    color: #4ae9ef;
+    margin-left: 3px;
+    display: inline-block;
+    font-size: 14px;
+    font-family: 'Roboto Condensed';
+}
+
+.stein-trade-window-buyable-item {
+    cursor: pointer;
+    width: 50%;
+    margin-bottom: 6px;
+    display: flex;
+}
+
+.stein-trade-window-buyable-item > .stein-item-inventory-slot {
+    margin: 1px;
+}
+
+#stein-trade-window-sell-all-trash {
+    flex: 0 0 auto;
+    margin-right: 4px;
+}
+
+#stein-trade-window-buy-gems {
+    flex: 0 0 auto;
+}
+
+#stein-trade-window-buy-pagination {
+    float: right;
+}
+
+#stein-trade-window-sell-title {
+    padding-top: 4px;
+    padding-bottom: 2px;
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-trade-window-buyable-item-name {
+        font-weight: 600;
+        font-size: 12px;
+    }
+    #stein-trade-window-buy-previous-page, #stein-trade-window-buy-next-page {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+    .stein-trade-window-buyable-item-price-item-icon {
+        border-width: 0;
+    }
+    #stein-trade-window-buyable-items {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    #stein-trade-window-sell-title {
+        display: none;
+    }
+    .stein-trade-window-buyable-item {
+        margin-bottom: 4px;
+    }
+    #stein-trade-window-sell-area {
+        height: 25px;
+        line-height: 25px;
+    }
+    #stein-trade-window-buyable-items {
+        height: 190px;
+    }
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    #stein-trade-window-buyable-items {
+        width: min(440px, 100vw - 22px);
+    }
+}
+
+
+.stein-tooltip-item-name {
+    float: left;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.stein-tooltip-item-price {
+    float: right;
+    margin-left: 5px;
+    color: #ab6d00;
+}
+
+.stein-tooltip-item-activation-cost {
+    float: right;
+    margin-left: 5px;
+}
+
+.stein-tooltip-item-effect-bonus {
+    float: right;
+    margin-left: 5px;
+}
+
+.stein-tooltip-item-range {
+    float: right;
+    margin-left: 5px;
+}
+
+.stein-tooltip-item-level-container {
+    min-width: 140px;
+    margin-right: 5px;
+}
+
+.stein-tooltip-item-level-extended-container {
+    min-width: 250px;
+}
+
+.stein-tooltip-item-level {
+    opacity: 0.5;
+}
+
+.stein-tooltip-item-level-to-low {
+    color: #ef1726;
+}
+
+.stein-tooltip-item-hit-chance {
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+.stein-tooltip-item-hit-chance-very-high {
+    color: #007300;
+}
+
+.stein-tooltip-item-hit-chance-high {
+    color: #46731e;
+}
+
+.stein-tooltip-item-hit-chance-fair {
+    color: #72732c;
+}
+
+.stein-tooltip-item-hit-chance-medium {
+    color: #73551a;
+}
+
+.stein-tooltip-item-hit-chance-low {
+    color: #733919;
+}
+
+.stein-tooltip-item-hit-chance-very-low {
+    color: #731108;
+}
+
+.stein-tooltip-required-skill-unavailable {
+    color: #ef1726;
+}
+
+.stein-tooltip-profession-level {
+    float: right;
+    margin-left: 5px;
+}
+
+.stein-tooltip-profession-level-to-high {
+    color: #ef1726;
+}
+
+.stein-tooltip-item-type {
+    float: right;
+    opacity: 0.5;
+    margin-left: 5px;
+}
+
+.stein-tooltip-is-bound {
+    opacity: 0.5;
+}
+
+.stein-tooltip-item-properties {
+    list-style: none;
+    padding: 0;
+    margin: 5px;
+}
+
+.stein-tooltip-item-description {
+    opacity: 0.5;
+    font-style: italic;
+    max-width: 300px;
+}
+
+.stein-tooltip-inline-item {
+    margin: 0;
+    border: 2px solid #262119;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.stein-tooltip-item-damage-points {
+    float: right;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.stein-tooltip-item-damage-point {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    border: 2px solid #262119;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+    margin: 1px;
+}
+
+.stein-inventory-damage-point {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 2px #262119, inset 0 0 8px rgba(0, 0, 0, 0.6);
+    margin-top: 7px;
+    position: absolute;
+    z-index: 100;
+    margin-left: -1px;
+}
+
+@media screen and (max-width: 1200px) {
+    .stein-inventory-damage-point {
+        width: 12px;
+        height: 12px;
+        margin-top: 5px;
+    }
+}
+
+.stein-tooltip-item-damage-point-truedamage, .stein-inventory-damage-point-truedamage, .stein-item-damage-type-truedamage {
+    background-color: #19ffcc;
+}
+
+.stein-tooltip-item-damage-point-physical, .stein-inventory-damage-point-physical, .stein-item-damage-type-physical {
+    background-color: #b8b8b8;
+}
+
+.stein-tooltip-item-damage-point-fire, .stein-inventory-damage-point-fire, .stein-item-damage-type-fire {
+    background-color: #ff6819;
+}
+
+.stein-tooltip-item-damage-point-water, .stein-inventory-damage-point-water, .stein-item-damage-type-water {
+    background-color: #1968ff;
+}
+
+.stein-tooltip-item-damage-point-earth, .stein-inventory-damage-point-earth, .stein-item-damage-type-earth {
+    background-color: #68ff19;
+}
+
+.stein-tooltip-item-damage-point-holy, .stein-inventory-damage-point-holy, .stein-item-damage-type-holy {
+    background-color: #ffec20;
+}
+
+.stein-tooltip-item-damage-point-death, .stein-inventory-damage-point-death, .stein-item-damage-type-death {
+    background-color: #454545;
+}
+
+.stein-tooltip-item-damage-point-soul, .stein-inventory-damage-point-soul, .stein-item-damage-type-soul {
+    background-color: #ff19ff;
+}
+
+.clear {
+    clear: both;
+}
+
+.quest-log-quest-name {
+    margin: 0;
+    color: #efba17;
+    font-size: 18px;
+}
+
+.quest-log-quest-quest-description {
+    margin: 0;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.quest-log-quest-quest-remaining-time {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.quest-log-quest-objectives {
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 16px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.quest-log-quest-reward-container {
+    font-size: 16px;
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+}
+
+.quest-log-quest-reward-container .stein-gold-icon, .quest-log-quest-reward-container .stein-gold-icon, .stein-dialog-item-quest .stein-gold-icon {
+    margin-bottom: -3px;
+    margin-right: 5px;
+}
+
+#stein-quest-log-overlay {
+    position: absolute;
+    right: 0;
+    top: 120px;
+    bottom: 100px;
+    z-index: 100;
+    width: 250px;
+    color: white;
+    opacity: 0.8;
+    pointer-events: none;
+    touch-action: none;
+    overflow: hidden;
+    padding: 0 1px;
+}
+
+.stein-quest-log-overlay-quest-name {
+    color: #efba17;
+}
+
+.stein-quest-log-overlay-quest-objective-list {
+    font-family: "Roboto Condensed";
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.stein-quest-log-overlay-entry {
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width: 1000px) {
+    #stein-quest-log-overlay {
+        top: 100px;
+        width: 180px;
+    }
+    .stein-quest-log-overlay-quest-name {
+        font-size: 10px;
+    }
+    .stein-quest-log-overlay-quest-objective-list {
+        font-size: 10px;
+    }
+}
+
+#stein-ui-overlay-container {
+    position: relative;
+    pointer-events: none;
+    z-index: 52;
+}
+
+.stein-scrolling-text {
+    pointer-events: none;
+    position: absolute;
+    margin-left: -150px;
+    z-index: 50;
+    font-size: 1.3em;
+    transform-origin: center;
+    font-family: "Roboto Condensed";
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+#stein-payment-success-overlay-content, #stein-processing-payment-overlay-content,
+#stein-initializing-payment-overlay-content, #stein-initializing-payment-overlay-content,
+#stein-generic-dialog-overlay-content, #stein-redeeming-code-success-overlay-content, #stein-redeeming-code-overlay-content,
+#stein-logout-overlay-content {
+    text-align: center;
+    pointer-events: auto;
+    touch-action: auto;
+}
+
+#stein-redeeming-code-success-items {
+    margin: 10px 0 5px;
+}
+
+#stein-redeeming-code-success-items > .stein-item-inventory-slot {
+    margin: 4px;
+}
+
+#stein-redeeming-code-success-gems-amount {
+    color: #4ae9ef
+}
+
+#stein-redeeming-code-success-gold-amount {
+    color: #efba17
+}
+
+#stein-payment-success-ok, #stein-redeeming-code-success-ok {
+    margin-left: 0px;
+    margin-top: 10px;
+}
+
+#stein-generic-dialog-buttons > button {
+    margin-left: 5px;
+    margin-top: 10px;
+    margin-right: 5px;
+    min-width: 75px;
+}
+
+.stein-dropped-item-container {
+    position: absolute;
+    transform-origin: center;
+    z-index: 5;
+    pointer-events: auto;
+}
+
+.stein-scrolling-text-default {
+    color: #ffdf36;
+}
+
+.stein-scrolling-text-damage-player {
+    color: #f5ebd9;
+}
+
+.stein-scrolling-text-damage-enemy {
+    color: #ff6e3e;
+}
+
+.stein-scrolling-text-heal-player {
+    color: #74ff48;
+}
+
+.stein-scrolling-text-heal-enemy {
+    color: #2dc025;
+}
+
+.stein-scrolling-text-shielded-player {
+    color: #c2ddff;
+}
+
+.stein-scrolling-text-shielded-enemy {
+    color: #9db9e1;
+}
+
+.stein-scrolling-text-experience {
+    color: #3591ff;
+}
+
+.stein-scrolling-text-level-up {
+    color: #ffdf36;
+}
+
+.stein-scrolling-text-threat {
+    color: #ffdf36;
+}
+
+.stein-scrolling-text-entity-effect {
+    color: #ffdf36;
+}
+
+.stein-scrolling-text-item-failed {
+    color: #ffdf36;
+}
+
+.stein-scrolling-text-crit {
+    animation-name: stein-scrolling-text-crit-animation;
+    animation-duration: 1s;
+}
+
+.stein-scrolling-text-damage-player.stein-scrolling-text-crit {
+    color: #ffc35a;
+}
+
+.stein-scrolling-text-damage-enemy.stein-scrolling-text-crit {
+    color: #ff3958;
+}
+
+.stein-scrolling-text-heal-player.stein-scrolling-text-crit {
+    color: #3bffc0;
+}
+
+.stein-scrolling-text-heal-enemy.stein-scrolling-text-crit {
+    color: #2dc025;
+}
+
+.stein-dropped-item {
+    position: absolute;
+    left: -16px;
+    top: -16px;
+    height: 48px;
+    width: 48px;
+    z-index: 40;
+    cursor: pointer;
+    -webkit-background-size: contain;
+    animation-name: stein-dropped-item-animation;
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+    background-size: contain;
+}
+
+.stein-dropped-item-common {
+        -webkit-filter: drop-shadow(3px 0px 0 rgba(228,205,79,0.75))
+                        drop-shadow(-3px 0px 0 rgba(228,205,79,0.75))
+                        drop-shadow(0px -3px 0 rgba(228,205,79,0.75))
+                        drop-shadow(0px 3px 0 rgba(228,205,79,0.75));
+        filter: drop-shadow(3px 0px 0 rgba(228,205,79,0.75))
+                drop-shadow(-3px 0px 0 rgba(228,205,79,0.75))
+                drop-shadow(0px -3px 0 rgba(228,205,79,0.75))
+                drop-shadow(0px 3px 0 rgba(228,205,79,0.75));
+}
+
+.stein-dropped-item-uncommon {
+        -webkit-filter: drop-shadow(3px 0px 0 rgba(26,128,13,0.75))
+                        drop-shadow(-3px 0px 0 rgba(26,128,13,0.75))
+                        drop-shadow(0px -3px 0 rgba(26,128,13,0.75))
+                        drop-shadow(0px 3px 0 rgba(26,128,13,0.75));
+        filter: drop-shadow(3px 0px 0 rgba(26,128,13,0.75))
+                drop-shadow(-3px 0px 0 rgba(26,128,13,0.75))
+                drop-shadow(0px -3px 0 rgba(26,128,13,0.75))
+                drop-shadow(0px 3px 0 rgba(26,128,13,0.75));
+}
+
+.stein-dropped-item-rare {
+        -webkit-filter: drop-shadow(3px 0px 0 rgba(18,82,179,0.75))
+                        drop-shadow(-3px 0px 0 rgba(18,82,179,0.75))
+                        drop-shadow(0px -3px 0 rgba(18,82,179,0.75))
+                        drop-shadow(0px 3px 0 rgba(18,82,179,0.75));
+        filter: drop-shadow(3px 0px 0 rgba(18,82,179,0.75))
+                drop-shadow(-3px 0px 0 rgba(18,82,179,0.75))
+                drop-shadow(0px -3px 0 rgba(18,82,179,0.75))
+                drop-shadow(0px 3px 0 rgba(18,82,179,0.75));
+}
+
+.stein-dropped-item-epic {
+        -webkit-filter: drop-shadow(3px 0px 0 rgba(184,20,204,0.75))
+                        drop-shadow(-3px 0px 0 rgba(184,20,204,0.75))
+                        drop-shadow(0px -3px 0 rgba(184,20,204,0.75))
+                        drop-shadow(0px 3px 0 rgba(184,20,204,0.75));
+        filter: drop-shadow(3px 0px 0 rgba(184,20,204,0.75))
+                drop-shadow(-3px 0px 0 rgba(184,20,204,0.75))
+                drop-shadow(0px -3px 0 rgba(184,20,204,0.75))
+                drop-shadow(0px 3px 0 rgba(184,20,204,0.75));
+}
+
+.stein-dropped-item-legendary {
+        -webkit-filter: drop-shadow(3px 0px 0 rgba(204,20,20,0.75))
+                        drop-shadow(-3px 0px 0 rgba(204,20,20,0.75))
+                        drop-shadow(0px -3px 0 rgba(204,20,20,0.75))
+                        drop-shadow(0px 3px 0 rgba(204,20,20,0.75));
+        filter: drop-shadow(3px 0px 0 rgba(204,20,20,0.75))
+                drop-shadow(-3px 0px 0 rgba(204,20,20,0.75))
+                drop-shadow(0px -3px 0 rgba(204,20,20,0.75))
+                drop-shadow(0px 3px 0 rgba(204,20,20,0.75));
+}
+
+.stein-dropped-item-background {
+    position: absolute;
+    left: -25px;
+    top: -25px;
+    height: 50px;
+    width: 50px;
+    z-index: 39;
+}
+
+.stein-box-container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.stein-content-box {
+    display: flex;
+    margin: auto;
+    color: #eeeeec;
+    font-size: 24px;
+    height: calc(100% - 24px);
+    width: 100%;
+}
+
+.stein-login-screen-content-box-screenshots {
+    display: flex;
+    margin: auto;
+    max-height: 100%;
+    color: #eeeeec;
+    font-size: 24px;
+    min-height: 80%;
+    height: calc(100% - 24px);
+}
+
+.stein-login-screen-screenshot-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.stein-login-screen-screenshot {
+    width: 144px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.stein-login-screen-img {
+    position: relative;
+    vertical-align: top;
+    display: inline-table;
+    height: 48px;
+    width: 48Px;
+    border: 2px solid #eddca0;
+    border-radius: 3px;
+    max-height: 48px;
+    max-width: 48px;
+    background-color: #ccae7a;
+    box-shadow: 0px 0px 0 2px #262119;
+}
+
+#stein-login-screen-register-character-gender-male {
+    display: none;
+}
+
+.stein-login-screen-register-checkbox-label-male {
+    background-size: auto 100%;
+    width: 26px;
+    height: 26px;
+    background: url("/assets/images/icons/icon-map.png") no-repeat -52px -52px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#stein-login-screen-register-character-gender-male:checked + .stein-login-screen-register-checkbox-label-male {
+    background-position: -78px -52px;
+}
+
+#stein-login-screen-register-character-gender-female {
+    display: none;
+}
+
+.stein-login-screen-register-checkbox-label-female {
+    background-size: auto 100%;
+    width: 26px;
+    height: 26px;
+    background: url("/assets/images/icons/icon-map.png") no-repeat 0 -52px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#stein-login-screen-register-character-gender-female:checked + .stein-login-screen-register-checkbox-label-female {
+    background-position: -26px -52px;
+}
+
+#stein-login-screen-register-accept-tos {
+    display: none;
+}
+
+#stein-options-screen-container > div:not(:last-child) {
+    margin-bottom: 2px;
+}
+
+#stein-options-screen-container {
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+#stein-options-show-players-life-bar-not-full {
+    display: none;
+}
+
+#stein-options-show-players-life-bar-full {
+    display: none;
+}
+
+#stein-options-show-enemies-life-bar-not-full {
+    display: none;
+}
+
+#stein-options-show-enemies-life-bar-full {
+    display: none;
+}
+
+#stein-options-show-damage-player {
+    display: none;
+}
+
+#stein-options-show-damage-enemy {
+    display: none;
+}
+
+#stein-options-show-damage-self {
+    display: none;
+}
+
+#stein-options-show-heal-player {
+    display: none;
+}
+
+#stein-options-show-heal-enemy {
+    display: none;
+}
+
+#stein-options-show-heal-self {
+    display: none;
+}
+
+#stein-options-sound-music-muted, #stein-options-sound-overall-muted, #stein-options-sound-effect-muted,
+#stein-login-screen-sound-muted {
+    display: none;
+}
+
+#stein-options-chat-font-size {
+    width: 70px;
+}
+
+.stein-options-report-icon {
+    background: url("/assets/images/icons/bug.png");
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-bottom: -3px;
+}
+
+.stein-options-legal-block {
+    display: inline-block;
+}
+
+.checkbox-label {
+    background-size: auto 100%;
+    width: 26px;
+    height: 26px;
+    background: url("/assets/images/icons/icon-map.png") no-repeat 0 -26px;
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    cursor: pointer;
+}
+
+.checkbox-sound-mute-label {
+    background-size: auto 100%;
+    width: 26px;
+    height: 26px;
+    background: url("/assets/images/icons/icon-map.png") no-repeat -52px -26px;
+    cursor: pointer;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox]:checked + .checkbox-label {
+    background-position: -26px -26px;
+}
+
+input[type=checkbox]:checked + .checkbox-sound-mute-label {
+    background-position: -78px -26px;
+}
+
+input[type=checkbox].error + .checkbox-label {
+    box-shadow: 0 0 0 1px rgb(239, 23, 38);
+}
+
+#stein-shop-window-container {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    max-height: 1000px;
+    max-width: 700px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.stein-shop-entry-price {
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    border-top: 2px solid rgb(38, 33, 25);
+    background: #dbbb83;
+    height: 18px;
+    box-shadow: inset 0 0 0 1px rgba(107, 81, 53, 0.4);
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+}
+
+.stein-shop-entry-price-gems, #stein-shop-entry-information-price-gems {
+    color: #4ae9ef;
+}
+
+.stein-shop-entry-price-currency, #stein-shop-entry-information-price-currency {
+    color: #5fd824;
+}
+
+.stein-shop-entry-button {
+    display: block;
+    margin: auto;
+    background-color: #b6dc87;
+}
+
+.stein-shop-entry-button-disabled {
+    display: block;
+    margin: auto;
+    cursor: default;
+    background-color: #948c84;
+}
+
+.stein-shop-entry-button-disabled:hover {
+    background-color: #948c84;
+}
+
+#stein-shop-entry-information {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+#stein-shop-entry-information-scroll-container {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#stein-shop-entry-information-image {
+    width: 144px;
+    height: 144px;
+    padding: 0;
+    background-size: cover;
+    background-color: #eddca0;
+    flex: 0 0 auto;
+}
+
+#stein-shop-entry-information-title {
+    color: #efba17;
+    text-align: center;
+    padding-top: 5px;
+    font-size: 18px;
+}
+
+#stein-shop-entry-information-description {
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    flex: 1 1 auto;
+    font-family: 'Roboto Condensed';
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#stein-shop-entry-information-purchase {
+    background-color: #b6dc87;
+    width: 125px;
+}
+
+#stein-shop-redeem-code {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#stein-shop-entry-list-container {
+    flex: 0 1 auto;
+    overflow: auto;
+    padding: 1px;
+    margin-right: 0;
+    margin-top: 2px;
+}
+
+#stein-shop-entry-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: flex-start;
+    height: 300px;
+}
+
+.stein-shop-entry {
+    width: 144px;
+    height: 144px;
+    background-size: cover;
+    background-color: #eddca0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.stein-shop-entry-title, .stein-shop-redeem-code-title {
+    color: #efba17;
+    text-align: center;
+    padding-top: 5px;
+    font-size: 18px;
+}
+
+.stein-shop-entry-short-description {
+    color: #efba17;
+    text-align: center;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+}
+
+.stein-shop-redeem-code-description {
+    text-align: center;
+}
+
+#stein-shop-redeem-code-code {
+    max-width: 500px;
+    height: 30px;
+    font-size: 28px;
+    text-align: center;
+    width: calc(100% - 12px);
+}
+
+.stein-shop-navigation {
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: -1px;
+    margin-top: 2px;
+    margin-right: -1px;
+}
+
+@media screen and (min-aspect-ratio: 1/1) {
+    #stein-shop-window-container {
+        max-width: 1000px;
+        max-height: 700px;
+    }
+    #stein-shop-entry-list {
+        flex-direction: row;
+        height: initial;
+        width: 300px;
+    }
+    .stein-shop-window-content  {
+        flex-direction: row-reverse;
+    }
+    .stein-shop-navigation {
+        flex-direction: column;
+        justify-content: start;
+        margin-top: -1px;
+        margin-right: 1px;
+        overflow-y: auto;
+        flex-wrap: nowrap;
+    }
+    #stein-shop-entry-list-container {
+        margin-top: 0;
+        margin-right: 2px;
+    }
+}
+
+@media screen and (min-aspect-ratio: 1/1) and (max-width: 1200px) {
+    #stein-shop-entry-list {
+        width: 204px;
+    }
+    .stein-shop-entry {
+        width: 96px;
+        height: 96px;
+    }
+    .stein-shop-entry-title {
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .stein-shop-entry-short-description {
+        font-size: 12px;
+    }
+    #stein-shop-entry-information-image {
+        width: 96px;
+        height: 96px;
+    }
+}
+
+@media screen and (min-aspect-ratio: 1/1) and (max-width: 880px) {
+    #stein-shop-entry-list {
+        width: 102px;
+    }
+}
+
+@media screen and (max-aspect-ratio: 1/1) and (max-height: 1200px) {
+    #stein-shop-entry-list {
+        height: 204px;
+    }
+    .stein-shop-entry {
+        width: 96px;
+        height: 96px;
+    }
+    .stein-shop-entry-title {
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .stein-shop-entry-short-description {
+        font-size: 12px;
+    }
+    #stein-shop-entry-information-image {
+        width: 96px;
+        height: 96px;
+    }
+}
+
+@media screen and (max-aspect-ratio: 1/1) and (max-height: 880px) {
+    #stein-shop-entry-list {
+        height: 102px;
+    }
+}
+
+.stein-stats-title {
+    color: #efba17;
+    font-family: "Fira Sans Condensed";
+    font-weight: 800;
+    font-size: 18px;
+    padding-top: 4px;
+    text-align: center;
+}
+
+.stat-name {
+
+}
+
+.stat-value {
+    text-align: right;
+}
+
+#stein-inventory-gems-container {
+    display: flex;
+    align-items: center;
+}
+
+#stein-inventory-gold-container {
+    display: flex;
+    padding-top: 2px;
+    align-items: center;
+}
+
+#stein-inventory-premium-container {
+    display: flex;
+    padding-top: 2px;
+    align-items: center;
+}
+
+#stein-shop-window-premium-container, #stein-shop-window-gems-container {
+    display: flex;
+    max-width: 110px;
+    margin: 1px;
+    padding: 2px;
+}
+
+#stein-inventory-store-gems {
+    color: #4ae9ef;
+}
+
+#stein-shop-window-premium {
+    color: #54ef17;
+}
+
+#stein-inventory-store-gems, #stein-shop-window-premium {
+    margin-left: 2px;
+}
+
+#stein-trade-gold-container {
+    display: inline-block;
+}
+
+#stein-trade-gems-container {
+    display: inline-block;
+    padding-right: 4px;
+}
+
+#stein-inventory-gems {
+    color: #4ae9ef;
+    text-align: right;
+    padding-right: 2px;
+    font-size: 14px;
+}
+
+#stein-inventory-gold {
+    color: #efba17;
+    text-align: right;
+    padding-right: 2px;
+    font-size: 14px;
+}
+
+#stein-inventory-premium {
+    color: #54ef17;
+    text-align: right;
+    padding-right: 2px;
+    font-size: 14px;
+}
+
+#stein-inventory-trash-slot {
+    background-image: url("/assets/images/icons/icon_trash.png");
+    margin-top: 5px;
+}
+
+#stein-inventory-equipment-guide {
+    background-image: url("/assets/images/icons/inventory_char.png");
+    background-size: cover;
+    width: 76px;
+    height: 112px;
+    margin: auto 0;
+}
+
+#stein-inventory-equipment-container {
+    display: flex;
+    justify-content: center;
+}
+
+#stein-inventory-equipment-container-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#stein-inventory-equipment-container-left .stein-inventory-equipment-slot-description {
+    margin-right: 5px;
+}
+
+#stein-inventory-equipment-container-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#stein-inventory-equipment-container-right .stein-inventory-equipment-slot-description {
+    margin-left: 5px;
+}
+
+#stein-inventory-equipment-head-container,
+#stein-inventory-equipment-chest-container,
+#stein-inventory-equipment-legs-container,
+#stein-inventory-equipment-shoulders-container,
+#stein-inventory-equipment-hands-container,
+#stein-inventory-equipment-feet-container {
+    display: flex;
+    margin: 4px 0;
+    align-items: center;
+}
+
+#stein-inventory-additional-infos {
+    position: absolute;
+    top: 22px;
+    width: calc(100% - 7px);
+    min-width: 300px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#stein-inventory-additional-infos-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#stein-inventory-additional-infos-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#stein-inventory-slots, #stein-inventory-quick-bar-slots, .stein-inventory-slots {
+    display: flex;
+    flex-wrap: wrap;
+    touch-action: auto;
+    pointer-events: auto;
+    max-width: 560px;
+}
+
+#stein-inventory-scroll-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+.stein-item-inventory-slot-group {
+    margin-bottom: -4px;
+}
+
+.stein-item-inventory-slot-group > *, #stein-inventory-slots > *, .stein-inventory-slots > * {
+    margin: 4px;
+}
+
+#stein-inventory-head-item {
+    background-image: url("/assets/images/icons/inventory_head.png");
+}
+
+#stein-inventory-chest-item {
+    background-image: url("/assets/images/icons/inventory_chest.png");
+}
+
+#stein-inventory-legs-item {
+    background-image: url("/assets/images/icons/inventory_legs.png");
+}
+
+#stein-inventory-shoulders-item {
+    background-image: url("/assets/images/icons/inventory_shoulders.png");
+}
+
+#stein-inventory-hands-item {
+    background-image: url("/assets/images/icons/inventory_hands.png");
+}
+
+#stein-inventory-feet-item {
+    background-image: url("/assets/images/icons/inventory_feet.png");
+}
+
+
+@media screen and (max-width: 875px) and (min-aspect-ratio: 1/1) {
+    #stein-inventory-quick-bar-slots {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 440px) and (max-aspect-ratio: 1/1) {
+    #stein-inventory-quick-bar-slots {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    #stein-inventory-equipment-guide {
+        width: 57px;
+        height: 84px;
+    }
+    #stein-inventory-slots, #stein-inventory-quick-bar-slots, .stein-inventory-slots {
+        max-width: 400px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    .stein-inventory-equipment-slot-description {
+        display: none;
+    }
+    #stein-inventory-equipment-guide {
+        display: none;
+    }
+    #stein-inventory-equipment-head-container,
+    #stein-inventory-equipment-chest-container,
+    #stein-inventory-equipment-legs-container,
+    #stein-inventory-equipment-shoulders-container,
+    #stein-inventory-equipment-hands-container,
+    #stein-inventory-equipment-feet-container {
+        margin: 0 3px;
+    }
+    #stein-inventory-equipment-container-left {
+        flex-direction: row;
+    }
+    #stein-inventory-equipment-container-right {
+        flex-direction: row;
+    }
+    #stein-inventory-gems, #stein-inventory-gold, #stein-inventory-premium {
+        font-size: 12px;
+        font-family: 'Roboto Condensed';
+    }
+    #stein-inventory-gold-container, #stein-inventory-premium-container {
+        padding-top: 0;
+        padding-left: 2px;
+    }
+    #stein-inventory-trash-slot {
+        margin-top: 2px;
+        margin-left: 5px;
+        width: 28px;
+        height: 28px;
+    }
+    #stein-inventory-additional-infos {
+        position: initial;
+        margin-bottom: 4px;
+    }
+    #stein-inventory-additional-infos-left {
+        flex-direction: row;
+    }
+    #stein-inventory-additional-infos-right {
+        flex-direction: row;
+        align-items: flex-start;
+        margin-right: 2px;
+    }
+    #stein-inventory-title-equipment {
+        display: none;
+    }
+    #stein-inventory-title-quickbar {
+        font-size: 14px;
+        margin-bottom: -2px;
+    }
+    #stein-inventory-title-backpack {
+        font-size: 14px;
+        margin-bottom: -2px;
+    }
+}
+
+#stein-hub-ranking-profession-level-types {
+    margin-bottom: 2px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#stein-trade-gold {
+    color: #efba17;
+    text-align: right;
+    padding-right: 2px;
+    font-size: 14px;
+}
+
+#stein-trade-gems {
+    color: #4ae9ef;
+    text-align: right;
+    padding-right: 2px;
+    font-size: 14px;
+}
+
+.stein-quest-reward-gold, #stein-wave-dungeon-reward-gold {
+    color: #efba17;
+    padding-right: 3px;
+}
+
+.stein-quest-reward-experience, .stein-wave-dungeon-reward-experience {
+    color: #3591ff;
+}
+
+.stein-table,
+#stein-hub-ranking-wave-dungeon, #stein-hub-ranking-wave-dungeon-table,
+#stein-hub-ranking-dungeon, #stein-hub-ranking-dungeon-table,
+#stein-hub-ranking-level, #stein-hub-ranking-level-table,
+#stein-hub-ranking-profession-level, #stein-hub-ranking-profession-level-table,
+#stein-hub-ranking-blocks-traveled, #stein-hub-ranking-blocks-traveled-table,
+#stein-hub-ranking-damage-done, #stein-hub-ranking-damage-done-table,
+#stein-hub-ranking-damage-received, #stein-hub-ranking-damage-received-table,
+#stein-hub-ranking-healing-done, #stein-hub-ranking-healing-done-table,
+#stein-hub-ranking-healing-received, #stein-hub-ranking-healing-received-table,
+#stein-hub-ranking-enemies-killed, #stein-hub-ranking-enemies-killed-table,
+#stein-hub-ranking-highest-damage, #stein-hub-ranking-highest-damage-table,
+#stein-hub-ranking-highest-heal, #stein-hub-ranking-highest-heal-table,
+#stein-hub-ranking-container, #stein-hub-ranking-detail-container {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.stein-table-entries,
+#stein-hub-ranking-wave-dungeon-table-entries,
+#stein-hub-ranking-dungeon-table-entries,
+#stein-hub-ranking-level-table-entries,
+#stein-hub-ranking-profession-level-table-entries,
+#stein-hub-ranking-blocks-traveled-table-entries,
+#stein-hub-ranking-damage-done-table-entries,
+#stein-hub-ranking-damage-received-table-entries,
+#stein-hub-ranking-healing-done-table-entries,
+#stein-hub-ranking-healing-received-table-entries,
+#stein-hub-ranking-enemies-killed-table-entries,
+#stein-hub-ranking-highest-damage-table-entries,
+#stein-hub-ranking-highest-heal-table-entries {
+    flex: 1 1 0px;
+    overflow: auto;
+}
+
+.stein-table-static {
+    flex: 0;
+}
+
+.stein-table-static > .stein-table-entries {
+    flex: 1;
+}
+
+#stein-hub-ranking-header-container {
+    flex: 0 1 auto;
+}
+
+
+.stein-hub-ranking-pagination {
+    float: right;
+}
+
+#stein-hub-ranking-page-display {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#stein-hub-ranking-wave-dungeon-strengths {
+    margin-bottom: 2px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-table,
+#stein-hub-ranking-wave-dungeon-table, #stein-hub-ranking-level-table,
+#stein-hub-ranking-blocks-traveled-table, #stein-hub-ranking-damage-done-table,
+#stein-hub-ranking-damage-received-table, #stein-hub-ranking-healing-done-table,
+#stein-hub-ranking-healing-received-table, #stein-hub-ranking-enemies-killed-table,
+#stein-hub-ranking-highest-damage-table, #stein-hub-ranking-highest-heal-table,
+#stein-hub-ranking-dungeon, #stein-hub-ranking-profession-level-table {
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+}
+
+.stein-table-header,
+#stein-hub-ranking-wave-dungeon-table-header, #stein-hub-ranking-level-table-header,
+#stein-hub-ranking-blocks-traveled-table-header, #stein-hub-ranking-damage-done-table-header,
+#stein-hub-ranking-damage-received-table-header, #stein-hub-ranking-healing-done-table-header,
+#stein-hub-ranking-healing-received-table-header, #stein-hub-ranking-enemies-killed-table-header,
+#stein-hub-ranking-highest-damage-table-header, #stein-hub-ranking-highest-heal-table-header,
+#stein-hub-ranking-dungeon-table-header, #stein-hub-ranking-profession-level-table-header {
+    border-bottom: 2px solid #262119;
+    padding: 3px;
+    background-color: rgb(237, 220, 160);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-table-entry,
+.stein-hub-ranking-wave-dungeon-table-entry, .stein-hub-ranking-level-table-entry,
+.stein-hub-ranking-blocks-traveled-table-entry, .stein-hub-ranking-damage-done-table-entry,
+.stein-hub-ranking-damage-received-table-entry, .stein-hub-ranking-healing-done-table-entry,
+.stein-hub-ranking-healing-received-table-entry, .stein-hub-ranking-enemies-killed-table-entry,
+.stein-hub-ranking-highest-damage-table-entry, .stein-hub-ranking-highest-heal-table-entry,
+.stein-hub-ranking-dungeon-table-entry, .stein-hub-ranking-profession-level-table-entry {
+    padding: 3px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.stein-table-entry:nth-of-type(even),
+.stein-hub-ranking-wave-dungeon-table-entry:nth-of-type(even), .stein-hub-ranking-level-table-entry:nth-of-type(even),
+.stein-hub-ranking-blocks-traveled-table-entry:nth-of-type(even), .stein-hub-ranking-damage-done-table-entry:nth-of-type(even),
+.stein-hub-ranking-damage-received-table-entry:nth-of-type(even), .stein-hub-ranking-healing-done-table-entry:nth-of-type(even),
+.stein-hub-ranking-healing-received-table-entry:nth-of-type(even), .stein-hub-ranking-enemies-killed-table-entry:nth-of-type(even),
+.stein-hub-ranking-highest-damage-table-entry:nth-of-type(even), .stein-hub-ranking-highest-heal-table-entry:nth-of-type(even),
+.stein-hub-ranking-dungeon-table-entry:nth-of-type(even), .stein-hub-ranking-profession-level-table-entry:nth-of-type(even) {
+    background-color: #dbbb83;
+}
+
+.stein-table-entry:nth-of-type(odd) {
+    background-color: #9a7753;
+}
+
+.stein-table-column {
+    display: inline-flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+    align-items: center;
+}
+
+.stein-table-column > button {
+    height: 19px;
+    font-size: 14px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.stein-hub-ranking-wave-dungeon-rank, .stein-hub-ranking-level-rank,
+.stein-hub-ranking-blocks-traveled-rank, .stein-hub-ranking-damage-done-rank,
+.stein-hub-ranking-damage-received-rank, .stein-hub-ranking-healing-done-rank,
+.stein-hub-ranking-healing-received-rank, .stein-hub-ranking-enemies-killed-rank,
+.stein-hub-ranking-highest-damage-rank, .stein-hub-ranking-highest-heal-rank,
+.stein-hub-ranking-dungeon-rank, .stein-hub-ranking-profession-level-rank {
+    display: inline-block;
+    width: 50px
+}
+
+.stein-hub-ranking-wave-dungeon-player, .stein-hub-ranking-level-player,
+.stein-hub-ranking-blocks-traveled-player, .stein-hub-ranking-damage-done-player,
+.stein-hub-ranking-damage-received-player, .stein-hub-ranking-healing-done-player,
+.stein-hub-ranking-healing-received-player, .stein-hub-ranking-enemies-killed-player,
+.stein-hub-ranking-highest-damage-player, .stein-hub-ranking-highest-heal-player,
+.stein-hub-ranking-dungeon-player, .stein-hub-ranking-profession-level-player {
+    display: inline-block;
+    width: 150px;
+}
+
+.stein-hub-ranking-wave-dungeon-wave {
+    display: inline-block;
+    width: 50px;
+}
+
+.stein-hub-ranking-level-level,
+.stein-hub-ranking-blocks-traveled-blocks, .stein-hub-ranking-damage-done-damage,
+.stein-hub-ranking-damage-received-damage, .stein-hub-ranking-healing-done-healing,
+.stein-hub-ranking-healing-received-healing, .stein-hub-ranking-enemies-killed-amount,
+.stein-hub-ranking-highest-damage-damage, .stein-hub-ranking-highest-heal-heal,
+.stein-hub-ranking-wave-dungeon-time, .stein-hub-ranking-profession-level-level,
+.stein-hub-ranking-dungeon-time {
+    display: inline-block;
+}
+
+#stein-hub-friend-list, #stein-hub-block-list {
+    margin-top: 4px;
+    background-color: #dbbc83;
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 2px;
+    flex: 1 1 0px;
+    overflow: auto;
+}
+
+.stein-hub-friend-list-entry, .stein-hub-block-list-entry {
+    border: 2px solid rgb(38, 33, 25);
+    border-radius: 3px;
+    padding: 2px 6px;
+    margin: 2px;
+    background-color: #eddca0;
+}
+
+.friend-list-entry-options, .block-list-entry-options {
+    float: right;
+    margin-top: -2px;
+    margin-right: -6px;
+    height: 23px;
+    border-radius: 0 2px 2px 0;
+}
+
+.friend-list-entry-state {
+    font-size: 13px;
+    padding-left: 5px;
+}
+
+.friend-list-entry-state-online > .friend-list-entry-state {
+    color: limegreen;
+}
+
+.friend-list-entry-state-offline > .friend-list-entry-state {
+    color: #ff7474;
+}
+
+.friend-list-entry-state-unknown > .friend-list-entry-state {
+    color: lightgray;
+}
+
+#stein-hub-news-page-previous-container {
+    float: left;
+    margin-left: 3px;
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+.stein-translation-table-key {
+    width: 250px;
+}
+
+.stein-translation-table-source {
+    width: 300px;
+    white-space: normal;
+}
+
+.stein-translation-table-target {
+    width: 300px;
+    white-space: normal;
+}
+
+.stein-translation-table-edit {
+
+}
+
+.stein-translation-table-approve {
+
+}
+
+#stein-rewards-overlay {
+    position: absolute;
+    left: 53%;
+    top: 0;
+    touch-action: none;
+    z-index: 51;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.75s;
+    color: white;
+    height: 50%;
+    display: flex;
+    flex-direction: column-reverse;
+    width: 200px;
+    align-items: start;
+}
+
+.stein-reward-overlay-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 20px 5px 8px;
+    margin: 2px;
+    background: linear-gradient(90deg, rgb(38 33 25 / 60%) 40%, transparent);
+    transition: opacity 0.75s;
+}
+
+.stein-reward-overlay-experience {
+    color: #3591ff;
+}
+
+.stein-reward-overlay-gold {
+    color: #efba17;
+}
+
+.stein-reward-overlay-item {
+    padding: 10px;
+    padding-right: 40px;
+}
+
+#stein-quest-complete-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    left: 20%;
+    right: 20%;
+    top: 10%;
+    bottom: 0;
+    flex-direction: column;
+    z-index: 200;
+    touch-action: none;
+    pointer-events: none;
+    transition-property: opacity;
+    transition-duration: 500ms;
+}
+
+#stein-quest-complete-decoration {
+    margin-bottom: -10px;
+    z-index: 2;
+    -webkit-filter: drop-shadow(3px 0px 0 rgba(239,186,23,0.75))
+    drop-shadow(-3px 0px 0 rgba(239,186,23,0.75))
+    drop-shadow(0px -3px 0 rgba(239,186,23,0.75))
+    drop-shadow(0px 3px 0 rgba(239,186,23,0.75));
+    filter: drop-shadow(3px 0px 0 rgba(239,186,23,0.75))
+    drop-shadow(-3px 0px 0 rgba(239,186,23,0.75))
+    drop-shadow(0px -3px 0 rgba(239,186,23,0.75))
+    drop-shadow(0px 3px 0 rgba(239,186,23,0.75));
+    display: flex;
+}
+
+#stein-quest-complete-icon-right {
+    width: 48px;
+    height: 48px;
+    background: url(/assets/images/items/priest_t_1-5_1.png);
+    transform: scaleX(-1);
+    transition-property: margin-left;
+    transition-duration: 4s;
+    transition-timing-function: linear;
+}
+
+#stein-quest-complete-icon-left {
+    width: 48px;
+    height: 48px;
+    background: url(/assets/images/items/warrior_t_1-5_1.png);
+    transition-property: margin-right;
+    transition-duration: 4s;
+    transition-timing-function: linear;
+}
+
+#stein-quest-complete-icon-center {
+    font-size: 4em;
+    color: #efba17;
+    margin: -15px 10px;
+}
+
+#stein-quest-complete-text-container {
+    text-align: center;
+    color: #efba17;
+    background: radial-gradient(ellipse at 50% 0, #efba17cf 30%, transparent 70%);
+    border-top: 2px solid #262119b5;
+    min-width: 300px;
+    min-height: 150px;
+    padding-top: 2px;
+}
+
+#stein-quest-complete-quest-name {
+    font-size: 3em;
+}
+
+#stein-quest-complete-sub-text {
+    font-size: 1.8em;
+}
+
+#stein-zone-overlay {
+    position: absolute;
+    width: 100%;
+    top: 30%;
+    touch-action: none;
+    z-index: 53;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 750ms 6572.28ms;
+}
+
+#stein-root-zone-name {
+    font-size: 40px;
+}
+
+#stein-zone-name {
+    font-size: 30px
+}
+
+#stein-zone-level-range {
+    font-size: 30px
+}
+
+#stein-map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#stein-map-root-zone-name {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+    top: 10px;
+    font-size: 40px;
+    height: 0;
+}
+
+#stein-map-zone-name {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+    top: 50px;
+    font-size: 30px;
+    height: 0;
+}
+
+#stein-map-compass {
+    z-index: 5;
+    height: 174px;
+    width: 174px;
+    max-width: 20%;
+    max-height: 20%;
+    bottom: 10px;
+    position: absolute;
+    background-image: url("/assets/images/compass.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: bottom left;
+}
+
+#stein-map-buttons {
+    z-index: 5;
+    position: absolute;
+    right: 20px;
+    top: 50px;
+}
+
+#stein-map-button-zoom-in, #stein-map-button-zoom-out {
+    width: 25px;
+    height: 25px;
+    margin: 6px;
+    font-size: 19px;
+    padding: 0;
+    line-height: 19px;
+}
+
+#stein-map-marker-player {
+    background: url("/assets/images/icons/map-marker-player.png");
+}
+
+.stein-map-marker-generic {
+    background: url("/assets/images/icons/map-marker-generic.png");
+}
+
+.stein-map-marker-cave-entrance {
+    background: url("/assets/images/icons/map-marker-cave-entrance.png");
+}
+
+.stein-map-marker-dungeon-entrance {
+    background: url("/assets/images/icons/map-marker-dungeon-entrance.png");
+}
+
+.stein-map-marker-village {
+    background: url("/assets/images/icons/map-marker-village.png");
+}
+
+.stein-map-marker-party-member {
+    background: url("/assets/images/icons/map-marker-party-member.png");
+}
+
+.stein-map-marker-trader {
+    background: url("/assets/images/icons/map-marker-trader.png");
+}
+
+.stein-map-marker-graveyard {
+    background: url("/assets/images/icons/map-marker-grave.png");
+}
+
+.stein-map-marker-prof-armorsmith {
+    background: url("/assets/images/icons/map-marker-prof-armorsmith.png");
+}
+
+.stein-map-marker-prof-enchanter {
+    background: url("/assets/images/icons/map-marker-prof-enchanter.png");
+}
+
+.stein-map-marker-prof-herbalism {
+    background: url("/assets/images/icons/map-marker-prof-herbalism.png");
+}
+
+.stein-map-marker-prof-leatherworking {
+    background: url("/assets/images/icons/map-marker-prof-leatherworking.png");
+}
+
+.stein-map-marker-prof-lumbering {
+    background: url("/assets/images/icons/map-marker-prof-lumbering.png");
+}
+
+.stein-map-marker-prof-mining {
+    background: url("/assets/images/icons/map-marker-prof-mining.png");
+}
+
+.stein-map-marker-prof-tailor {
+    background: url("/assets/images/icons/map-marker-prof-tailor.png");
+}
+
+.stein-map-marker-prof-weaponsmith {
+    background: url("/assets/images/icons/map-marker-prof-weaponsmith.png");
+}
+
+.stein-map-marker-bank {
+    background: url("/assets/images/icons/map-marker-bank.png");
+}
+
+.stein-map-marker {
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    margin-left: -8px;
+    position: absolute;
+    image-rendering: pixelated;
+    z-index: 2;
+}
+
+.stein-map-generic-marker {
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 2px #262119;
+}
+
+.stein-need-or-greed-window {
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+.stein-need-or-greed {
+    margin-bottom: 2px;
+}
+
+.need-or-greed-item {
+    display: inline-block;
+    margin: 1px;
+}
+
+.need-or-greed-item-name {
+    width: 183px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0 2px;
+    padding-bottom: 7px;
+}
+
+.need-or-greed-need, .need-or-greed-greed {
+    margin: 1px;
+}
+
+.need-or-greed-info {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 5px;
+}
+
+.need-or-greed-time {
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    height: 5px;
+    margin-bottom: 5px;
+    margin-top: 0;
+    display: inline-block;
+    width: 217px;
+}
+
+.need-or-greed-pass {
+    margin-left: 3px;
+    text-align: center;
+}
+
+@media screen and (max-width: 1200px) {
+    .need-or-greed-info {
+        margin-top: -9px;
+    }
+    .need-or-greed-item-name {
+        padding-bottom: 0;
+    }
+}
+
+#stein-joystick {
+    position: absolute;
+    z-index: 90;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    touch-action: none;
+    pointer-events: none;
+    transition: opacity 0.2s 0.1s;
+}
+
+#stein-joystick.stein-joystick-fixed {
+    opacity: 0.8;
+    bottom: 140px;
+    right: 120px;
+    touch-action: auto;
+    pointer-events: auto;
+}
+
+#stein-joystick-indicator {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    top: -20px;
+    left: -20px;
+}
+
+#stein-joystick-down, #stein-joystick-up, #stein-joystick-left, #stein-joystick-right {
+    position: absolute;
+    width: 52px;
+    height: 49px;
+    transform-origin: center;
+    top: -22px;
+    left: -24px;
+    background-image: url(/assets/images/joystick-arrow.png);
+}
+
+#stein-joystick-up {
+    transform: rotate(0deg) translate(0px, -27px);
+}
+
+#stein-joystick-right {
+    transform: rotate(90deg) translate(0px, -27px);
+}
+
+#stein-joystick-down {
+    transform: rotate(180deg) translate(0px, -27px);
+}
+
+#stein-joystick-left {
+    transform: rotate(270deg) translate(0px, -27px);
+}
+
+.stein-joystick-fixed > #stein-joystick-up {
+    transform: rotate(0deg) translate(0px, -35px);
+}
+
+.stein-joystick-fixed > #stein-joystick-right {
+    transform: rotate(90deg) translate(0px, -35px);
+}
+
+.stein-joystick-fixed > #stein-joystick-down {
+    transform: rotate(180deg) translate(0px, -35px);
+}
+
+.stein-joystick-fixed > #stein-joystick-left {
+    transform: rotate(270deg) translate(0px, -35px);
+}
+
+.stein-joystick-active {
+    background-position-x: -52px;
+}
+
+#stein-joystick-interact {
+    transform: translate(-24px, -64px);
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    margin: 1px;
+    background-size: cover;
+    background-image: url(/assets/images/icons/button_use.png);
+}
+
+#stein-joystick-use {
+    transform: translate(0px, -64px);
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    margin: 1px;
+}
+
+.inventory-transition {
+    transition-property: left, top, transform;
+    transition-duration: 500ms;
+}
+
+#stein-cookie-disclaimer-container {
+    position: fixed;
+    max-width: calc(min(400px, 100vw - 45px));
+    bottom: 10px;
+    right: 10px;
+    z-index: 200;
+}
+
+@keyframes stein-dropped-item-animation {
+50% {
+    transform: translateY(10px);
+}
+}
+
+@keyframes stein-spinner-animation {
+0% {
+    transform: rotate(0deg);
+}
+100% {
+    transform: rotate(-360deg);
+}
+}
+
+@keyframes stein-scrolling-text-crit-animation {
+0% {
+    font-size: 20px;
+}
+10% {
+    font-size: 40px;
+}
+100% {
+    font-size: 20px;
+}
+}
+
+@keyframes stein-chat-overlay-animation {
+0% {
+    opacity: 1;
+}
+80% {
+    opacity: 1;
+}
+100% {
+    opacity: 0;
+}
+}
+
+body {
+image-rendering: optimizeSpeed;
+image-rendering: -moz-crisp-edges;
+image-rendering: -o-crisp-edges;
+image-rendering: -webkit-optimize-contrast;
+image-rendering: pixelated;
+image-rendering: optimize-contrast;
+-ms-interpolation-mode: nearest-neighbor;
+}
+
+@media screen and (min-device-pixel-ratio: 1.0) {.stein-scale {transform: scale(calc(1/1.0));}}
+@media screen and (min-device-pixel-ratio: 1.2) {.stein-scale {transform: scale(calc(1/1.2));}}
+@media screen and (min-device-pixel-ratio: 1.4) {.stein-scale {transform: scale(calc(1/1.4));}}
+@media screen and (min-device-pixel-ratio: 1.6) {.stein-scale {transform: scale(calc(1/1.6));}}
+@media screen and (min-device-pixel-ratio: 1.8) {.stein-scale {transform: scale(calc(1/1.8));}}
+@media screen and (min-device-pixel-ratio: 2.0) {.stein-scale {transform: scale(calc(1/2.0));}}
+@media screen and (min-device-pixel-ratio: 2.2) {.stein-scale {transform: scale(calc(1/2.2));}}
+@media screen and (min-device-pixel-ratio: 2.4) {.stein-scale {transform: scale(calc(1/2.4));}}
+@media screen and (min-device-pixel-ratio: 2.6) {.stein-scale {transform: scale(calc(1/2.6));}}
+@media screen and (min-device-pixel-ratio: 2.8) {.stein-scale {transform: scale(calc(1/2.8));}}
+@media screen and (min-device-pixel-ratio: 3.0) {.stein-scale {transform: scale(calc(1/3.0));}}
+@media screen and (min-device-pixel-ratio: 3.2) {.stein-scale {transform: scale(calc(1/3.2));}}
+@media screen and (min-device-pixel-ratio: 3.4) {.stein-scale {transform: scale(calc(1/3.4));}}
+@media screen and (min-device-pixel-ratio: 3.6) {.stein-scale {transform: scale(calc(1/3.6));}}
+@media screen and (min-device-pixel-ratio: 3.8) {.stein-scale {transform: scale(calc(1/3.8));}}
+@media screen and (min-device-pixel-ratio: 4.0) {.stein-scale {transform: scale(calc(1/4.0));}}
+
+@media screen and (min-width: 880px) {
+    .stein-window-frame-navigation {
+        flex-direction: column;
+        justify-content: start;
+        margin-top: -1px;
+        margin-right: 1px;
+    }
+    .stein-hub-window-content, #stein-options-screen-options, #stein-moderator-panel-window-content {
+        flex-direction: row-reverse;
+    }
+}
+
+@-moz-document url-prefix() {
+    #stein-inventory-scroll-container {
+        overflow-y: scroll;
+    }
+    @media screen and (min-aspect-ratio: 1/1) {
+        #stein-shop-entry-list-container {
+            overflow-y: scroll;
+        }
+    }
+}
