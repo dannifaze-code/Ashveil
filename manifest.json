@@ -1,0 +1,17 @@
+{
+  "short_name": "Ashveil",
+  "name": "Ashveil — The Broken Veil",
+  "description": "An open-world pixel-art RPG. Cross the Veil and survive.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#08090d",
+  "theme_color": "#08090d",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "assets/icons/shortcuts_button_hub.png",
+      "sizes": "42x42",
+      "type": "image/png"
+    }
+  ]
+}

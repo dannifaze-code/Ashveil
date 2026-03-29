@@ -38,7 +38,10 @@ wandererLegs:{body:'#8a6a3a',accent:'#a0804a'},marshLeggings:{body:'#3a7a3a',acc
 boneRing:{glow:'#c4a86e'},emberBand:{glow:'#ff6b35'},voidLoop:{glow:'#8844dd'},ashenCirclet:{glow:'#f5c842'},
 // New biome equipment
 magmaPlate:{body:'#ff4400',accent:'#ff6600'},frostCrown:{body:'#a0d0ee',accent:'#c0e8ff'},
-shellShield:{body:'#cc6633',accent:'#dd7744'}
+shellShield:{body:'#cc6633',accent:'#dd7744'},
+// Shoulder & hand equipment
+banditLeatherPauldrons:{body:'#8a6a3a',accent:'#a0804a'},guardMetalPauldrons:{body:'#aaaaaa',accent:'#cccccc'},
+banditGloves:{body:'#8a6a3a',accent:'#a0804a'},clothGloves:{body:'#c4a040',accent:'#ddb850'},guardGauntlets:{body:'#aaaaaa',accent:'#cccccc'}
 };
 
 // ═══ ARM DRAWING SYSTEM ═══
