@@ -1249,6 +1249,37 @@ else if(id==='guardMetalPauldrons'){for(let y=4;y<=8;y++){p(4,y,'#888');p(5,y,'#
 else if(id==='banditGloves'){p(5,6,'#6b5535');p(6,6,'#8a6a3a');p(7,7,'#8a6a3a');p(5,7,'#8a6a3a');p(6,7,'#a0804a');p(5,8,'#6b5535');p(6,8,'#8a6a3a');p(9,6,'#6b5535');p(10,6,'#8a6a3a');p(9,7,'#8a6a3a');p(10,7,'#a0804a');p(11,7,'#8a6a3a');p(9,8,'#6b5535');p(10,8,'#8a6a3a')}
 else if(id==='clothGloves'){p(5,6,'#c4a040');p(6,6,'#ddb850');p(7,7,'#ddb850');p(5,7,'#ddb850');p(6,7,'#eecc66');p(5,8,'#c4a040');p(6,8,'#ddb850');p(9,6,'#c4a040');p(10,6,'#ddb850');p(9,7,'#ddb850');p(10,7,'#eecc66');p(11,7,'#ddb850');p(9,8,'#c4a040');p(10,8,'#ddb850')}
 else if(id==='guardGauntlets'){p(5,6,'#888');p(6,6,'#aaa');p(7,7,'#aaa');p(5,7,'#aaa');p(6,7,'#ccc');p(5,8,'#888');p(6,8,'#aaa');p(9,6,'#888');p(10,6,'#aaa');p(9,7,'#aaa');p(10,7,'#ccc');p(11,7,'#aaa');p(9,8,'#888');p(10,8,'#aaa');p(6,5,'#ffd700');p(10,5,'#ffd700')}
+// PNG-based clothing icons
+else if(id==='citizenShirtClothBlue')armor('#3a6a9a','#5a8aba','#2a4a7a');
+else if(id==='citizenLeathervest')armor('#5a8a3a','#6a9a4a','#3a6a2a');
+else if(id==='citizenLeathervestRed')armor('#9a3a3a','#ba5a5a','#7a2a2a');
+else if(id==='citizenShortshirt')armor('#c4a040','#ddb850','#a08030');
+else if(id==='farmerLeathertrousersBlue')armor('#3a5a8a','#4a6a9a','#2a4a6a');
+else if(id==='farmerLeathertrousersCloth')armor('#8a7a5a','#a09a7a','#6a5a3a');
+else if(id==='farmerLeathertrousersGreen')armor('#3a6a3a','#4a8a4a','#2a5a2a');
+else if(id==='farmerLeathertrousersRed')armor('#8a3a3a','#aa5a5a','#6a2a2a');
+else if(id==='guardMetalRedChest')armor('#8a2a2a','#bb4444','#6a1a1a');
+else if(id==='merchantVestCloth')armor('#6a5a3a','#8a7a5a','#4a3a2a');
+else if(id==='citizenLeatherBoots')boot('#6a5a3a','#8a7a5a','#4a3a2a');
+else if(id==='citizenLeatherBootsBlack')boot('#2a2a2a','#4a4a4a','#1a1a1a');
+else if(id==='citizenLeatherBootsBlue')boot('#3a4a6a','#5a6a8a','#2a3a5a');
+else if(id==='citizenLeatherBootsRed')boot('#6a2a2a','#8a4a4a','#4a1a1a');
+else if(id==='citizenLeatherBootsYellow')boot('#8a7a2a','#aa9a4a','#6a5a1a');
+else if(id==='guardBootsMetal')boot('#7a7a8a','#9a9aaa','#5a5a6a');
+else if(id==='woodenClub')sword('#8a6a3a','#a0804a','#6a4a20');
+else if(id==='healingPotion')potion('#22aa44','#44cc66');
+else if(id==='cocoonSilk'){p(6,5,'#d0c8b0');p(7,5,'#e0d8c0');p(8,5,'#d0c8b0');p(5,6,'#c4bca0');p(6,6,'#e8e0cc');p(7,6,'#f0e8d8');p(8,6,'#e8e0cc');p(9,6,'#c4bca0');p(6,7,'#d0c8b0');p(7,7,'#e0d8c0');p(8,7,'#d0c8b0');p(7,8,'#b8b098')}
+else if(id==='farmerLeatherLegs'||id==='farmerShortleatherLegs'||id==='guardMetalLegs'||id==='merchantClothRedLegs'||id==='merchantClothWhiteLegs'){const legging=(c1,c2,c3)=>{for(let y=3;y<=10;y++){p(5,y,c1);p(10,y,c1)}for(let y=4;y<=9;y++){p(6,y,c2);p(9,y,c2)}for(let y=5;y<=8;y++){p(7,y,c2);p(8,y,c2)}p(6,3,c2);p(9,3,c2);p(6,10,c3);p(9,10,c3);p(7,6,c3);p(8,6,c3)};if(id==='farmerLeatherLegs')legging('#6a5a3a','#8a7a5a','#4a3a2a');else if(id==='farmerShortleatherLegs')legging('#7a6a4a','#9a8a6a','#5a4a2a');else if(id==='guardMetalLegs')legging('#7a7a8a','#9a9aaa','#5a5a6a');else if(id==='merchantClothRedLegs')legging('#8a2a2a','#aa4a4a','#6a1a1a');else if(id==='merchantClothWhiteLegs')legging('#d0d0d0','#e8e8e8','#b0b0b0')}
+else if(id==='farmerHatStraw')helm('#c4a040','#ddb850','#a08030');
+else if(id==='farmerHatStrawCloth')helm('#b09030','#c8a848','#907020');
+else if(id==='farmerScarfCloth')helm('#a08060','#b89878','#806040');
+else if(id==='femaleGreen')helm('#3a7a3a','#5a9a5a','#2a5a2a');
+else if(id==='female3Green')helm('#2a6a2a','#4a8a4a','#1a4a1a');
+else if(id==='guardHelmetMetalRed')helm('#8a2a2a','#bb4444','#6a1a1a');
+else if(id==='maleBlack')helm('#2a2a2a','#4a4a4a','#1a1a1a');
+else if(id==='maleBrown')helm('#6a4a2a','#8a6a4a','#4a2a0a');
+else if(id==='maleGrey')helm('#6a6a6a','#8a8a8a','#4a4a4a');
+else if(id==='merchantHatLeatherBlack')helm('#2a2a2a','#4a4a4a','#1a1a1a');
 else if(id==='frostCore'){p(7,6,'#a0d0ee');p(8,6,'#80c0e0');p(6,7,'#a0d0ee');p(7,7,'#c0e8ff');p(8,7,'#c0e8ff');p(9,7,'#a0d0ee');p(7,8,'#80c0e0');p(8,8,'#a0d0ee');p(7,5,'#60a0c0');p(8,9,'#60a0c0')}
 else if(id==='magmaCore'){p(7,6,'#ff4400');p(8,6,'#ff6600');p(6,7,'#ff4400');p(7,7,'#ffaa22');p(8,7,'#ffaa22');p(9,7,'#ff4400');p(7,8,'#ff6600');p(8,8,'#ff4400');p(7,5,'#cc3300');p(8,9,'#cc3300')}
 else if(id==='deepFang'){p(7,4,'#4a3a48');p(8,4,'#3a2a38');p(7,5,'#5a4a58');p(8,5,'#4a3a48');p(7,6,'#6a5a68');p(8,6,'#5a4a58');p(7,7,'#7a6a78');p(8,7,'#6a5a68');p(7,8,'#5a4a58');p(8,8,'#4a3a48');p(7,9,'#3a2a38');p(7,10,'#2a1a28')}
@@ -1643,6 +1674,13 @@ const recipes=[
 {id:'banditGloves',name:'Bandit Gloves',needs:{hide:2,fiber:1},makes:'banditGloves'},
 {id:'clothGloves',name:'Cloth Gloves',needs:{fiber:3},makes:'clothGloves'},
 {id:'guardGauntlets',name:'Guard Gauntlets',needs:{scrap:3,ore:2,hide:1},makes:'guardGauntlets',station:'forge'},
+// New clothing & consumable recipes
+{id:'woodenClub',name:'Wooden Club',needs:{branch:2,fiber:1},makes:'woodenClub'},
+{id:'healingPotion',name:'Healing Potion',needs:{herb:2,fiber:1},makes:'healingPotion',count:2},
+{id:'citizenShirtClothBlue',name:'Citizen Shirt',needs:{fiber:4},makes:'citizenShirtClothBlue'},
+{id:'citizenLeatherBoots',name:'Citizen Boots',needs:{hide:2,fiber:1},makes:'citizenLeatherBoots'},
+{id:'farmerLeatherLegs',name:'Farmer Leggings',needs:{hide:2,fiber:2},makes:'farmerLeatherLegs'},
+{id:'farmerHatStraw',name:'Straw Hat',needs:{fiber:3,branch:1},makes:'farmerHatStraw'},
 ];
 
 const enemyDefs={
