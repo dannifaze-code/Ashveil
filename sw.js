@@ -1,5 +1,5 @@
 /* Ashveil Service Worker — Offline support */
-const CACHE_NAME = 'ashveil-cache-v1';
+const CACHE_NAME = 'ashveil-cache-v2';
 const urlsToCache = [
   '/index.html',
   '/sprites/config.js',

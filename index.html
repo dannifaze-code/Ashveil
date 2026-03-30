@@ -1546,9 +1546,29 @@ for(let i=0;i<80;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===T
 for(let i=0;i<80;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
 for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
 // World asset decorations (bushes, trees, traps from loaded PNG sprites)
-for(let i=0;i<20;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldBush',variant:0})}
-for(let i=0;i<15;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldTree',variant:0})}
-for(let i=0;i<10;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==TT_WATER&&terrain[y*MW+x]!==TT_LAVA)decorations.push({x,y,type:'mouseTrap',variant:0})}
+// Emberwood (forest)
+for(let i=0;i<60;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldBush',variant:0})}
+for(let i=0;i<40;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldTree',variant:0})}
+// Cindergate (town)
+for(let i=0;i<25;i++){const x=rand(122,158),y=rand(87,118);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldBush',variant:0})}
+for(let i=0;i<15;i++){const x=rand(122,158),y=rand(87,118);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldTree',variant:0})}
+// Frostpeak
+for(let i=0;i<20;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'worldTree',variant:0})}
+for(let i=0;i<15;i++){const x=rand(12,78),y=rand(12,68);if(terrain[y*MW+x]===TT_SNOW)decorations.push({x,y,type:'worldBush',variant:0})}
+// Thornveil
+for(let i=0;i<25;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST)decorations.push({x,y,type:'worldTree',variant:0})}
+for(let i=0;i<20;i++){const x=rand(12,78),y=rand(82,138);if(terrain[y*MW+x]===TT_DARKFOREST)decorations.push({x,y,type:'worldBush',variant:0})}
+// Crystalshore
+for(let i=0;i<20;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'worldTree',variant:0})}
+for(let i=0;i<15;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'worldBush',variant:0})}
+// Mirefen
+for(let i=0;i<20;i++){const x=rand(97,178),y=rand(147,203);if(terrain[y*MW+x]===TT_MARSH)decorations.push({x,y,type:'worldBush',variant:0})}
+// Glass Ruins
+for(let i=0;i<15;i++){const x=rand(187,263),y=rand(12,68);if(terrain[y*MW+x]===TT_RUINS)decorations.push({x,y,type:'worldBush',variant:0})}
+// Scorchlands
+for(let i=0;i<10;i++){const x=rand(12,83),y=rand(152,208);if(terrain[y*MW+x]===TT_VOLCANIC)decorations.push({x,y,type:'worldTree',variant:0})}
+// Mouse traps scattered globally
+for(let i=0;i<15;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==TT_WATER&&terrain[y*MW+x]!==TT_LAVA)decorations.push({x,y,type:'mouseTrap',variant:0})}
 decorations.sort((a,b)=>a.y-b.y);
 }
 generateWorld();
@@ -2580,7 +2600,7 @@ for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+
 // Corruption overlay
 const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==TT_CORRUPT){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
 // World chunk tile overlays (loaded PNG map chunks)
-if(typeof GameAssets!=='undefined'){const chunkSize=16*T*SCALE;for(let cx=27;cx<=32;cx++)for(let cy=15;cy<=20;cy++){const bKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_bottom';const tKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_top';const ox=(cx-27)*chunkSize,oy=(cy-15)*chunkSize;if(ox+chunkSize<state.camera.x||ox>state.camera.x+cssW||oy+chunkSize<state.camera.y||oy>state.camera.y+cssH)continue;const bImg=GameAssets.get(bKey),tImg=GameAssets.get(tKey);ctx.globalAlpha=0.15;if(bImg)ctx.drawImage(bImg,ox,oy,chunkSize,chunkSize);if(tImg)ctx.drawImage(tImg,ox,oy,chunkSize,chunkSize);ctx.globalAlpha=1}}
+if(typeof GameAssets!=='undefined'){const chunkSize=16*T*SCALE;for(let cx=27;cx<=32;cx++)for(let cy=15;cy<=20;cy++){const bKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_bottom';const tKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_top';const ox=(cx-27)*chunkSize,oy=(cy-15)*chunkSize;if(ox+chunkSize<state.camera.x||ox>state.camera.x+cssW||oy+chunkSize<state.camera.y||oy>state.camera.y+cssH)continue;const bImg=GameAssets.get(bKey),tImg=GameAssets.get(tKey);ctx.globalAlpha=0.85;if(bImg)ctx.drawImage(bImg,ox,oy,chunkSize,chunkSize);if(tImg)ctx.drawImage(tImg,ox,oy,chunkSize,chunkSize);ctx.globalAlpha=1}}
 // Buildings
 buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE,bsz=(b.sz||2.4)*T*SCALE;
 if(bx>state.camera.x-bsz&&bx<state.camera.x+cssW+bsz&&by>state.camera.y-bsz&&by<state.camera.y+cssH+bsz){

@@ -1,9 +1,10 @@
 // ═══ CHARACTER CREATOR ═══
-// Composites layered PNG sprite sheets into playable character sprites.
-// Sprite sheets are 72×128 (3 frames × 4 directions, each frame 24×32).
-// Directions in sheet: 0=up, 1=right, 2=down, 3=left.
+// Uses preloaded PNG sprite sheets from assets/characters/ via GameAssets.
+// New sprite sheets are 1024×1024 with an 8×8 grid of 48×48-pixel cells.
+// Layout: rows 0-1=up(back), 2-3=side idle, 4-5=down(front), 6-7=side walk.
+// Falls back to legacy layer compositing from sprites/character/ if no asset found.
 //
-// Depends on: nothing (standalone module loaded before init.js)
+// Depends on: GameAssets (sprites/assets.js) loaded before init.js
 
 /* ── Available character options ── */
 const SKIN_COLORS = ['light','light_brown','light_black','ash','brown','dark_ash','black'];
@@ -36,7 +37,121 @@ function getAvailableSkins(race,gender,bodyType){
   return SKIN_AVAILABILITY[race+'-'+gender+'-'+bodyType]||SKIN_COLORS;
 }
 
-/* ── Image cache ── */
+/* ═══════════════════════════════════════════════════════════
+   NEW SPRITE SHEET SYSTEM — uses assets/characters/ via GameAssets
+   Sheet format: 1024×1024 PNG, 8×8 grid of 48×48 cells.
+   Row layout (each row = 1 direction / state):
+     Row 0: Up (back) idle       — 8 frames
+     Row 1: Up (back) walk       — 8 frames
+     Row 2: Side idle            — 8 frames
+     Row 3: Side idle alt        — 8 frames
+     Row 4: Down (front) walk    — 4 frames (cols 0-3)
+     Row 5: Down (front) walk alt— 4 frames (cols 0-3)
+     Row 6: Side walk            — 4 frames (cols 0-3)
+     Row 7: Side walk alt        — 4 frames (cols 0-3)
+   ═══════════════════════════════════════════════════════════ */
+
+const SHEET_CELL = 48; // pixels per cell in the new sprite sheets
+
+/* ── Map character appearance → GameAssets character key ── */
+const CHAR_ASSET_MAP = {
+  // human male: skin → asset key
+  'human-m-light':       'human_male_european',
+  'human-m-ash':         'human_male_european',
+  'human-m-light_brown': 'human_male_asian',
+  'human-m-light_black': 'body_2',
+  'human-m-brown':       'human_male_african',
+  'human-m-dark_ash':    'human_male_african',
+  'human-m-black':       'human_male_african',
+  // human female: skin → asset key
+  'human-f-light':       'human_female_european',
+  'human-f-ash':         'human_female_european',
+  'human-f-light_brown': 'human_female_european',
+  'human-f-light_black': 'human_female_african',
+  'human-f-brown':       'human_female_african',
+  'human-f-dark_ash':    'human_female_african',
+  'human-f-black':       'human_female_african',
+  // elf male: use body_1 / body_2 variants
+  'elf-m-light':         'human_male_european',
+  'elf-m-ash':           'human_male_asian',
+  'elf-m-light_brown':   'human_male_asian',
+  'elf-m-light_black':   'body_2',
+  'elf-m-brown':         'body_2',
+  'elf-m-dark_ash':      'human_male_african',
+  'elf-m-black':         'human_male_african',
+  // elf female: reuse human female variants
+  'elf-f-light':         'human_female_european',
+  'elf-f-ash':           'human_female_european',
+  'elf-f-light_brown':   'human_female_european',
+  'elf-f-light_black':   'human_female_african',
+  'elf-f-brown':         'human_female_african',
+  'elf-f-dark_ash':      'human_female_african',
+  'elf-f-black':         'human_female_african'
+};
+
+/* ── Resolve appearance to a loaded GameAssets image (or null) ── */
+function resolveCharSheet(appearance){
+  if(typeof GameAssets==='undefined') return null;
+  const key = appearance.race+'-'+appearance.gender+'-'+appearance.skin;
+  const assetKey = CHAR_ASSET_MAP[key];
+  if(!assetKey) return null;
+  return GameAssets.get('char.'+assetKey);
+}
+
+/* ── Extract a single frame from a 48×48-grid sheet ──
+     Crops the content area (22×27 starting at cell-relative 13,5) and scales
+     to 24×32 so it matches the legacy frame size the renderer expects. */
+function extractNewFrame(sheet,row,col){
+  const cv=document.createElement('canvas');cv.width=24;cv.height=32;
+  const cx=cv.getContext('2d');
+  cx.imageSmoothingEnabled=false;
+  const sx=col*SHEET_CELL+13, sy=row*SHEET_CELL+5;
+  cx.drawImage(sheet,sx,sy,22,27,0,0,24,32);
+  return cv;
+}
+
+/* ── Build walk/idle sprites from new sheet ──
+     Returns {walk:{down:[],up:[],right:[]}, idle:{down:[],up:[],right:[]}} */
+function buildSpritesFromNewSheet(sheet){
+  // Walk: 4-frame cycle [0,1,2,1] from sheet rows
+  // Down (front) = row 4, Up (back) = row 0, Side = row 6
+  // Idle: 2 frames from standing rows
+  // Down idle = row 4, Up idle = row 0, Side idle = row 2
+  return{
+    walk:{
+      down: [0,1,2,1].map(f=>extractNewFrame(sheet,4,f)),
+      up:   [0,1,2,1].map(f=>extractNewFrame(sheet,0,f)),
+      right:[0,1,2,1].map(f=>extractNewFrame(sheet,6,f))
+    },
+    idle:{
+      down: [extractNewFrame(sheet,4,0),extractNewFrame(sheet,4,1)],
+      up:   [extractNewFrame(sheet,0,0),extractNewFrame(sheet,0,1)],
+      right:[extractNewFrame(sheet,2,0),extractNewFrame(sheet,2,1)]
+    }
+  };
+}
+
+/* ── Build a static NPC sprite from new sheet (front-facing standing) ── */
+function buildNPCSpriteFromNewSheet(sheet){
+  return extractNewFrame(sheet,4,0);
+}
+
+/* ── Build a face portrait from new sheet ── */
+function buildFaceFromNewSheet(sheet,size){
+  size=size||48;
+  const cv=document.createElement('canvas');cv.width=size;cv.height=size;
+  const cx=cv.getContext('2d');
+  cx.imageSmoothingEnabled=false;
+  // Head region from front-facing frame (row 4, col 0): ~12×12 pixels at cell-relative (18,8)
+  cx.drawImage(sheet,0*SHEET_CELL+18,4*SHEET_CELL+8,12,12,2,2,size-4,size-4);
+  return cv;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEGACY FALLBACK — layer compositing from sprites/character/
+   Used only when the new asset for a given appearance is unavailable.
+   ═══════════════════════════════════════════════════════════ */
+
 const _imgCache={};
 function loadImg(src){
   if(_imgCache[src])return _imgCache[src];
@@ -44,7 +159,6 @@ function loadImg(src){
   _imgCache[src]=p;return p;
 }
 
-/* ── Build layer paths for a character appearance ── */
 function getCharacterLayers(a){
   const layers=[];
   const hvy=a.bodyType==='heavy'?'heavy-':'';
@@ -64,8 +178,7 @@ function getCharacterLayers(a){
   return layers;
 }
 
-/* ── Composite all layers into a single 72×128 sprite sheet canvas ── */
-async function compositeCharacter(appearance){
+async function compositeCharacterLegacy(appearance){
   const paths=getCharacterLayers(appearance);
   const cv=document.createElement('canvas');cv.width=72;cv.height=128;
   const cx=cv.getContext('2d');
@@ -76,51 +189,52 @@ async function compositeCharacter(appearance){
   return cv;
 }
 
-/* ── Extract a single 24×32 frame from a 72×128 sheet ── */
-function extractFrame(sheet,dir,frame){
+function extractLegacyFrame(sheet,dir,frame){
   const cv=document.createElement('canvas');cv.width=24;cv.height=32;
   cv.getContext('2d').drawImage(sheet,frame*24,dir*32,24,32,0,0,24,32);
   return cv;
 }
 
-/* ── Build the walk/idle sprite object used by the game ──
-     Returns {walk:{down:[],up:[],right:[]}, idle:{down:[],up:[],right:[]}} */
+/* ═══════════════════════════════════════════════════════════
+   PUBLIC API — tries new asset system first, falls back to legacy
+   ═══════════════════════════════════════════════════════════ */
+
 async function buildCharacterSprites(appearance){
-  const sheet=await compositeCharacter(appearance);
-  // Sheet dirs: 0=up,1=right,2=down,3=left
-  // Game dirs stored: down, up, right (left = flipped right at render)
-  // Walk: 4 frames mapped from 3 sheet frames: 0,1,2,1
-  // Idle: 2 frames (standing frame repeated)
+  // Try new sprite sheet from GameAssets
+  const sheet=resolveCharSheet(appearance);
+  if(sheet) return buildSpritesFromNewSheet(sheet);
+  // Fallback to legacy layer compositing
+  const legacy=await compositeCharacterLegacy(appearance);
   return{
     walk:{
-      down:[0,1,2,1].map(f=>extractFrame(sheet,2,f)),
-      up:  [0,1,2,1].map(f=>extractFrame(sheet,0,f)),
-      right:[0,1,2,1].map(f=>extractFrame(sheet,1,f))
+      down:[0,1,2,1].map(f=>extractLegacyFrame(legacy,2,f)),
+      up:  [0,1,2,1].map(f=>extractLegacyFrame(legacy,0,f)),
+      right:[0,1,2,1].map(f=>extractLegacyFrame(legacy,1,f))
     },
     idle:{
-      down:[extractFrame(sheet,2,1),extractFrame(sheet,2,1)],
-      up:  [extractFrame(sheet,0,1),extractFrame(sheet,0,1)],
-      right:[extractFrame(sheet,1,1),extractFrame(sheet,1,1)]
+      down:[extractLegacyFrame(legacy,2,1),extractLegacyFrame(legacy,2,1)],
+      up:  [extractLegacyFrame(legacy,0,1),extractLegacyFrame(legacy,0,1)],
+      right:[extractLegacyFrame(legacy,1,1),extractLegacyFrame(legacy,1,1)]
     }
   };
 }
 
-/* ── Build a static NPC sprite (single down-facing frame) ── */
 async function buildNPCSprite(appearance){
-  const sheet=await compositeCharacter(appearance);
-  return extractFrame(sheet,2,1);
+  const sheet=resolveCharSheet(appearance);
+  if(sheet) return buildNPCSpriteFromNewSheet(sheet);
+  const legacy=await compositeCharacterLegacy(appearance);
+  return extractLegacyFrame(legacy,2,1);
 }
 
-/* ── Build a face portrait canvas from the composed character ──
-     Extracts and scales up the head region from the front-facing frame */
 async function buildFacePortrait(appearance,size){
   size=size||48;
-  const sheet=await compositeCharacter(appearance);
+  const sheet=resolveCharSheet(appearance);
+  if(sheet) return buildFaceFromNewSheet(sheet,size);
+  const legacy=await compositeCharacterLegacy(appearance);
   const cv=document.createElement('canvas');cv.width=size;cv.height=size;
   const cx=cv.getContext('2d');
   cx.imageSmoothingEnabled=false;
-  // Head region in front-facing frame: roughly rows 4-18, cols 5-18 (14×14 area)
-  cx.drawImage(sheet,5,68,14,14,2,2,size-4,size-4);
+  cx.drawImage(legacy,5,68,14,14,2,2,size-4,size-4);
   return cv;
 }
 
@@ -137,26 +251,46 @@ const NPC_APPEARANCES={
 
 /* ── Preview: render a character preview onto a target canvas ── */
 async function renderCharacterPreview(canvas,appearance){
-  const sheet=await compositeCharacter(appearance);
   const cx=canvas.getContext('2d');
   cx.clearRect(0,0,canvas.width,canvas.height);
   cx.imageSmoothingEnabled=false;
-  // Draw front-facing standing frame centered and scaled up
-  const frame=extractFrame(sheet,2,1);
-  const scale=Math.min(Math.floor(canvas.width/24),Math.floor(canvas.height/32));
-  const w=24*scale,h=32*scale;
-  const ox=(canvas.width-w)/2,oy=(canvas.height-h)/2;
-  cx.drawImage(frame,0,0,24,32,ox,oy,w,h);
 
-  // Draw walk cycle preview below (small, 3 frames)
-  const smallScale=Math.max(2,Math.floor(scale*0.4));
-  const sw=24*smallScale,sh=32*smallScale;
-  const startX=(canvas.width-(sw*3+8))/2;
-  const startY=oy+h+8;
-  if(startY+sh<=canvas.height){
-    for(let i=0;i<3;i++){
-      const wf=extractFrame(sheet,2,i);
-      cx.drawImage(wf,0,0,24,32,startX+i*(sw+4),startY,sw,sh);
+  const sheet=resolveCharSheet(appearance);
+  if(sheet){
+    // New system: extract front-facing standing frame (now 24×32 after crop)
+    const frame=extractNewFrame(sheet,4,0);
+    const scale=Math.min(Math.floor(canvas.width/24),Math.floor(canvas.height/32));
+    const w=24*scale,h=32*scale;
+    const ox=(canvas.width-w)/2,oy=(canvas.height-h)/2;
+    cx.drawImage(frame,0,0,24,32,ox,oy,w,h);
+    // Walk cycle preview (3 frames from walk row 4)
+    const smallScale=Math.max(1,Math.floor(scale*0.4));
+    const sw=24*smallScale,sh=32*smallScale;
+    const startX=(canvas.width-(sw*3+8))/2;
+    const startY=oy+h+8;
+    if(startY+sh<=canvas.height){
+      for(let i=0;i<3;i++){
+        const wf=extractNewFrame(sheet,4,i);
+        cx.drawImage(wf,0,0,24,32,startX+i*(sw+4),startY,sw,sh);
+      }
+    }
+  }else{
+    // Legacy fallback
+    const legacy=await compositeCharacterLegacy(appearance);
+    const frame=extractLegacyFrame(legacy,2,1);
+    const scale=Math.min(Math.floor(canvas.width/24),Math.floor(canvas.height/32));
+    const w=24*scale,h=32*scale;
+    const ox=(canvas.width-w)/2,oy=(canvas.height-h)/2;
+    cx.drawImage(frame,0,0,24,32,ox,oy,w,h);
+    const smallScale=Math.max(2,Math.floor(scale*0.4));
+    const sw=24*smallScale,sh=32*smallScale;
+    const startX=(canvas.width-(sw*3+8))/2;
+    const startY=oy+h+8;
+    if(startY+sh<=canvas.height){
+      for(let i=0;i<3;i++){
+        const wf=extractLegacyFrame(legacy,2,i);
+        cx.drawImage(wf,0,0,24,32,startX+i*(sw+4),startY,sw,sh);
+      }
     }
   }
 }
