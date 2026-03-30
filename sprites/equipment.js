@@ -65,10 +65,10 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   const isBack=dir==='up';
 
   // Direction-dependent plate dimensions: side view is narrower
-  const bw=isSide?sc*0.34:sc*0.48;
-  const bh=sc*0.42;
-  const bx=Math.round(isSide?px-sc*0.14:px-sc*0.24);
-  const by=Math.round(py-sc*0.16+bob+sock.y);
+  const bw=isSide?sc*0.26:sc*0.36;
+  const bh=sc*0.30;
+  const bx=Math.round(isSide?px-sc*0.10:px-sc*0.18);
+  const by=Math.round(py-sc*0.36+bob+sock.y);
 
   // Outline
   ctx.fillStyle=dk;
@@ -78,7 +78,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   ctx.fillRect(bx,by,bw,bh);
 
   // Shoulder pauldrons
-  const sW=sc*0.09,sH=sc*0.13;
+  const sW=sc*0.06,sH=sc*0.08;
   if(isSide){
     // Side view: only the front-facing shoulder pauldron is visible
     ctx.fillStyle=dk;
@@ -86,7 +86,7 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
     ctx.fillStyle=ac;
     ctx.fillRect(bx+bw,by+sc*0.01,sW,sH);
     ctx.fillStyle=lt;
-    ctx.fillRect(bx+bw+sc*0.04,by+sc*0.04,sc*0.025,sc*0.025);
+    ctx.fillRect(bx+bw+sc*0.02,by+sc*0.03,sc*0.02,sc*0.02);
   } else {
     // Front/back: both shoulder pauldrons visible
     ctx.fillStyle=dk;
@@ -96,34 +96,34 @@ function drawEquipArmor(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
     ctx.fillRect(bx-sW,by+sc*0.01,sW,sH);
     ctx.fillRect(bx+bw,by+sc*0.01,sW,sH);
     ctx.fillStyle=lt;
-    ctx.fillRect(bx-sW+sc*0.02,by+sc*0.04,sc*0.025,sc*0.025);
-    ctx.fillRect(bx+bw+sc*0.04,by+sc*0.04,sc*0.025,sc*0.025);
+    ctx.fillRect(bx-sW+sc*0.015,by+sc*0.03,sc*0.02,sc*0.02);
+    ctx.fillRect(bx+bw+sc*0.025,by+sc*0.03,sc*0.02,sc*0.02);
   }
 
   // Detail lines differ per direction
   if(isBack){
     // Back plate spine ridge
     ctx.fillStyle=dk;
-    ctx.fillRect(Math.round(px-sc*0.015),by+sc*0.06,sc*0.03,bh-sc*0.15);
+    ctx.fillRect(Math.round(px-sc*0.012),by+sc*0.05,sc*0.024,bh-sc*0.12);
   } else if(isSide){
     // Side edge seam
     ctx.fillStyle=ac;
-    ctx.fillRect(bx+bw*0.15,by+sc*0.04,sc*0.03,bh-sc*0.12);
+    ctx.fillRect(bx+bw*0.15,by+sc*0.03,sc*0.025,bh-sc*0.08);
   } else {
     // Front center seam
     ctx.fillStyle=ac;
-    ctx.fillRect(Math.round(px-sc*0.02),by+sc*0.04,sc*0.04,bh-sc*0.12);
+    ctx.fillRect(Math.round(px-sc*0.015),by+sc*0.03,sc*0.03,bh-sc*0.08);
   }
 
   // Belt
   ctx.fillStyle=dk;
-  ctx.fillRect(bx-sc*0.01,by+bh-sc*0.055,bw+sc*0.02,sc*0.055);
+  ctx.fillRect(bx-sc*0.01,by+bh-sc*0.045,bw+sc*0.02,sc*0.045);
   ctx.fillStyle=ac;
-  ctx.fillRect(bx,by+bh-sc*0.045,bw,sc*0.035);
+  ctx.fillRect(bx,by+bh-sc*0.035,bw,sc*0.028);
   // Belt buckle (front only)
   if(!isBack&&!isSide){
     ctx.fillStyle=lt;
-    ctx.fillRect(Math.round(px-sc*0.02),by+bh-sc*0.055,sc*0.04,sc*0.055);
+    ctx.fillRect(Math.round(px-sc*0.015),by+bh-sc*0.045,sc*0.03,sc*0.045);
   }
 
   // Highlight strip — position shifts with viewing angle
@@ -153,8 +153,8 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
   if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
 
   const sock=getSocketOffset('head',sc,frame||0,!!isWalk);
-  const hx=Math.round(px+sock.x),hy=Math.round(py-sc*0.58+bob+sock.y);
-  const hr=sc*0.20;
+  const hx=Math.round(px+sock.x),hy=Math.round(py-sc*0.62+bob+sock.y);
+  const hr=sc*0.15;
   const isSide=dir==='right';
   const isBack=dir==='up';
 
@@ -165,20 +165,20 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
     // Dome outline
     ctx.fillStyle=dk;
     ctx.beginPath();ctx.arc(cx,hy+hr*0.3,shr+1.5,Math.PI,0);ctx.fill();
-    ctx.fillRect(cx-shr-1.5,hy+hr*0.3,shr*2+3,sc*0.12);
+    ctx.fillRect(cx-shr-1.5,hy+hr*0.3,shr*2+3,sc*0.08);
     // Dome body
     ctx.fillStyle=bc;
     ctx.beginPath();ctx.arc(cx,hy+hr*0.3,shr,Math.PI,0);ctx.fill();
-    ctx.fillRect(cx-shr,hy+hr*0.3,shr*2,sc*0.1);
+    ctx.fillRect(cx-shr,hy+hr*0.3,shr*2,sc*0.07);
     // Visor from side (narrower band)
     ctx.fillStyle=ac;
-    ctx.fillRect(cx-shr,hy+hr*0.3+sc*0.02,shr*2,sc*0.04);
+    ctx.fillRect(cx-shr,hy+hr*0.3+sc*0.015,shr*2,sc*0.03);
     // Single cheek guard (front-facing side)
     ctx.fillStyle=dk;
-    ctx.fillRect(cx+shr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
+    ctx.fillRect(cx+shr-sc*0.02,hy+hr*0.3+sc*0.03,sc*0.04,sc*0.07);
     // Side crest
     ctx.fillStyle=ac;
-    ctx.fillRect(cx-sc*0.02,hy-hr*0.1,sc*0.04,hr*0.4);
+    ctx.fillRect(cx-sc*0.015,hy-hr*0.1,sc*0.03,hr*0.4);
     // Highlight
     ctx.fillStyle=lt;
     ctx.globalAlpha=0.3;
@@ -189,42 +189,42 @@ function drawEquipHelm(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk){
     // Dome outline
     ctx.fillStyle=dk;
     ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr+1.5,Math.PI,0);ctx.fill();
-    ctx.fillRect(hx-hr-1.5,hy+hr*0.3,hr*2+3,sc*0.12);
+    ctx.fillRect(hx-hr-1.5,hy+hr*0.3,hr*2+3,sc*0.08);
     // Dome body
     ctx.fillStyle=bc;
     ctx.beginPath();ctx.arc(hx,hy+hr*0.3,hr,Math.PI,0);ctx.fill();
-    ctx.fillRect(hx-hr,hy+hr*0.3,hr*2,sc*0.1);
+    ctx.fillRect(hx-hr,hy+hr*0.3,hr*2,sc*0.07);
 
     if(!isBack){
       // Visor band (front only)
       ctx.fillStyle=ac;
-      ctx.fillRect(hx-hr,hy+hr*0.3+sc*0.02,hr*2,sc*0.04);
+      ctx.fillRect(hx-hr,hy+hr*0.3+sc*0.015,hr*2,sc*0.03);
     }
 
     // Cheek guards
     ctx.fillStyle=dk;
-    ctx.fillRect(hx-hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
-    ctx.fillRect(hx+hr-sc*0.03,hy+hr*0.3+sc*0.04,sc*0.06,sc*0.1);
+    ctx.fillRect(hx-hr-sc*0.02,hy+hr*0.3+sc*0.03,sc*0.04,sc*0.07);
+    ctx.fillRect(hx+hr-sc*0.02,hy+hr*0.3+sc*0.03,sc*0.04,sc*0.07);
 
     if(isBack){
       // Nape guard (back of helmet extending down)
       ctx.fillStyle=dk;
-      ctx.fillRect(hx-sc*0.06,hy+hr*0.3+sc*0.08,sc*0.12,sc*0.06);
+      ctx.fillRect(hx-sc*0.04,hy+hr*0.3+sc*0.06,sc*0.08,sc*0.04);
       ctx.fillStyle=bc;
-      ctx.fillRect(hx-sc*0.05,hy+hr*0.3+sc*0.09,sc*0.10,sc*0.04);
+      ctx.fillRect(hx-sc*0.03,hy+hr*0.3+sc*0.065,sc*0.06,sc*0.03);
     } else {
       // Top crest/ridge (front)
       ctx.fillStyle=ac;
-      ctx.fillRect(hx-sc*0.02,hy-hr*0.1,sc*0.04,hr*0.4);
+      ctx.fillRect(hx-sc*0.015,hy-hr*0.1,sc*0.03,hr*0.4);
     }
 
     // Highlight — shifts to opposite side for back view
     ctx.fillStyle=lt;
     ctx.globalAlpha=0.3;
     if(isBack){
-      ctx.beginPath();ctx.arc(hx+hr*0.3,hy+hr*0.05,hr*0.2,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(hx+hr*0.3,hy+hr*0.05,hr*0.15,0,Math.PI*2);ctx.fill();
     } else {
-      ctx.beginPath();ctx.arc(hx-hr*0.3,hy+hr*0.05,hr*0.2,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(hx-hr*0.3,hy+hr*0.05,hr*0.15,0,Math.PI*2);ctx.fill();
     }
     ctx.globalAlpha=1;
   }
@@ -251,62 +251,61 @@ function drawEquipBoots(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   // Walk leg offsets — each sprite pixel = sc*1.2/20 = sc*0.06 in screen space
   const lo=isWalk?[0,1,0,-1][frame%4]*sc*0.06:0;
   const ro=isWalk?[0,-1,0,1][frame%4]*sc*0.06:0;
-  const bW=sc*0.15,bH=sc*0.13;
-  // 0.50 positions boots at the player's actual feet (previously 0.33 placed them at knee level)
-  const bY=Math.round(py+sc*0.50+bob+sock.y);
+  const bW=sc*0.12,bH=sc*0.10;
+  // Position boots at the sprite's actual feet
+  const bY=Math.round(py+sc*0.38+bob+sock.y);
   const isSide=dir==='right';
 
   if(isSide){
     // ── Side view: boots stacked front-to-back ──
     if(!layer||layer==='back'){
     // Back boot (drawn behind player sprite)
-    const bkX=Math.round(px-sc*0.06+ro);
+    const bkX=Math.round(px-sc*0.04+ro);
     ctx.fillStyle=dk;
     ctx.fillRect(bkX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(bkX,bY,bW,bH);
     ctx.fillStyle=ac;
-    ctx.fillRect(bkX,bY,bW,sc*0.03);
+    ctx.fillRect(bkX,bY,bW,sc*0.025);
     ctx.fillStyle=dk;
-    ctx.fillRect(bkX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+    ctx.fillRect(bkX-Math.round(sc*0.01),bY+bH-sc*0.02,bW+sc*0.02,sc*0.02);
     }
 
     if(!layer||layer==='front'){
     // Front boot (drawn on top of player sprite)
-    const ftX=Math.round(px-sc*0.03+lo);
+    const ftX=Math.round(px-sc*0.02+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(ftX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(ftX,bY,bW,bH);
     ctx.fillStyle=ac;
-    ctx.fillRect(ftX,bY,bW,sc*0.03);
+    ctx.fillRect(ftX,bY,bW,sc*0.025);
     ctx.fillStyle=dk;
-    ctx.fillRect(ftX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+    ctx.fillRect(ftX-Math.round(sc*0.01),bY+bH-sc*0.02,bW+sc*0.02,sc*0.02);
     }
   } else if(!layer||layer==='front'){
     // ── Front/back view: boots side by side (drawn in front layer) ──
-    // Sprite left foot at pixels 8-9 → screen center px-sc*0.06; right at 10-11 → px+sc*0.06
     // Left boot
-    const llX=Math.round(px-sc*0.14+lo);
+    const llX=Math.round(px-sc*0.12+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(llX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(llX,bY,bW,bH);
     ctx.fillStyle=ac;
-    ctx.fillRect(llX,bY,bW,sc*0.03);
+    ctx.fillRect(llX,bY,bW,sc*0.025);
     ctx.fillStyle=dk;
-    ctx.fillRect(llX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+    ctx.fillRect(llX-Math.round(sc*0.01),bY+bH-sc*0.02,bW+sc*0.02,sc*0.02);
 
     // Right boot
-    const rrX=Math.round(px-sc*0.01+ro);
+    const rrX=Math.round(px+ro);
     ctx.fillStyle=dk;
     ctx.fillRect(rrX-1,bY-1,bW+2,bH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(rrX,bY,bW,bH);
     ctx.fillStyle=ac;
-    ctx.fillRect(rrX,bY,bW,sc*0.03);
+    ctx.fillRect(rrX,bY,bW,sc*0.025);
     ctx.fillStyle=dk;
-    ctx.fillRect(rrX-Math.round(sc*0.01),bY+bH-sc*0.025,bW+sc*0.02,sc*0.025);
+    ctx.fillRect(rrX-Math.round(sc*0.01),bY+bH-sc*0.02,bW+sc*0.02,sc*0.02);
   }
 
   ctx.restore();
@@ -335,14 +334,13 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
   const isBack=dir==='up';
 
   // Leggings sit between the belt and the boots
-  // 0.24 = just below armor belt bottom; 0.28 height = extends to boot tops
-  const lY=Math.round(py+sc*0.24+bob+sock.y);
-  const lH=sc*0.28;
+  const lY=Math.round(py-sc*0.06+bob+sock.y);
+  const lH=sc*0.46;
 
   if(isSide){
     // ── Side view: leg panels front-to-back ──
-    const lW=sc*0.24;
-    const lx=px-sc*0.10;
+    const lW=sc*0.18;
+    const lx=px-sc*0.08;
 
     if(!layer||layer==='back'){
     // Back leg (drawn behind player sprite)
@@ -353,65 +351,64 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
     ctx.fillRect(bkX,lY,lW,lH);
     // Side seam
     ctx.fillStyle=ac;
-    ctx.fillRect(Math.round(lx+lW*0.3+ro),lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    ctx.fillRect(Math.round(lx+lW*0.3+ro),lY+sc*0.02,sc*0.02,lH-sc*0.05);
     // Knee guard accent on back leg
     ctx.fillStyle=ac;
-    ctx.fillRect(bkX,lY+lH*0.35,lW,sc*0.04);
+    ctx.fillRect(bkX,lY+lH*0.35,lW,sc*0.03);
     }
 
     if(!layer||layer==='front'){
     // Front leg (drawn on top of player sprite)
-    const ftX=Math.round(lx+sc*0.03+lo);
+    const ftX=Math.round(lx+sc*0.02+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(ftX-1,lY-1,lW+2,lH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(ftX,lY,lW,lH);
     // Side seam on front leg
     ctx.fillStyle=ac;
-    ctx.fillRect(Math.round(lx+sc*0.03+lW*0.3+lo),lY+sc*0.02,sc*0.025,lH-sc*0.06);
+    ctx.fillRect(Math.round(lx+sc*0.02+lW*0.3+lo),lY+sc*0.02,sc*0.02,lH-sc*0.05);
     // Knee guard accent
     ctx.fillStyle=ac;
-    ctx.fillRect(ftX,lY+lH*0.35,lW,sc*0.04);
+    ctx.fillRect(ftX,lY+lH*0.35,lW,sc*0.03);
     // Highlight
     ctx.fillStyle=lt;
     ctx.globalAlpha=0.2;
-    ctx.fillRect(Math.round(lx+sc*0.03+lW*0.55+lo),lY+sc*0.02,lW*0.25,lH*0.35);
+    ctx.fillRect(Math.round(lx+sc*0.02+lW*0.55+lo),lY+sc*0.02,lW*0.25,lH*0.35);
     ctx.globalAlpha=1;
     }
   } else if(!layer||layer==='front'){
     // ── Front/back view: two leg panels side by side (drawn in front layer) ──
-    // Sprite left leg at pixels 8-9 → screen center px-sc*0.06; right 10-11 → px+sc*0.06
-    const lW=sc*0.16;
+    const lW=sc*0.13;
     // Left leg panel
-    const llx=Math.round(px-sc*0.14+lo);
+    const llx=Math.round(px-sc*0.12+lo);
     ctx.fillStyle=dk;
     ctx.fillRect(llx-1,lY-1,lW+2,lH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(llx,lY,lW,lH);
     // Knee guard
     ctx.fillStyle=ac;
-    ctx.fillRect(llx,lY+lH*0.35,lW,sc*0.04);
+    ctx.fillRect(llx,lY+lH*0.35,lW,sc*0.03);
 
     // Right leg panel
-    const rlx=Math.round(px-sc*0.02+ro);
+    const rlx=Math.round(px-sc*0.01+ro);
     ctx.fillStyle=dk;
     ctx.fillRect(rlx-1,lY-1,lW+2,lH+2);
     ctx.fillStyle=bc;
     ctx.fillRect(rlx,lY,lW,lH);
     // Knee guard
     ctx.fillStyle=ac;
-    ctx.fillRect(rlx,lY+lH*0.35,lW,sc*0.04);
+    ctx.fillRect(rlx,lY+lH*0.35,lW,sc*0.03);
 
     if(isBack){
       // Back detail: vertical seam on each leg
       ctx.fillStyle=dk;
-      ctx.fillRect(Math.round(llx+lW*0.45),lY+sc*0.03,sc*0.02,lH-sc*0.08);
-      ctx.fillRect(Math.round(rlx+lW*0.45),lY+sc*0.03,sc*0.02,lH-sc*0.08);
+      ctx.fillRect(Math.round(llx+lW*0.45),lY+sc*0.02,sc*0.015,lH-sc*0.06);
+      ctx.fillRect(Math.round(rlx+lW*0.45),lY+sc*0.02,sc*0.015,lH-sc*0.06);
     } else {
       // Front detail: center seam on each leg
       ctx.fillStyle=ac;
-      ctx.fillRect(Math.round(llx+lW*0.4),lY+sc*0.03,sc*0.025,lH-sc*0.08);
-      ctx.fillRect(Math.round(rlx+lW*0.4),lY+sc*0.03,sc*0.025,lH-sc*0.08);
+      ctx.fillRect(Math.round(llx+lW*0.4),lY+sc*0.02,sc*0.02,lH-sc*0.06);
+      ctx.fillRect(Math.round(rlx+lW*0.4),lY+sc*0.02,sc*0.02,lH-sc*0.06);
     }
 
     // Highlight
@@ -437,8 +434,8 @@ function drawEquipLegs(ctx,px,py,sc,bob,dir,flip,colors,frame,isWalk,layer){
    The swing animation, trail, glow, and particles are handled by the caller. */
 function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
   const sock=getSocketOffset('hand',sc,frame||0,!!isWalk);
-  const handAX=(flip?px-sc*0.28:px+sc*0.28)+(flip?-1:1)*sock.x;
-  const handAY=py+sc*0.08+bob+sock.y;
+  const handAX=(flip?px-sc*0.22:px+sc*0.22)+(flip?-1:1)*sock.x;
+  const handAY=py-sc*0.10+bob+sock.y;
   const dirSign=flip?-1:1;
   const bobTilt=bob*0.02;
   const restAng=(flip?-Math.PI*0.25:Math.PI*0.25)+bobTilt;
