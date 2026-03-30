@@ -1249,6 +1249,37 @@ else if(id==='guardMetalPauldrons'){for(let y=4;y<=8;y++){p(4,y,'#888');p(5,y,'#
 else if(id==='banditGloves'){p(5,6,'#6b5535');p(6,6,'#8a6a3a');p(7,7,'#8a6a3a');p(5,7,'#8a6a3a');p(6,7,'#a0804a');p(5,8,'#6b5535');p(6,8,'#8a6a3a');p(9,6,'#6b5535');p(10,6,'#8a6a3a');p(9,7,'#8a6a3a');p(10,7,'#a0804a');p(11,7,'#8a6a3a');p(9,8,'#6b5535');p(10,8,'#8a6a3a')}
 else if(id==='clothGloves'){p(5,6,'#c4a040');p(6,6,'#ddb850');p(7,7,'#ddb850');p(5,7,'#ddb850');p(6,7,'#eecc66');p(5,8,'#c4a040');p(6,8,'#ddb850');p(9,6,'#c4a040');p(10,6,'#ddb850');p(9,7,'#ddb850');p(10,7,'#eecc66');p(11,7,'#ddb850');p(9,8,'#c4a040');p(10,8,'#ddb850')}
 else if(id==='guardGauntlets'){p(5,6,'#888');p(6,6,'#aaa');p(7,7,'#aaa');p(5,7,'#aaa');p(6,7,'#ccc');p(5,8,'#888');p(6,8,'#aaa');p(9,6,'#888');p(10,6,'#aaa');p(9,7,'#aaa');p(10,7,'#ccc');p(11,7,'#aaa');p(9,8,'#888');p(10,8,'#aaa');p(6,5,'#ffd700');p(10,5,'#ffd700')}
+// PNG-based clothing icons
+else if(id==='citizenShirtClothBlue')armor('#3a6a9a','#5a8aba','#2a4a7a');
+else if(id==='citizenLeathervest')armor('#5a8a3a','#6a9a4a','#3a6a2a');
+else if(id==='citizenLeathervestRed')armor('#9a3a3a','#ba5a5a','#7a2a2a');
+else if(id==='citizenShortshirt')armor('#c4a040','#ddb850','#a08030');
+else if(id==='farmerLeathertrousersBlue')armor('#3a5a8a','#4a6a9a','#2a4a6a');
+else if(id==='farmerLeathertrousersCloth')armor('#8a7a5a','#a09a7a','#6a5a3a');
+else if(id==='farmerLeathertrousersGreen')armor('#3a6a3a','#4a8a4a','#2a5a2a');
+else if(id==='farmerLeathertrousersRed')armor('#8a3a3a','#aa5a5a','#6a2a2a');
+else if(id==='guardMetalRedChest')armor('#8a2a2a','#bb4444','#6a1a1a');
+else if(id==='merchantVestCloth')armor('#6a5a3a','#8a7a5a','#4a3a2a');
+else if(id==='citizenLeatherBoots')boot('#6a5a3a','#8a7a5a','#4a3a2a');
+else if(id==='citizenLeatherBootsBlack')boot('#2a2a2a','#4a4a4a','#1a1a1a');
+else if(id==='citizenLeatherBootsBlue')boot('#3a4a6a','#5a6a8a','#2a3a5a');
+else if(id==='citizenLeatherBootsRed')boot('#6a2a2a','#8a4a4a','#4a1a1a');
+else if(id==='citizenLeatherBootsYellow')boot('#8a7a2a','#aa9a4a','#6a5a1a');
+else if(id==='guardBootsMetal')boot('#7a7a8a','#9a9aaa','#5a5a6a');
+else if(id==='woodenClub')sword('#8a6a3a','#a0804a','#6a4a20');
+else if(id==='healingPotion')potion('#22aa44','#44cc66');
+else if(id==='cocoonSilk'){p(6,5,'#d0c8b0');p(7,5,'#e0d8c0');p(8,5,'#d0c8b0');p(5,6,'#c4bca0');p(6,6,'#e8e0cc');p(7,6,'#f0e8d8');p(8,6,'#e8e0cc');p(9,6,'#c4bca0');p(6,7,'#d0c8b0');p(7,7,'#e0d8c0');p(8,7,'#d0c8b0');p(7,8,'#b8b098')}
+else if(id==='farmerLeatherLegs'||id==='farmerShortleatherLegs'||id==='guardMetalLegs'||id==='merchantClothRedLegs'||id==='merchantClothWhiteLegs'){const legging=(c1,c2,c3)=>{for(let y=3;y<=10;y++){p(5,y,c1);p(10,y,c1)}for(let y=4;y<=9;y++){p(6,y,c2);p(9,y,c2)}for(let y=5;y<=8;y++){p(7,y,c2);p(8,y,c2)}p(6,3,c2);p(9,3,c2);p(6,10,c3);p(9,10,c3);p(7,6,c3);p(8,6,c3)};if(id==='farmerLeatherLegs')legging('#6a5a3a','#8a7a5a','#4a3a2a');else if(id==='farmerShortleatherLegs')legging('#7a6a4a','#9a8a6a','#5a4a2a');else if(id==='guardMetalLegs')legging('#7a7a8a','#9a9aaa','#5a5a6a');else if(id==='merchantClothRedLegs')legging('#8a2a2a','#aa4a4a','#6a1a1a');else if(id==='merchantClothWhiteLegs')legging('#d0d0d0','#e8e8e8','#b0b0b0')}
+else if(id==='farmerHatStraw')helm('#c4a040','#ddb850','#a08030');
+else if(id==='farmerHatStrawCloth')helm('#b09030','#c8a848','#907020');
+else if(id==='farmerScarfCloth')helm('#a08060','#b89878','#806040');
+else if(id==='femaleGreen')helm('#3a7a3a','#5a9a5a','#2a5a2a');
+else if(id==='female3Green')helm('#2a6a2a','#4a8a4a','#1a4a1a');
+else if(id==='guardHelmetMetalRed')helm('#8a2a2a','#bb4444','#6a1a1a');
+else if(id==='maleBlack')helm('#2a2a2a','#4a4a4a','#1a1a1a');
+else if(id==='maleBrown')helm('#6a4a2a','#8a6a4a','#4a2a0a');
+else if(id==='maleGrey')helm('#6a6a6a','#8a8a8a','#4a4a4a');
+else if(id==='merchantHatLeatherBlack')helm('#2a2a2a','#4a4a4a','#1a1a1a');
 else if(id==='frostCore'){p(7,6,'#a0d0ee');p(8,6,'#80c0e0');p(6,7,'#a0d0ee');p(7,7,'#c0e8ff');p(8,7,'#c0e8ff');p(9,7,'#a0d0ee');p(7,8,'#80c0e0');p(8,8,'#a0d0ee');p(7,5,'#60a0c0');p(8,9,'#60a0c0')}
 else if(id==='magmaCore'){p(7,6,'#ff4400');p(8,6,'#ff6600');p(6,7,'#ff4400');p(7,7,'#ffaa22');p(8,7,'#ffaa22');p(9,7,'#ff4400');p(7,8,'#ff6600');p(8,8,'#ff4400');p(7,5,'#cc3300');p(8,9,'#cc3300')}
 else if(id==='deepFang'){p(7,4,'#4a3a48');p(8,4,'#3a2a38');p(7,5,'#5a4a58');p(8,5,'#4a3a48');p(7,6,'#6a5a68');p(8,6,'#5a4a58');p(7,7,'#7a6a78');p(8,7,'#6a5a68');p(7,8,'#5a4a58');p(8,8,'#4a3a48');p(7,9,'#3a2a38');p(7,10,'#2a1a28')}
@@ -1514,6 +1545,10 @@ for(let i=0;i<80;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]===T
 // Flowers in forest and shore
 for(let i=0;i<80;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
 for(let i=0;i<40;i++){const x=rand(192,263),y=rand(82,138);if(terrain[y*MW+x]===TT_SHORE)decorations.push({x,y,type:'flower',variant:rand(0,3)})}
+// World asset decorations (bushes, trees, traps from loaded PNG sprites)
+for(let i=0;i<20;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldBush',variant:0})}
+for(let i=0;i<15;i++){const x=rand(92,168),y=rand(12,68);if(terrain[y*MW+x]===TT_GRASS)decorations.push({x,y,type:'worldTree',variant:0})}
+for(let i=0;i<10;i++){const x=rand(5,MW-6),y=rand(4,MH-5);if(terrain[y*MW+x]!==TT_WATER&&terrain[y*MW+x]!==TT_LAVA)decorations.push({x,y,type:'mouseTrap',variant:0})}
 decorations.sort((a,b)=>a.y-b.y);
 }
 generateWorld();
@@ -1539,6 +1574,46 @@ frostTonic:{name:'Frost Tonic',type:'consumable',heal:40,rarity:'uncommon',desc:
 banditLeatherPauldrons:{name:'Bandit Pauldrons',type:'shoulders',slot:'shoulders',def:2,rarity:'common',desc:'Rough leather shoulder guards.',assetKey:'bandit_leather_big'},guardMetalPauldrons:{name:'Guard Pauldrons',type:'shoulders',slot:'shoulders',def:5,rarity:'uncommon',desc:'Polished metal shoulder plates.',assetKey:'guard_metal_big'},
 // Hand equipment
 banditGloves:{name:'Bandit Gloves',type:'hands',slot:'hands',atk:1,rarity:'common',desc:'Reinforced leather gloves.',assetKey:'bandit_leather'},clothGloves:{name:'Cloth Gloves',type:'hands',slot:'hands',def:1,rarity:'common',desc:'Simple cloth gloves.',assetKey:'cloth_yellow'},guardGauntlets:{name:'Guard Gauntlets',type:'hands',slot:'hands',atk:2,def:2,rarity:'uncommon',desc:'Metal-plated gauntlets.',assetKey:'guard_metal'},
+// PNG-based clothing items (chest)
+citizenShirtClothBlue:{name:'Citizen Shirt',type:'armor',slot:'body',def:1,rarity:'common',desc:'A simple blue cloth shirt.',assetKey:'citizen_shirt_cloth_blue'},
+citizenLeathervest:{name:'Leather Vest',type:'armor',slot:'body',def:2,rarity:'common',desc:'A sturdy green leather vest.',assetKey:'citizen_leathervest_green'},
+citizenLeathervestRed:{name:'Red Leather Vest',type:'armor',slot:'body',def:2,rarity:'common',desc:'A sturdy red leather vest.',assetKey:'citizen_leathervest_red'},
+citizenShortshirt:{name:'Short Shirt',type:'armor',slot:'body',def:1,rarity:'common',desc:'A yellow cloth short shirt.',assetKey:'citizen_shortshirt_cloth_yellow'},
+farmerLeathertrousersBlue:{name:'Blue Farmer Tunic',type:'armor',slot:'body',def:2,rarity:'common',desc:'A blue farmer tunic with leather accents.',assetKey:'farmer_leathertrousers_blue'},
+farmerLeathertrousersCloth:{name:'Farmer Tunic',type:'armor',slot:'body',def:1,rarity:'common',desc:'A simple cloth farmer tunic.',assetKey:'farmer_leathertrousers_cloth'},
+farmerLeathertrousersGreen:{name:'Green Farmer Tunic',type:'armor',slot:'body',def:2,rarity:'common',desc:'A green farmer tunic with leather accents.',assetKey:'farmer_leathertrousers_green'},
+farmerLeathertrousersRed:{name:'Red Farmer Tunic',type:'armor',slot:'body',def:2,rarity:'common',desc:'A red farmer tunic with leather accents.',assetKey:'farmer_leathertrousers_red'},
+guardMetalRedChest:{name:'Guard Chestplate',type:'armor',slot:'body',def:5,rarity:'uncommon',desc:'Red-painted guard metal chestplate.',assetKey:'guard_metal_red'},
+merchantVestCloth:{name:'Merchant Vest',type:'armor',slot:'body',def:1,rarity:'common',desc:'A fine merchant cloth vest.',assetKey:'merchant_vest_cloth'},
+// Feet clothing
+citizenLeatherBoots:{name:'Citizen Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Simple leather citizen boots.',assetKey:'citizen_leather'},
+citizenLeatherBootsBlack:{name:'Black Leather Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Black leather boots.',assetKey:'citizen_leather_black'},
+citizenLeatherBootsBlue:{name:'Blue Leather Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Blue leather boots.',assetKey:'citizen_leather_blue'},
+citizenLeatherBootsRed:{name:'Red Leather Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Red leather boots.',assetKey:'citizen_leather_red'},
+citizenLeatherBootsYellow:{name:'Yellow Leather Boots',type:'boots',slot:'boots',def:1,rarity:'common',desc:'Yellow leather boots.',assetKey:'citizen_leather_yellow'},
+guardBootsMetal:{name:'Guard Metal Boots',type:'boots',slot:'boots',def:3,rarity:'uncommon',desc:'Heavy metal guard boots.',assetKey:'guard_boots_metal'},
+// Legs clothing
+farmerLeatherLegs:{name:'Farmer Leather Leggings',type:'legs',slot:'legs',def:1,rarity:'common',desc:'Simple farmer leather leggings.',assetKey:'farmer_leather'},
+farmerShortleatherLegs:{name:'Farmer Short Leggings',type:'legs',slot:'legs',def:1,rarity:'common',desc:'Short farmer leather leggings.',assetKey:'farmer_shortleather'},
+guardMetalLegs:{name:'Guard Metal Leggings',type:'legs',slot:'legs',def:3,rarity:'uncommon',desc:'Heavy guard metal leggings.',assetKey:'guard_metal'},
+merchantClothRedLegs:{name:'Red Merchant Trousers',type:'legs',slot:'legs',def:1,rarity:'common',desc:'Red merchant cloth leggings.',assetKey:'merchant_cloth_red'},
+merchantClothWhiteLegs:{name:'White Merchant Trousers',type:'legs',slot:'legs',def:1,rarity:'common',desc:'White merchant cloth leggings.',assetKey:'merchant_cloth_white'},
+// Head clothing
+farmerHatStraw:{name:'Straw Hat',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A simple straw hat.',assetKey:'farmer_hat_straw'},
+farmerHatStrawCloth:{name:'Cloth Straw Hat',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A straw hat with cloth band.',assetKey:'farmer_hat_straw_cloth'},
+farmerScarfCloth:{name:'Farmer Scarf',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A worn cloth scarf.',assetKey:'farmer_scarf_cloth'},
+femaleGreen:{name:'Green Headband',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A green headband.',assetKey:'female_1_green'},
+female3Green:{name:'Green Hair Wrap',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A green hair wrap.',assetKey:'female_3_green'},
+guardHelmetMetalRed:{name:'Guard Helmet',type:'helm',slot:'helm',def:4,rarity:'uncommon',desc:'A red metal guard helmet.',assetKey:'guard_helmet_metal_red'},
+maleBlack:{name:'Black Cap',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A black leather cap.',assetKey:'male_1_black'},
+maleBrown:{name:'Brown Cap',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A brown leather cap.',assetKey:'male_1_brown'},
+maleGrey:{name:'Grey Cap',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A grey cloth cap.',assetKey:'male_2_grey'},
+merchantHatLeatherBlack:{name:'Merchant Hat',type:'helm',slot:'helm',def:1,rarity:'common',desc:'A black leather merchant hat.',assetKey:'merchant_hat_leather_black'},
+// New weapons & consumables
+woodenClub:{name:'Wooden Club',type:'weapon',slot:'weapon',atk:2,rarity:'common',desc:'A crude wooden club.'},
+healingPotion:{name:'Healing Potion',type:'consumable',heal:30,rarity:'common',desc:'A small healing potion. Restores 30 HP.'},
+// Cocoon material
+cocoonSilk:{name:'Cocoon Silk',type:'material',rarity:'uncommon',desc:'Silk harvested from a wild cocoon. Used in crafting.'},
 };
 const itemIcons={};Object.keys(itemDefs).forEach(id=>{itemIcons[id]=makeItemIcon(id)});
 
@@ -1599,6 +1674,13 @@ const recipes=[
 {id:'banditGloves',name:'Bandit Gloves',needs:{hide:2,fiber:1},makes:'banditGloves'},
 {id:'clothGloves',name:'Cloth Gloves',needs:{fiber:3},makes:'clothGloves'},
 {id:'guardGauntlets',name:'Guard Gauntlets',needs:{scrap:3,ore:2,hide:1},makes:'guardGauntlets',station:'forge'},
+// New clothing & consumable recipes
+{id:'woodenClub',name:'Wooden Club',needs:{branch:2,fiber:1},makes:'woodenClub'},
+{id:'healingPotion',name:'Healing Potion',needs:{herb:2,fiber:1},makes:'healingPotion',count:2},
+{id:'citizenShirtClothBlue',name:'Citizen Shirt',needs:{fiber:4},makes:'citizenShirtClothBlue'},
+{id:'citizenLeatherBoots',name:'Citizen Boots',needs:{hide:2,fiber:1},makes:'citizenLeatherBoots'},
+{id:'farmerLeatherLegs',name:'Farmer Leggings',needs:{hide:2,fiber:2},makes:'farmerLeatherLegs'},
+{id:'farmerHatStraw',name:'Straw Hat',needs:{fiber:3,branch:1},makes:'farmerHatStraw'},
 ];
 
 const enemyDefs={
@@ -1940,7 +2022,7 @@ time:0,dayTime:0,day:1,camera:{x:0,y:0},input:{},touchMove:{x:0,y:0},
 logs:['The Veils weaken. You wake in Cindergate, the last frontier town.'],
 world:{regionState:{corruption:12,stability:60,favoredFaction:'None'},activeZone:'town',ecology:{wolfPop:1.0,boglingPop:1.0,sentinelPop:1.0},mutations:[]},
 faction:{cindergate:0,roadwardens:0,veilScholars:0,ashenOrder:0},
-player:{x:140*T*SCALE,y:100*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1},equipment:{weapon:null,body:null,trinket:null,helm:null,legs:null,boots:null,ring:null,shoulders:null,hands:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
+player:{x:140*T*SCALE,y:100*T*SCALE,speed:70,hp:100,hpMax:100,level:1,exp:0,expNext:40,gold:25,atkBase:4,defBase:1,critChance:5,skillPoints:0,inventory:{branch:3,fiber:3,herb:1,healingPotion:1},equipment:{weapon:'woodenClub',body:'citizenShirtClothBlue',trinket:null,helm:null,legs:'farmerLeatherLegs',boots:'citizenLeatherBoots',ring:null,shoulders:null,hands:null},skills:{combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1},skillXp:{combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0},buffs:[],class:null,classTree:{},abilityPath:null,abilityPoints:0,abilities:{},abilityCooldowns:{},pet:null,allocStats:{accuracy:0,strength:0,defense:0,vitality:0},allocStatPoints:0,appearance:defaultAppearance(),facing:'down',animFrame:0,animTimer:0,isMoving:false,vx:0,vy:0,attackCooldown:0,invincible:0,dashCooldown:0,dashTimer:0,isDashing:false,isBlocking:false,regenTimer:0,lastCombatTime:0,critFlash:0,swingTimer:0},
 quests:[
 {id:'first_steps',name:'First Steps Beyond the Gate',stage:0,done:false,desc:'Speak to the town leaders and begin your first outing.'},
 {id:'wild_proof',name:'Wild Proof',stage:0,done:false,desc:'Defeat creatures in Emberwood and return with materials.'},
@@ -1970,7 +2052,7 @@ npcs:[
 {id:'mireSage',x:138*T*SCALE,y:171*T*SCALE,name:'Sage Morwen',zone:'marsh'},
 {id:'mireHunter',x:142*T*SCALE,y:173*T*SCALE,name:'Hunter Thane',zone:'marsh'},
 ],
-nodes:buildNodes(),enemies:buildEnemies(),currentDialogue:null,
+nodes:buildNodes(),enemies:buildEnemies(),critters:buildCritters(),cocoons:buildCocoons(),currentDialogue:null,
 flags:{tutorialShown:false},
 settlement:{level:1},
 bounties:generateBounties(),activeBounty:null,
@@ -2041,6 +2123,30 @@ dungeonEntrances.forEach(de=>{
 const caveTypes=['corruptWolf','voidSentinel','caveSpider','deepLurker'];
 for(let i=0;i<4;i++)push(de.x+rand(-5,5),de.y+rand(-5,5),de.zone,sample(caveTypes));
 });
+return out}
+
+// ═══ AMBIENT CRITTERS ═══
+function buildCritters(){const out=[];
+// Town area - dogs wander near Cindergate
+for(let i=0;i<3;i++){out.push({x:rand(125,155)*T*SCALE,y:rand(90,115)*T*SCALE,type:'dog_black',zone:'town',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+for(let i=0;i<3;i++){out.push({x:rand(125,155)*T*SCALE,y:rand(90,115)*T*SCALE,type:'dog_brown',zone:'town',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+// Emberwood - ducks and critters
+for(let i=0;i<6;i++){out.push({x:rand(95,165)*T*SCALE,y:rand(15,65)*T*SCALE,type:'critter_1',zone:'forest',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+// Mirefen - rats
+for(let i=0;i<5;i++){out.push({x:rand(100,175)*T*SCALE,y:rand(150,200)*T*SCALE,type:'rat_white',zone:'marsh',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+// Frostpeak - dogs
+for(let i=0;i<3;i++){out.push({x:rand(15,75)*T*SCALE,y:rand(15,65)*T*SCALE,type:'dog_black',zone:'frost',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+// Crystalshore - ducks
+for(let i=0;i<4;i++){out.push({x:rand(195,260)*T*SCALE,y:rand(85,135)*T*SCALE,type:'critter_1',zone:'crystalshore',homeX:0,homeY:0,wanderTimer:Math.random()*5,vx:0,vy:0})}
+out.forEach(c=>{c.homeX=c.x;c.homeY=c.y});
+return out}
+
+// ═══ COCOON PICKUPS ═══
+function buildCocoons(){const out=[];
+// Scattered cocoons in forested/dark areas - interactive pickup for crafting materials
+for(let i=0;i<8;i++){out.push({x:rand(95,165)*T*SCALE,y:rand(15,65)*T*SCALE,zone:'forest',collected:false,respawn:0})}
+for(let i=0;i<6;i++){out.push({x:rand(15,75)*T*SCALE,y:rand(85,135)*T*SCALE,zone:'thornveil',collected:false,respawn:0})}
+for(let i=0;i<4;i++){out.push({x:rand(100,175)*T*SCALE,y:rand(150,200)*T*SCALE,zone:'marsh',collected:false,respawn:0})}
 return out}
 
 function generateBounties(){return[...bountyTemplates].sort(()=>Math.random()-0.5).slice(0,5).map(t=>({...t,progress:0,active:false,completed:false}))}
@@ -2328,6 +2434,8 @@ if(node.type==='relicShard')state.faction.veilScholars+=1;
 renderPanels()}
 
 function interactNearest(){if(state.currentDialogue)return;const p=state.player;const npc=state.npcs.filter(n=>dist(p,n)<60*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];if(npc)return openDialogue(npc.id,'start');
+// Check cocoon pickups
+if(state.cocoons){const coc=state.cocoons.filter(c=>!c.collected&&dist(p,c)<60*SCALE).sort((a,b)=>dist(p,a)-dist(p,b))[0];if(coc){coc.collected=true;coc.respawn=state.time+60+Math.random()*30;addItem('cocoonSilk',1);toast('Harvested Cocoon Silk','loot');addLog('🔲 Harvested silk from a cocoon.');gainSkill('foraging',5);SpriteEffects.spawn({key:'crafting',x:p.x,y:p.y-10,scale:1,speed:0.1});return}}
 // Check dungeon entrances
 const de=dungeonEntrances.find(d=>Math.hypot(d.x*T*SCALE-p.x,d.y*T*SCALE-p.y)<60*SCALE);
 if(de){const idx=dungeonEntrances.indexOf(de);enterDungeon(idx);return}
@@ -2370,6 +2478,8 @@ function saveGame(slot=0,silent=false){const sd=JSON.parse(JSON.stringify(state)
 function loadGame(slot=0){const key=slot===0?SAVE_KEY:`${SAVE_KEY}_slot${slot}`;const raw=localStorage.getItem(key);if(!raw)return toast('No save found.');const ld=JSON.parse(raw);ld.stats.zonesVisited=new Set(ld.stats.zonesVisited);Object.assign(state,ld);const p=state.player;if(p.skillPoints==null){const lvl=p.level||1;p.skillPoints=(lvl-1)*2;if(state.stats&&state.stats.dungeonsCleared)p.skillPoints+=state.stats.dungeonsCleared*3;if(p.skillPoints>0)toast(`Retroactive skill points granted: ${p.skillPoints}`,'quest')}if(!p.classTree)p.classTree={};if(p.class===undefined)p.class=null;if(!p.skills)p.skills={combat:1,foraging:1,crafting:1,influence:1,survival:1,veilsense:1};if(!p.skillXp)p.skillXp={combat:0,foraging:0,crafting:0,influence:0,survival:0,veilsense:0};if(p.isBlocking===undefined)p.isBlocking=false;if(p.equipment.helm===undefined)p.equipment.helm=null;if(p.equipment.boots===undefined)p.equipment.boots=null;if(p.equipment.ring===undefined)p.equipment.ring=null;if(p.equipment.legs===undefined)p.equipment.legs=null;if(p.equipment.shoulders===undefined)p.equipment.shoulders=null;if(p.equipment.hands===undefined)p.equipment.hands=null;if(p.abilityPath===undefined)p.abilityPath=null;if(!p.abilities)p.abilities={};if(p.abilityPoints===undefined)p.abilityPoints=0;if(!p.abilityCooldowns)p.abilityCooldowns={};if(!p.appearance)p.appearance=defaultAppearance();if(state.nodes)state.nodes.forEach(n=>{if(n.action===undefined)n.action='gather'});if(p.pet===undefined)p.pet=null;if(!p.allocStats)p.allocStats={accuracy:0,strength:0,defense:0,vitality:0};if(p.allocStatPoints===undefined)p.allocStatPoints=0;
 // Always rebuild enemies from current definitions so new/updated enemies appear in old saves
 state.enemies=buildEnemies();
+// Rebuild critters and cocoons
+state.critters=buildCritters();if(!state.cocoons||state.cocoons.length===0)state.cocoons=buildCocoons();
 // Rebuild nodes if missing action property
 if(!state.nodes||state.nodes.length===0)state.nodes=buildNodes();
 rebuildPlayerSprites(p.appearance).then(()=>{rebuildNPCSprites().then(()=>{renderAll();drawMinimap()})});rebuildSettlement();closeDialogue();closeLootUI();closeInventory();renderAll();toast(`Loaded${slot?' (Slot '+slot+')':''}.`,'info');if(!p.class&&p.level>=5)setTimeout(()=>showClassAwakeningPopup(),500);if(!p.abilityPath&&p.level>=10)setTimeout(()=>showAbilityPathPopup(),800)}
@@ -2436,6 +2546,10 @@ if(e.engaged){const dx=p.x-e.x,dy=p.y-e.y,len=Math.hypot(dx,dy)||1;const dSpd=22
 returnToHome(e,22*SCALE,dt)}});
 separateEnemies(state.dungeon.enemies.filter(e=>e.alive),dt);
 }
+// Critter wandering
+if(state.critters)state.critters.forEach(c=>{c.wanderTimer-=dt;if(c.wanderTimer<=0){c.wanderTimer=3+Math.random()*5;const a=Math.random()*Math.PI*2;c.vx=Math.cos(a)*15;c.vy=Math.sin(a)*15}c.x+=c.vx*dt*SCALE;c.y+=c.vy*dt*SCALE;const homeD=Math.hypot(c.x-c.homeX,c.y-c.homeY);if(homeD>80*SCALE){const dx=c.homeX-c.x,dy=c.homeY-c.y,len=Math.hypot(dx,dy)||1;c.vx=(dx/len)*15;c.vy=(dy/len)*15}});
+// Cocoon respawn
+if(state.cocoons)state.cocoons.forEach(c=>{if(c.collected&&c.respawn>0&&state.time>=c.respawn){c.collected=false;c.respawn=0}});
 // Particles
 state.particles=state.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=80*dt;pt.life-=dt;return pt.life>0});
 // Quest auto
@@ -2465,6 +2579,8 @@ const tSpr=[sprites.tiles.grass,sprites.tiles.dirt,sprites.tiles.stone,sprites.t
 for(let ty=sty;ty<=ety;ty++)for(let tx=stx;tx<=etx;tx++){const tt=terrain[ty*MW+tx];const v=terrainVariant[ty*MW+tx];const arr=tSpr[tt];if(!arr)continue;const spr=(tt===TT_WATER||tt===TT_DEEPWATER||tt===TT_LAVA)?arr[waterFrame.current%arr.length]:arr[v%arr.length];if(spr)ctx.drawImage(spr,tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);
 // Corruption overlay
 const cv=corruptionMap[ty*MW+tx];if(cv>0.1&&tt!==TT_CORRUPT){ctx.globalAlpha=cv*0.4;ctx.fillStyle='#3a0a3a';ctx.fillRect(tx*T*SCALE,ty*T*SCALE,T*SCALE,T*SCALE);ctx.globalAlpha=1}}
+// World chunk tile overlays (loaded PNG map chunks)
+if(typeof GameAssets!=='undefined'){const chunkSize=16*T*SCALE;for(let cx=27;cx<=32;cx++)for(let cy=15;cy<=20;cy++){const bKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_bottom';const tKey='world.cu_'+String(cx).padStart(8,'0')+'_'+String(cy).padStart(8,'0')+'_top';const ox=(cx-27)*chunkSize,oy=(cy-15)*chunkSize;if(ox+chunkSize<state.camera.x||ox>state.camera.x+cssW||oy+chunkSize<state.camera.y||oy>state.camera.y+cssH)continue;const bImg=GameAssets.get(bKey),tImg=GameAssets.get(tKey);ctx.globalAlpha=0.15;if(bImg)ctx.drawImage(bImg,ox,oy,chunkSize,chunkSize);if(tImg)ctx.drawImage(tImg,ox,oy,chunkSize,chunkSize);ctx.globalAlpha=1}}
 // Buildings
 buildings.forEach(b=>{const bx=b.x*T*SCALE,by=b.y*T*SCALE,bsz=(b.sz||2.4)*T*SCALE;
 if(bx>state.camera.x-bsz&&bx<state.camera.x+cssW+bsz&&by>state.camera.y-bsz&&by<state.camera.y+cssH+bsz){
@@ -2481,7 +2597,12 @@ if(b.type==='campfire'){ctx.globalAlpha=0.08+Math.sin(state.time*3)*0.04;ctx.fil
 }});
 const drawables=[];
 // Decorations
-decorations.forEach(d=>{const dx=d.x*T*SCALE,dy=d.y*T*SCALE;if(dx>state.camera.x-T*SCALE*2&&dx<state.camera.x+cssW+T*SCALE*2&&dy>state.camera.y-T*SCALE*2&&dy<state.camera.y+cssH+T*SCALE*2){const sa=sprites.objects[d.type];if(sa){const sp=sa[d.variant%sa.length];const sz=d.type==='tree'?T*SCALE*2:(d.type==='rock'?T*SCALE*1.5:T*SCALE);drawables.push({y:dy+sz,draw:()=>ctx.drawImage(sp,dx,dy,sz,sz)})}}});
+decorations.forEach(d=>{const dx=d.x*T*SCALE,dy=d.y*T*SCALE;if(dx>state.camera.x-T*SCALE*2&&dx<state.camera.x+cssW+T*SCALE*2&&dy>state.camera.y-T*SCALE*2&&dy<state.camera.y+cssH+T*SCALE*2){
+// World asset PNG decorations
+if(d.type==='worldBush'){const img=GameAssets.get('world.prof_bush_vogria');if(img){const sz=T*SCALE*1.5;drawables.push({y:dy+sz,draw:()=>ctx.drawImage(img,dx,dy,sz,sz)})};return}
+if(d.type==='worldTree'){const img=GameAssets.get('world.prof_tree_beech');if(img){const sz=T*SCALE*2.5;drawables.push({y:dy+sz,draw:()=>ctx.drawImage(img,dx,dy-sz*0.4,sz,sz*1.4)})};return}
+if(d.type==='mouseTrap'){const img=GameAssets.get('world.mouse_trap');if(img){const sz=T*SCALE*0.8;drawables.push({y:dy+sz,draw:()=>ctx.drawImage(img,dx,dy,sz,sz)})};return}
+const sa=sprites.objects[d.type];if(sa){const sp=sa[d.variant%sa.length];const sz=d.type==='tree'?T*SCALE*2:(d.type==='rock'?T*SCALE*1.5:T*SCALE);drawables.push({y:dy+sz,draw:()=>ctx.drawImage(sp,dx,dy,sz,sz)})}}});
 // Zone labels
 const lb=(name,x,y)=>drawables.push({y:y-100,draw:()=>{ctx.font=`bold ${14*SCALE}px Cinzel,serif`;ctx.textAlign='center';ctx.fillStyle='rgba(123,104,238,.4)';ctx.fillText(name,x,y);ctx.textAlign='left'}});
 lb('Cindergate',140*T*SCALE,88*T*SCALE);lb('Emberwood',130*T*SCALE,15*T*SCALE);lb('Mirefen',140*T*SCALE,148*T*SCALE);lb('Glass Ruins',225*T*SCALE,15*T*SCALE);lb('Frostpeak',45*T*SCALE,15*T*SCALE);lb('Scorchlands',50*T*SCALE,155*T*SCALE);lb('Thornveil',45*T*SCALE,83*T*SCALE);lb('Crystalshore',225*T*SCALE,83*T*SCALE);
@@ -2492,6 +2613,10 @@ state.nodes.forEach(n=>{if(!n.ready)return;const spr=resourceSprites[n.type];if(
 // NPCs
 state.npcs.forEach(n=>{const spr=sprites.npcs[n.id];if(!spr)return;const nBob=Math.sin(state.time*1.5+n.x*0.01)*1.5;drawables.push({y:n.y+T*SCALE,draw:()=>{ctx.drawImage(spr,n.x-T*SCALE*0.6,n.y-T*SCALE*0.85+nBob,T*SCALE*1.2,T*SCALE*1.55);
 ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='rgba(8,9,13,.8)';const tw=ctx.measureText(n.name).width;ctx.fillRect(n.x-tw/2-4,n.y-T*SCALE*0.95-2+nBob,tw+8,14);ctx.fillStyle='#f59e0b';ctx.fillText(n.name,n.x,n.y-T*SCALE*0.85+nBob);ctx.textAlign='left'}})});
+// Ambient critters (dogs, ducks, rats)
+if(state.critters)state.critters.forEach(c=>{if(c.zone!==state.world.activeZone&&dist(c,state.player)>500*SCALE)return;const img=GameAssets.get('creature.'+c.type);if(!img)return;const sz=T*SCALE*0.9;const cBob=Math.sin(state.time*2.5+c.x*0.03)*1.5;drawables.push({y:c.y+sz/2,draw:()=>{ctx.globalAlpha=0.9;ctx.drawImage(img,c.x-sz/2,c.y-sz/2+cBob,sz,sz);ctx.globalAlpha=1}})});
+// Cocoon pickups
+if(state.cocoons)state.cocoons.forEach(c=>{if(c.collected)return;if(c.zone!==state.world.activeZone&&dist(c,state.player)>500*SCALE)return;const img=GameAssets.get('creature.cocoon');if(!img)return;const sz=T*SCALE*0.8;const cBob=Math.sin(state.time*1.5+c.x*0.02)*1;drawables.push({y:c.y+sz/2,draw:()=>{ctx.globalAlpha=0.6+Math.sin(state.time*2+c.x)*0.2;ctx.drawImage(img,c.x-sz/2,c.y-sz/2+cBob,sz,sz);ctx.globalAlpha=1;if(dist(c,state.player)<60*SCALE){ctx.font='9px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.fillStyle='#c4a86e';ctx.fillText('🔲 Cocoon',c.x,c.y-sz/2-6);ctx.textAlign='left'}}})});
 // Lootable corpses
 const lootCorpses=state.dungeon.active?state.dungeon.enemies.filter(e=>!e.alive&&e.lootable&&e.loot&&e.loot.length>0):state.enemies.filter(e=>!e.alive&&e.lootable&&e.loot&&e.loot.length>0&&(e.zone===state.world.activeZone||dist(e,state.player)<500*SCALE));
 lootCorpses.forEach(e=>{const spr=sprites.enemies[e.type];if(!spr)return;const sz=T*SCALE*1.4;
@@ -2583,7 +2708,7 @@ ctx.restore();
 // Player
 const p=state.player,pDir=p.facing==='left'?'right':p.facing,pSpr=p.isMoving?sprites.player.walk[pDir][p.animFrame%4]:sprites.player.idle[pDir][p.animFrame%2];
 const pBob=Math.round(p.isMoving?Math.sin(state.time*12)*1.5:Math.sin(state.time*2)*0.5);
-drawables.push({y:p.y+T*SCALE*0.7,draw:()=>{ctx.save();ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+T*SCALE*0.6,T*SCALE*0.48,T*SCALE*0.18,0,0,Math.PI*2);ctx.fill();const critFlash=p.critFlash>0;if(p.invincible>0&&Math.floor(p.invincible*10)%2)ctx.globalAlpha=0.5;const flip=p.facing==='left';const sc=T*SCALE;const eq=state.player.equipment;if(eq.legs&&equipColors[eq.legs])drawEquipLegs(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.legs],p.animFrame,p.isMoving,'back');if(eq.boots&&equipColors[eq.boots])drawEquipBoots(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.boots],p.animFrame,p.isMoving,'back');if(flip){ctx.save();ctx.translate(p.x,0);ctx.scale(-1,1);ctx.drawImage(pSpr,-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);if(critFlash){ctx.globalCompositeOperation='source-atop';ctx.fillStyle=`rgba(220,38,38,${0.5*p.critFlash/0.3})`;ctx.fillRect(-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);ctx.globalCompositeOperation='source-over'}ctx.restore()}else{ctx.drawImage(pSpr,p.x-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);if(critFlash){ctx.save();ctx.globalAlpha=0.4*(p.critFlash/0.3);ctx.fillStyle='#dc2626';ctx.fillRect(p.x-T*SCALE*0.5,p.y-T*SCALE*0.75+pBob,T*SCALE*1.0,T*SCALE*1.35);ctx.restore()}}if(eq.body&&equipColors[eq.body])drawEquipArmor(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.body],p.animFrame,p.isMoving);if(eq.legs&&equipColors[eq.legs])drawEquipLegs(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.legs],p.animFrame,p.isMoving,'front');if(eq.boots&&equipColors[eq.boots])drawEquipBoots(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.boots],p.animFrame,p.isMoving,'front');if(eq.helm&&equipColors[eq.helm])drawEquipHelm(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.helm],p.animFrame,p.isMoving);if(eq.ring&&equipColors[eq.ring]){ctx.save();const ec=equipColors[eq.ring];ctx.globalAlpha=0.15+Math.sin(state.time*3)*0.08;ctx.fillStyle=ec.glow;ctx.beginPath();ctx.arc(p.x,p.y-sc*0.1+pBob,sc*0.7,0,Math.PI*2);ctx.fill();ctx.restore()}
+drawables.push({y:p.y+T*SCALE*0.7,draw:()=>{ctx.save();ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+T*SCALE*0.6,T*SCALE*0.48,T*SCALE*0.18,0,0,Math.PI*2);ctx.fill();const critFlash=p.critFlash>0;if(p.invincible>0&&Math.floor(p.invincible*10)%2)ctx.globalAlpha=0.5;const flip=p.facing==='left';const sc=T*SCALE;const eq=state.player.equipment;if(eq.legs&&equipColors[eq.legs])drawEquipLegs(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.legs],p.animFrame,p.isMoving,'back');if(eq.boots&&equipColors[eq.boots])drawEquipBoots(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.boots],p.animFrame,p.isMoving,'back');if(flip){ctx.save();ctx.translate(p.x,0);ctx.scale(-1,1);ctx.drawImage(pSpr,-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);if(critFlash){ctx.globalCompositeOperation='source-atop';ctx.fillStyle=`rgba(220,38,38,${0.5*p.critFlash/0.3})`;ctx.fillRect(-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);ctx.globalCompositeOperation='source-over'}ctx.restore()}else{ctx.drawImage(pSpr,p.x-T*SCALE*0.6,p.y-T*SCALE*0.85+pBob,T*SCALE*1.2,T*SCALE*1.55);if(critFlash){ctx.save();ctx.globalAlpha=0.4*(p.critFlash/0.3);ctx.fillStyle='#dc2626';ctx.fillRect(p.x-T*SCALE*0.5,p.y-T*SCALE*0.75+pBob,T*SCALE*1.0,T*SCALE*1.35);ctx.restore()}}if(eq.body&&equipColors[eq.body])drawEquipArmor(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.body],p.animFrame,p.isMoving);if(eq.body&&itemDefs[eq.body]&&itemDefs[eq.body].assetKey)drawSpriteEquip(ctx,'eq_chest',itemDefs[eq.body].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.legs&&equipColors[eq.legs])drawEquipLegs(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.legs],p.animFrame,p.isMoving,'front');if(eq.legs&&itemDefs[eq.legs]&&itemDefs[eq.legs].assetKey)drawSpriteEquip(ctx,'eq_legs',itemDefs[eq.legs].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.boots&&equipColors[eq.boots])drawEquipBoots(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.boots],p.animFrame,p.isMoving,'front');if(eq.boots&&itemDefs[eq.boots]&&itemDefs[eq.boots].assetKey)drawSpriteEquip(ctx,'eq_feet',itemDefs[eq.boots].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.helm&&equipColors[eq.helm])drawEquipHelm(ctx,p.x,p.y,sc,pBob,pDir,flip,equipColors[eq.helm],p.animFrame,p.isMoving);if(eq.helm&&itemDefs[eq.helm]&&itemDefs[eq.helm].assetKey)drawSpriteEquip(ctx,'eq_head',itemDefs[eq.helm].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.shoulders&&itemDefs[eq.shoulders]&&itemDefs[eq.shoulders].assetKey)drawSpriteEquip(ctx,'eq_shoulders',itemDefs[eq.shoulders].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.hands&&itemDefs[eq.hands]&&itemDefs[eq.hands].assetKey)drawSpriteEquip(ctx,'eq_hands',itemDefs[eq.hands].assetKey,p.x,p.y,sc,pBob,flip,p.animFrame,p.isMoving);if(eq.ring&&equipColors[eq.ring]){ctx.save();const ec=equipColors[eq.ring];ctx.globalAlpha=0.15+Math.sin(state.time*3)*0.08;ctx.fillStyle=ec.glow;ctx.beginPath();ctx.arc(p.x,p.y-sc*0.1+pBob,sc*0.7,0,Math.PI*2);ctx.fill();ctx.restore()}
 if(eq.weapon&&weaponVisuals[eq.weapon]){const wv=weaponVisuals[eq.weapon];
 const wd=drawEquipWeapon(ctx,p.x,p.y,sc,pBob,flip,wv,p.swingTimer,state.time,p.animFrame,p.isMoving);
 if(p.swingTimer>0){const prog=1-p.swingTimer/(wv.swing||0.3);ctx.save();ctx.globalAlpha=0.4*(1-prog);ctx.strokeStyle=wv.trail||wv.color;ctx.lineWidth=3;
