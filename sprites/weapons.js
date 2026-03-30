@@ -27,7 +27,8 @@ voidreaper:{color:'#5020aa',glow:'#8844dd',particles:'#6633bb',swing:0.2,arc:180
 frostBlade:{color:'#a0d0ee',glow:'#80c0e0',particles:'#c0e8ff',swing:0.3,arc:130,trail:'#a0d0ee',name:'frost'},
 magmaEdge:{color:'#ff4400',glow:'#ff6600',particles:'#ffaa22',swing:0.25,arc:150,trail:'#ff6600',name:'fire'},
 silkDagger:{color:'#cccccc',glow:null,particles:'#eeeeee',swing:0.2,arc:100,trail:'#cccccc',name:'slash'},
-crystalBlade:{color:'#aa88ff',glow:'#cc44ff',particles:'#dd99ff',swing:0.22,arc:160,trail:'#cc44ff',name:'veil'}
+crystalBlade:{color:'#aa88ff',glow:'#cc44ff',particles:'#dd99ff',swing:0.22,arc:160,trail:'#cc44ff',name:'veil'},
+woodenClub:{color:'#8a6a3a',glow:null,particles:'#6a5030',swing:0.4,arc:110,trail:'#a0804a',name:'slash'}
 };
 
 const equipColors={
@@ -41,7 +42,17 @@ magmaPlate:{body:'#ff4400',accent:'#ff6600'},frostCrown:{body:'#a0d0ee',accent:'
 shellShield:{body:'#cc6633',accent:'#dd7744'},
 // Shoulder & hand equipment
 banditLeatherPauldrons:{body:'#8a6a3a',accent:'#a0804a'},guardMetalPauldrons:{body:'#aaaaaa',accent:'#cccccc'},
-banditGloves:{body:'#8a6a3a',accent:'#a0804a'},clothGloves:{body:'#c4a040',accent:'#ddb850'},guardGauntlets:{body:'#aaaaaa',accent:'#cccccc'}
+banditGloves:{body:'#8a6a3a',accent:'#a0804a'},clothGloves:{body:'#c4a040',accent:'#ddb850'},guardGauntlets:{body:'#aaaaaa',accent:'#cccccc'},
+// PNG-based citizen/farmer/guard/merchant clothing
+citizenShirtClothBlue:{body:'#3a6a9a',accent:'#5a8aba'},citizenLeathervest:{body:'#5a8a3a',accent:'#6a9a4a'},citizenLeathervestRed:{body:'#9a3a3a',accent:'#ba5a5a'},citizenShortshirt:{body:'#c4a040',accent:'#ddb850'},
+farmerLeathertrousersBlue:{body:'#3a5a8a',accent:'#4a6a9a'},farmerLeathertrousersCloth:{body:'#8a7a5a',accent:'#a09a7a'},farmerLeathertrousersGreen:{body:'#3a6a3a',accent:'#4a8a4a'},farmerLeathertrousersRed:{body:'#8a3a3a',accent:'#aa5a5a'},
+guardMetalRedChest:{body:'#8a2a2a',accent:'#bb4444'},merchantVestCloth:{body:'#6a5a3a',accent:'#8a7a5a'},
+// Feet equipment
+citizenLeatherBoots:{body:'#6a5a3a',accent:'#8a7a5a'},citizenLeatherBootsBlack:{body:'#2a2a2a',accent:'#4a4a4a'},citizenLeatherBootsBlue:{body:'#3a4a6a',accent:'#5a6a8a'},citizenLeatherBootsRed:{body:'#6a2a2a',accent:'#8a4a4a'},citizenLeatherBootsYellow:{body:'#8a7a2a',accent:'#aa9a4a'},guardBootsMetal:{body:'#7a7a8a',accent:'#9a9aaa'},
+// Legs equipment
+farmerLeatherLegs:{body:'#6a5a3a',accent:'#8a7a5a'},farmerShortleatherLegs:{body:'#7a6a4a',accent:'#9a8a6a'},guardMetalLegs:{body:'#7a7a8a',accent:'#9a9aaa'},merchantClothRedLegs:{body:'#8a2a2a',accent:'#aa4a4a'},merchantClothWhiteLegs:{body:'#d0d0d0',accent:'#e8e8e8'},
+// Head equipment
+farmerHatStraw:{body:'#c4a040',accent:'#ddb850'},farmerHatStrawCloth:{body:'#b09030',accent:'#c8a848'},farmerScarfCloth:{body:'#a08060',accent:'#b89878'},femaleGreen:{body:'#3a7a3a',accent:'#5a9a5a'},female3Green:{body:'#2a6a2a',accent:'#4a8a4a'},guardHelmetMetalRed:{body:'#8a2a2a',accent:'#bb4444'},maleBlack:{body:'#2a2a2a',accent:'#4a4a4a'},maleBrown:{body:'#6a4a2a',accent:'#8a6a4a'},maleGrey:{body:'#6a6a6a',accent:'#8a8a8a'},merchantHatLeatherBlack:{body:'#2a2a2a',accent:'#4a4a4a'}
 };
 
 // ═══ ARM DRAWING SYSTEM ═══

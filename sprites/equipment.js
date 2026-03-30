@@ -518,3 +518,23 @@ function drawEquipWeapon(ctx,px,py,sc,bob,flip,wv,swingTimer,time,frame,isWalk){
   ctx.restore();
   return{tipX,tipY,handAX,handAY,wLen,swAngle,restAng,dirSign};
 }
+
+/* ── Sprite-Based Equipment Overlay ──
+   Draws a PNG equipment sprite as a full-body overlay on the player.
+   Used for equipment items that have assetKey (PNG sprite) instead of or
+   in addition to procedural color-based rendering.
+   The equipment PNGs are designed to overlay directly on the character sprite. */
+function drawSpriteEquip(ctx,assetPrefix,assetKey,px,py,sc,bob,flip,frame,isWalk){
+  if(!assetKey||typeof GameAssets==='undefined')return;
+  const img=GameAssets.get(assetPrefix+'.'+assetKey);
+  if(!img)return;
+  const sock=getSocketOffset('chest',sc,frame||0,!!isWalk);
+  ctx.save();
+  if(flip){ctx.translate(px,0);ctx.scale(-1,1);px=0}
+  const dx=px-sc*0.6;
+  const dy=py-sc*0.85+bob+sock.y;
+  const dw=sc*1.2;
+  const dh=sc*1.55;
+  ctx.drawImage(img,dx,dy,dw,dh);
+  ctx.restore();
+}
