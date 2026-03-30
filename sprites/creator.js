@@ -264,7 +264,7 @@ async function renderCharacterPreview(canvas,appearance){
     const ox=(canvas.width-w)/2,oy=(canvas.height-h)/2;
     cx.drawImage(frame,0,0,24,32,ox,oy,w,h);
     // Walk cycle preview (3 frames from walk row 4)
-    const smallScale=Math.max(1,Math.floor(scale*0.4));
+    const smallScale=Math.max(2,Math.floor(scale*0.4));
     const sw=24*smallScale,sh=32*smallScale;
     const startX=(canvas.width-(sw*3+8))/2;
     const startY=oy+h+8;
